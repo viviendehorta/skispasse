@@ -33,3 +33,14 @@ export const Home = props => (
     </NavLink>
   </NavItem>
 );
+
+export const MapMenu = props => (
+  <NavItem>
+    <NavLink tag={Link} to="/wmap" className="d-flex align-items-center">
+      <FontAwesomeIcon icon="map" />
+      <span>
+        <Translate contentKey="global.menu.wmap">Map</Translate>
+      </span>
+    </NavLink>
+  </NavItem>
+);
