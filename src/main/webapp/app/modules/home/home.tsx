@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import {Translate} from 'react-jhipster';
 import {connect} from 'react-redux';
 import {Alert, Col, Row} from 'reactstrap';
-import {WMap} from "app/shared/map/wmap";
+import {MapCmp} from "app/shared/map/map-cmp";
 
 export type IHomeProp = StateProps;
 
@@ -15,7 +15,7 @@ export const Home = (props: IHomeProp) => {
   return (
     <Row>
       <Col md="6">
-        <WMap/>
+        <MapCmp/>
       </Col>
 
 

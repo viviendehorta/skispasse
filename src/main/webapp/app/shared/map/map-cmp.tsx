@@ -5,7 +5,7 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import React from "react";
 
-export class WMap extends React.Component {
+export class MapCmp extends React.Component {
 
   render() {
     return (
