@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import {Translate} from 'react-jhipster';
 import {connect} from 'react-redux';
 import {Alert, Col, Row} from 'reactstrap';
-import {MapCmp} from "app/shared/map/map-cmp";
+import {OlMap} from "app/shared/map/olmap";
 
 export type IWorldMapPageProp = StateProps;
 
@@ -14,7 +14,7 @@ export const WorldMapPage = (props: IWorldMapPageProp) => {
   // initialize attributes with useState ? useState() fct trop cool
 
   return (
-    <MapCmp id="map-page-map"/>
+    <OlMap id="map-page-map"/>
   );
 };
 
