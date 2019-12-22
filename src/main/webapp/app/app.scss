@@ -3,8 +3,22 @@
 // Import Bootstrap source files from node_modules
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import '~bootswatch/dist/flatly/bootswatch';
+html {
+  height: 100%;
+}
+
 body {
+  height: 100%;
   margin: 0;
+  padding: 0;
+}
+
+#root {
+  height: 100%;
+
+  > div:first-child {
+    height: 100%;
+  }
 }
 
 a {
@@ -23,14 +37,16 @@ a {
 }
 
 .app-container {
+  height: 100%;
   box-sizing: border-box;
   .view-container {
     width: 100%;
-    height: calc(100% - 40px);
+    height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 1rem;
     .card {
+      height: calc(100% - 20px);
       padding: 1rem;
     }
     .view-routes {

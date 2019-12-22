@@ -5,22 +5,26 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import React from "react";
 
-export class MapCmp extends React.Component {
+export interface IMapCmpProps {
+  id: string
+}
+
+export class MapCmp extends React.Component<IMapCmpProps> {
 
   render() {
     return (
-      <div id="wmap" className="wmap"/>
+      <div id={this.props.id} className="map"/>
     );
   }
 
-  componentDidMount(){
+  componentDidMount() {
     const wMap = new Map({
       layers: [
         new TileLayer({
           source: new OSM()
         })
       ],
-      target: 'wmap',
+      target: this.props.id,
       view: new View({
         center: [0, 0],
         zoom: 2

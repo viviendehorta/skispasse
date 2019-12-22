@@ -5,7 +5,7 @@ import Loadable from 'react-loadable';
 import Login from 'app/modules/login/login';
 import Logout from 'app/modules/login/logout';
 import Home from 'app/modules/home/home';
-import WMapPage from "app/modules/wmap/wmap";
+import WMapPage from "app/modules/worldmap/worldmap";
 import Entities from 'app/entities';
 import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';

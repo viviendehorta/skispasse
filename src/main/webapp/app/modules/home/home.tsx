@@ -5,7 +5,6 @@ import {Link} from 'react-router-dom';
 import {Translate} from 'react-jhipster';
 import {connect} from 'react-redux';
 import {Alert, Col, Row} from 'reactstrap';
-import {MapCmp} from "app/shared/map/map-cmp";
 
 export type IHomeProp = StateProps;
 
@@ -14,12 +13,7 @@ export const Home = (props: IHomeProp) => {
 
   return (
     <Row>
-      <Col md="6">
-        <MapCmp/>
-      </Col>
-
-
-      <Col md="3">
+      <Col md="9">
         <h2>
           <Translate contentKey="home.title">Welcome, Java Hipster!</Translate>
         </h2>
@@ -29,7 +23,7 @@ export const Home = (props: IHomeProp) => {
         {account && account.login ? (
           <div>
             <Alert color="success">
-              <Translate contentKey="home.logged.message" interpolate={{username: account.login}}>
+              <Translate contentKey="home.logged.message" interpolate={{ username: account.login }}>
                 You are logged in as user {account.login}.
               </Translate>
             </Alert>
@@ -43,8 +37,8 @@ export const Home = (props: IHomeProp) => {
               </Link>
               <Translate contentKey="global.messages.info.authenticated.suffix">
                 , you can try the default accounts:
-                <br/>- Administrator (login=&quot;admin&quot; and password=&quot;admin&quot;)
-                <br/>- User (login=&quot;user&quot; and password=&quot;user&quot;).
+                <br />- Administrator (login=&quot;admin&quot; and password=&quot;admin&quot;)
+                <br />- User (login=&quot;user&quot; and password=&quot;user&quot;).
               </Translate>
             </Alert>
           </div>
@@ -65,8 +59,7 @@ export const Home = (props: IHomeProp) => {
             </a>
           </li>
           <li>
-            <a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank"
-               rel="noopener noreferrer">
+            <a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener noreferrer">
               <Translate contentKey="home.link.bugtracker">JHipster bug tracker</Translate>
             </a>
           </li>
@@ -91,7 +84,7 @@ export const Home = (props: IHomeProp) => {
         </p>
       </Col>
       <Col md="3" className="pad">
-        <span className="hipster rounded"/>
+        <span className="hipster rounded" />
       </Col>
     </Row>
   );
