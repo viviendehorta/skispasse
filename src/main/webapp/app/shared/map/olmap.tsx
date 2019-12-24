@@ -5,7 +5,7 @@ import React from "react";
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import TileJSON from 'ol/source/TileJSON';
+import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import {Icon, Style} from 'ol/style';
 import Polyline from 'ol/format/Polyline';
@@ -24,11 +24,8 @@ export class OlMap extends React.Component<IOlMapProps> {
 
   componentDidMount() {
 
-    const rasterLayer = new TileLayer({
-      source: new TileJSON({
-        url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json',
-        crossOrigin: ''
-      })
+    const mapLayer = new TileLayer({
+      source: new OSM()
     });
 
     // This long string is placed here due to jsFiddle limitations.
@@ -87,7 +84,6 @@ export class OlMap extends React.Component<IOlMapProps> {
     const markers:Feature[] = [];
     routeCoords.forEach(function (coordinate) {
       markers.push(new Feature({
-        type: 'toto',
         geometry: new Point(coordinate)
       }));
     });
@@ -96,24 +92,33 @@ export class OlMap extends React.Component<IOlMapProps> {
         image: new Icon({
           anchor: [0.5, 1],
           src: 'content/images/map/icon.png'
+
         })
       });
 
-
-    const vectorLayer = new VectorLayer({
+    const markerLayer = new VectorLayer({
       source: new VectorSource({
         features: markers
       }),
       style
     });
 
+    const layers = [mapLayer, markerLayer]
+
     const map = new Map({
-      layers: [rasterLayer, vectorLayer],
+      layers,
       target: this.props.id,
       view: new View({
         center: [0, 0],
         zoom: 3
       })
+    });
+
+    map.on('click', function(event) {
+
+      map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
+        alert("marker clicked !")
+      });
     });
   }
 }
