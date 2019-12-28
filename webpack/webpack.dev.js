@@ -38,7 +38,7 @@ module.exports = (options) => webpackMerge(commonConfig({ env: ENV }), {
   },
   devServer: {
     stats: options.stats,
-    hot: true,
+    hot: false,
     contentBase: './target/classes/static/',
     proxy: [{
       context: [
@@ -84,7 +84,7 @@ module.exports = (options) => webpackMerge(commonConfig({ env: ENV }), {
         }
       }
     }, {
-      reload: false
+      reload: true
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
