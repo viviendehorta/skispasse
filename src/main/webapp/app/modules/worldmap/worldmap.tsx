@@ -14,7 +14,7 @@ export const WorldMapPage = (props: IWorldMapPageProp) => {
   // initialize attributes with useState ? useState() fct trop cool
 
   return (
-    <OlMap id="map-page-map"/>
+    <OlMap id="worldmap-page-map"/>
   );
 };
 
