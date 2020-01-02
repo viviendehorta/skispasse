@@ -1,11 +1,9 @@
 import './worldmap.scss';
-
 import React from 'react';
-import {Link} from 'react-router-dom';
-import {Translate} from 'react-jhipster';
 import {connect} from 'react-redux';
-import {Alert, Col, Row} from 'reactstrap';
 import {OlMap} from "app/shared/map/olmap";
+import {MarkerLayer} from "app/shared/map/layers/marker-layer";
+import {OSMLayer} from "app/shared/map/layers/osm-layer";
 
 export type IWorldMapPageProp = StateProps;
 
@@ -14,7 +12,10 @@ export const WorldMapPage = (props: IWorldMapPageProp) => {
   // initialize attributes with useState ? useState() fct trop cool
 
   return (
-    <OlMap id="worldmap-page-map"/>
+    <OlMap id="worldmap-page-map">
+      <OSMLayer/>
+      <MarkerLayer/>
+    </OlMap>
   );
 };
 
