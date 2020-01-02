@@ -39,17 +39,17 @@ export class OlMap extends React.Component<any, any> {
       view: this.view
     });
 
-    this.map.on('click', function (event) {
-      this.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
-        alert("marker clicked !")
-      });
-    });
+    // this.map.on('click', function (event) {
+    //   this.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
+    //     alert("marker clicked !")
+    //   });
+    // });
   }
 
   private buildView(center: number[]) {
     return new View({
       center,
-      zoom: 7
+      zoom: 3
     });
   }
 
