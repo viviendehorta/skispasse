@@ -1,7 +1,7 @@
 import './header.scss';
 
 import React, {useState} from 'react';
-import {Storage, Translate} from 'react-jhipster';
+import {Storage} from 'react-jhipster';
 import {Collapse, Nav, Navbar, NavbarToggler} from 'reactstrap';
 import LoadingBar from 'react-redux-loading-bar';
 
@@ -11,7 +11,6 @@ import {AccountMenu, AdminMenu, EntitiesMenu, LocaleMenu} from '../menus';
 export interface IHeaderProps {
   isAuthenticated: boolean;
   isAdmin: boolean;
-  ribbonEnv: string;
   isInProduction: boolean;
   isSwaggerEnabled: boolean;
   currentLocale: string;
@@ -27,22 +26,12 @@ const Header = (props: IHeaderProps) => {
     props.onLocaleChange(langKey);
   };
 
-  const renderDevRibbon = () =>
-    props.isInProduction === false ? (
-      <div className="ribbon dev">
-        <a href="">
-          <Translate contentKey={`global.ribbon.${props.ribbonEnv}`} />
-        </a>
-      </div>
-    ) : null;
-
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
 
   return (
     <div id="app-header">
-      {renderDevRibbon()}
       <LoadingBar className="loading-bar" />
       <Navbar dark expand="sm" fixed="top" className="bg-primary">
         <NavbarToggler aria-label="Menu" onClick={toggleMenu} />
