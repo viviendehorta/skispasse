@@ -13,7 +13,7 @@ import {IRootState} from 'app/shared/reducers';
 import {getSession} from 'app/shared/reducers/authentication';
 import {getProfile} from 'app/shared/reducers/application-profile';
 import {setLocale} from 'app/shared/reducers/locale';
-import Header from 'app/shared/layout/header/header';
+import Menu from 'app/shared/layout/menu/menu';
 import {hasAnyAuthority} from 'app/shared/auth/private-route';
 import ErrorBoundary from 'app/shared/error/error-boundary';
 import {AUTHORITIES} from 'app/config/constants';
@@ -45,7 +45,7 @@ export const App = (props: IAppProps) => {
             </ErrorBoundary>
 
             <ErrorBoundary>
-              <Header
+              <Menu
                 isAuthenticated={props.isAuthenticated}
                 isAdmin={props.isAdmin}
                 currentLocale={props.currentLocale}

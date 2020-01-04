@@ -1,0 +1,106 @@
+$menu-color: #fff;
+$menu-color-secondary: #bbb;
+$menu-color-hover: darken($menu-color, 20%);
+
+$menu-without-toggle-btn-width: 14rem;
+$menu-toggle-btn-width: 3rem;
+$menu-toggle-btn-margin: 1rem;
+$menu-width: $menu-without-toggle-btn-width + $menu-toggle-btn-margin + $menu-toggle-btn-width;
+
+.app-menu {
+  position: absolute;
+
+  .loading-bar {
+    height: 3px;
+    background-color: #009cd8;
+    position: absolute;
+    top: 0px;
+    z-index: 1031;
+  }
+
+  .menu {
+    height: 100vh;
+    min-width: $menu-width;
+    width: $menu-width;
+    background-color: transparent;
+    transition: all 0.4s;
+
+    .menu-without-toggle-btn {
+      min-width: $menu-without-toggle-btn-width;
+      width: $menu-without-toggle-btn-width;
+      height: 100vh;
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+
+      .brand-title {
+        font-size: 24px;
+        color: $menu-color;
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+
+        &:hover {
+          color: $menu-color-hover;
+          text-decoration: none;
+        }
+      }
+
+      .navbar-version {
+        font-size: 10px;
+        color: $menu-color-secondary;
+        padding: 0 0 0 10px;
+      }
+
+      .menu-group-label {
+        font-size: 80%;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 0;
+        padding: 1.5rem 1rem;
+      }
+
+      .menu-nav-item {
+        color: #2c3e50;
+        font-style: italic;
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
+      }
+
+      .menu-nav-item:hover,
+      .menu-nav-item:focus {
+        color: #576263;
+      }
+    }
+
+    .menu-collapse-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin-top: $menu-toggle-btn-margin;
+      margin-left: $menu-toggle-btn-margin;
+      text: uppercase;
+      font-weight: bold;
+      width: $menu-toggle-btn-width;
+      border-radius: 0.5rem;
+    }
+
+    .menu-collapse-btn:visited,
+    .menu-collapse-btn:focus {
+      box-shadow: none;
+    }
+  }
+}
+
+/* for toggle behavior */
+
+#menu.active {
+  margin-left: -$menu-without-toggle-btn-width;
+}
+
+@media (max-width: 768px) {
+  #menu {
+    margin-left: -$menu-without-toggle-btn-width;
+  }
+  #menu.active {
+    margin-left: 0;
+  }
+}

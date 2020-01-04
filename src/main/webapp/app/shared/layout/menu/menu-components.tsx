@@ -1,11 +1,12 @@
 import React from 'react';
-import {Translate} from 'react-jhipster';
 
-import {NavItem, NavLink, NavbarBrand} from 'reactstrap';
-import {NavLink as Link} from 'react-router-dom';
+import {DropdownMenu, DropdownToggle, NavItem, NavLink, UncontrolledDropdown} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Translate} from 'react-jhipster';
+import {NavLink as Link} from 'react-router-dom';
 
 import appConfig from 'app/config/constants';
+
 
 export const BrandIcon = props => (
   <div {...props} className="brand-icon">
@@ -14,7 +15,7 @@ export const BrandIcon = props => (
 );
 
 export const Brand = props => (
-  <NavLink tag={Link} to="/" className="brand-title header-nav-item">
+  <NavLink tag={Link} to="/" className="brand-title menu-nav-item">
     <span>
       <Translate contentKey="global.title">Skispasse</Translate>
     </span>
@@ -24,7 +25,7 @@ export const Brand = props => (
 
 export const Home = props => (
   <NavItem>
-    <NavLink tag={Link} to="/" className="header-nav-item">
+    <NavLink tag={Link} to="/" className="menu-nav-item">
       <span>
         <FontAwesomeIcon icon="home"></FontAwesomeIcon>
       </span>
@@ -35,11 +36,23 @@ export const Home = props => (
 
 export const MapMenu = props => (
   <NavItem>
-    <NavLink tag={Link} to="/worldmap" className="header-nav-item">
+    <NavLink tag={Link} to="/worldmap" className="menu-nav-item">
       <FontAwesomeIcon icon="map"/>
       <span>
-        <Translate contentKey="global.menu.wmap">Map</Translate>
+        <Translate contentKey="global.menu.worldmap">Map</Translate>
       </span>
     </NavLink>
   </NavItem>
+);
+
+export const NavDropdown = props => (
+  <UncontrolledDropdown nav inNavbar id={props.id}>
+    <DropdownToggle nav caret className="menu-nav-item d-flex align-items-center">
+      <FontAwesomeIcon icon={props.icon}/>
+      <span>{props.name}</span>
+    </DropdownToggle>
+    <DropdownMenu right style={props.style}>
+      {props.children}
+    </DropdownMenu>
+  </UncontrolledDropdown>
 );

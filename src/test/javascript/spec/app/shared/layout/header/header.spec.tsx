@@ -6,9 +6,9 @@ import sinon from 'sinon';
 import LoadingBar from 'react-redux-loading-bar';
 import { Navbar, Nav } from 'reactstrap';
 
-import { Home, Brand } from 'app/shared/layout/header/header-components';
-import { AdminMenu, EntitiesMenu, AccountMenu, LocaleMenu } from 'app/shared/layout/menus';
-import Header from 'app/shared/layout/header/header';
+import { Home, Brand } from 'app/shared/layout/menu/menu-components';
+import { AdminMenu, EntitiesMenu, AccountMenu, LocaleMenu } from 'app/shared/layout/menu';
+import Header from 'app/shared/layout/menu/menu';
 
 describe('Header', () => {
   let mountedWrapper;

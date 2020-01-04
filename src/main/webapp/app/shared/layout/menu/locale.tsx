@@ -1,4 +1,4 @@
-import '../menu-bar.scss'
+import './menu.scss'
 import React from 'react';
 import { DropdownItem } from 'reactstrap';
 import { NavDropdown } from './menu-components';
