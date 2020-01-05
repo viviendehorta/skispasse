@@ -43,17 +43,8 @@ a {
     height: 100vh;
     margin: 0;
     padding: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
     .card {
-      position: relative;
-      height: 100vh;
-    }
-    .view-routes {
-      height: 100vh;
-      > div {
-        height: 100vh;
-      }
+      border: none;
     }
   }
 }

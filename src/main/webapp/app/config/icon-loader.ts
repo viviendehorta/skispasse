@@ -30,42 +30,43 @@ import { faRoad } from '@fortawesome/free-solid-svg-icons/faRoad';
 import { faCloud } from '@fortawesome/free-solid-svg-icons/faCloud';
 import { faMap } from '@fortawesome/free-solid-svg-icons/faMap';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons/faArrowRight';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 
-export const loadIcons = () => {
-  library.add(
-    faSort,
-    faEye,
-    faSync,
-    faBan,
-    faTrash,
-    faArrowLeft,
-    faSave,
-    faPlus,
-    faPencilAlt,
-    faUser,
-    faTachometerAlt,
-    faHeart,
-    faList,
-    faTasks,
-    faBook,
-    faHdd,
-    faLock,
-    faSignInAlt,
-    faSignOutAlt,
-    faWrench,
-    faThList,
-    faUserPlus,
-    faAsterisk,
-    faFlag,
-    faBell,
-    faHome,
-    faRoad,
-    faCloud,
-    faTimesCircle,
-    faSearch,
-    faMap,
-    faBars
-  );
-};
+library.add(
+  faSort,
+  faEye,
+  faSync,
+  faBan,
+  faTrash,
+  faArrowLeft,
+  faSave,
+  faPlus,
+  faPencilAlt,
+  faUser,
+  faTachometerAlt,
+  faHeart,
+  faList,
+  faTasks,
+  faBook,
+  faHdd,
+  faLock,
+  faSignInAlt,
+  faSignOutAlt,
+  faWrench,
+  faThList,
+  faUserPlus,
+  faAsterisk,
+  faFlag,
+  faBell,
+  faHome,
+  faRoad,
+  faCloud,
+  faTimesCircle,
+  faSearch,
+  faMap,
+  faBars,
+  faArrowRight
+);
+export const loadIcons = () => {};

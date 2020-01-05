@@ -9,13 +9,15 @@ export type IWorldMapPageProp = StateProps;
 
 export const WorldMapPage = (props: IWorldMapPageProp) => {
 
-  // initialize attributes with useState ? useState() fct trop cool
-
   return (
-    <OlMap id="worldmap-page-map">
-      <OSMLayer/>
-      <MarkerLayer/>
-    </OlMap>
+    <div>
+      <OlMap id="worldmap-page-map">
+        <OSMLayer/>
+        <MarkerLayer/>
+      </OlMap>
+    </div>
+    // initialize attributes with useState ? useState() fct trop cool
+
   );
 };
 

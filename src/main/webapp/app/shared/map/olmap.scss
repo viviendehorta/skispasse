@@ -1,5 +1,13 @@
-.map .ol-zoom {
-  top: 0.5em;
-  left: unset;
-  right: 0.5em;
+.olmap {
+  position: relative;
+
+  .map {
+    height: 100vh;
+
+    .ol-zoom {
+      top: 0.5em;
+      left: unset;
+      right: 0.5em;
+    }
+  }
 }

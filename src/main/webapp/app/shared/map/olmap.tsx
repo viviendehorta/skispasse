@@ -2,6 +2,7 @@ import './olmap.scss';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import React from "react";
+import VerticalCollapse from "app/shared/components/vertical-collapse";
 
 export const MapContext = React.createContext(undefined);
 
@@ -21,8 +22,11 @@ export class OlMap extends React.Component<any, any> {
   render() {
     return (
       <MapContext.Provider value={this}>
-        <div id={this.props.id} className="map">
-          {this.props.children}
+        <div className="olmap">
+          <div id={this.props.id} className="map">
+            {this.props.children}
+          </div>
+          <VerticalCollapse/>
         </div>
       </MapContext.Provider>
     );
