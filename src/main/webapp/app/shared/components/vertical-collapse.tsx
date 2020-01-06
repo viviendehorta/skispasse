@@ -16,7 +16,7 @@ const VerticalCollapse = (props) => {
   };
 
   return (
-    <Card className="vertical-collapse">
+    <Card className={isCollapsed ? "vertical-collapse active" : "vertical-collapse"}>
 
       <Button className="vertical-collapse-btn" size="sm" onClick={collapse}>
         <FontAwesomeIcon icon="arrow-right" className="menu-collapse-icon"/>

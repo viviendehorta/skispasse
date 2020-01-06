@@ -43,6 +43,10 @@ a {
     height: 100vh;
     margin: 0;
     padding: 0;
+
+    //Prevent apparition of horizontal scroll when using negative left/right margin (vertical-collapse, etc.)
+    overflow-x: hidden;
+
     .card {
       border: none;
     }
