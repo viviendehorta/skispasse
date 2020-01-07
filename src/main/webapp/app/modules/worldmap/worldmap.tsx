@@ -5,7 +5,7 @@ import {OlMap} from "app/shared/map/olmap";
 import {MarkerLayer} from "app/shared/map/layers/marker-layer";
 import {OSMLayer} from "app/shared/map/layers/osm-layer";
 import {IRootState} from "app/shared/reducers";
-import {newsFactBlob} from "app/modules/administration/administration.reducer";
+import {newsFactsBlob} from "app/modules/administration/administration.reducer";
 
 export interface IWorldMapPageProps extends StateProps, DispatchProps {
 }
@@ -13,12 +13,12 @@ export interface IWorldMapPageProps extends StateProps, DispatchProps {
 export const WorldMapPage = (props: IWorldMapPageProps) => {
 
   useEffect(() => {
-    props.newsFactBlob();
+    props.newsFactsBlob();
   }, []);
 
   const getNewsFactsBlob = () => {
     if (!props.isFetching) {
-      props.newsFactBlob();
+      props.newsFactsBlob();
     }
   };
 
@@ -35,11 +35,11 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
 };
 
 const mapStateToProps = (storeState: IRootState) => ({
-  newsFactBlob: storeState.administration.newsFactBlob,
+  newsFactsBlob: storeState.administration.newsFactsBlob,
   isFetching: storeState.administration.loading
 });
 
-const mapDispatchToProps = { newsFactBlob };
+const mapDispatchToProps = { newsFactsBlob };
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;

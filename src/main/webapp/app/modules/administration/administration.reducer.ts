@@ -10,7 +10,7 @@ export const ACTION_TYPES = {
   FETCH_THREAD_DUMP: 'administration/FETCH_THREAD_DUMP',
   FETCH_CONFIGURATIONS: 'administration/FETCH_CONFIGURATIONS',
   FETCH_ENV: 'administration/FETCH_ENV',
-  FETCH_NEW_FACTS_OBJECT: 'administration/FETCH_NEW_FACTS_OBJECT'
+  FETCH_NEWS_FACTS_OBJECT: 'administration/FETCH_NEWS_FACTS_OBJECT'
 };
 
 const initialState = {
@@ -20,7 +20,7 @@ const initialState = {
     loggers: [] as any[]
   },
   health: {} as any,
-  newsFactBlob: {} as any,
+  newsFactsBlob: {} as any,
   metrics: {} as any,
   threadDump: [],
   configuration: {
@@ -114,8 +114,8 @@ export const systemHealth = () => ({
   payload: axios.get('management/health')
 });
 
-export const newsFactBlob = () => ({
-  type: ACTION_TYPES.FETCH_NEW_FACTS_OBJECT,
+export const newsFactsBlob = () => ({
+  type: ACTION_TYPES.FETCH_NEWS_FACTS_OBJECT,
   payload: axios.post('newsFacts/all')
 });
 
