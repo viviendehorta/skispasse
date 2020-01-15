@@ -4,8 +4,8 @@ import {connect} from 'react-redux';
 import {OlMap} from "app/shared/map/olmap";
 import {MarkerLayer} from "app/shared/map/layers/marker-layer";
 import {OSMLayer} from "app/shared/map/layers/osm-layer";
+import {getNewsFactsBlob} from "app/modules/administration/administration.reducer";
 import {IRootState} from "app/shared/reducers";
-import {newsFactsBlob} from "app/modules/administration/administration.reducer";
 
 export interface IWorldMapPageProps extends StateProps, DispatchProps {
 }
@@ -13,14 +13,8 @@ export interface IWorldMapPageProps extends StateProps, DispatchProps {
 export const WorldMapPage = (props: IWorldMapPageProps) => {
 
   useEffect(() => {
-    props.newsFactsBlob();
+    props.getNewsFactsBlob();
   }, []);
-
-  const getNewsFactsBlob = () => {
-    if (!props.isFetching) {
-      props.newsFactsBlob();
-    }
-  };
 
   return (
     <div>
@@ -34,12 +28,11 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
   );
 };
 
-const mapStateToProps = (storeState: IRootState) => ({
-  newsFactsBlob: storeState.administration.newsFactsBlob,
-  isFetching: storeState.administration.loading
+const mapStateToProps = (state:IRootState) => ({
+  newsFactsBlob: state.administration.newsFactsBlob
 });
 
-const mapDispatchToProps = { newsFactsBlob };
+const mapDispatchToProps = { getNewsFactsBlob };
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;

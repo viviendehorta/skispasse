@@ -114,7 +114,7 @@ export const systemHealth = () => ({
   payload: axios.get('management/health')
 });
 
-export const newsFactsBlob = () => ({
+export const getNewsFactsBlob = () => ({
   type: ACTION_TYPES.FETCH_NEWS_FACTS_OBJECT,
   payload: axios.post('newsFacts/all')
 });
