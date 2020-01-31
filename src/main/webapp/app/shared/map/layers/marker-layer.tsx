@@ -1,14 +1,11 @@
 import * as React from 'react';
 import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
-import {MapContext} from "app/shared/map/olmap";
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import {Cluster, OSM, Vector as VectorSource} from 'ol/source';
+import {Vector as VectorLayer} from 'ol/layer';
+import {Cluster, Vector as VectorSource} from 'ol/source';
 import {Circle as CircleStyle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
 
 export class MarkerLayer extends React.Component<any, any> {
-
-  static contextType = MapContext;
 
   constructor(props) {
     super(props);
