@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {OlMap} from "app/shared/map/olmap";
 import {IRootState} from "app/shared/reducers";
 import {fetchNewsFactsBlob} from "app/shared/reducers/news-facts-blob";
-import {Spinner} from 'reactstrap';
 
 export interface IWorldMapPageProps extends StateProps, DispatchProps {
 }
@@ -18,16 +17,12 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
   const newsFactsBlob = props.newsFactsBlob;
   const isReadyNewsFactsBLob = newsFactsBlob != null && newsFactsBlob.newsFacts != null;
 
-  return isReadyNewsFactsBLob ?
-    (
+  return(
       <div>
-        <OlMap id="worldmap-page-map" newsFactsBlob={newsFactsBlob}/>
+        <OlMap id="worldmap-page-map" newsFacts={isReadyNewsFactsBLob ? newsFactsBlob.newsFacts : []}/>
       </div>
-    ) :
-    (
-      <Spinner />
     );
-}
+};
 
 function mapStateToProps(state: IRootState) {
   return {

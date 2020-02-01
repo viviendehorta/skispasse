@@ -13,12 +13,13 @@ import Point from "ol/geom/Point";
 
 export interface IOlMapProps {
   id: string,
-  newsFactsBlob: any,
+  newsFacts: any[],
 }
 
 export class OlMap extends React.Component<IOlMapProps, any> {
 
   private map: Map;
+  private markerVectorSource: VectorSource;
 
   constructor(props) {
     super(props);
@@ -33,58 +34,9 @@ export class OlMap extends React.Component<IOlMapProps, any> {
     );
   }
 
-  private toMarkerFeature(newsFact: any) {
-    return new Feature(new Point([newsFact.locationCoordinate.x, newsFact.locationCoordinate.y]))
-  }
-
-  private extractMarkers(newsFacts: any[]): Feature[] {
-    return newsFacts.map(newsFact => {
-      return this.toMarkerFeature(newsFact);
-    });
-  }
-
-  private buildMarkerVectorLayer() {
-
-    const markerStyle = new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: 'content/images/map/icon.png'
-      })
-    });
-
-    const markerFeatures = this.extractMarkers(this.props.newsFactsBlob.newsFacts);
-    const markerSource = new VectorSource({
-      features: markerFeatures
-    });
-
-    return new VectorLayer({
-      source: markerSource,
-      style: markerStyle
-    });
-  }
-
-  private buildView() {
-    return new View({
-      center: [270000, 6250000],
-      zoom: 3
-    });
-  }
-
-  private buildOSMTileLayer() {
-    return new TileLayer({
-      source: new OSM()
-    });
-  }
-
-  private buildLayers() {
-    const oSMLayer = this.buildOSMTileLayer();
-    const markerLayer = this.buildMarkerVectorLayer();
-    return [oSMLayer, markerLayer];
-  }
-
   componentDidMount() {
     const view = this.buildView();
-    const layers = this.buildLayers();
+    const layers = this.buildBaseLayers();
 
     this.map = new Map({
       layers,
@@ -97,5 +49,64 @@ export class OlMap extends React.Component<IOlMapProps, any> {
     //     alert("marker clicked !")
     //   });
     // });
+  }
+
+  componentDidUpdate(prevProps: Readonly<IOlMapProps>, prevState: Readonly<any>, snapshot?: any): void {
+    this.updateNewsFacts(this.props.newsFacts);
+  }
+
+  componentWillUnmount() {
+    this.map.setTarget(undefined)
+  }
+
+  private toMarkerFeature(newsFact: any) {
+    return new Feature(new Point([newsFact.locationCoordinate.x, newsFact.locationCoordinate.y]))
+  }
+
+  private extractMarkerFeatures(newsFacts: any[]): Feature[] {
+    return newsFacts.map(newsFact => {
+      return this.toMarkerFeature(newsFact);
+    });
+  }
+
+  private buildMarkerVectorLayer() {
+    const markerStyle = new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: 'content/images/map/icon.png'
+      })
+    });
+
+    this.markerVectorSource = new VectorSource({
+      features: []
+    });
+
+    return new VectorLayer({
+      source: this.markerVectorSource,
+      style: markerStyle
+    });
+  }
+
+  private buildView() {
+    return new View({
+      center: [270000, 6250000],
+      zoom: 1
+    });
+  }
+
+  private buildOSMTileLayer() {
+    return new TileLayer({
+      source: new OSM()
+    });
+  }
+
+  private buildBaseLayers() {
+    const oSMLayer = this.buildOSMTileLayer();
+    const markerLayer = this.buildMarkerVectorLayer();
+    return [oSMLayer, markerLayer];
+  }
+
+  private updateNewsFacts(newsFacts: any[]) {
+    this.markerVectorSource.addFeatures(this.extractMarkerFeatures(newsFacts));
   }
 }
