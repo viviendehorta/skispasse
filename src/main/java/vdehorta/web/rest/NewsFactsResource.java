@@ -19,17 +19,7 @@ public class NewsFactsResource {
      */
     @PostMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public NewsFactsBlob getNewsFactsBlob() {
-
-        /*const count = 20000;
-    const features = new Array(count);
-    const e = 4500000;
-    for(let i = 0; i < count; ++i) {
-      const coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
-        features[i] = new Feature(new Point(coordinates));
-    }*/
         final long e = 4500000L;
-        return new NewsFactsBlob(Arrays.asList(new NewsFact(
-            new LocationCoordinate(2 * ((long) (e * Math.random())) - e, 2 * ((long) (e * Math.random())) - e))));
-
+        return new NewsFactsBlob(Arrays.asList(new NewsFact(new LocationCoordinate(e, e))));
     }
 }

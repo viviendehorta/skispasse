@@ -1,11 +1,11 @@
-import { REQUEST, SUCCESS } from 'app/shared/reducers/action-type.util';
+import { REQUEST, SUCCESS } from 'app/components/reducers/action-type.util';
 import thunk from 'redux-thunk';
 import axios from 'axios';
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import promiseMiddleware from 'redux-promise-middleware';
 
-import profile, { ACTION_TYPES, getProfile } from 'app/shared/reducers/application-profile';
+import profile, { ACTION_TYPES, getProfile } from 'app/components/reducers/application-profile.reducer';
 
 describe('Profile reducer tests', () => {
   const initialState = {

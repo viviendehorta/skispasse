@@ -2,7 +2,7 @@ import './olmap.scss';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import React from "react";
-import VerticalCollapse from "app/shared/components/vertical-collapse";
+import VerticalCollapse from "app/components/vertical-collapse";
 import Feature from "ol/Feature";
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';

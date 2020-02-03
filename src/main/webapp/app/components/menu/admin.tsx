@@ -1,5 +1,5 @@
 import React from 'react';
-import MenuItem from 'app/shared/layout/menu/menu-item';
+import MenuItem from 'app/components/menu/menu-item';
 import { DropdownItem } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavLink as Link } from 'react-router-dom';

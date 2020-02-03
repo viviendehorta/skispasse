@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import { loadingBarReducer as loadingBar } from 'react-redux-loading-bar';
 
-import locale, { LocaleState } from './locale';
-import authentication, { AuthenticationState } from './authentication';
-import applicationProfile, { ApplicationProfileState } from './application-profile';
+import locale, { LocaleState } from './locale.reducer';
+import authentication, { AuthenticationState } from './authentication.reducer';
+import applicationProfile, { ApplicationProfileState } from './application-profile.reducer';
 
 import administration, { AdministrationState } from 'app/modules/administration/administration.reducer';
-import newsFactsBlobState, { NewsFactslobState } from './news-facts-blob';
+import newsFactsBlobState, { NewsFactslobState } from './news-facts-blob.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {

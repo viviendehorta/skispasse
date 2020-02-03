@@ -5,9 +5,9 @@ import Loadable from 'react-loadable';
 import Login from 'app/modules/login/login';
 import Logout from 'app/modules/login/logout';
 import WorldMapPage from "app/modules/worldmap/worldmap";
-import PrivateRoute from 'app/shared/auth/private-route';
-import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
-import PageNotFound from 'app/shared/error/page-not-found';
+import PrivateRoute from 'app/components/auth/private-route';
+import ErrorBoundaryRoute from 'app/components/error/error-boundary-route';
+import PageNotFound from 'app/components/error/page-not-found';
 import {AUTHORITIES} from 'app/config/constants';
 
 const Admin = Loadable({

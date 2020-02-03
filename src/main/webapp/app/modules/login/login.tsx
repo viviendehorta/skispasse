@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 
-import { IRootState } from 'app/shared/reducers';
-import { login } from 'app/shared/reducers/authentication';
+import { IRootState } from 'app/components/reducers/root.reducer';
+import { login } from 'app/components/reducers/authentication.reducer';
 import LoginModal from './login-modal';
 
 export interface ILoginProps extends StateProps, DispatchProps, RouteComponentProps<{}> {}

@@ -4,7 +4,7 @@ import axios from 'axios';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
 
-import { REQUEST, FAILURE, SUCCESS } from 'app/shared/reducers/action-type.util';
+import { REQUEST, FAILURE, SUCCESS } from 'app/components/reducers/action-type.util';
 import administration, {
   ACTION_TYPES,
   systemHealth,

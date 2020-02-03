@@ -7,8 +7,8 @@ import DevTools from './config/devtools';
 import initStore from './config/store';
 import { registerLocale } from './config/translation';
 import setupAxiosInterceptors from './config/axios-interceptor';
-import { clearAuthentication } from './shared/reducers/authentication';
-import ErrorBoundary from './shared/error/error-boundary';
+import { clearAuthentication } from './components/reducers/authentication.reducer';
+import ErrorBoundary from './components/error/error-boundary';
 import AppComponent from './app';
 import { loadIcons } from './config/icon-loader';
 

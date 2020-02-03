@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import { NavDropdown } from 'app/shared/layout/menu/menu-components';
-import { AccountMenu } from 'app/shared/layout/menu';
+import { NavDropdown } from 'app/components/menu/menu-components';
+import { AccountMenu } from 'app/components/menu';
 
 describe('AccountMenu', () => {
   let mountedWrapper;

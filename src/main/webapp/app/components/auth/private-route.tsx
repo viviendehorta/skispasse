@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect, RouteProps } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
-import { IRootState } from 'app/shared/reducers';
-import ErrorBoundary from 'app/shared/error/error-boundary';
+import { IRootState } from 'app/components/reducers';
+import ErrorBoundary from 'app/components/error/error-boundary';
 
 interface IOwnProps extends RouteProps {
   hasAnyAuthorities?: string[];

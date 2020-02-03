@@ -5,9 +5,9 @@ import sinon from 'sinon';
 
 import LoadingBar from 'react-redux-loading-bar';
 
-import { Home, Brand } from 'app/shared/layout/menu/menu-components';
-import { AdminMenu, AccountMenu, LocaleMenu } from 'app/shared/layout/menu';
-import Menu from 'app/shared/layout/menu/menu';
+import { Home, Brand } from 'app/components/menu/menu-components';
+import { AdminMenu, AccountMenu, LocaleMenu } from 'app/components/menu';
+import Menu from 'app/components/menu/menu';
 
 describe('Menu', () => {
   let mountedWrapper;

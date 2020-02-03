@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import promiseMiddleware from 'redux-promise-middleware';
 import thunkMiddleware from 'redux-thunk';
-import reducer, { IRootState } from 'app/shared/reducers';
+import rootReducer, { IRootState } from 'app/components/reducers/root.reducer';
 import DevTools from './devtools';
 import errorMiddleware from './error-middleware';
 import notificationMiddleware from './notification-middleware';
@@ -24,6 +24,7 @@ const composedMiddlewares = middlewares =>
       )
     : compose(applyMiddleware(...defaultMiddlewares, ...middlewares));
 
-const initialize = (initialState?: IRootState, middlewares = []) => createStore(reducer, initialState, composedMiddlewares(middlewares));
+const initialize = (initialState?: IRootState, middlewares = []) =>
+  createStore(rootReducer, initialState, composedMiddlewares(middlewares));
 
 export default initialize;

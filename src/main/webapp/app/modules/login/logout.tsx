@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { IRootState } from 'app/shared/reducers';
-import { logout } from 'app/shared/reducers/authentication';
+import { IRootState } from 'app/components/reducers/root.reducer';
+import { logout } from 'app/components/reducers/authentication.reducer';
 
 export interface ILogoutProps extends StateProps, DispatchProps {
   idToken: string;
@@ -10,9 +10,6 @@ export interface ILogoutProps extends StateProps, DispatchProps {
 }
 
 export class Logout extends React.Component<ILogoutProps> {
-  componentDidMount() {
-    this.props.logout();
-  }
 
   render() {
     const logoutUrl = this.props.logoutUrl;
@@ -28,6 +25,10 @@ export class Logout extends React.Component<ILogoutProps> {
         <h4>Logged out successfully!</h4>
       </div>
     );
+  }
+
+  componentDidMount() {
+    this.props.logout();
   }
 }
 
