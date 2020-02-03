@@ -19,7 +19,7 @@ $vertical-collapse-width: 200px;
 
 /* for toggle behavior */
 
-.vertical-collapse.active {
+.vertical-collapse.collapsed {
   margin-right: -$vertical-collapse-width;
 }
 
@@ -27,7 +27,7 @@ $vertical-collapse-width: 200px;
   .vertical-collapse {
     margin-right: -$vertical-collapse-width;
   }
-  .vertical-collapse.active {
+  .vertical-collapse.collapsed {
     margin-right: 0;
   }
 }

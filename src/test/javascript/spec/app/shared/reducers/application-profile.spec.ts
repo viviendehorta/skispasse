@@ -9,7 +9,6 @@ import profile, { ACTION_TYPES, getProfile } from 'app/shared/reducers/applicati
 
 describe('Profile reducer tests', () => {
   const initialState = {
-    ribbonEnv: '',
     inProduction: true,
     isSwaggerEnabled: false
   };
@@ -22,13 +21,11 @@ describe('Profile reducer tests', () => {
     it('should return the right payload in prod', () => {
       const payload = {
         data: {
-          'display-ribbon-on-profiles': 'awesome ribbon stuff',
           activeProfiles: ['prod']
         }
       };
 
       expect(profile(undefined, { type: SUCCESS(ACTION_TYPES.GET_PROFILE), payload })).toEqual({
-        ribbonEnv: 'awesome ribbon stuff',
         inProduction: true,
         isSwaggerEnabled: false
       });
@@ -37,13 +34,11 @@ describe('Profile reducer tests', () => {
     it('should return the right payload in dev with swagger enabled', () => {
       const payload = {
         data: {
-          'display-ribbon-on-profiles': 'awesome ribbon stuff',
           activeProfiles: ['swagger', 'dev']
         }
       };
 
       expect(profile(undefined, { type: SUCCESS(ACTION_TYPES.GET_PROFILE), payload })).toEqual({
-        ribbonEnv: 'awesome ribbon stuff',
         inProduction: false,
         isSwaggerEnabled: true
       });

@@ -92,7 +92,7 @@ $menu-width: $menu-without-toggle-btn-width + $menu-toggle-btn-margin + $menu-to
 
 /* for toggle behavior */
 
-#menu.active {
+#menu.collapsed {
   margin-left: -$menu-without-toggle-btn-width;
 }
 
@@ -100,7 +100,7 @@ $menu-width: $menu-without-toggle-btn-width + $menu-toggle-btn-margin + $menu-to
   #menu {
     margin-left: -$menu-without-toggle-btn-width;
   }
-  #menu.active {
+  #menu.collapsed {
     margin-left: 0;
   }
 }

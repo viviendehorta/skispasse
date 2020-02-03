@@ -4,13 +4,12 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
 import LoadingBar from 'react-redux-loading-bar';
-import { Navbar, Nav } from 'reactstrap';
 
 import { Home, Brand } from 'app/shared/layout/menu/menu-components';
 import { AdminMenu, EntitiesMenu, AccountMenu, LocaleMenu } from 'app/shared/layout/menu';
-import Header from 'app/shared/layout/menu/menu';
+import Menu from 'app/shared/layout/menu/menu';
 
-describe('Header', () => {
+describe('Menu', () => {
   let mountedWrapper;
 
   const localeSpy = sinon.spy();
@@ -20,13 +19,11 @@ describe('Header', () => {
     isAdmin: true,
     currentLocale: 'en',
     onLocaleChange: localeSpy,
-    ribbonEnv: 'dev',
     isInProduction: false,
     isSwaggerEnabled: true
   };
   const prodProps = {
     ...devProps,
-    ribbonEnv: 'prod',
     isInProduction: true,
     isSwaggerEnabled: false
   };
@@ -42,7 +39,7 @@ describe('Header', () => {
 
   const wrapper = (props = devProps) => {
     if (!mountedWrapper) {
-      mountedWrapper = shallow(<Header {...props} />);
+      mountedWrapper = shallow(<Menu {...props} />);
     }
     return mountedWrapper;
   };
@@ -52,15 +49,15 @@ describe('Header', () => {
   });
 
   // All tests will go here
-  it('Renders a Header component in dev profile with LoadingBar, Navbar, Nav and dev ribbon.', () => {
+  it('Renders a Menu component in dev profile with LoadingBar and Nav.', () => {
     const component = wrapper();
     // the created snapshot must be committed to source control
     expect(component).toMatchSnapshot();
     expect(component.find(LoadingBar).length).toEqual(1);
-    const navbar = component.find(Navbar);
-    expect(navbar.length).toEqual(1);
-    expect(navbar.find(Brand).length).toEqual(1);
-    const nav = component.find(Nav);
+    const menu = component.find('.menu');
+    expect(menu.length).toEqual(1);
+    expect(menu.find(Brand).length).toEqual(1);
+    const nav = component.find('.nav');
     expect(nav.length).toEqual(1);
     expect(nav.find(Home).length).toEqual(1);
     expect(nav.find(AdminMenu).length).toEqual(1);
@@ -68,18 +65,16 @@ describe('Header', () => {
     expect(nav.find(LocaleMenu).length).toEqual(1);
 
     expect(nav.find(AccountMenu).length).toEqual(1);
-    const ribbon = component.find('.ribbon.dev');
-    expect(ribbon.length).toEqual(1);
   });
 
-  it('Renders a Header component in prod profile with LoadingBar, Navbar, Nav.', () => {
+  it('Renders a Menu component in prod profile with LoadingBar and Nav.', () => {
     const component = wrapper(prodProps);
     // the created snapshot must be committed to source control
     expect(component).toMatchSnapshot();
-    const navbar = component.find(Navbar);
-    expect(navbar.length).toEqual(1);
-    expect(navbar.find(Brand).length).toEqual(1);
-    const nav = component.find(Nav);
+    const menu = component.find('.menu');
+    expect(menu.length).toEqual(1);
+    expect(menu.find(Brand).length).toEqual(1);
+    const nav = component.find('.nav');
     expect(nav.length).toEqual(1);
     expect(nav.find(Home).length).toEqual(1);
     expect(nav.find(AdminMenu).length).toEqual(1);
@@ -87,24 +82,27 @@ describe('Header', () => {
     expect(nav.find(LocaleMenu).length).toEqual(1);
 
     expect(nav.find(AccountMenu).length).toEqual(1);
-    const ribbon = component.find('.ribbon.dev');
-    expect(ribbon.length).toEqual(0);
   });
 
-  it('Renders a Header component in prod profile with logged in User', () => {
-    const nav = wrapper(userProps).find(Nav);
+  it('Renders a Menu component in prod profile with logged in User', () => {
+    const nav = wrapper(userProps).find('.nav');
     expect(nav.find(AdminMenu).length).toEqual(0);
     expect(nav.find(EntitiesMenu).length).toEqual(1);
     const account = nav.find(AccountMenu);
     expect(account.first().props().isAuthenticated).toEqual(true);
   });
 
-  it('Renders a Header component in prod profile with no logged in User', () => {
-    const nav = wrapper(guestProps).find(Nav);
+  it('Renders a Menu component in prod profile with no logged in User', () => {
+    const nav = wrapper(guestProps).find('.nav');
     expect(nav.find(AdminMenu).length).toEqual(0);
     expect(nav.find(EntitiesMenu).length).toEqual(0);
     const account = nav.find(AccountMenu);
     expect(account.length).toEqual(1);
     expect(account.first().props().isAuthenticated).toEqual(false);
+  });
+
+  it('Renders an uncollapsed Menu component', () => {
+    const nav = wrapper(devProps).find('.nav');
+    expect(nav.hasClass('collapsed')).toBeFalsy();
   });
 });

@@ -36,7 +36,7 @@ const Menu = (props: IMenuProps) => {
     <div className="app-menu">
       <LoadingBar className="loading-bar"/>
 
-      <div className={isCollapsed ? "menu active" : "menu"} id="menu">
+      <div className={isCollapsed ? "menu collapsed" : "menu"} id="menu">
 
         <div className="menu-without-toggle-btn">
 
