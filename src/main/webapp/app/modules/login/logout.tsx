@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { IRootState } from 'app/components/reducers/root.reducer';
-import { logout } from 'app/components/reducers/authentication.reducer';
+import { IRootState } from 'app/config/root.reducer';
+import { logout } from 'app/components/authentication/authentication.reducer';
 
 export interface ILogoutProps extends StateProps, DispatchProps {
   idToken: string;

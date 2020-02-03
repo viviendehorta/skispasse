@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { FAILURE, REQUEST, SUCCESS } from 'app/components/reducers/action-type.util';
+import { FAILURE, REQUEST, SUCCESS } from 'app/utils/action-type.util';
 
 export const ACTION_TYPES = {
   FETCH_NEWS_FACTS_OBJECT: 'administration/FETCH_NEWS_FACTS_OBJECT'

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { Storage } from 'react-jhipster';
 
-import { REQUEST, SUCCESS, FAILURE } from 'app/components/reducers/action-type.util';
-import { setLocale } from 'app/components/reducers/locale.reducer';
+import { REQUEST, SUCCESS, FAILURE } from 'app/utils/action-type.util';
+import { setLocale } from 'app/environment/locale.reducer';
 
 export const ACTION_TYPES = {
   LOGIN: 'authentication/LOGIN',

@@ -2,8 +2,8 @@ import './worldmap.scss';
 import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import {OlMap} from "app/components/map/olmap";
-import {IRootState} from "app/components/reducers/root.reducer";
-import {fetchNewsFactsBlob} from "app/components/reducers/news-facts-blob.reducer";
+import {IRootState} from "app/config/root.reducer";
+import {fetchNewsFactsBlob} from "app/components/map/news-facts-blob.reducer";
 
 export interface IWorldMapPageProps extends StateProps, DispatchProps {
 }

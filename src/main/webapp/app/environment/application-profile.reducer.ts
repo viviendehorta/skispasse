@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { SUCCESS } from 'app/components/reducers/action-type.util';
+import { SUCCESS } from 'app/utils/action-type.util';
 
 export const ACTION_TYPES = {
   GET_PROFILE: 'applicationProfile/GET_PROFILE'

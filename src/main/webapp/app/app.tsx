@@ -9,12 +9,12 @@ import {BrowserRouter as Router} from 'react-router-dom';
 import {toast, ToastContainer} from 'react-toastify';
 import {hot} from 'react-hot-loader';
 
-import {IRootState} from 'app/components/reducers/root.reducer';
-import {getSession} from 'app/components/reducers/authentication.reducer';
-import {getProfile} from 'app/components/reducers/application-profile.reducer';
-import {setLocale} from 'app/components/reducers/locale.reducer';
+import {IRootState} from 'app/config/root.reducer';
+import {getSession} from 'app/components/authentication/authentication.reducer';
+import {getProfile} from 'app/environment/application-profile.reducer';
+import {setLocale} from 'app/environment/locale.reducer';
 import Menu from 'app/components/menu/menu';
-import {hasAnyAuthority} from 'app/components/auth/private-route';
+import {hasAnyAuthority} from 'app/components/authentication/private-route';
 import ErrorBoundary from 'app/components/error/error-boundary';
 import {AUTHORITIES} from 'app/config/constants';
 import AppRoutes from 'app/routes';

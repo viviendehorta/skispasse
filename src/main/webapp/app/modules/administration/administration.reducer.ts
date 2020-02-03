@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { REQUEST, SUCCESS, FAILURE } from 'app/components/reducers/action-type.util';
+import { REQUEST, SUCCESS, FAILURE } from 'app/utils/action-type.util';
 
 export const ACTION_TYPES = {
   FETCH_LOGS: 'administration/FETCH_LOGS',

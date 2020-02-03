@@ -1,4 +1,4 @@
-import { REQUEST, SUCCESS, FAILURE } from 'app/components/reducers/action-type.util';
+import { REQUEST, SUCCESS, FAILURE } from 'app/utils/action-type.util';
 import thunk from 'redux-thunk';
 import axios from 'axios';
 import sinon from 'sinon';
@@ -11,8 +11,8 @@ import authentication, {
   login,
   clearAuthentication,
   logout
-} from 'app/components/reducers/authentication.reducer';
-import { ACTION_TYPES as localeActionTypes } from 'app/components/reducers/locale.reducer';
+} from 'app/components/authentication/authentication.reducer';
+import { ACTION_TYPES as localeActionTypes } from 'app/environment/locale.reducer';
 
 describe('Authentication reducer tests', () => {
   function isAccountEmpty(state): boolean {
