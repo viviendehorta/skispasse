@@ -7,7 +7,7 @@ import LoadingBar from 'react-redux-loading-bar';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import {Brand, Home, MapMenu} from './menu-components';
-import {AccountMenu, AdminMenu, EntitiesMenu, LocaleMenu} from './';
+import {AccountMenu, AdminMenu, LocaleMenu} from './';
 
 export interface IMenuProps {
   isAuthenticated: boolean;
@@ -51,8 +51,6 @@ const Menu = (props: IMenuProps) => {
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange}/>
 
             <AccountMenu isAuthenticated={props.isAuthenticated}/>
-
-            {props.isAuthenticated && <EntitiesMenu/>}
 
             {props.isAuthenticated && props.isAdmin && <AdminMenu showSwagger={props.isSwaggerEnabled}/>}
 

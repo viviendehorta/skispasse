@@ -27,7 +27,6 @@ exports[`Menu Renders a Menu component in dev profile with LoadingBar and Nav. 1
         <Component
           isAuthenticated={true}
         />
-        <Component />
         <Component
           showSwagger={true}
         />
@@ -90,7 +89,6 @@ exports[`Menu Renders a Menu component in prod profile with LoadingBar and Nav. 
         <Component
           isAuthenticated={true}
         />
-        <Component />
         <Component
           showSwagger={false}
         />

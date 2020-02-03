@@ -5,7 +5,6 @@ import Loadable from 'react-loadable';
 import Login from 'app/modules/login/login';
 import Logout from 'app/modules/login/logout';
 import WorldMapPage from "app/modules/worldmap/worldmap";
-import Entities from 'app/entities';
 import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 import PageNotFound from 'app/shared/error/page-not-found';
@@ -24,7 +23,6 @@ const Routes = () => (
       <ErrorBoundaryRoute path="/logout" component={Logout} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <ErrorBoundaryRoute path="/" exact component={WorldMapPage} />
-      <PrivateRoute path="/" component={Entities} hasAnyAuthorities={[AUTHORITIES.USER]} />
       <ErrorBoundaryRoute component={PageNotFound} />
     </Switch>
   </div>
