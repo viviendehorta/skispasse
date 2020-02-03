@@ -1,15 +1,9 @@
 import './olmap.scss';
 import Map from 'ol/Map';
-import View from 'ol/View';
 import React from "react";
 import VerticalCollapse from "app/components/commons/vertical-collapse";
-import Feature from "ol/Feature";
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
 import {Vector as VectorSource} from "ol/source";
-import {Vector as VectorLayer} from "ol/layer";
-import {Icon, Style} from "ol/style";
-import Point from "ol/geom/Point";
+import {buildMarkerVectorLayer, buildOlView, buildOSMTileLayer, extractMarkerFeatures} from "app/utils/map-utils";
 
 export interface IOlMapProps {
   id: string,
@@ -35,7 +29,7 @@ export class OlMap extends React.Component<IOlMapProps, any> {
   }
 
   componentDidMount() {
-    const view = this.buildView();
+    const view = buildOlView([270000, 6250000], 1);
     const layers = this.buildBaseLayers();
 
     this.map = new Map({
@@ -59,54 +53,16 @@ export class OlMap extends React.Component<IOlMapProps, any> {
     this.map.setTarget(undefined)
   }
 
-  private toMarkerFeature(newsFact: any) {
-    return new Feature(new Point([newsFact.locationCoordinate.x, newsFact.locationCoordinate.y]))
-  }
-
-  private extractMarkerFeatures(newsFacts: any[]): Feature[] {
-    return newsFacts.map(newsFact => {
-      return this.toMarkerFeature(newsFact);
-    });
-  }
-
-  private buildMarkerVectorLayer() {
-    const markerStyle = new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: 'content/images/map/icon.png'
-      })
-    });
-
+  private buildBaseLayers() {
+    const oSMLayer = buildOSMTileLayer();
     this.markerVectorSource = new VectorSource({
       features: []
     });
-
-    return new VectorLayer({
-      source: this.markerVectorSource,
-      style: markerStyle
-    });
-  }
-
-  private buildView() {
-    return new View({
-      center: [270000, 6250000],
-      zoom: 1
-    });
-  }
-
-  private buildOSMTileLayer() {
-    return new TileLayer({
-      source: new OSM()
-    });
-  }
-
-  private buildBaseLayers() {
-    const oSMLayer = this.buildOSMTileLayer();
-    const markerLayer = this.buildMarkerVectorLayer();
+    const markerLayer = buildMarkerVectorLayer(this.markerVectorSource);
     return [oSMLayer, markerLayer];
   }
 
   private updateNewsFacts(newsFacts: any[]) {
-    this.markerVectorSource.addFeatures(this.extractMarkerFeatures(newsFacts));
+    this.markerVectorSource.addFeatures(extractMarkerFeatures(newsFacts));
   }
 }
