@@ -21,19 +21,6 @@ export const buildOlView = (center: number[], zoom: number) => {
   });
 };
 
-export const buildOSMTileLayer = () => {
-  return new TileLayer({
-    source: new OSM()
-  });
-};
-
-export const buildMarkerVectorLayer = (markerVectorSource: VectorSource) => {
-  return new VectorLayer({
-    source: markerVectorSource,
-    style: MARKER_STYLE
-  });
-};
-
 export const toMarkerFeature = (newsFact: any) => {
   return new Feature(new Point([newsFact.locationCoordinate.x, newsFact.locationCoordinate.y]));
 };
@@ -41,5 +28,21 @@ export const toMarkerFeature = (newsFact: any) => {
 export const extractMarkerFeatures = (newsFacts: any[]): Feature[] => {
   return newsFacts.map(newsFact => {
     return toMarkerFeature(newsFact);
+  });
+};
+
+export const buildOSMTileLayer = () => {
+  return new TileLayer({
+    source: new OSM()
+  });
+};
+
+export const buildMarkerVectorLayer = (newsFacts: any[]) => {
+  const vectorSource = new VectorSource({
+    features: extractMarkerFeatures(newsFacts)
+  });
+  return new VectorLayer({
+    source: vectorSource,
+    style: MARKER_STYLE
   });
 };

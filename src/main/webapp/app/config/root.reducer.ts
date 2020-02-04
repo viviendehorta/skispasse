@@ -6,7 +6,7 @@ import authentication, { AuthenticationState } from '../components/authenticatio
 import applicationProfile, { ApplicationProfileState } from '../environment/application-profile.reducer';
 
 import administration, { AdministrationState } from 'app/modules/administration/administration.reducer';
-import newsFactsBlobState, { NewsFactslobState } from '../components/map/news-facts-blob.reducer';
+import newsFactsBlobState, { NewsFactslobState } from '../modules/worldmap/news-facts-blob.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
