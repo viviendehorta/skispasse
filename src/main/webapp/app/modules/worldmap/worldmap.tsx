@@ -6,7 +6,6 @@ import {fetchNewsFactsBlob} from "app/modules/worldmap/news-facts-blob.reducer";
 import {buildMarkerVectorLayer, buildOlView, buildOSMTileLayer} from "app/utils/map-utils";
 import Map from "ol/Map";
 import NewsFactDetailModal from "app/modules/worldmap/news-fact-detail-modal";
-import {Vector as VectorLayer} from 'ol/layer';
 
 export interface IWorldMapPageProps extends StateProps, DispatchProps {
 }
@@ -16,7 +15,7 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
   const WORLDMAP_MAP_ID = "worldmap-page-newsFactsMap";
 
   const [newsFactsMap, setNewsFactsMap] = useState(null); // News facts newsFactsMap
-  const [newsFactDetail, setNewsFactDetail] = useState(null);
+  const [currentNewsFactDetail, setCurrentNewsFactDetail] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const handleModalDetailClose = () => setShowModal(false);
@@ -26,48 +25,49 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
     props.fetchNewsFactsBlob();
   }, []);
 
-  // Construct the newsFactsMap using fetched news facts
-  useEffect(() => {
+  const getNewsFactDetail = (newsFactId: number) => {
+    return null; // TODO
+  };
 
-    const displayNewsFactDetailIfNeeded = (pixel: any, newsFactsVecorLayer: VectorLayer) => {
+  function showNewsFactDetail(newsFactId: number) {
+    const newsFactDetail = getNewsFactDetail(newsFactId)
+    setCurrentNewsFactDetail(newsFactDetail); // todo replace with clicked news fact data
+    setShowModal(true);
+  }
 
-      newsFactsVecorLayer.getFeatures(pixel).then(function (features) {
-        if (features.length) {
-          const newsFactFeature = features[0];
-          setNewsFactDetail(null); // todo replace with clicked news fact data
-          setShowModal(true);
+  const buildNewsFactsdMap = (newsFactsBlob) => {
+    const view = buildOlView([270000, 6250000], 1);
+    const oSMLayer = buildOSMTileLayer();
+    const markerLayer = buildMarkerVectorLayer(newsFactsBlob.newsFacts);
+
+    const map = new Map({
+      layers: [oSMLayer, markerLayer],
+      target: WORLDMAP_MAP_ID,
+      view
+    });
+
+    // Behaviour when new fact markers are clicked : displaying detail modal
+    map.on('click', function (evt) {
+      this.forEachFeatureAtPixel(evt.pixel, function (clickedNewsFactFeature, layer) {
+        showNewsFactDetail(clickedNewsFactFeature.get("newsFactId"));
+        return true; // Returns true to stop feature iteration if there was several on the same pixel
+      }, {
+        layerFilter(layerCandidate) {
+          return layerCandidate === markerLayer;
         }
       });
-    };
+    });
 
-    function buildWorldMap(newsFactsBlob) {
-      const view = buildOlView([270000, 6250000], 1);
+    setNewsFactsMap(map);
+  };
 
-      const oSMLayer = buildOSMTileLayer();
-      const markerLayer = buildMarkerVectorLayer(newsFactsBlob.newsFacts);
-
-      const map = new Map({
-        layers: [oSMLayer, markerLayer],
-        target: WORLDMAP_MAP_ID,
-        view
-      });
-      // map.on('click', function (event) {
-      //   this.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
-      //     alert("marker clicked !")
-      //   });
-      // });
-
-      map.on('click', function (evt) {
-        displayNewsFactDetailIfNeeded(evt.pixel, markerLayer);
-      });
-
-      setNewsFactsMap(map);
-    }
+  // Create the news facts Map using fetched news facts
+  useEffect(() => {
 
     const isReadyNewsFactsBLob = props.newsFactsBlob != null && props.newsFactsBlob.newsFacts != null;
 
     if (isReadyNewsFactsBLob) {
-      buildWorldMap(props.newsFactsBlob);
+      buildNewsFactsdMap(props.newsFactsBlob);
     }
 
     return function cleanMapObject() {
@@ -80,8 +80,8 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
   return (
     <div id="worldMap">
       <div id={WORLDMAP_MAP_ID} className="map"/>
-      <NewsFactDetailModal newsFactDetail={newsFactDetail} handleClose={handleModalDetailClose} showModal={showModal}/>
-      {/*<VerticalCollapse/>*/}
+      <NewsFactDetailModal newsFactDetail={currentNewsFactDetail} handleClose={handleModalDetailClose}
+                           showModal={showModal}/>
     </div>
   );
 };

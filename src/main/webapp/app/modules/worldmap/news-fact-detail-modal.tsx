@@ -1,17 +1,20 @@
+import './newsfact-detail-modal.scss';
 import React from 'react';
-import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 
-const NewsFactDetailModal = ({ handleClose, newsFactDetail, showModal }) => {
+const NewsFactDetailModal = ({handleClose, newsFactDetail, showModal}) => {
   return (
-    <Modal isOpen={showModal} modalTransition={{ timeout: 20 }} backdropTransition={{ timeout: 10 }} toggle={handleClose}>
+    <Modal
+      className="right-modal"
+      isOpen={showModal}
+      modalTransition={{timeout: 200}} // Set same value to scss property $rightTransition
+      backdropTransition={{timeout: 10}}
+      toggle={handleClose}>
       <ModalHeader toggle={handleClose}>Detail</ModalHeader>
       <ModalBody>
 
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={handleClose}>
-          Close
-        </Button>
       </ModalFooter>
     </Modal>
   );

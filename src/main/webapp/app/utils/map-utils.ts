@@ -14,15 +14,19 @@ const MARKER_STYLE = new Style({
   })
 });
 
-export const buildOlView = (center: number[], zoom: number) => {
+export const buildOlView = (center: number[], zoom: number): View => {
   return new View({
     center,
     zoom
   });
 };
 
-export const toMarkerFeature = (newsFact: any) => {
-  return new Feature(new Point([newsFact.locationCoordinate.x, newsFact.locationCoordinate.y]));
+export const toMarkerFeature = (newsFact: any): Feature => {
+  // return new Feature(new Point([newsFact.locationCoordinate.x, newsFact.locationCoordinate.y]));
+  return new Feature({
+    geometry: new Point([newsFact.locationCoordinate.x, newsFact.locationCoordinate.y]),
+    newsFactId: newsFact.id
+  });
 };
 
 export const extractMarkerFeatures = (newsFacts: any[]): Feature[] => {
@@ -37,7 +41,7 @@ export const buildOSMTileLayer = () => {
   });
 };
 
-export const buildMarkerVectorLayer = (newsFacts: any[]) => {
+export const buildMarkerVectorLayer = (newsFacts: any[]): VectorLayer => {
   const vectorSource = new VectorSource({
     features: extractMarkerFeatures(newsFacts)
   });
