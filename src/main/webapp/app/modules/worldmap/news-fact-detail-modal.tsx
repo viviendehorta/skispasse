@@ -1,6 +1,7 @@
 import './newsfact-detail-modal.scss';
 import React from 'react';
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import { Player } from 'video-react';
 
 const NewsFactDetailModal = ({handleClose, newsFactDetail, showModal}) => {
   return (
@@ -12,7 +13,9 @@ const NewsFactDetailModal = ({handleClose, newsFactDetail, showModal}) => {
       toggle={handleClose}>
       <ModalHeader toggle={handleClose}>Detail</ModalHeader>
       <ModalBody>
-
+        <Player>
+          <source src={newsFactDetail.videoPath} />
+        </Player>
       </ModalBody>
       <ModalFooter>
       </ModalFooter>

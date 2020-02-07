@@ -25,8 +25,16 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
     props.fetchNewsFactsBlob();
   }, []);
 
+  // TODO action getNewsFact
   const getNewsFactDetail = (newsFactId: number) => {
-    return null; // TODO
+    return {
+      id: 101,
+      date: "2020-01-10",
+      time: "10h46m",
+      newsCategory: "culture", // Politic, culture, etc.
+      location: "Place de la République, Paris",
+      videoPath: "/content/video/small.mp4" // TODO doit être une url sur le serveur
+    };
   };
 
   function showNewsFactDetail(newsFactId: number) {
