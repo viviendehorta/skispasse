@@ -2,7 +2,7 @@ import './worldmap.scss';
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {IRootState} from "app/config/root.reducer";
-import {fetchNewsFactsBlob} from "app/modules/worldmap/news-facts-blob.reducer";
+import {fetchAllNewsFacts} from "app/modules/worldmap/news-facts.reducer";
 import {buildMarkerVectorLayer, buildOlView, buildOSMTileLayer} from "app/utils/map-utils";
 import Map from "ol/Map";
 import NewsFactDetailModal from "app/modules/worldmap/news-fact-detail-modal";
@@ -15,38 +15,27 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
   const WORLDMAP_MAP_ID = "worldmap-page-newsFactsMap";
 
   const [newsFactsMap, setNewsFactsMap] = useState(null); // News facts newsFactsMap
-  const [currentNewsFactDetail, setCurrentNewsFactDetail] = useState(null);
+  const [currentNewsFactId, setCurrentNewsFactId] = useState(0);
   const [showModal, setShowModal] = useState(false);
 
-  const handleModalDetailClose = () => setShowModal(false);
+  const handleModalDetailClose = () => {
+    setShowModal(false);
+  };
 
   // Fetch news facts only after first rendering
   useEffect(() => {
-    props.fetchNewsFactsBlob();
+    props.fetchAllNewsFacts();
   }, []);
 
-  // TODO action getNewsFact
-  const getNewsFactDetail = (newsFactId: number) => {
-    return {
-      id: 101,
-      date: "2020-01-10",
-      time: "10h46m",
-      newsCategory: "culture", // Politic, culture, etc.
-      location: "Place de la République, Paris",
-      videoPath: "/content/video/small.mp4" // TODO doit être une url sur le serveur
-    };
+  const showNewsFactDetail = (newsFactId: number) => {
+    setCurrentNewsFactId(newsFactId);
+    setShowModal(true);
   };
 
-  function showNewsFactDetail(newsFactId: number) {
-    const newsFactDetail = getNewsFactDetail(newsFactId)
-    setCurrentNewsFactDetail(newsFactDetail); // todo replace with clicked news fact data
-    setShowModal(true);
-  }
-
-  const buildNewsFactsdMap = (newsFactsBlob) => {
+  const buildNewsFactsdMap = (newsFacts) => {
     const view = buildOlView([270000, 6250000], 1);
     const oSMLayer = buildOSMTileLayer();
-    const markerLayer = buildMarkerVectorLayer(newsFactsBlob.newsFacts);
+    const markerLayer = buildMarkerVectorLayer(newsFacts);
 
     const map = new Map({
       layers: [oSMLayer, markerLayer],
@@ -72,10 +61,10 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
   // Create the news facts Map using fetched news facts
   useEffect(() => {
 
-    const isReadyNewsFactsBLob = props.newsFactsBlob != null && props.newsFactsBlob.newsFacts != null;
+    const isReadyNewsFactsBLob = props.allNewsFacts;
 
     if (isReadyNewsFactsBLob) {
-      buildNewsFactsdMap(props.newsFactsBlob);
+      buildNewsFactsdMap(props.allNewsFacts);
     }
 
     return function cleanMapObject() {
@@ -83,12 +72,12 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
         newsFactsMap.setTarget(null);
       }
     };
-  }, [props.newsFactsBlob]);
+  }, [props.allNewsFacts]);
 
   return (
     <div id="worldMap">
       <div id={WORLDMAP_MAP_ID} className="map"/>
-      <NewsFactDetailModal newsFactDetail={currentNewsFactDetail} handleClose={handleModalDetailClose}
+      <NewsFactDetailModal newsFactId={currentNewsFactId} handleClose={handleModalDetailClose}
                            showModal={showModal}/>
     </div>
   );
@@ -96,12 +85,11 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
 
 function mapStateToProps(state: IRootState) {
   return {
-    isFetching: state.newsFactsBlobState.isFetching,
-    newsFactsBlob: state.newsFactsBlobState.newsFactsBlob
-  }
+    allNewsFacts: state.newsFactsState.allNewsFacts,
+  };
 }
 
-const mapDispatchToProps = {fetchNewsFactsBlob};
+const mapDispatchToProps = {fetchAllNewsFacts};
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;

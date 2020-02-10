@@ -3,7 +3,6 @@ import './menu.scss';
 import React, {useState} from 'react';
 import {Storage} from 'react-jhipster';
 import {Button} from 'reactstrap';
-import LoadingBar from 'react-redux-loading-bar';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import {Brand, Home, MapMenu} from './menu-components';
@@ -34,7 +33,6 @@ const Menu = (props: IMenuProps) => {
 
   return (
     <div className="app-menu">
-      <LoadingBar className="loading-bar"/>
 
       <div className={isCollapsed ? "menu collapsed" : "menu"} id="menu">
 

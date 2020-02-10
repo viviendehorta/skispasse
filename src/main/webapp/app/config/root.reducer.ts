@@ -6,7 +6,7 @@ import authentication, { AuthenticationState } from '../components/authenticatio
 import applicationProfile, { ApplicationProfileState } from '../environment/application-profile.reducer';
 
 import administration, { AdministrationState } from 'app/modules/administration/administration.reducer';
-import newsFactsBlobState, { NewsFactslobState } from '../modules/worldmap/news-facts-blob.reducer';
+import newsFactsState, { NewsFactsState } from '../modules/worldmap/news-facts.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
@@ -14,7 +14,7 @@ export interface IRootState {
   readonly locale: LocaleState;
   readonly applicationProfile: ApplicationProfileState;
   readonly administration: AdministrationState;
-  readonly newsFactsBlobState: NewsFactslobState;
+  readonly newsFactsState: NewsFactsState;
   /* jhipster-needle-add-reducer-type - JHipster will add reducer type here */
   readonly loadingBar: any;
 }
@@ -24,7 +24,7 @@ const rootReducer = combineReducers<IRootState>({
   locale,
   applicationProfile,
   administration,
-  newsFactsBlobState,
+  newsFactsState,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar
 });

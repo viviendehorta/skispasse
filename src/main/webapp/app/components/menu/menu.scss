@@ -10,14 +10,6 @@ $menu-width: $menu-without-toggle-btn-width + $menu-toggle-btn-margin + $menu-to
 .app-menu {
   position: absolute;
 
-  .loading-bar {
-    height: 3px;
-    background-color: #009cd8;
-    position: absolute;
-    top: 0px;
-    z-index: 1031;
-  }
-
   .menu {
     height: 100vh;
     min-width: $menu-width;
