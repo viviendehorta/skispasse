@@ -41,11 +41,13 @@ public class NewsFactsResource {
     public NewsFactDetail getNewsFactDetail(@PathVariable long newsFactId) {
         return new NewsFactDetail.Builder()
             .id(newsFactId)
-            .locationCoordinate(new LocationCoordinate(BASE_COORD, BASE_COORD))
+            .geoCoordinate(new LocationCoordinate(BASE_COORD, BASE_COORD))
             .date("2020-01-10")
             .time("10h46m")
             .newsCategory("culture")
-            .location("Place de la République, Paris")
+            .country("France")
+            .city("Paris")
+            .address("Place de la République, 75011 Paris, France")
             .videoPath("/content/video/small.mp4")
             .build();
     }

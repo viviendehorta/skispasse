@@ -1,52 +1,31 @@
-@import '~video-react/styles/scss/video-react'; // Import video-react styles
+$newsFactsModalWidth: 40%;
 
-$modalWidth: 320px;
-$transitionDelay: 0.2s;
-$rightTransition: opacity $transitionDelay linear, right $transitionDelay ease-out;
+@import '~video-react/styles/scss/video-react'; // Import video-react styles
 
 /* ==========================================================================
 News fact detail modal page styles
 ========================================================================== */
 
-.modal .right-modal.modal-dialog {
-  position: fixed;
-  margin: auto;
-  width: $modalWidth;
-  height: 100%;
-  -webkit-transform: translate3d(0%, 0, 0);
-  -ms-transform: translate3d(0%, 0, 0);
-  -o-transform: translate3d(0%, 0, 0);
-  transform: translate3d(0%, 0, 0);
-}
+.news-facts-modal.modal-dialog {
+  min-width: $newsFactsModalWidth;
+  width: $newsFactsModalWidth;
+  max-width: $newsFactsModalWidth;
 
-.modal .right-modal .modal-content {
-  height: 100%;
-  overflow-y: auto;
-}
+  .modal-body {
+    padding: 0;
+    margin-bottom: 0;
 
-.modal .right-modal .modal-body {
-  padding: 15px 15px 80px;
-}
+    form {
+      padding: 0.5rem;
 
-.modal.fade .right-modal.modal-dialog {
-  right: -$modalWidth;
-  -webkit-transition: $rightTransition;
-  -moz-transition: $rightTransition;
-  -o-transition: $rightTransition;
-  transition: $rightTransition;
-}
+      .form-group {
+        padding: 0;
+        margin-bottom: 0;
+      }
+    }
 
-.modal.fade.show .right-modal.modal-dialog {
-  right: 0;
-}
-
-/* ----- MODAL STYLE ----- */
-.modal-content {
-  border-radius: 0;
-  border: none;
-}
-
-.modal-header {
-  border-bottom-color: #eeeeee;
-  background-color: #fafafa;
+    svg {
+      margin-right: 0.5rem;
+    }
+  }
 }

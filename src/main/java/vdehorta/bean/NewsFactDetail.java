@@ -3,19 +3,21 @@ package vdehorta.bean;
 public class NewsFactDetail {
 
     private long id;
-    private LocationCoordinate locationCoordinate;
+    private LocationCoordinate geoCoordinate;
     private String date;
     private String time;
     private String newsCategory;
-    private String location;
+    private String country;
+    private String city;
+    private String address;
     private String videoPath;
 
     public long getId() {
         return id;
     }
 
-    public LocationCoordinate getLocationCoordinate() {
-        return locationCoordinate;
+    public LocationCoordinate getGeoCoordinate() {
+        return geoCoordinate;
     }
 
     public String getDate() {
@@ -30,8 +32,16 @@ public class NewsFactDetail {
         return newsCategory;
     }
 
-    public String getLocation() {
-        return location;
+    public String getCountry() {
+        return country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public String getVideoPath() {
@@ -40,21 +50,25 @@ public class NewsFactDetail {
 
     private NewsFactDetail(Builder builder) {
         id = builder.id;
-        locationCoordinate = builder.locationCoordinate;
+        geoCoordinate = builder.geoCoordinate;
         date = builder.date;
         time = builder.time;
         newsCategory = builder.newsCategory;
-        location = builder.location;
+        country = builder.country;
+        city = builder.city;
+        address = builder.address;
         videoPath = builder.videoPath;
     }
 
     public static final class Builder {
         private long id;
-        private LocationCoordinate locationCoordinate;
+        private LocationCoordinate geoCoordinate;
         private String date;
         private String time;
         private String newsCategory;
-        private String location;
+        private String country;
+        private String city;
+        private String address;
         private String videoPath;
 
         public Builder() {
@@ -65,8 +79,8 @@ public class NewsFactDetail {
             return this;
         }
 
-        public Builder locationCoordinate(LocationCoordinate val) {
-            locationCoordinate = val;
+        public Builder geoCoordinate(LocationCoordinate val) {
+            geoCoordinate = val;
             return this;
         }
 
@@ -85,8 +99,18 @@ public class NewsFactDetail {
             return this;
         }
 
-        public Builder location(String val) {
-            location = val;
+        public Builder country(String val) {
+            country = val;
+            return this;
+        }
+
+        public Builder city(String val) {
+            city = val;
+            return this;
+        }
+
+        public Builder address(String val) {
+            address = val;
             return this;
         }
 

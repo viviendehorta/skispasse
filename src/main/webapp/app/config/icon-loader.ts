@@ -31,6 +31,10 @@ import { faCloud } from '@fortawesome/free-solid-svg-icons/faCloud';
 import { faMap } from '@fortawesome/free-solid-svg-icons/faMap';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons/faArrowRight';
+import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons/faMapMarkerAlt';
+import { faFacebookF } from '@fortawesome/free-brands-svg-icons/faFacebookF';
+import { faTwitter } from '@fortawesome/free-brands-svg-icons/faTwitter';
+import { faGlobe } from '@fortawesome/free-solid-svg-icons/faGlobe';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 
@@ -67,6 +71,10 @@ library.add(
   faSearch,
   faMap,
   faBars,
-  faArrowRight
+  faArrowRight,
+  faMapMarkerAlt,
+  faFacebookF,
+  faTwitter,
+  faGlobe
 );
 export const loadIcons = () => {};
