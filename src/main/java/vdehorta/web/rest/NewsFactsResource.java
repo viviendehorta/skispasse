@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vdehorta.bean.LocationCoordinate;
+import vdehorta.bean.NewsCategory;
 import vdehorta.bean.NewsFactDetail;
 import vdehorta.bean.NewsFactNoDetail;
 
@@ -44,7 +45,7 @@ public class NewsFactsResource {
             .geoCoordinate(new LocationCoordinate(BASE_COORD, BASE_COORD))
             .date("2020-01-10")
             .time("10h46m")
-            .newsCategory("culture")
+            .category(NewsCategory.CULTURE)
             .country("France")
             .city("Paris")
             .address("Place de la République, 75011 Paris, France")

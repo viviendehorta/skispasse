@@ -6,7 +6,7 @@ public class NewsFactDetail {
     private LocationCoordinate geoCoordinate;
     private String date;
     private String time;
-    private String newsCategory;
+    private NewsCategory category;
     private String country;
     private String city;
     private String address;
@@ -28,8 +28,8 @@ public class NewsFactDetail {
         return time;
     }
 
-    public String getNewsCategory() {
-        return newsCategory;
+    public NewsCategory getCategory() {
+        return category;
     }
 
     public String getCountry() {
@@ -53,7 +53,7 @@ public class NewsFactDetail {
         geoCoordinate = builder.geoCoordinate;
         date = builder.date;
         time = builder.time;
-        newsCategory = builder.newsCategory;
+        category = builder.category;
         country = builder.country;
         city = builder.city;
         address = builder.address;
@@ -65,7 +65,7 @@ public class NewsFactDetail {
         private LocationCoordinate geoCoordinate;
         private String date;
         private String time;
-        private String newsCategory;
+        private NewsCategory category;
         private String country;
         private String city;
         private String address;
@@ -94,8 +94,8 @@ public class NewsFactDetail {
             return this;
         }
 
-        public Builder newsCategory(String val) {
-            newsCategory = val;
+        public Builder category(NewsCategory val) {
+            category = val;
             return this;
         }
 
