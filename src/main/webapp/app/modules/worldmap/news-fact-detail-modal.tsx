@@ -82,13 +82,7 @@ const NewsFactDetailModal = (props: INewsFactDetailModalProps) => {
       </ModalBody>
 
       <ModalFooter>
-        <Button>
-          <FontAwesomeIcon icon={['fab', 'facebook-f']} fixedWidth/>
-        </Button>
-        <Button>
-          <FontAwesomeIcon icon={['fab', 'twitter']}/>
-        </Button>
-        <Button data-dismiss="modal">
+        <Button size="sm" color="info" onClick={props.handleClose}>
           Close
         </Button>
 

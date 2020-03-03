@@ -16,7 +16,7 @@ News fact detail modal page styles
     margin-bottom: 0;
 
     form {
-      padding: 0.5rem;
+      padding: 0.8rem;
 
       .form-group {
         padding: 0;
@@ -27,5 +27,10 @@ News fact detail modal page styles
     svg {
       margin-right: 0.5rem;
     }
+  }
+
+  .modal-footer {
+    padding: 0.8rem;
+    border: none;
   }
 }
