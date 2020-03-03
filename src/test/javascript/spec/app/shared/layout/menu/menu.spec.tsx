@@ -1,12 +1,10 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import {shallow} from 'enzyme';
 
 import sinon from 'sinon';
 
-import LoadingBar from 'react-redux-loading-bar';
-
-import { Home, Brand } from 'app/components/menu/menu-components';
-import { AdminMenu, AccountMenu, LocaleMenu } from 'app/components/menu';
+import {Brand, Home} from 'app/components/menu/menu-components';
+import {AccountMenu, AdminMenu, LocaleMenu} from 'app/components/menu';
 import Menu from 'app/components/menu/menu';
 
 describe('Menu', () => {
@@ -49,11 +47,10 @@ describe('Menu', () => {
   });
 
   // All tests will go here
-  it('Renders a Menu component in dev profile with LoadingBar and Nav.', () => {
+  it('Renders a Menu component in dev profile with Nav.', () => {
     const component = wrapper();
     // the created snapshot must be committed to source control
     expect(component).toMatchSnapshot();
-    expect(component.find(LoadingBar).length).toEqual(1);
     const menu = component.find('.menu');
     expect(menu.length).toEqual(1);
     expect(menu.find(Brand).length).toEqual(1);
@@ -66,7 +63,7 @@ describe('Menu', () => {
     expect(nav.find(AccountMenu).length).toEqual(1);
   });
 
-  it('Renders a Menu component in prod profile with LoadingBar and Nav.', () => {
+  it('Renders a Menu component in prod profile with Nav.', () => {
     const component = wrapper(prodProps);
     // the created snapshot must be committed to source control
     expect(component).toMatchSnapshot();

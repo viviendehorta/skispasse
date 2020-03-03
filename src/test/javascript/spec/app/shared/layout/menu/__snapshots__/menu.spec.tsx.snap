@@ -62,6 +62,65 @@ exports[`Menu Renders a Menu component in dev profile with LoadingBar and Nav. 1
 </div>
 `;
 
+exports[`Menu Renders a Menu component in dev profile with Nav. 1`] = `
+<div
+  className="app-menu"
+>
+  <div
+    className="menu"
+    id="menu"
+  >
+    <div
+      className="menu-without-toggle-btn"
+    >
+      <Component />
+      <ul
+        className="nav flex-column bg-white mb-0"
+      >
+        <Component />
+        <Component />
+        <Component
+          currentLocale="en"
+          onClick={[Function]}
+        />
+        <Component
+          isAuthenticated={true}
+        />
+        <Component
+          showSwagger={true}
+        />
+      </ul>
+    </div>
+    <Button
+      className="menu-collapse-btn"
+      color="secondary"
+      id="menuCollapseBtn"
+      onClick={[Function]}
+      tag="button"
+    >
+      <FontAwesomeIcon
+        border={false}
+        className="menu-collapse-icon"
+        fixedWidth={false}
+        flip={null}
+        icon="bars"
+        inverse={false}
+        listItem={false}
+        mask={null}
+        pull={null}
+        pulse={false}
+        rotation={null}
+        size={null}
+        spin={false}
+        symbol={false}
+        title=""
+        transform={null}
+      />
+    </Button>
+  </div>
+</div>
+`;
+
 exports[`Menu Renders a Menu component in prod profile with LoadingBar and Nav. 1`] = `
 <div
   className="app-menu"
@@ -69,6 +128,65 @@ exports[`Menu Renders a Menu component in prod profile with LoadingBar and Nav. 
   <Connect(LoadingBar)
     className="loading-bar"
   />
+  <div
+    className="menu"
+    id="menu"
+  >
+    <div
+      className="menu-without-toggle-btn"
+    >
+      <Component />
+      <ul
+        className="nav flex-column bg-white mb-0"
+      >
+        <Component />
+        <Component />
+        <Component
+          currentLocale="en"
+          onClick={[Function]}
+        />
+        <Component
+          isAuthenticated={true}
+        />
+        <Component
+          showSwagger={false}
+        />
+      </ul>
+    </div>
+    <Button
+      className="menu-collapse-btn"
+      color="secondary"
+      id="menuCollapseBtn"
+      onClick={[Function]}
+      tag="button"
+    >
+      <FontAwesomeIcon
+        border={false}
+        className="menu-collapse-icon"
+        fixedWidth={false}
+        flip={null}
+        icon="bars"
+        inverse={false}
+        listItem={false}
+        mask={null}
+        pull={null}
+        pulse={false}
+        rotation={null}
+        size={null}
+        spin={false}
+        symbol={false}
+        title=""
+        transform={null}
+      />
+    </Button>
+  </div>
+</div>
+`;
+
+exports[`Menu Renders a Menu component in prod profile with Nav. 1`] = `
+<div
+  className="app-menu"
+>
   <div
     className="menu"
     id="menu"
