@@ -10,7 +10,7 @@ import View from 'ol/View';
 const MARKER_STYLE = new Style({
   image: new Icon({
     anchor: [0.5, 1],
-    src: 'content/images/map/icon.png'
+    src: 'content/images/map/map-marker-red.png'
   })
 });
 
@@ -22,11 +22,12 @@ export const buildOlView = (center: number[], zoom: number): View => {
 };
 
 export const toMarkerFeature = (newsFact: any): Feature => {
-  // return new Feature(new Point([newsFact.locationCoordinate.x, newsFact.locationCoordinate.y]));
-  return new Feature({
+  const markerFeature = new Feature({
     geometry: new Point([newsFact.locationCoordinate.x, newsFact.locationCoordinate.y]),
     newsFactId: newsFact.id
   });
+  markerFeature.setStyle(MARKER_STYLE);
+  return markerFeature;
 };
 
 export const extractMarkerFeatures = (newsFacts: any[]): Feature[] => {
@@ -46,7 +47,6 @@ export const buildMarkerVectorLayer = (newsFacts: any[]): VectorLayer => {
     features: extractMarkerFeatures(newsFacts)
   });
   return new VectorLayer({
-    source: vectorSource,
-    style: MARKER_STYLE
+    source: vectorSource
   });
 };
