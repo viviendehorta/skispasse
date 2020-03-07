@@ -28,8 +28,12 @@ public class NewsFactsResource {
     public Collection<NewsFactNoDetail> fetchAllNewsFacts() {
         NewsFactNoDetail.Builder builder = new NewsFactNoDetail.Builder();
         return Arrays.asList(
-            builder.id(1).locationCoordinate(new LocationCoordinate(BASE_COORD, BASE_COORD)).build(),
-            builder.id(2).locationCoordinate(new LocationCoordinate(BASE_COORD / 2, BASE_COORD / 2)).build()
+            builder.id(1).locationCoordinate(new LocationCoordinate(BASE_COORD, BASE_COORD)).category(NewsCategory.CULTURE).build(),
+            builder.id(2).locationCoordinate(new LocationCoordinate(BASE_COORD / 2, BASE_COORD)).category(NewsCategory.DEMONSTRATION).build(),
+            builder.id(3).locationCoordinate(new LocationCoordinate(BASE_COORD, BASE_COORD / 3)).category(NewsCategory.NATURE).build(),
+            builder.id(4).locationCoordinate(new LocationCoordinate(BASE_COORD / 4, BASE_COORD / 4)).category(NewsCategory.OTHER).build(),
+            builder.id(5).locationCoordinate(new LocationCoordinate(BASE_COORD * 2, BASE_COORD / 5)).category(NewsCategory.SHOW).build(),
+            builder.id(6).locationCoordinate(new LocationCoordinate(BASE_COORD, BASE_COORD * 2)).category(NewsCategory.SPORT).build()
         );
     }
 

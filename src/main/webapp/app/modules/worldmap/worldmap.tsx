@@ -13,6 +13,7 @@ export interface IWorldMapPageProps extends StateProps, DispatchProps {
 export const WorldMapPage = (props: IWorldMapPageProps) => {
 
   const WORLDMAP_MAP_ID = "worldmap-page-newsFactsMap";
+  const ICON_PIXEL_CLICK_TOLERANCE = 3;
 
   const [newsFactsMap, setNewsFactsMap] = useState(null); // News facts newsFactsMap
   const [currentNewsFactId, setCurrentNewsFactId] = useState(0);
@@ -51,7 +52,8 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
       }, {
         layerFilter(layerCandidate) {
           return layerCandidate === markerLayer;
-        }
+        },
+        hitTolerance: ICON_PIXEL_CLICK_TOLERANCE
       });
     });
 

@@ -14,6 +14,10 @@ public class NewsFactNoDetail {
         return locationCoordinate;
     }
 
+    public NewsCategory getCategory() {
+        return category;
+    }
+
     private NewsFactNoDetail(Builder builder) {
         id = builder.id;
         locationCoordinate = builder.locationCoordinate;
