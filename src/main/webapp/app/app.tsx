@@ -13,11 +13,11 @@ import {IRootState} from 'app/config/root.reducer';
 import {getSession} from 'app/components/authentication/authentication.reducer';
 import {getProfile} from 'app/environment/application-profile.reducer';
 import {setLocale} from 'app/environment/locale.reducer';
-import Menu from 'app/components/menu/menu';
 import {hasAnyAuthority} from 'app/components/authentication/private-route';
 import ErrorBoundary from 'app/components/error/error-boundary';
 import {AUTHORITIES} from 'app/config/constants';
 import AppRoutes from 'app/routes';
+import {Brand} from "app/components/brand";
 
 const baseHref = document
   .querySelector('base')
@@ -40,20 +40,13 @@ export const App = (props: IAppProps) => {
                         toastClassName="toastify-toast"/>
         <div className="container-fluid view-container" id="app-view-container">
           <Card className="jh-card">
+
+            <Brand/>
+
             <ErrorBoundary>
               <AppRoutes/>
             </ErrorBoundary>
 
-            <ErrorBoundary>
-              <Menu
-                isAuthenticated={props.isAuthenticated}
-                isAdmin={props.isAdmin}
-                currentLocale={props.currentLocale}
-                onLocaleChange={props.setLocale}
-                isInProduction={props.isInProduction}
-                isSwaggerEnabled={props.isSwaggerEnabled}
-              />
-            </ErrorBoundary>
           </Card>
         </div>
       </div>
