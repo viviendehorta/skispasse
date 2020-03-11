@@ -3,8 +3,6 @@
     "title": "Skispasse",
     "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
     "menu": {
-      "home": "Accueil",
-      "worldmap": "Carte du monde",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "account": {
         "main": "Compte",
