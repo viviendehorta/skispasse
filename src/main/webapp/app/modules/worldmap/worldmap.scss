@@ -4,13 +4,22 @@ World Map page styles
 
 #worldMap {
   .map {
-    position: relative;
+    display: inline-block;
     height: 100vh;
+    padding: 0;
 
     .ol-zoom {
       top: 0.5em;
       left: unset;
       right: 0.5em;
+    }
+  }
+
+  .control-panel {
+    padding: 0;
+
+    .form-check {
+      padding-left: 0;
     }
   }
 }
