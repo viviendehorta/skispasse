@@ -3,7 +3,7 @@ package vdehorta.bean;
 public class NewsFactNoDetail {
 
     private long id;
-    private NewsCategory category;
+    private int categoryId;
     private LocationCoordinate locationCoordinate;
 
     public long getId() {
@@ -14,20 +14,20 @@ public class NewsFactNoDetail {
         return locationCoordinate;
     }
 
-    public NewsCategory getCategory() {
-        return category;
+    public int getCategoryId() {
+        return categoryId;
     }
 
     private NewsFactNoDetail(Builder builder) {
         id = builder.id;
         locationCoordinate = builder.locationCoordinate;
-        category = builder.category;
+        categoryId = builder.categoryId;
     }
 
     public static final class Builder {
         private long id;
         private LocationCoordinate locationCoordinate;
-        private NewsCategory category;
+        private int categoryId;
 
         public Builder() {
         }
@@ -42,8 +42,8 @@ public class NewsFactNoDetail {
             return this;
         }
 
-        public Builder category(NewsCategory val) {
-            category = val;
+        public Builder categoryId(int val) {
+            categoryId = val;
             return this;
         }
 

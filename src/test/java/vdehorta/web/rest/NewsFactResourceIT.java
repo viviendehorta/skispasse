@@ -19,10 +19,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Integration tests for the {@link NewsFactsResource} REST controller.
+ * Integration tests for the {@link NewsFactResource} REST controller.
  */
 @SpringBootTest(classes = SkispasseApp.class)
-public class NewsFactsResourceIT {
+public class NewsFactResourceIT {
 
     @Autowired
     private ExceptionTranslator exceptionTranslator;
@@ -31,8 +31,8 @@ public class NewsFactsResourceIT {
 
     @BeforeEach
     public void setup() {
-        NewsFactsResource newsFactsResource = new NewsFactsResource();
-        this.mockMvc = MockMvcBuilders.standaloneSetup(newsFactsResource)
+        NewsFactResource newsFactResource = new NewsFactResource();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(newsFactResource)
             .setControllerAdvice(exceptionTranslator)
             .build();
     }
@@ -59,17 +59,5 @@ public class NewsFactsResourceIT {
 
             //Check presence of mandatory characters in a news fact json object
             .andExpect(content().string(new StringContainsInOrder(Arrays.asList("{", "\"id\"", "\"videoPath\"", "}"))));
-    }
-
-    @Test
-    @WithAnonymousUser()
-    public void testFilterByCategoriesWithAnonymousUser() throws Exception {
-        mockMvc.perform(post("/newsFacts/filter/categories/2,3")
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-
-            //Check presence of mandatory characters in a json object list
-            .andExpect(content().string(new StringContainsInOrder(Arrays.asList("[", "{", "}", "]"))));
     }
 }
