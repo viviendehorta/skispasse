@@ -15,7 +15,9 @@ export interface IWorldMapPageProps extends StateProps, DispatchProps {
 export const WorldMapPage = (props: IWorldMapPageProps) => {
 
   const MAP_ID = "worldmap-page-newsFactsMap";
+
   const ICON_PIXEL_CLICK_TOLERANCE = 3;
+
   const newsCategories = [
     {
       id: 1,
@@ -42,6 +44,7 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
       label: 'Other',
     }
   ];
+
   const newsCategoryElements = newsCategories.map((newsCategory) =>
     <div key={newsCategory.id} className="form-check-inline">
       <input className="form-check-input" type="checkbox" value="" id={"inputCategory" + newsCategory.id}/>
@@ -70,7 +73,7 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
     setShowModal(true);
   };
 
-  const buildNewsFactsdMap = (newsFacts) => {
+  const buildNewsFactsMap = (newsFacts:[]) => {
     const view = buildOlView([270000, 6250000], 1);
     const oSMLayer = buildOSMTileLayer();
     const markerLayer = buildMarkerVectorLayer(newsFacts);
@@ -100,10 +103,8 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
   // Create the news facts Map using fetched news facts
   useEffect(() => {
 
-    const isReadyNewsFactsBLob = props.allNewsFacts;
-
-    if (isReadyNewsFactsBLob) {
-      buildNewsFactsdMap(props.allNewsFacts);
+    if (props.allNewsFacts) {
+      buildNewsFactsMap(props.allNewsFacts);
     }
 
     return function cleanMapObject() {

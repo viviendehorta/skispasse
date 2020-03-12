@@ -1,31 +1,42 @@
 package vdehorta.bean;
 
-import java.util.Arrays;
-
-public enum NewsCategory {
-
-    DEMONSTRATION(1),
-    SPORT(2),
-    CULTURE(3),
-    SHOW(4),
-    NATURE(5),
-    OTHER(6);
+public class NewsCategory {
 
     private int id;
+    private String label;
 
-    NewsCategory(int id) {
-        this.id = id;
+    private NewsCategory(Builder builder) {
+        id = builder.id;
+        label = builder.label;
     }
 
     public int getId() {
         return id;
     }
 
-    public static NewsCategory fromId(int id) {
-        NewsCategory[] newsCategories = values();
-        return Arrays.stream(newsCategories)
-            .filter(newsCategory -> newsCategory.getId() == id)
-            .findFirst()
-            .orElse(null);
+    public String getLabel() {
+        return label;
+    }
+
+    public static final class Builder {
+        private int id;
+        private String label;
+
+        public Builder() {
+        }
+
+        public Builder id(int val) {
+            id = val;
+            return this;
+        }
+
+        public Builder label(String val) {
+            label = val;
+            return this;
+        }
+
+        public NewsCategory build() {
+            return new NewsCategory(this);
+        }
     }
 }
