@@ -8,6 +8,7 @@ import Map from "ol/Map";
 import NewsFactDetailModal from "app/modules/worldmap/news-fact-detail-modal";
 
 import {Col, Row} from 'reactstrap';
+import CategoryCheckBox from "app/components/category-checkbox";
 
 export interface IWorldMapPageProps extends StateProps, DispatchProps {
 }
@@ -18,46 +19,47 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
 
   const ICON_PIXEL_CLICK_TOLERANCE = 3;
 
-  const newsCategories = [
+  const [newsFactsMap, setNewsFactsMap] = useState(null); // News facts newsFactsMap
+  const [currentNewsFactId, setCurrentNewsFactId] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [newsCategories, setNewsCategories] = useState([
     {
       id: 1,
       label: 'Démonstration',
+      value: "1",
+      isSelected: false
     },
     {
       id: 2,
       label: 'Sport',
+      value: "2",
+      isSelected: false
     },
     {
       id: 3,
       label: 'Culture',
+      value: "3",
+      isSelected: false
     },
     {
       id: 4,
       label: 'Show',
+      value: "4",
+      isSelected: false
     },
     {
       id: 5,
       label: 'Nature',
+      value: "5",
+      isSelected: false
     },
     {
       id: 6,
       label: 'Other',
+      value: "6",
+      isSelected: false
     }
-  ];
-
-  const newsCategoryElements = newsCategories.map((newsCategory) =>
-    <div key={newsCategory.id} className="form-check-inline">
-      <input className="form-check-input" type="checkbox" value="" id={"inputCategory" + newsCategory.id}/>
-        <label className="form-check-label" htmlFor={"inputCategory" + newsCategory.id}>
-          {newsCategory.label}
-        </label>
-    </div>
-
-  );
-
-  const [newsFactsMap, setNewsFactsMap] = useState(null); // News facts newsFactsMap
-  const [currentNewsFactId, setCurrentNewsFactId] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  ]);
 
   const handleModalDetailClose = () => {
     setShowModal(false);
@@ -73,7 +75,7 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
     setShowModal(true);
   };
 
-  const buildNewsFactsMap = (newsFacts:[]) => {
+  const buildNewsFactsMap = (newsFacts: []) => {
     const view = buildOlView([270000, 6250000], 1);
     const oSMLayer = buildOSMTileLayer();
     const markerLayer = buildMarkerVectorLayer(newsFacts);
@@ -114,6 +116,17 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
     };
   }, [props.allNewsFacts]);
 
+  const onCategoryChanged = (event) => {
+    alert('coucou');
+    // newsCategories
+    //   .forEach(newsCategory => {
+    //     if (newsCategory.value === event.target.value) {
+    //       newsCategory.isSelected = event.target.checked;
+    //     }
+    //   });
+    // setNewsCategories(newsCategories);
+  };
+
   return (
     <Row id="worldMap">
       <Col id={MAP_ID} className="map" xs="10"/>
@@ -122,7 +135,10 @@ export const WorldMapPage = (props: IWorldMapPageProps) => {
           <div className="card-body">
             <h5 className="card-title">Categories</h5>
             <div className="form-check">
-              {newsCategoryElements}
+              {
+                newsCategories.map((newsCategory, index) =>
+                  <CategoryCheckBox key={newsCategory.id} onCategoryChanged={onCategoryChanged} {...newsCategory}/>)
+              }
             </div>
           </div>
         </div>
