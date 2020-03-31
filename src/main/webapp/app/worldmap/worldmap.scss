@@ -1,0 +1,25 @@
+/* ==========================================================================
+Worldmap styles
+========================================================================== */
+.worldmap {
+  .map {
+    display: inline-block;
+    height: 100vh;
+    padding-left: 0;
+    padding-right: 0;
+
+    .ol-zoom {
+      top: 0.5em;
+      left: unset;
+      right: 0.5em;
+    }
+  }
+
+  .control-panel {
+    padding: 0;
+
+    .form-check {
+      padding-left: 0;
+    }
+  }
+}

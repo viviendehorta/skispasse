@@ -1,0 +1,35 @@
+$newsFactsModalWidth: 40%;
+
+/* ==============================================================
+News Fact Detail Modal Style
+===============================================================*/
+.news-fact-detail-modal {
+  .modal-dialog {
+    min-width: $newsFactsModalWidth;
+    width: $newsFactsModalWidth;
+    max-width: $newsFactsModalWidth;
+
+    .modal-body {
+      padding: 0;
+      margin-bottom: 0;
+
+      .form {
+        padding: 0.8rem;
+
+        .form-group {
+          padding: 0;
+          margin-bottom: 0;
+        }
+      }
+
+      svg {
+        margin-right: 0.5rem;
+      }
+    }
+
+    .modal-footer {
+      padding: 0.8rem;
+      border: none;
+    }
+  }
+}

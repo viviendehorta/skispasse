@@ -1,6 +1,6 @@
 {
-  "name": "skispasse",
-  "short_name": "skispasse",
+  "name": "Skispasse",
+  "short_name": "Skispasse",
   "icons": [
       {
           "src": "./content/images/jhipster_family_member_2_head-192.png",
