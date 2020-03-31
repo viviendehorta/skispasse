@@ -1,0 +1,14 @@
+<div class="news-category-checkbox form-check-inline">
+    <input
+        id="category{{ newsCategory.id }}"
+        class="form-check-input"
+        type="checkbox"
+        [checked]="newsCategory.isSelected"
+        value="{{ newsCategory.value }}"
+        (change)="emitCategoryChanged($event)"
+    />
+
+    <label class="form-check-label" htmlFor="category{{ newsCategory.id }}">
+        {{ newsCategory.label }}
+    </label>
+</div>
