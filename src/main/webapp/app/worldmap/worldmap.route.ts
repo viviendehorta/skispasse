@@ -7,6 +7,6 @@ export const WORLDMAP_ROUTE: Route = {
   component: WorldmapComponent,
   data: {
     authorities: [],
-    pageTitle: 'worldmap.title'
+    pageTitle: 'global.title'
   }
 };
