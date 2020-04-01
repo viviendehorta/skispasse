@@ -17,7 +17,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
-  private instance = this; //hack to be able to reach worldmapComponent instance in callback without word 'this'
+  private instance = this; // hack to be able to reach worldmapComponent instance in callback without word 'this'
 
   MAP_ID = 'worldmapPageNewsFactsMap';
   ICON_PIXEL_CLICK_TOLERANCE = 3;

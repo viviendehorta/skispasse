@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiAlertService, JhiDataUtils, JhiDateUtils, JhiEventManager, JhiLanguageService, JhiParseLinks } from 'ng-jhipster';
 
 import { MockLanguageHelper, MockLanguageService } from './helpers/mock-language.service';
