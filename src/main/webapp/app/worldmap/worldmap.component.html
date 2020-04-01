@@ -10,7 +10,7 @@
                     <!--                      <CategoryCheckBox key={newsCategory.id} onCategoryChanged={onCategoryChanged} {...newsCategory}/>)-->
                     <!--                    }-->
                     <skis-news-category-checkbox
-                        *ngFor="let newsCategory of newsCategories"
+                        *ngFor="let newsCategory of this.newsCategories"
                         [newsCategory]="newsCategory"
                         (categoryChangedEmitter)="this.onCategoryChanged($event)">
                     </skis-news-category-checkbox>
