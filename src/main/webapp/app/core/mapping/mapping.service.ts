@@ -13,8 +13,6 @@ export class MappingService {
   }
 
   newsFactNoDetailToFeature(noDetailNewsFact: any): Feature {
-    const x = noDetailNewsFact.locationCoordinate.x;
-    const y = noDetailNewsFact.locationCoordinate.y;
     const style = this.getMarkerStyle(noDetailNewsFact.categoryId);
     const markerFeature = new Feature({
       geometry: new Point([noDetailNewsFact.locationCoordinate.x, noDetailNewsFact.locationCoordinate.y]),
