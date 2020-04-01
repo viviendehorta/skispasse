@@ -34,7 +34,7 @@ public class NewsFactRepository {
         .country("France")
         .city("Paris")
         .address("Place de la République, 75011 Paris, France")
-        .videoPath("/content/video/small.mp4");
+        .videoPath("/content/videos/small.mp4");
 
     public List<NewsFactNoDetail> getAll() {
         return new ArrayList<>(ALL_NEWS_FACTS_NO_DETAIL);

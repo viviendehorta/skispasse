@@ -1,4 +1,4 @@
-$newsFactsModalWidth: 40%;
+$newsFactsModalWidth: 650px;
 
 /* ==============================================================
 News Fact Detail Modal Style
@@ -12,6 +12,14 @@ News Fact Detail Modal Style
     .modal-body {
       padding: 0;
       margin-bottom: 0;
+
+      .video-player {
+        display: inline-block;
+        width: 100%;
+        height: auto;
+        max-width: $newsFactsModalWidth;
+        max-height: 400px;
+      }
 
       .form {
         padding: 0.8rem;

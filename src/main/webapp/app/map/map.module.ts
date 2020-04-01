@@ -4,10 +4,11 @@ import { NewsFactDetailModalContentComponent } from './news-fact-detail-modal/ne
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SkispasseSharedModule } from 'app/shared/shared.module';
 
 @NgModule({
   declarations: [NewsCategoryCheckboxComponent, NewsFactDetailModalContentComponent],
-  imports: [FontAwesomeModule, NgbModule, CommonModule],
+  imports: [FontAwesomeModule, NgbModule, CommonModule, SkispasseSharedModule],
   exports: [NewsCategoryCheckboxComponent, NewsFactDetailModalContentComponent]
 })
 export class MapModule {}

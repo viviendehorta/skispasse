@@ -26,8 +26,7 @@
         }
       },
       "prefix": "skis",
-      "architect": {},
-      "styles": ["styles.css"]
+      "architect": {}
     }
   },
   "defaultProject": "skispasse",
