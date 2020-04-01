@@ -8,12 +8,11 @@ import { SkispasseAppRoutingModule } from './app-routing.module';
 import { SkispasseWorldmapModule } from './worldmap/worldmap.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { SkisMainComponent } from './layouts/main/main.component';
-import { FooterComponent } from './layouts/footer/footer.component';
 import { ErrorComponent } from './layouts/error/error.component';
 import { NewsFactDetailModalContentComponent } from 'app/map/news-fact-detail-modal/news-fact-detail-modal.content.component';
 
 @NgModule({
-  declarations: [SkisMainComponent, ErrorComponent, FooterComponent],
+  declarations: [SkisMainComponent, ErrorComponent],
   bootstrap: [SkisMainComponent],
   entryComponents: [NewsFactDetailModalContentComponent],
   imports: [
