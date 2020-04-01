@@ -8,7 +8,7 @@ import { JhiLanguageHelper } from 'app/core/language/language.helper';
   templateUrl: './main.component.html',
   styleUrls: ['./main.scss']
 })
-export class JhiMainComponent implements OnInit {
+export class SkisMainComponent implements OnInit {
   constructor(private jhiLanguageHelper: JhiLanguageHelper, private router: Router) {}
 
   private getPageTitle(routeSnapshot: ActivatedRouteSnapshot) {

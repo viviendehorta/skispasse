@@ -94,6 +94,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.newsFactService.getNewsFactDetail(newsFactId).subscribe(unFlattenedNewsFactDetail => {
       const newsFactDetail = this.newsFactService.flattenNewsFactDetail(unFlattenedNewsFactDetail);
       const detailComponentInstance = this.modalService.open(NewsFactDetailModalContentComponent, {
+        centered: true,
         windowClass: 'news-fact-detail-modal'
       }).componentInstance as NewsFactDetailModalContentComponent;
       detailComponentInstance.setNewsFactDetail(newsFactDetail);

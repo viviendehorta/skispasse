@@ -33,6 +33,6 @@ export class NewsFactService {
   }
 
   flattenNewsFactDetail(unFlattenedNewsFactDetail: Object) {
-    return unFlattenedNewsFactDetail as { address: string; city: string; country: string };
+    return unFlattenedNewsFactDetail as { address: string; city: string; country: string; videoPath: string };
   }
 }

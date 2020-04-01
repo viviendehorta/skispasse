@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
     </div>
   `
 })
-export class JhiAlertErrorComponent implements OnDestroy {
+export class SkisAlertErrorComponent implements OnDestroy {
   alerts: any[];
   cleanHttpErrorListener: Subscription;
   constructor(private alertService: JhiAlertService, private eventManager: JhiEventManager, translateService: TranslateService) {
