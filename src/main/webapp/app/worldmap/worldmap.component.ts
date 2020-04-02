@@ -25,7 +25,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   private newsFactsMap: Map;
   private newsFactMarkerLayer: VectorLayer;
 
-  private newsCategories: any[];
+  newsCategories: any[];
 
   constructor(
     private newsFactService: NewsFactService,
