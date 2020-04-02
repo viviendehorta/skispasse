@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/newsFacts")
+@RequestMapping("/newsFact")
 public class NewsFactResource {
 
     private NewsFactRepository newsFactRepository = new NewsFactRepository();

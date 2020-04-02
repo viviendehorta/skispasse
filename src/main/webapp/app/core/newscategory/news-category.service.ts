@@ -1,58 +1,28 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { SERVER_API_URL } from 'app/app.constants';
+import { NewsCategory } from 'app/shared/beans/news-category.model';
 
 @Injectable({ providedIn: 'root' })
 export class NewsCategoryService {
-  ALL_CATEGORIES: any[] = [
-    {
-      id: 1,
-      label: 'Démonstration',
-      value: '1',
-      isSelected: false
-    },
-    {
-      id: 2,
-      label: 'Sport',
-      value: '2',
-      isSelected: false
-    },
-    {
-      id: 3,
-      label: 'Culture',
-      value: '3',
-      isSelected: false
-    },
-    {
-      id: 4,
-      label: 'Show',
-      value: '4',
-      isSelected: false
-    },
-    {
-      id: 5,
-      label: 'Nature',
-      value: '5',
-      isSelected: false
-    },
-    {
-      id: 6,
-      label: 'Other',
-      value: '6',
-      isSelected: false
-    }
-  ];
+  private BASE_URL = SERVER_API_URL + 'newsCategory/';
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  getCategories() {
-    return this.ALL_CATEGORIES;
+  fetchCategories() {
+    return this.http.post(this.BASE_URL + 'all', {});
   }
 
-  getSelectedCategoryIds(): number[] {
-    return this.ALL_CATEGORIES.filter(category => category.isSelected).map(category => category.id);
+  flattenNewsCategories(unFlattenedNewsCategories: Object) {
+    const backNewsCategories = unFlattenedNewsCategories as { id: number; label: string }[];
+    return backNewsCategories.map(backNewsCategory => this.backToFrontBean(backNewsCategory));
   }
 
-  setCategorySelection(categoryValue: string, isSelected: boolean) {
-    const category = this.ALL_CATEGORIES.find(newsCategory => newsCategory.value === categoryValue);
-    category.isSelected = isSelected;
+  private backToFrontBean(bean: { id: number; label: string }): NewsCategory {
+    return {
+      id: bean.id,
+      label: bean.label,
+      isSelected: false
+    };
   }
 }

@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { Observable } from 'rxjs';
+import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
+import { NewsFactDetail } from 'app/shared/beans/news-fact-detail.model';
 
 @Injectable({ providedIn: 'root' })
 export class NewsFactService {
-  BASE_URL = SERVER_API_URL + 'newsFacts/';
-
-  allNewsFacts: any[];
+  private BASE_URL = SERVER_API_URL + 'newsFact/';
 
   constructor(private http: HttpClient) {}
 
@@ -16,23 +16,19 @@ export class NewsFactService {
     return this.http.post(this.BASE_URL + 'all', {});
   }
 
-  getAll() {
-    return this.allNewsFacts;
-  }
-
   getNewsFactDetail(newsFactId: number): Observable<Object> {
     return this.http.post(this.BASE_URL + newsFactId, {});
   }
 
-  getFilteredByCategoryIds(categoryIds: number[]) {
-    return this.allNewsFacts.filter(newsFact => categoryIds.includes(newsFact.categoryId));
+  filterByCategoryIds(newsFacts: NewsFactNoDetail[], categoryIds: number[]) {
+    return newsFacts.filter(newsFact => categoryIds.includes(newsFact.categoryId));
   }
 
-  flattenNewsFacts(unFlattenedNewsFacts: Object): void {
-    this.allNewsFacts = unFlattenedNewsFacts as any[];
+  flattenNewsFacts(unFlattenedNewsFacts: Object): NewsFactNoDetail[] {
+    return unFlattenedNewsFacts as NewsFactNoDetail[];
   }
 
-  flattenNewsFactDetail(unFlattenedNewsFactDetail: Object) {
-    return unFlattenedNewsFactDetail as { address: string; city: string; country: string; videoPath: string };
+  flattenNewsFactDetail(unFlattenedNewsFactDetail: Object): NewsFactDetail {
+    return unFlattenedNewsFactDetail as NewsFactDetail;
   }
 }

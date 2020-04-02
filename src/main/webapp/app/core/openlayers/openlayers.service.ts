@@ -3,10 +3,10 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import Feature from 'ol/Feature';
 import { Vector as VectorSource } from 'ol/source';
-import { Icon, Style } from 'ol/style';
 import { Vector as VectorLayer } from 'ol/layer';
 import View from 'ol/View';
 import { MappingService } from 'app/core/mapping/mapping.service';
+import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
 
 @Injectable({ providedIn: 'root' })
 export class OpenLayersService {
@@ -19,22 +19,13 @@ export class OpenLayersService {
     });
   }
 
-  getMarkerStyle(categoryId: number): Style {
-    return new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: 'content/images/news-categories/news-category' + categoryId + '.svg'
-      })
-    });
-  }
-
   buildOSMTileLayer() {
     return new TileLayer({
       source: new OSM()
     });
   }
 
-  buildMarkerVectorLayer(allNewsFacts: any[]): VectorLayer {
+  buildMarkerVectorLayer(allNewsFacts: NewsFactNoDetail[]): VectorLayer {
     const vectorSource = new VectorSource({
       features: this.mappingService.newsFactNoDetailsToFeatures(allNewsFacts)
     });
