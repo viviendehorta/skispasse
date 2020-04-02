@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { NewsCategory } from 'app/shared/beans/news-category.model';
 
 @Component({
   selector: 'skis-news-category-checkbox',
@@ -7,12 +8,12 @@ import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angu
   encapsulation: ViewEncapsulation.None
 })
 export class NewsCategoryCheckboxComponent {
-  @Input() newsCategory: any;
-  @Output() categoryChangedEmitter = new EventEmitter<{ categoryValue: string; isSelected: boolean }>();
+  @Input() newsCategory: NewsCategory;
+  @Output() categoryChangedEmitter = new EventEmitter<{ categoryId: number; isSelected: boolean }>();
 
   emitCategoryChanged($event) {
     this.categoryChangedEmitter.emit({
-      categoryValue: $event.target.value,
+      categoryId: parseInt($event.target.value, 10),
       isSelected: $event.target.checked
     });
   }

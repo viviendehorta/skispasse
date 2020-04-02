@@ -8,6 +8,9 @@ import { MappingService } from 'app/core/mapping/mapping.service';
 import { Feature } from 'ol';
 import { NewsFactDetailModalContentComponent } from 'app/map/news-fact-detail-modal/news-fact-detail-modal.content.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NewsCategory } from 'app/shared/beans/news-category.model';
+import { CategoryChangedEvent } from 'app/shared/beans/events/category-changed.event.model';
+import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
 
 @Component({
   selector: 'skis-worldmap',
@@ -25,7 +28,8 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   private newsFactsMap: Map;
   private newsFactMarkerLayer: VectorLayer;
 
-  newsCategories: any[];
+  newsFacts: NewsFactNoDetail[];
+  newsCategories: NewsCategory[];
 
   constructor(
     private newsFactService: NewsFactService,
@@ -40,17 +44,19 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.newsCategories = this.newsCategoryService.getCategories();
+    this.newsCategoryService.fetchCategories().subscribe(unflattenedNewsCategories => {
+      this.newsCategories = this.newsCategoryService.flattenNewsCategories(unflattenedNewsCategories);
+    });
   }
 
   ngAfterViewInit() {
     this.newsFactService.fetchNewsFacts().subscribe(unflattenedNewsFacts => {
-      this.newsFactService.flattenNewsFacts(unflattenedNewsFacts);
-      this.buildNewsFactsMap(this.newsFactService.getAll());
+      this.newsFacts = this.newsFactService.flattenNewsFacts(unflattenedNewsFacts);
+      this.buildNewsFactsMap(this.newsFacts);
     });
   }
 
-  buildNewsFactsMap(newsFacts: any[]) {
+  buildNewsFactsMap(newsFacts: NewsFactNoDetail[]) {
     const view = this.openLayersService.buildView([270000, 6250000], 1);
     const oSMLayer = this.openLayersService.buildOSMTileLayer();
     this.newsFactMarkerLayer = this.openLayersService.buildMarkerVectorLayer(newsFacts);
@@ -83,11 +89,20 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  onCategoryChanged(categoryChangedEvent: { categoryValue: string; isSelected: boolean }): void {
-    this.newsCategoryService.setCategorySelection(categoryChangedEvent.categoryValue, categoryChangedEvent.isSelected);
-    const selectedCategoryIds = this.newsCategoryService.getSelectedCategoryIds();
-    const toShowNewsFacts = this.newsFactService.getFilteredByCategoryIds(selectedCategoryIds);
+  onCategoryChanged(categoryChangedEvent: CategoryChangedEvent): void {
+    this.setCategorySelection(categoryChangedEvent.categoryId, categoryChangedEvent.isSelected);
+    const selectedCategoryIds = this.getSelectedCategoryIds();
+    const toShowNewsFacts = this.newsFactService.filterByCategoryIds(this.newsFacts, selectedCategoryIds);
     this.openLayersService.refreshLayerFeatures(this.mappingService.newsFactNoDetailsToFeatures(toShowNewsFacts), this.newsFactMarkerLayer);
+  }
+
+  setCategorySelection(categoryId: number, isSelected: boolean) {
+    const category = this.newsCategories.find(newsCategory => newsCategory.id === categoryId);
+    category.isSelected = isSelected;
+  }
+
+  getSelectedCategoryIds(): number[] {
+    return this.newsCategories.filter(category => category.isSelected).map(category => category.id);
   }
 
   showNewsFactDetail(newsFactId: number) {
