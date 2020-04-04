@@ -55,13 +55,6 @@ export class LoginModalComponent implements AfterViewInit {
         () => {
           this.authenticationError = false;
           this.activeModal.dismiss('login success');
-          if (
-            this.router.url === '/account/register' ||
-            this.router.url.startsWith('/account/activate') ||
-            this.router.url.startsWith('/account/reset/')
-          ) {
-            this.router.navigate(['']);
-          }
 
           this.eventManager.broadcast({
             name: 'authenticationSuccess',

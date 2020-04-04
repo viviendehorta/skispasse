@@ -2,13 +2,14 @@ import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiAlertService, JhiDataUtils, JhiDateUtils, JhiEventManager, JhiLanguageService, JhiParseLinks } from 'ng-jhipster';
 
 import { MockLanguageHelper, MockLanguageService } from './helpers/mock-language.service';
 import { JhiLanguageHelper } from 'app/core/language/language.helper';
 import { MockActivatedRoute, MockRouter } from './helpers/mock-route.service';
 import { MockEventManager } from './helpers/mock-event-manager.service';
+import { MockActiveModal } from './helpers/mock-active-modal.service';
 
 @NgModule({
   providers: [
@@ -27,6 +28,10 @@ import { MockEventManager } from './helpers/mock-event-manager.service';
     {
       provide: JhiEventManager,
       useClass: MockEventManager
+    },
+    {
+      provide: NgbActiveModal,
+      useClass: MockActiveModal
     },
     {
       provide: ActivatedRoute,
