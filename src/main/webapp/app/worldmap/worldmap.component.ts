@@ -7,10 +7,13 @@ import { Vector as VectorLayer } from 'ol/layer';
 import { MappingService } from 'app/core/mapping/mapping.service';
 import { Feature } from 'ol';
 import { NewsFactDetailModalContentComponent } from 'app/map/news-fact-detail-modal/news-fact-detail-modal.content.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NewsCategory } from 'app/shared/beans/news-category.model';
 import { CategoryChangedEvent } from 'app/shared/beans/events/category-changed.event.model';
 import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
+import { ModalService } from 'app/core/modal/modal.service';
+import { LoginModalComponent } from 'app/login/login.component';
+import { LoginService } from 'app/core/login/login.service';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'skis-worldmap',
@@ -36,7 +39,9 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     private openLayersService: OpenLayersService,
     private newsCategoryService: NewsCategoryService,
     private mappingService: MappingService,
-    private modalService: NgbModal
+    private modalService: ModalService,
+    private loginService: LoginService,
+    private accountService: AccountService
   ) {
     this.newsFactsMap = null;
     this.newsFactMarkerLayer = null;
@@ -108,12 +113,22 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   showNewsFactDetail(newsFactId: number) {
     this.newsFactService.getNewsFactDetail(newsFactId).subscribe(unFlattenedNewsFactDetail => {
       const newsFactDetail = this.newsFactService.flattenNewsFactDetail(unFlattenedNewsFactDetail);
-      const detailComponentInstance = this.modalService.open(NewsFactDetailModalContentComponent, {
-        centered: true,
-        windowClass: 'news-fact-detail-modal'
-      }).componentInstance as NewsFactDetailModalContentComponent;
+      const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
+      const detailComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
       detailComponentInstance.setNewsFactDetail(newsFactDetail);
     });
+  }
+
+  login() {
+    this.modalService.open(LoginModalComponent, 'login-modal');
+  }
+
+  logout() {
+    this.loginService.logout();
+  }
+
+  isAuthenticated() {
+    return this.accountService.isAuthenticated();
   }
 
   ngOnDestroy() {
