@@ -1,6 +1,19 @@
 <div class="worldmap row">
     <div id="{{MAP_ID}}" class="map col-10"></div>
-    <div class="control-panel col-2">
+    <div class="control-panel col-2" [ngSwitch]="isAuthenticated()">
+
+        <div class="text-center">
+            <button *ngSwitchCase="true" type="button" class="btn btn-link" (click)="logout()">
+                <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
+                <span jhiTranslate="global.account.logout">Log out</span>
+            </button>
+
+            <button *ngSwitchCase="false" type="button" class="btn btn-link" (click)="login()">
+                <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
+                <span jhiTranslate="global.account.login">Log in</span>
+            </button>
+        </div>
+
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Categories</h5>
