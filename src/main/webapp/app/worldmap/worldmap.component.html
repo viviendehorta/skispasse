@@ -1,17 +1,28 @@
 <div class="worldmap row">
     <div id="{{MAP_ID}}" class="map col-10"></div>
-    <div class="control-panel col-2" [ngSwitch]="isAuthenticated()">
+    <div class="control-panel col-2">
 
-        <div class="text-center">
-            <button *ngSwitchCase="true" type="button" class="btn btn-link" (click)="logout()">
-                <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
-                <span jhiTranslate="global.account.logout">Log out</span>
-            </button>
+        <div class="card" [ngSwitch]="isAuthenticated()">
+            <div class="card-body">
 
-            <button *ngSwitchCase="false" type="button" class="btn btn-link" (click)="login()">
-                <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
-                <span jhiTranslate="global.account.login">Log in</span>
-            </button>
+                <div *ngSwitchCase="true" class="text-center">
+                    <fa-icon *ngIf="this.isAdmin()" [icon]="['fas', 'user-cog']"></fa-icon>
+                    <fa-icon *ngIf="this.isContributor()" [icon]="['fas', 'user-edit']"></fa-icon>
+                    <span class="card-text">{{this.account.login}}</span>
+                </div>
+
+                <div class="text-center">
+                    <button *ngSwitchCase="true" type="button" class="btn btn-link" (click)="logout()">
+                        <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
+                        <span jhiTranslate="global.account.logout">Log out</span>
+                    </button>
+
+                    <button *ngSwitchCase="false" type="button" class="btn btn-link" (click)="login()">
+                        <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
+                        <span jhiTranslate="global.account.login">Log in</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="card">

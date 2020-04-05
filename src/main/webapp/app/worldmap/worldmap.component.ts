@@ -157,4 +157,12 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     });
   }
+
+  isAdmin() {
+    return this.accountService.isAdmin(this.account);
+  }
+
+  isContributor() {
+    return this.accountService.isContributor(this.account);
+  }
 }

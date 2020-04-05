@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { SessionStorageService } from 'ngx-webstorage';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, of } from 'rxjs';
-import { shareReplay, tap, catchError } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, shareReplay, tap } from 'rxjs/operators';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { Account } from 'app/shared/beans/account.model';
+import { ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_CONTRIBUTOR } from 'app/shared/constants/role.constants';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -75,5 +76,23 @@ export class AccountService {
 
   getAuthenticationState(): Observable<any> {
     return this.authenticationState.asObservable();
+  }
+
+  getRole(account: Account) {
+    if (account.authorities.includes(ROLE_ADMIN)) {
+      return ROLE_ADMIN;
+    }
+    if (account.authorities.includes(ROLE_CONTRIBUTOR)) {
+      return ROLE_CONTRIBUTOR;
+    }
+    return ROLE_ANONYMOUS;
+  }
+
+  isAdmin(account: Account) {
+    return this.getRole(account) === ROLE_ADMIN;
+  }
+
+  isContributor(account: Account) {
+    return this.getRole(account) === ROLE_CONTRIBUTOR;
   }
 }
