@@ -34,7 +34,9 @@ import {
   faTasks,
   faHome,
   faGlobe,
-  faMapMarkerAlt
+  faMapMarkerAlt,
+  faUserEdit,
+  faUserCog
 } from '@fortawesome/free-solid-svg-icons';
 
 export const fontAwesomeIcons = [
@@ -73,5 +75,7 @@ export const fontAwesomeIcons = [
   faTrashAlt,
   faAsterisk,
   faGlobe,
-  faMapMarkerAlt
+  faMapMarkerAlt,
+  faUserEdit,
+  faUserCog
 ];
