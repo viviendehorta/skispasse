@@ -11,9 +11,12 @@ import { NewsCategory } from 'app/shared/beans/news-category.model';
 import { CategoryChangedEvent } from 'app/shared/beans/events/category-changed.event.model';
 import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
 import { ModalService } from 'app/core/modal/modal.service';
-import { LoginModalComponent } from 'app/login/login.component';
 import { LoginService } from 'app/core/login/login.service';
 import { AccountService } from 'app/core/auth/account.service';
+import { LoginModalService } from 'app/core/login/login-modal.service';
+import { Subscription } from 'rxjs';
+import { JhiEventManager } from 'ng-jhipster';
+import { Account } from 'app/shared/beans/account.model';
 
 @Component({
   selector: 'skis-worldmap',
@@ -28,6 +31,9 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   MAP_ID = 'worldmapPageNewsFactsMap';
   ICON_PIXEL_CLICK_TOLERANCE = 3;
 
+  account: Account;
+  authSubscription: Subscription;
+
   private newsFactsMap: Map;
   private newsFactMarkerLayer: VectorLayer;
 
@@ -41,7 +47,9 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     private mappingService: MappingService,
     private modalService: ModalService,
     private loginService: LoginService,
-    private accountService: AccountService
+    private loginModalService: LoginModalService,
+    private accountService: AccountService,
+    private eventManager: JhiEventManager
   ) {
     this.newsFactsMap = null;
     this.newsFactMarkerLayer = null;
@@ -49,6 +57,11 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.accountService.identity().subscribe((account: Account) => {
+      this.account = account;
+    });
+    this.registerAuthenticationSuccess();
+
     this.newsCategoryService.fetchCategories().subscribe(unflattenedNewsCategories => {
       this.newsCategories = this.newsCategoryService.flattenNewsCategories(unflattenedNewsCategories);
     });
@@ -59,6 +72,12 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.newsFacts = this.newsFactService.flattenNewsFacts(unflattenedNewsFacts);
       this.buildNewsFactsMap(this.newsFacts);
     });
+  }
+
+  ngOnDestroy() {
+    if (this.newsFactsMap) {
+      this.newsFactsMap.setTarget(null);
+    }
   }
 
   buildNewsFactsMap(newsFacts: NewsFactNoDetail[]) {
@@ -120,7 +139,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   login() {
-    this.modalService.open(LoginModalComponent, 'login-modal');
+    return this.loginModalService.open();
   }
 
   logout() {
@@ -131,9 +150,11 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.accountService.isAuthenticated();
   }
 
-  ngOnDestroy() {
-    if (this.newsFactsMap) {
-      this.newsFactsMap.setTarget(null);
-    }
+  registerAuthenticationSuccess() {
+    this.authSubscription = this.eventManager.subscribe('authenticationSuccess', () => {
+      this.accountService.identity().subscribe(account => {
+        this.account = account;
+      });
+    });
   }
 }

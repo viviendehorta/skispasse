@@ -60,7 +60,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
+            .csrf()
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .and()
             .addFilterBefore(corsFilter, CsrfFilter.class)
             .exceptionHandling()
             .authenticationEntryPoint(problemSupport)
@@ -88,6 +90,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .deny()
             .and()
             .authorizeRequests()
+            .antMatchers("/api/authenticate").permitAll()
+            .antMatchers("/api/**").authenticated()
             .antMatchers("/newsFact/all").permitAll()
             .antMatchers("/newsCategory/all").permitAll();
         // @formatter:off
