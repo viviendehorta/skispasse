@@ -3,25 +3,28 @@
     <div class="control-panel col-2">
 
         <div class="card" [ngSwitch]="isAuthenticated()">
-            <div class="card-body">
+            <div class="account-panel card-body">
 
-                <div *ngSwitchCase="true" class="text-center">
-                    <fa-icon *ngIf="this.isAdmin()" [icon]="['fas', 'user-cog']"></fa-icon>
+                <button *ngSwitchCase="false" type="button" class="btn-login btn btn-primary btn-sm"
+                        (click)="login()">
+                    <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
+                    <span jhiTranslate="global.account.login">Log in</span>
+                </button>
+
+                <div *ngSwitchCase="true">
+
+                    <fa-icon *ngIf="this.isAdmin()" [icon]="['fas', 'user-cog']" align=""></fa-icon>
                     <fa-icon *ngIf="this.isContributor()" [icon]="['fas', 'user-edit']"></fa-icon>
-                    <span class="card-text">{{this.account.login}}</span>
-                </div>
 
-                <div class="text-center">
-                    <button *ngSwitchCase="true" type="button" class="btn btn-link" (click)="logout()">
-                        <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
-                        <span jhiTranslate="global.account.logout">Log out</span>
-                    </button>
+                    <span class="account-user-name card-text">{{this.account.login}}</span>
 
-                    <button *ngSwitchCase="false" type="button" class="btn btn-link" (click)="login()">
-                        <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
-                        <span jhiTranslate="global.account.login">Log in</span>
+                    <button type="button" class="btn-logout btn btn-primary btn-sm" (click)="logout()"
+                            title="{{'global.account.logout' | translate}}">
+                        <fa-icon icon="sign-out-alt" fixedWidth="true"></fa-icon>
                     </button>
                 </div>
+
+
             </div>
         </div>
 
@@ -37,5 +40,6 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>

@@ -17,6 +17,7 @@ import { LoginModalService } from 'app/core/login/login-modal.service';
 import { Subscription } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 import { Account } from 'app/shared/beans/account.model';
+import { ROLE_ADMIN, ROLE_CONTRIBUTOR } from 'app/shared/constants/role.constants';
 
 @Component({
   selector: 'skis-worldmap',
@@ -150,19 +151,19 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.accountService.isAuthenticated();
   }
 
+  isAdmin() {
+    return this.accountService.getRole(this.account) === ROLE_ADMIN;
+  }
+
+  isContributor() {
+    return this.accountService.getRole(this.account) === ROLE_CONTRIBUTOR;
+  }
+
   registerAuthenticationSuccess() {
     this.authSubscription = this.eventManager.subscribe('authenticationSuccess', () => {
       this.accountService.identity().subscribe(account => {
         this.account = account;
       });
     });
-  }
-
-  isAdmin() {
-    return this.accountService.isAdmin(this.account);
-  }
-
-  isContributor() {
-    return this.accountService.isContributor(this.account);
   }
 }

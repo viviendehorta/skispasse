@@ -79,6 +79,9 @@ export class AccountService {
   }
 
   getRole(account: Account) {
+    if (!account) {
+      return ROLE_ANONYMOUS;
+    }
     if (account.authorities.includes(ROLE_ADMIN)) {
       return ROLE_ADMIN;
     }
@@ -86,13 +89,5 @@ export class AccountService {
       return ROLE_CONTRIBUTOR;
     }
     return ROLE_ANONYMOUS;
-  }
-
-  isAdmin(account: Account) {
-    return this.getRole(account) === ROLE_ADMIN;
-  }
-
-  isContributor(account: Account) {
-    return this.getRole(account) === ROLE_CONTRIBUTOR;
   }
 }
