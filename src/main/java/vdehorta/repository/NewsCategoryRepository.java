@@ -1,6 +1,6 @@
 package vdehorta.repository;
 
-import vdehorta.bean.*;
+import vdehorta.domain.NewsCategory;
 
 import java.util.*;
 import java.util.function.Function;

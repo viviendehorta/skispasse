@@ -5,12 +5,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vdehorta.bean.NewsFactDetail;
-import vdehorta.bean.NewsFactNoDetail;
+import vdehorta.domain.NewsFactDetail;
+import vdehorta.domain.NewsFactNoDetail;
 import vdehorta.repository.NewsFactRepository;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/newsFact")

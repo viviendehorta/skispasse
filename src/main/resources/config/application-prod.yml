@@ -31,6 +31,10 @@ spring:
       enabled: false
     livereload:
       enabled: false
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: skispasse
   mail:
     host: localhost
     port: 25
@@ -78,7 +82,7 @@ jhipster:
   security:
     remember-me:
       # security key (this key should be unique for your application, and kept secret)
-      key: 7e83941db36fd684c50c36e38b7738ac193443f9cdd153a5e3c0d5d667cc7a549e131fd87ec4fca55d0b756811d9925f9f04
+      key: 1fe6c580e568dabbaae25bf20b7095b7aff6515039e4fbbd1f288f2edd2d26b37380164ec7140042844344db425ce0dee9eb
   mail: # specific JHipster mail property, for standard properties see MailProperties
     base-url: http://my-server-url-to-change # Modify according to your server's URL
   metrics:
@@ -92,6 +96,9 @@ jhipster:
       host: localhost
       port: 5000
       queue-size: 512
+  audit-events:
+    retention-period: 30 # Number of days before audit events are deleted.
+
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
