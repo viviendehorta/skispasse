@@ -1,8 +1,8 @@
 package vdehorta.repository;
 
-import vdehorta.bean.LocationCoordinate;
-import vdehorta.bean.NewsFactDetail;
-import vdehorta.bean.NewsFactNoDetail;
+import vdehorta.domain.LocationCoordinate;
+import vdehorta.domain.NewsFactDetail;
+import vdehorta.domain.NewsFactNoDetail;
 
 import java.util.ArrayList;
 import java.util.Arrays;

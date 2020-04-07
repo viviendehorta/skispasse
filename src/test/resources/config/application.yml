@@ -16,6 +16,11 @@
 spring:
   application:
     name: skispasse
+  data:
+    mongodb:
+      host: localhost
+      port: 0
+      database: skispasse
   mail:
     host: localhost
   main:
@@ -60,10 +65,13 @@ jhipster:
       host: localhost
       port: 5000
       queue-size: 512
+  mail:
+    from: test@localhost
+    base-url: http://127.0.0.1:8080
   security:
     remember-me:
       # security key (this key should be unique for your application, and kept secret)
-      key: 7e83941db36fd684c50c36e38b7738ac193443f9cdd153a5e3c0d5d667cc7a549e131fd87ec4fca55d0b756811d9925f9f04
+      key: 1fe6c580e568dabbaae25bf20b7095b7aff6515039e4fbbd1f288f2edd2d26b37380164ec7140042844344db425ce0dee9eb
   metrics:
     logs: # Reports metrics in the logs
       enabled: true

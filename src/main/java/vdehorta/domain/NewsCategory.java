@@ -1,4 +1,4 @@
-package vdehorta.bean;
+package vdehorta.domain;
 
 public class NewsCategory {
 
