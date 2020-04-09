@@ -10,10 +10,10 @@ import vdehorta.security.AuthoritiesConstants;
 import java.time.Instant;
 
 /**
- * Creates the initial database setup.
+ * Initial migration: 07/04/2020
  */
-@ChangeLog(order = "001")
-public class InitialSetupMigration {
+@ChangeLog(order = "20200407")
+public class Migration20200407 {
 
     @ChangeSet(order = "01", author = "initiator", id = "01-addAuthorities")
     public void addAuthorities(MongoTemplate mongoTemplate) {
@@ -46,19 +46,6 @@ public class InitialSetupMigration {
         systemUser.getAuthorities().add(adminAuthority);
         systemUser.getAuthorities().add(userAuthority);
         mongoTemplate.save(systemUser);
-
-        User anonymousUser = new User();
-        anonymousUser.setId("user-1");
-        anonymousUser.setLogin("anonymoususer");
-        anonymousUser.setPassword("$2a$10$j8S5d7Sr7.8VTOYNviDPOeWX8KcYILUVJBsYV83Y5NtECayypx9lO");
-        anonymousUser.setFirstName("Anonymous");
-        anonymousUser.setLastName("User");
-        anonymousUser.setEmail("anonymous@localhost");
-        anonymousUser.setActivated(true);
-        anonymousUser.setLangKey("en");
-        anonymousUser.setCreatedBy(systemUser.getLogin());
-        anonymousUser.setCreatedDate(Instant.now());
-        mongoTemplate.save(anonymousUser);
 
         User adminUser = new User();
         adminUser.setId("user-2");
