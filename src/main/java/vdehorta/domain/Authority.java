@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * An authority (a security role) used by Spring Security.
  */
-@Document(collection = "jhi_authority")
+@Document(collection = "skis_authority")
 public class Authority implements Serializable {
 
     private static final long serialVersionUID = 1L;
