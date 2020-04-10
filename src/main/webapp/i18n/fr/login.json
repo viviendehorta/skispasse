@@ -2,8 +2,6 @@
   "login": {
     "title": "Authentification",
     "form": {
-      "username.label": "Nom d'utilisateur",
-      "username.placeholder": "Votre nom d'utilisateur",
       "password": "Mot de passe",
       "password.placeholder": "Votre mot de passe",
       "rememberme": "Garder la session ouverte",
