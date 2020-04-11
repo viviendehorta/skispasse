@@ -9,6 +9,7 @@ import { SkispasseTestModule } from '../../test.module';
 import { MockLoginService } from '../../helpers/mock-login.service';
 import { MockStateStorageService } from '../../helpers/mock-state-storage.service';
 import { LoginModalComponent } from 'app/login/login.component';
+import { Router } from '@angular/router';
 
 describe('Component Tests', () => {
   describe('LoginComponent', () => {
@@ -16,6 +17,7 @@ describe('Component Tests', () => {
     let fixture: ComponentFixture<LoginModalComponent>;
     let mockLoginService: any;
     let mockStateStorageService: any;
+    let mockRouter: any;
     let mockEventManager: any;
     let mockActiveModal: any;
 
@@ -44,6 +46,7 @@ describe('Component Tests', () => {
       comp = fixture.componentInstance;
       mockLoginService = fixture.debugElement.injector.get(LoginService);
       mockStateStorageService = fixture.debugElement.injector.get(StateStorageService);
+      mockRouter = fixture.debugElement.injector.get(Router);
       mockEventManager = fixture.debugElement.injector.get(JhiEventManager);
       mockActiveModal = fixture.debugElement.injector.get(NgbActiveModal);
     });
@@ -64,6 +67,8 @@ describe('Component Tests', () => {
           rememberMe: true
         });
         mockLoginService.setResponse({});
+        mockStateStorageService.setResponse('admin/users-management');
+        mockRouter.url = '/admin/users-management';
 
         // WHEN/
         comp.login();
@@ -76,6 +81,7 @@ describe('Component Tests', () => {
         expect(mockLoginService.loginSpy).toHaveBeenCalledWith(credentials);
         expect(mockStateStorageService.getUrlSpy).toHaveBeenCalledTimes(1);
         expect(mockStateStorageService.storeUrlSpy).toHaveBeenCalledWith(null);
+        expect(mockRouter.navigateByUrlSpy).toHaveBeenCalledWith('admin/users-management');
       })
     ));
 
@@ -95,6 +101,7 @@ describe('Component Tests', () => {
         });
         mockLoginService.setResponse({});
         mockStateStorageService.setResponse(null);
+        mockRouter.url = '/admin/users-management';
 
         // WHEN
         comp.login();
@@ -107,6 +114,7 @@ describe('Component Tests', () => {
         expect(mockLoginService.loginSpy).toHaveBeenCalledWith(credentials);
         expect(mockStateStorageService.getUrlSpy).toHaveBeenCalledTimes(1);
         expect(mockStateStorageService.storeUrlSpy).not.toHaveBeenCalled();
+        expect(mockRouter.navigateSpy).not.toHaveBeenCalled();
       })
     ));
 
