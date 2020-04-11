@@ -78,14 +78,14 @@ export class AccountService {
     return this.authenticationState.asObservable();
   }
 
-  getRole(account: Account) {
-    if (!account) {
+  getRole() {
+    if (!this.userIdentity) {
       return ROLE_ANONYMOUS;
     }
-    if (account.authorities.includes(ROLE_ADMIN)) {
+    if (this.userIdentity.authorities.includes(ROLE_ADMIN)) {
       return ROLE_ADMIN;
     }
-    if (account.authorities.includes(ROLE_CONTRIBUTOR)) {
+    if (this.userIdentity.authorities.includes(ROLE_CONTRIBUTOR)) {
       return ROLE_CONTRIBUTOR;
     }
     return ROLE_ANONYMOUS;
