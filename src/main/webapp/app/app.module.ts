@@ -9,7 +9,7 @@ import { SkispasseWorldmapModule } from './worldmap/worldmap.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { SkisMainComponent } from './layouts/main/main.component';
 import { ErrorComponent } from './layouts/error/error.component';
-import { NewsFactDetailModalContentComponent } from 'app/map/news-fact-detail-modal/news-fact-detail-modal.content.component';
+import { NewsFactDetailModalContentComponent } from 'app/worldmap/news-fact-detail-modal/news-fact-detail-modal.content.component';
 import { LoginModalComponent } from 'app/login/login.component';
 
 @NgModule({
