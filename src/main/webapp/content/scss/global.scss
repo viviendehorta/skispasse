@@ -1,9 +1,9 @@
 @import 'bootstrap-variables';
 @import '~bootstrap/scss/bootstrap';
 
-/* ==============================================================
-Bootstrap tweaks
-===============================================================*/
+body {
+  height: 100vh;
+}
 
 body,
 h1,

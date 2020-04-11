@@ -4,6 +4,10 @@
       "login": "Connexion",
       "logout": "Déconnexion"
     },
+    "admin": {
+      "usermanagement": "Gestion des utilisateurs"
+    },
+    "backtoworldmap": "Retour à la carte",
     "field": {
       "id": "ID"
     },
