@@ -2,8 +2,10 @@
     <div id="{{MAP_ID}}" class="map col-10"></div>
     <div class="control-panel col-2">
 
-        <div class="card" [ngSwitch]="isAuthenticated()">
-            <div class="account-panel card-body">
+
+        <div class="account-panel card" [ngSwitch]="isAuthenticated()">
+
+            <div class="card-body">
 
                 <button *ngSwitchCase="false" type="button" class="btn-login btn btn-primary btn-sm"
                         (click)="login()">
@@ -28,9 +30,20 @@
             </div>
         </div>
 
+        <!--Admin panel-->
+        <div *ngIf="this.isAdmin()" class="admin-panel card">
+            <div class="card-body">
+                <h5 class="card-title">Admin</h5>
+                <button class="btn btn-link" routerLink="/admin/user-management">
+                    <fa-icon [icon]="'user'"></fa-icon>&nbsp;<span jhiTranslate="global.admin.usermanagement"></span>
+                </button>
+            </div>
+        </div>
+
+        <!--Categories panel-->
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Categories</h5>
+                <h5 class="card-title">Catégories</h5>
                 <div class="form-check">
                     <skis-news-category-checkbox
                         *ngFor="let newsCategory of this.newsCategories"

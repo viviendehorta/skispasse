@@ -22,8 +22,7 @@ import { ROLE_ADMIN, ROLE_CONTRIBUTOR } from 'app/shared/constants/role.constant
 @Component({
   selector: 'skis-worldmap',
   templateUrl: './worldmap.component.html',
-  styleUrls: ['./worldmap.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./worldmap.scss']
 })
 export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
