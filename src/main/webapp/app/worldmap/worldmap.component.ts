@@ -6,7 +6,7 @@ import { OpenLayersService } from 'app/core/openlayers/openlayers.service';
 import { Vector as VectorLayer } from 'ol/layer';
 import { MappingService } from 'app/core/mapping/mapping.service';
 import { Feature } from 'ol';
-import { NewsFactDetailModalContentComponent } from 'app/map/news-fact-detail-modal/news-fact-detail-modal.content.component';
+import { NewsFactDetailModalContentComponent } from 'app/worldmap/news-fact-detail-modal/news-fact-detail-modal.content.component';
 import { NewsCategory } from 'app/shared/beans/news-category.model';
 import { CategoryChangedEvent } from 'app/shared/beans/events/category-changed.event.model';
 import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
