@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { NewsCategoryService } from 'app/core/newscategory/news-category.service';
 import Map from 'ol/Map';
 import { NewsFactService } from 'app/core/newsfacts/news-facts.service';
@@ -18,6 +18,7 @@ import { Subscription } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 import { Account } from 'app/shared/beans/account.model';
 import { ROLE_ADMIN, ROLE_CONTRIBUTOR } from 'app/shared/constants/role.constants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'skis-worldmap',
@@ -49,7 +50,8 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     private loginService: LoginService,
     private loginModalService: LoginModalService,
     private accountService: AccountService,
-    private eventManager: JhiEventManager
+    private eventManager: JhiEventManager,
+    private router: Router
   ) {
     this.newsFactsMap = null;
     this.newsFactMarkerLayer = null;
@@ -144,6 +146,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   logout() {
     this.loginService.logout();
+    this.router.navigate(['']);
   }
 
   isAuthenticated() {
@@ -151,11 +154,12 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   isAdmin() {
-    return this.accountService.getRole(this.account) === ROLE_ADMIN;
+    const isAdmin = this.accountService.getRole() === ROLE_ADMIN;
+    return isAdmin;
   }
 
   isContributor() {
-    return this.accountService.getRole(this.account) === ROLE_CONTRIBUTOR;
+    return this.accountService.getRole() === ROLE_CONTRIBUTOR;
   }
 
   registerAuthenticationSuccess() {
