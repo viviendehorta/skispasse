@@ -9,9 +9,10 @@ import { NewsFactDetailModalContentComponent } from 'app/worldmap/news-fact-deta
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
+import { AccountPanelComponent } from 'app/worldmap/account-panel/account-panel.component';
 
 @NgModule({
-  declarations: [WorldmapComponent, NewsCategoryCheckboxComponent, NewsFactDetailModalContentComponent],
+  declarations: [AccountPanelComponent, NewsCategoryCheckboxComponent, NewsFactDetailModalContentComponent, WorldmapComponent],
   exports: [NewsCategoryCheckboxComponent, NewsFactDetailModalContentComponent],
   imports: [CommonModule, FontAwesomeModule, NgbModule, RouterModule.forChild([WORLDMAP_ROUTE]), SkispasseSharedModule]
 })

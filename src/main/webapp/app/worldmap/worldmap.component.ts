@@ -17,7 +17,7 @@ import { LoginModalService } from 'app/core/login/login-modal.service';
 import { Subscription } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 import { Account } from 'app/shared/beans/account.model';
-import { ROLE_ADMIN, ROLE_CONTRIBUTOR } from 'app/shared/constants/role.constants';
+import { ROLE_ADMIN } from 'app/shared/constants/role.constants';
 import { Router } from '@angular/router';
 
 @Component({
@@ -59,11 +59,6 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.accountService.identity().subscribe((account: Account) => {
-      this.account = account;
-    });
-    this.registerAuthenticationSuccess();
-
     this.newsCategoryService.fetchCategories().subscribe(unflattenedNewsCategories => {
       this.newsCategories = this.newsCategoryService.flattenNewsCategories(unflattenedNewsCategories);
     });
@@ -140,33 +135,8 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  login() {
-    return this.loginModalService.open();
-  }
-
-  logout() {
-    this.loginService.logout();
-    this.router.navigate(['']);
-  }
-
-  isAuthenticated() {
-    return this.accountService.isAuthenticated();
-  }
-
   isAdmin() {
     const isAdmin = this.accountService.getRole() === ROLE_ADMIN;
     return isAdmin;
-  }
-
-  isContributor() {
-    return this.accountService.getRole() === ROLE_CONTRIBUTOR;
-  }
-
-  registerAuthenticationSuccess() {
-    this.authSubscription = this.eventManager.subscribe('authenticationSuccess', () => {
-      this.accountService.identity().subscribe(account => {
-        this.account = account;
-      });
-    });
   }
 }
