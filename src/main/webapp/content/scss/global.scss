@@ -1,6 +1,23 @@
 @import 'bootstrap-variables';
 @import '~bootstrap/scss/bootstrap';
 
+/* ==========================================================================
+Styles shared by several components
+========================================================================== */
+.control-panel {
+  .card {
+    margin: 0.3rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .form-check {
+    padding-left: 0;
+  }
+}
+
 body {
   height: 100vh;
 }

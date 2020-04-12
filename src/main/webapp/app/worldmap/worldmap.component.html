@@ -2,33 +2,7 @@
     <div id="{{MAP_ID}}" class="map col-10"></div>
     <div class="control-panel col-2">
 
-
-        <div class="account-panel card" [ngSwitch]="isAuthenticated()">
-
-            <div class="card-body">
-
-                <button *ngSwitchCase="false" type="button" class="btn-login btn btn-primary btn-sm"
-                        (click)="login()">
-                    <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
-                    <span jhiTranslate="global.account.login">Log in</span>
-                </button>
-
-                <div *ngSwitchCase="true">
-
-                    <fa-icon *ngIf="this.isAdmin()" [icon]="['fas', 'user-cog']" align=""></fa-icon>
-                    <fa-icon *ngIf="this.isContributor()" [icon]="['fas', 'user-edit']"></fa-icon>
-
-                    <span class="account-user-name card-text">{{this.account.login}}</span>
-
-                    <button type="button" class="btn-logout btn btn-primary btn-sm" (click)="logout()"
-                            title="{{'global.account.logout' | translate}}">
-                        <fa-icon icon="sign-out-alt" fixedWidth="true"></fa-icon>
-                    </button>
-                </div>
-
-
-            </div>
-        </div>
+        <skis-account-panel></skis-account-panel>
 
         <!--Admin panel-->
         <div *ngIf="this.isAdmin()" class="admin-panel card">
