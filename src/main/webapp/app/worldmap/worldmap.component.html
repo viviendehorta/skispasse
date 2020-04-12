@@ -3,16 +3,7 @@
     <div class="control-panel col-2">
 
         <skis-account-panel></skis-account-panel>
-
-        <!--Admin panel-->
-        <div *ngIf="this.isAdmin()" class="admin-panel card">
-            <div class="card-body">
-                <h5 class="card-title">Admin</h5>
-                <button class="btn btn-link" routerLink="/admin/user-management">
-                    <fa-icon [icon]="'user'"></fa-icon>&nbsp;<span jhiTranslate="global.admin.usermanagement"></span>
-                </button>
-            </div>
-        </div>
+        <skis-admin-panel></skis-admin-panel>
 
         <!--Categories panel-->
         <div class="card">

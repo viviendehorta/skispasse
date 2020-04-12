@@ -11,7 +11,6 @@ import { SkisMainComponent } from './layouts/main/main.component';
 import { ErrorComponent } from './layouts/error/error.component';
 import { NewsFactDetailModalContentComponent } from 'app/worldmap/news-fact-detail-modal/news-fact-detail-modal.content.component';
 import { LoginModalComponent } from 'app/login/login.component';
-import { AccountPanelComponent } from './worldmap/account-panel/account-panel.component';
 
 @NgModule({
   declarations: [SkisMainComponent, ErrorComponent, LoginModalComponent],
@@ -22,8 +21,8 @@ import { AccountPanelComponent } from './worldmap/account-panel/account-panel.co
     SkispasseSharedModule,
     SkispasseCoreModule,
     SkispasseWorldmapModule,
-    // jhipster-needle-angular-add-module JHipster will add new module here
     SkispasseAppRoutingModule
+    // jhipster-needle-angular-add-module JHipster will add new module here
   ]
 })
 export class SkispasseAppModule {}

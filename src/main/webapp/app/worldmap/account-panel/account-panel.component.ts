@@ -48,8 +48,7 @@ export class AccountPanelComponent implements OnInit {
   }
 
   isAdmin() {
-    const isAdmin = this.accountService.getRole() === ROLE_ADMIN;
-    return isAdmin;
+    return this.accountService.getRole() === ROLE_ADMIN;
   }
 
   isContributor() {
