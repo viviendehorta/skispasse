@@ -1,23 +1,8 @@
 <div class="worldmap row">
     <div id="{{MAP_ID}}" class="map col-10"></div>
     <div class="control-panel col-2">
-
         <skis-account-panel></skis-account-panel>
         <skis-admin-panel></skis-admin-panel>
-
-        <!--Categories panel-->
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Catégories</h5>
-                <div class="form-check">
-                    <skis-news-category-checkbox
-                        *ngFor="let newsCategory of this.newsCategories"
-                        [newsCategory]="newsCategory"
-                        (categoryChangedEmitter)="this.onCategoryChanged($event)">
-                    </skis-news-category-checkbox>
-                </div>
-            </div>
-        </div>
-
+        <skis-news-category-panel></skis-news-category-panel>
     </div>
 </div>

@@ -11,11 +11,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { AccountPanelComponent } from 'app/worldmap/account-panel/account-panel.component';
 import { AdminPanelComponent } from 'app/worldmap/admin-panel/admin-panel.component';
+import { NewsCategoryPanelComponent } from 'app/worldmap/news-category-panel/news-category-panel.component';
 
 @NgModule({
   declarations: [
     AccountPanelComponent,
     AdminPanelComponent,
+    NewsCategoryPanelComponent,
     NewsCategoryCheckboxComponent,
     NewsFactDetailModalContentComponent,
     WorldmapComponent
