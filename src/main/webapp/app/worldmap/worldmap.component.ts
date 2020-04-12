@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { NewsCategoryService } from 'app/core/newscategory/news-category.service';
 import Map from 'ol/Map';
 import { NewsFactService } from 'app/core/newsfacts/news-facts.service';
 import { OpenLayersService } from 'app/core/openlayers/openlayers.service';
@@ -7,18 +6,11 @@ import { Vector as VectorLayer } from 'ol/layer';
 import { MappingService } from 'app/core/mapping/mapping.service';
 import { Feature } from 'ol';
 import { NewsFactDetailModalContentComponent } from 'app/worldmap/news-fact-detail-modal/news-fact-detail-modal.content.component';
-import { NewsCategory } from 'app/shared/beans/news-category.model';
-import { CategoryChangedEvent } from 'app/shared/beans/events/category-changed.event.model';
 import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
 import { ModalService } from 'app/core/modal/modal.service';
-import { LoginService } from 'app/core/login/login.service';
-import { AccountService } from 'app/core/auth/account.service';
-import { LoginModalService } from 'app/core/login/login-modal.service';
-import { Subscription } from 'rxjs';
+import { NewsCategorySelectionService } from 'app/worldmap/news-category-selection.service';
 import { JhiEventManager } from 'ng-jhipster';
-import { Account } from 'app/shared/beans/account.model';
-import { ROLE_ADMIN } from 'app/shared/constants/role.constants';
-import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'skis-worldmap',
@@ -32,36 +24,27 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   MAP_ID = 'worldmapPageNewsFactsMap';
   ICON_PIXEL_CLICK_TOLERANCE = 3;
 
-  account: Account;
-  authSubscription: Subscription;
-
   private newsFactsMap: Map;
   private newsFactMarkerLayer: VectorLayer;
 
   newsFacts: NewsFactNoDetail[];
-  newsCategories: NewsCategory[];
+
+  categorySelectionSubscription: Subscription;
 
   constructor(
     private newsFactService: NewsFactService,
     private openLayersService: OpenLayersService,
-    private newsCategoryService: NewsCategoryService,
     private mappingService: MappingService,
     private modalService: ModalService,
-    private loginService: LoginService,
-    private loginModalService: LoginModalService,
-    private accountService: AccountService,
-    private eventManager: JhiEventManager,
-    private router: Router
+    private newsCategorySelectionService: NewsCategorySelectionService,
+    private eventManager: JhiEventManager
   ) {
     this.newsFactsMap = null;
     this.newsFactMarkerLayer = null;
-    this.newsCategories = [];
   }
 
   ngOnInit() {
-    this.newsCategoryService.fetchCategories().subscribe(unflattenedNewsCategories => {
-      this.newsCategories = this.newsCategoryService.flattenNewsCategories(unflattenedNewsCategories);
-    });
+    this.registerChangeInCategories();
   }
 
   ngAfterViewInit() {
@@ -75,6 +58,15 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.newsFactsMap) {
       this.newsFactsMap.setTarget(null);
     }
+    if (this.categorySelectionSubscription) {
+      this.eventManager.destroy(this.categorySelectionSubscription);
+    }
+  }
+
+  registerChangeInCategories() {
+    this.categorySelectionSubscription = this.eventManager.subscribe('newsCategorySelectionChanged', event =>
+      this.onNewsCategorySelectionChanged(event)
+    );
   }
 
   buildNewsFactsMap(newsFacts: NewsFactNoDetail[]) {
@@ -110,22 +102,6 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  onCategoryChanged(categoryChangedEvent: CategoryChangedEvent): void {
-    this.setCategorySelection(categoryChangedEvent.categoryId, categoryChangedEvent.isSelected);
-    const selectedCategoryIds = this.getSelectedCategoryIds();
-    const toShowNewsFacts = this.newsFactService.filterByCategoryIds(this.newsFacts, selectedCategoryIds);
-    this.openLayersService.refreshLayerFeatures(this.mappingService.newsFactNoDetailsToFeatures(toShowNewsFacts), this.newsFactMarkerLayer);
-  }
-
-  setCategorySelection(categoryId: number, isSelected: boolean) {
-    const category = this.newsCategories.find(newsCategory => newsCategory.id === categoryId);
-    category.isSelected = isSelected;
-  }
-
-  getSelectedCategoryIds(): number[] {
-    return this.newsCategories.filter(category => category.isSelected).map(category => category.id);
-  }
-
   showNewsFactDetail(newsFactId: number) {
     this.newsFactService.getNewsFactDetail(newsFactId).subscribe(unFlattenedNewsFactDetail => {
       const newsFactDetail = this.newsFactService.flattenNewsFactDetail(unFlattenedNewsFactDetail);
@@ -135,8 +111,10 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  isAdmin() {
-    const isAdmin = this.accountService.getRole() === ROLE_ADMIN;
-    return isAdmin;
+  onNewsCategorySelectionChanged(event: { name: string; content: { categoryId: number; isSelected: boolean } }): void {
+    this.newsCategorySelectionService.setCategorySelection(event.content.categoryId, event.content.isSelected);
+    const selectedCategoryIds = this.newsCategorySelectionService.getSelectedNewsCategoryIds();
+    const toShowNewsFacts = this.newsFactService.filterByCategoryIds(this.newsFacts, selectedCategoryIds);
+    this.openLayersService.refreshLayerFeatures(this.mappingService.newsFactNoDetailsToFeatures(toShowNewsFacts), this.newsFactMarkerLayer);
   }
 }
