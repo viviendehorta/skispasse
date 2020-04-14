@@ -36,7 +36,8 @@ import {
   faGlobe,
   faMapMarkerAlt,
   faUserEdit,
-  faUserCog
+  faUserCog,
+  faCog
 } from '@fortawesome/free-solid-svg-icons';
 
 export const fontAwesomeIcons = [
@@ -77,5 +78,6 @@ export const fontAwesomeIcons = [
   faGlobe,
   faMapMarkerAlt,
   faUserEdit,
-  faUserCog
+  faUserCog,
+  faCog
 ];

@@ -2,6 +2,7 @@
 
     <div class="card-body">
 
+        <!--Login button-->
         <button *ngSwitchCase="false" type="button" class="btn-login btn btn-primary btn-sm"
                 (click)="login()">
             <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
@@ -10,15 +11,31 @@
 
         <div *ngSwitchCase="true">
 
+            <!--Admin account icon-->
             <fa-icon *ngIf="this.isAdmin()" [icon]="['fas', 'user-cog']" align=""></fa-icon>
+
+            <!--Contributor account icon-->
             <fa-icon *ngIf="this.isContributor()" [icon]="['fas', 'user-edit']"></fa-icon>
 
+            <!--User login text-->
             <span class="account-user-name card-text">{{this.account.login}}</span>
 
+            <!--Logout button-->
             <button type="button" class="btn-logout btn btn-primary btn-sm" (click)="logout()"
                     title="{{'global.account.logout' | translate}}">
                 <fa-icon icon="sign-out-alt" fixedWidth="true"></fa-icon>
             </button>
+
+            <div>
+
+                <!--Edit connected user password button-->
+                <button *ngSwitchCase="true" type="button" class="btn btn-link" routerLink="account/settings">
+                    <fa-icon [icon]="['fas', 'cog']"></fa-icon>
+                    <span jhiTranslate="global.account.settings"></span>
+                </button>
+
+            </div>
+
         </div>
     </div>
 </div>
