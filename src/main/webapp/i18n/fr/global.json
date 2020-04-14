@@ -2,7 +2,8 @@
   "global": {
     "account": {
       "login": "Connexion",
-      "logout": "Déconnexion"
+      "logout": "Déconnexion",
+      "settings": "Mes paramètres"
     },
     "admin": {
       "usermanagement": "Gestion des utilisateurs"

@@ -19,6 +19,10 @@ const LAYOUT_ROUTES = [...errorRoute];
           canActivate: [UserRouteAccessService],
           loadChildren: () => import('./admin/admin-routing.module').then(m => m.AdminRoutingModule)
         },
+        {
+          path: 'account',
+          loadChildren: () => import('./account/account.module').then(m => m.SkispasseAccountModule)
+        },
         ...LAYOUT_ROUTES
       ],
       { enableTracing: DEBUG_INFO_ENABLED }
