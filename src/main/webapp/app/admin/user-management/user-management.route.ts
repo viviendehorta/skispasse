@@ -29,7 +29,7 @@ export const userManagementRoute: Routes = [
       pagingParams: JhiResolvePagingParams
     },
     data: {
-      pageTitle: 'Users',
+      pageTitle: 'admin.usermanagement.title',
       defaultSort: 'id,asc'
     }
   },
@@ -40,12 +40,15 @@ export const userManagementRoute: Routes = [
       user: UserManagementResolve
     },
     data: {
-      pageTitle: 'Users'
+      pageTitle: 'admin.usermanagement.detail.title'
     }
   },
   {
     path: 'new',
     component: UserManagementUpdateComponent,
+    data: {
+      pageTitle: 'admin.usermanagement.creation.title'
+    },
     resolve: {
       user: UserManagementResolve
     }
@@ -53,6 +56,9 @@ export const userManagementRoute: Routes = [
   {
     path: ':login/edit',
     component: UserManagementUpdateComponent,
+    data: {
+      pageTitle: 'admin.usermanagement.edition.title'
+    },
     resolve: {
       user: UserManagementResolve
     }

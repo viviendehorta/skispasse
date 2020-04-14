@@ -1,0 +1,16 @@
+{
+  "admin": {
+    "usermanagement": {
+      "title": "Utilisateurs",
+      "detail": {
+        "title": "Détail utilisateur"
+      },
+      "creation": {
+        "title": "Nouvel utilisateur"
+      },
+      "edition": {
+        "title": "Édition utilisateur"
+      }
+    }
+  }
+}
