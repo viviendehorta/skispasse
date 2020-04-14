@@ -11,7 +11,7 @@ export const accountRoute: Routes = [
         component: SettingsComponent,
         data: {
           authorities: ['ROLE_USER'],
-          pageTitle: 'Settings'
+          pageTitle: 'account.settings.title'
         },
         canActivate: [UserRouteAccessService]
       }
