@@ -1,13 +1,5 @@
 {
   "global": {
-    "account": {
-      "login": "Connexion",
-      "logout": "Déconnexion",
-      "settings": "Mes paramètres"
-    },
-    "admin": {
-      "usermanagement": "Gestion des utilisateurs"
-    },
     "backtoworldmap": "Retour à la carte",
     "field": {
       "id": "ID"
@@ -63,12 +55,6 @@
           "invalid": "Votre email n'est pas valide."
         }
       }
-    },
-    "field": {
-      "id": "ID"
-    },
-    "ribbon": {
-      "dev": "Développement"
     },
     "item-count": "Affichage {{first}} - {{second}} de {{total}} items."
   },

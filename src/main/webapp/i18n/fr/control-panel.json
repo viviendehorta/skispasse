@@ -1,0 +1,16 @@
+{
+  "controlpanel": {
+    "account": {
+      "login": "Connexion",
+      "logout": "Déconnexion",
+      "settings": "Mes paramètres"
+    },
+    "admin": {
+      "title": "Administration",
+      "usermanagement": "Gestion des utilisateurs"
+    },
+    "newscategory": {
+      "title": "Filtres"
+    }
+  }
+}
