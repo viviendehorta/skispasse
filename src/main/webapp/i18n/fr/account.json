@@ -2,6 +2,8 @@
   "account": {
     "settings": {
       "title": "Mes paramètres",
+      "settingsformtitle": "Informations générales",
+      "passwordformtitle": "Mot de passe",
       "updateresult": {
         "success": {
           "settings": "Informations sauvegardées",
