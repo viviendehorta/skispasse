@@ -14,8 +14,8 @@ export class NewsCategoryService {
   }
 
   flattenNewsCategories(unFlattenedNewsCategories: Object) {
-    const backNewsCategories = unFlattenedNewsCategories as { id: number; label: string }[];
-    return backNewsCategories.map(backNewsCategory => this.backToFrontBean(backNewsCategory));
+    const newsCategoriesFromBack = unFlattenedNewsCategories as { id: number; label: string }[];
+    return newsCategoriesFromBack.map(backNewsCategory => this.backToFrontBean(backNewsCategory));
   }
 
   private backToFrontBean(bean: { id: number; label: string }): NewsCategory {
