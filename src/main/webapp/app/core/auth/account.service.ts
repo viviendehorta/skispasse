@@ -22,6 +22,10 @@ export class AccountService {
     return this.http.get<Account>(SERVER_API_URL + 'api/account');
   }
 
+  save(account: Account): Observable<Account> {
+    return this.http.post<Account>(SERVER_API_URL + 'api/account', account);
+  }
+
   authenticate(identity) {
     this.userIdentity = identity;
     this.authenticated = identity !== null;

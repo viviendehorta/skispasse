@@ -1,7 +1,17 @@
 {
   "account": {
     "settings": {
-      "title": "Mes paramètres"
+      "title": "Mes paramètres",
+      "updateresult": {
+        "success": {
+          "settings": "Informations sauvegardées",
+          "password": "Mot de passe mis à jour"
+        },
+        "error": {
+          "settings": "Erreur lors de la mise à jour des informations !",
+          "password": "Erreur lors de la mise à jour du mot de passe !"
+        }
+      }
     }
   }
 }
