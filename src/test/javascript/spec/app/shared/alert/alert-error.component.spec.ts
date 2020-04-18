@@ -130,6 +130,20 @@ describe('Component Tests', () => {
         expect(comp.alerts.length).toBe(1);
         expect(comp.alerts[0].msg).toBe('Error Message');
       });
+
+      it('Should display an alert on status 504 for gateway timeout', () => {
+        // GIVEN
+        const response = new HttpErrorResponse({
+          url: 'http://localhost:8080/api/foos',
+          headers: new HttpHeaders(),
+          status: 504,
+          error: 'error.http.504'
+        });
+        eventManager.broadcast({ name: 'skispasseApp.httpError', content: response });
+        // THEN
+        expect(comp.alerts.length).toBe(1);
+        expect(comp.alerts[0].msg).toBe('error.http.504');
+      });
     });
   });
 });
