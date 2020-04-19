@@ -10,4 +10,4 @@ import { PasswordStrengthBarComponent } from 'app/account/settings/password-stre
   imports: [SkispasseSharedModule, RouterModule.forChild(accountRoute)],
   declarations: [PasswordStrengthBarComponent, SettingsComponent]
 })
-export class SkispasseAccountModule {}
+export class AccountModule {}

@@ -11,6 +11,8 @@ import { ModalService } from 'app/core/modal/modal.service';
 import { NewsCategorySelectionService } from 'app/worldmap/news-category-selection.service';
 import { JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
+import { ROLE_ADMIN, ROLE_CONTRIBUTOR } from 'app/shared/constants/role.constants';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'skis-worldmap',
@@ -32,6 +34,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   categorySelectionSubscription: Subscription;
 
   constructor(
+    private accountService: AccountService,
     private newsFactService: NewsFactService,
     private openLayersService: OpenLayersService,
     private mappingService: MappingService,
@@ -116,5 +119,13 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     const selectedCategoryIds = this.newsCategorySelectionService.getSelectedNewsCategoryIds();
     const toShowNewsFacts = this.newsFactService.filterByCategoryIds(this.newsFacts, selectedCategoryIds);
     this.openLayersService.refreshLayerFeatures(this.mappingService.newsFactNoDetailsToFeatures(toShowNewsFacts), this.newsFactMarkerLayer);
+  }
+
+  isAdmin() {
+    return this.accountService.getRole() === ROLE_ADMIN;
+  }
+
+  isContributor() {
+    return this.accountService.getRole() === ROLE_CONTRIBUTOR;
   }
 }

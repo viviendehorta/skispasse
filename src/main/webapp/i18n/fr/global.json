@@ -1,14 +1,49 @@
 {
+  "entity": {
+    "action": {
+      "cancel": "Annuler",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "save": "Sauvegarder",
+      "view": "Détail"
+    },
+    "delete": {
+      "title": "Confirmation de suppression"
+    },
+    "detail": {
+      "field": "Champs",
+      "value": "Valeur"
+    },
+    "validation": {
+      "datetimelocal": "Ce champ doit être une date et une heure.",
+      "minlength": "Ce champ doit faire au minimum {{min}} caractères.",
+      "max": "Ce champ doit être inférieur à {{max}}.",
+      "maxbytes": "Ce champ doit être inférieur à {{max}} bytes.",
+      "maxlength": "Ce champ doit faire moins de {{max}} caractères.",
+      "min": "Ce champ doit être supérieur à {{min}}.",
+      "minbytes": "Ce champ doit être supérieur à {{min}} bytes.",
+      "number": "Ce champ doit être un nombre.",
+      "required": "Ce champ est obligatoire.",
+      "pattern": "Ce champ doit suivre l'expression régulière {{pattern}}."
+    }
+  },
+  "error": {
+    "emailexists": "Email déjà utilisé !",
+    "idexists": "Une nouvelle entité {{entityName}} ne peut pas avoir d'ID !",
+    "idnull": "Invalid ID",
+    "internalServerError": "Erreur interne du serveur",
+    "NotNull": "Le champ {{fieldName}} ne peut pas être vide !",
+    "server.not.reachable": "Serveur inaccessible",
+    "Size": "Le champ {{fieldName}} ne respecte pas les critères minimum et maximum !",
+    "url.not.found": "Non trouvé",
+    "userexists": "Login déjà utilisé !"
+  },
   "global": {
     "backtoworldmap": "Retour à la carte",
+    "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
     "field": {
       "id": "ID"
     },
-    "ribbon": {
-      "dev": "Développement"
-    },
-    "title": "Skispasse",
-    "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
     "form": {
       "username.label": "Nom d'utilisateur",
       "username.placeholder": "Votre nom d'utilisateur",
@@ -21,6 +56,7 @@
       "email.label": "Email",
       "email.placeholder": "Votre email"
     },
+    "item-count": "Affichage {{first}} - {{second}} de {{total}} items.",
     "messages": {
       "info": {
         "authenticated": {
@@ -56,45 +92,8 @@
         }
       }
     },
-    "item-count": "Affichage {{first}} - {{second}} de {{total}} items."
-  },
-  "entity": {
-    "action": {
-      "cancel": "Annuler",
-      "edit": "Modifier",
-      "delete": "Supprimer",
-      "save": "Sauvegarder",
-      "view": "Détail"
-    },
-    "detail": {
-      "field": "Champs",
-      "value": "Valeur"
-    },
-    "delete": {
-      "title": "Confirmation de suppression"
-    },
-    "validation": {
-      "required": "Ce champ est obligatoire.",
-      "minlength": "Ce champ doit faire au minimum {{min}} caractères.",
-      "maxlength": "Ce champ doit faire moins de {{max}} caractères.",
-      "min": "Ce champ doit être supérieur à {{min}}.",
-      "max": "Ce champ doit être inférieur à {{max}}.",
-      "minbytes": "Ce champ doit être supérieur à {{min}} bytes.",
-      "maxbytes": "Ce champ doit être inférieur à {{max}} bytes.",
-      "pattern": "Ce champ doit suivre l'expression régulière {{pattern}}.",
-      "number": "Ce champ doit être un nombre.",
-      "datetimelocal": "Ce champ doit être une date et une heure."
+    "ribbon": {
+      "dev": "Développement"
     }
-  },
-  "error": {
-    "internalServerError": "Erreur interne du serveur",
-    "server.not.reachable": "Serveur inaccessible",
-    "url.not.found": "Non trouvé",
-    "NotNull": "Le champ {{fieldName}} ne peut pas être vide !",
-    "Size": "Le champ {{fieldName}} ne respecte pas les critères minimum et maximum !",
-    "userexists": "Login déjà utilisé !",
-    "emailexists": "Email déjà utilisé !",
-    "idexists": "Une nouvelle entité {{entityName}} ne peut pas avoir d'ID !",
-    "idnull": "Invalid ID"
   }
 }
