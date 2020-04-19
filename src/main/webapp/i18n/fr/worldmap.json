@@ -1,0 +1,23 @@
+{
+  "worldmap": {
+    "title": "Worldmap",
+    "controlPanel": {
+      "account": {
+        "login": "Connexion",
+        "logout": "Déconnexion",
+        "settings": "Mes paramètres"
+      },
+      "admin": {
+        "title": "Administration",
+        "userManagement": "Gestion des utilisateurs"
+      },
+      "newsCategory": {
+        "title": "Filtres"
+      },
+      "newsFactManagement": {
+        "title": "Contribution",
+        "myPublication": "Mes publications"
+      }
+    }
+  }
+}
