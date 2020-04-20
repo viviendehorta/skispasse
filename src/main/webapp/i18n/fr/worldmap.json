@@ -14,9 +14,9 @@
       "newsCategory": {
         "title": "Filtres"
       },
-      "newsFactManagement": {
-        "title": "Contribution",
-        "myPublication": "Mes publications"
+      "publication": {
+        "title": "Publication",
+        "publishedNewsFacts": "Mes publications"
       }
     }
   }

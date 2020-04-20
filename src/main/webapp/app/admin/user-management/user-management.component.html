@@ -3,26 +3,26 @@
     <div class="card-header">
         <h2>
             <span id="user-management-page-heading" jhiTranslate="userManagement.list.title">Users</span>
-            <div class="btn-group float-right">
-                <button class="btn btn-primary" type="submit" routerLink="/">
-                    <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="global.backtoworldmap"></span>
-                </button>
-                <button class="btn btn-primary float-right jh-create-entity ml-2" [routerLink]="['./new']">
-                    <fa-icon [icon]="'plus'"></fa-icon> <span jhiTranslate="userManagement.list.createLabel">
+        </h2>
+        <div class="btn-group float-right">
+            <button class="btn btn-primary" type="submit" routerLink="/">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="global.backToMap">Back to map</span>
+            </button>
+            <button class="btn btn-primary float-right jh-create-entity ml-2" [routerLink]="['./new']">
+                <fa-icon [icon]="'plus'"></fa-icon> <span jhiTranslate="userManagement.list.createLabel">
                     Create a new User
                 </span>
-                </button>
-            </div>
-        </h2>
+            </button>
+        </div>
     </div>
 
     <div class="card-body">
         <skis-alert></skis-alert>
-        <div class="table-responsive" *ngIf="users">
+        <div class="table-responsive">
             <table class="table table-striped" aria-describedby="user-management-page-heading">
                 <thead>
                 <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-                    <th scope="col"  jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="id"><span jhiTranslate="global.field.id">Id</span> <fa-icon [icon]="'sort'"></fa-icon></th>
                     <th scope="col"  jhiSortBy="login"><span jhiTranslate="userManagement.login">Login</span> <fa-icon [icon]="'sort'"></fa-icon></th>
                     <th scope="col"  jhiSortBy="email"><span jhiTranslate="userManagement.email">Email</span> <fa-icon [icon]="'sort'"></fa-icon></th>
                     <th scope="col"></th>
@@ -34,7 +34,7 @@
                     <th scope="col"></th>
                 </tr>
                 </thead>
-                <tbody *ngIf ="users">
+                <tbody *ngIf="users">
                 <tr *ngFor="let user of users; trackBy: trackIdentity">
                     <td><a [routerLink]="['./', user.login, 'view']">{{user.id}}</a></td>
                     <td>{{user.login}}</td>

@@ -1,0 +1,63 @@
+<div class="card h-100">
+
+    <div class="card-header">
+        <h2>
+            <span id="published-news-facts-page-heading" jhiTranslate="publishedNewsFacts.list.title">My publications</span>
+        </h2>
+        <div class="btn-group float-right">
+            <button class="btn btn-primary" type="submit" routerLink="/">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="global.backToMap">Back to map</span>
+            </button>
+            <button class="btn btn-primary float-right jh-create-entity ml-2" [routerLink]="['./new']">
+                <fa-icon [icon]="'plus'"></fa-icon> <span jhiTranslate="publishedNewsFacts.list.createLabel">
+                    Create a new User
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <skis-alert></skis-alert>
+        <div class="table-responsive">
+            <table class="table table-striped" aria-describedby="published-news-facts-page-heading">
+                <thead>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+                    <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">Id</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                    <th scope="col"><span jhiTranslate="publishedNewsFacts.geoCoordinate">Geo. Coord.</span></th>
+                    <th scope="col" jhiSortBy="date"><span jhiTranslate="publishedNewsFacts.date">Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                    <th scope="col" jhiSortBy="time"><span jhiTranslate="publishedNewsFacts.time">Time</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                    <th scope="col" jhiSortBy="category"><span jhiTranslate="publishedNewsFacts.category">Category</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                    <th scope="col" jhiSortBy="country"><span jhiTranslate="publishedNewsFacts.country">Country</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                    <th scope="col" jhiSortBy="city"><span jhiTranslate="publishedNewsFacts.city">City</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                    <th scope="col"><span jhiTranslate="publishedNewsFacts.address">Address</span></th>
+                </tr>
+                </thead>
+                <tbody *ngIf="publishedNewsFacts">
+                <tr *ngFor="let newsFact of publishedNewsFacts; trackBy: trackIdentity">
+                    <td>{{newsFact.id}}</td>
+                    <td>{{newsFact.geoCoordinate}}</td>
+                    <td>{{newsFact.date | date:'dd/MM/yyyy HH:mm'}}</td>
+                    <td>{{newsFact.time | date:'HH:mm'}}</td>
+                    <td>{{newsFact.category}}</td>
+                    <td>{{newsFact.country}}</td>
+                    <td>{{newsFact.city}}</td>
+                    <td>{{newsFact.address}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <div *ngIf="publishedNewsFacts">
+            <div class="row justify-content-center">
+                <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            </div>
+            <div class="row justify-content-center">
+                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5"
+                                [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+            </div>
+        </div>
+    </div>
+
+</div>

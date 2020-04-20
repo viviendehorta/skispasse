@@ -1,0 +1,16 @@
+{
+  "publishedNewsFacts": {
+    "title": "Publication",
+    "list": {
+      "title": "Mes publications",
+      "createLabel": "Nouvelle publication"
+    },
+    "geoCoordinate": "Coord. Géo.",
+    "date": "Date",
+    "time": "Heure",
+    "category": "Catégorie",
+    "country": "Pays",
+    "city": "Ville",
+    "address": "Adresse"
+  }
+}
