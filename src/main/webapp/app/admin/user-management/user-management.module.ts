@@ -6,10 +6,10 @@ import { UserManagementComponent } from './user-management.component';
 import { UserManagementDetailComponent } from './user-management-detail.component';
 import { UserManagementUpdateComponent } from './user-management-update.component';
 import { UserManagementDeleteDialogComponent } from './user-management-delete-dialog.component';
-import { userManagementRoute } from './user-management.route';
+import { userManagementRoutes } from './user-management.routes';
 
 @NgModule({
-  imports: [SkispasseSharedModule, RouterModule.forChild(userManagementRoute)],
+  imports: [SkispasseSharedModule, RouterModule.forChild(userManagementRoutes)],
   declarations: [
     UserManagementComponent,
     UserManagementDetailComponent,

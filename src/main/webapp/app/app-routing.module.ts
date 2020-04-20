@@ -5,8 +5,7 @@ import { DEBUG_INFO_ENABLED } from 'app/app.constants';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
 import { WorldmapComponent } from 'app/worldmap/worldmap.component';
-import { NewsfactManagementComponent } from 'app/contrib/newsfact-management/newsfact-management.component';
-import { ROLE_CONTRIBUTOR } from 'app/shared/constants/role.constants';
+import { ROLE_ADMIN, ROLE_CONTRIBUTOR } from 'app/shared/constants/role.constants';
 
 const LAYOUT_ROUTES = [...errorRoute];
 
@@ -25,7 +24,7 @@ const LAYOUT_ROUTES = [...errorRoute];
         {
           path: 'admin',
           data: {
-            authorities: ['ROLE_ADMIN']
+            authorities: [ROLE_ADMIN]
           },
           canActivate: [UserRouteAccessService],
           loadChildren: () => import('./admin/admin-routing.module').then(m => m.AdminRoutingModule)
@@ -35,12 +34,12 @@ const LAYOUT_ROUTES = [...errorRoute];
           loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
         },
         {
-          path: 'contribute',
-          component: NewsfactManagementComponent,
+          path: 'publication',
           data: {
-            authorities: [ROLE_CONTRIBUTOR],
-            pageTitle: 'newsFactManagement.title'
-          }
+            authorities: [ROLE_CONTRIBUTOR]
+          },
+          canActivate: [UserRouteAccessService],
+          loadChildren: () => import('./publication/publication-routing.module').then(m => m.PublicationRoutingModule)
         },
         ...LAYOUT_ROUTES
       ],

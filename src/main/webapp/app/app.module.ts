@@ -11,10 +11,9 @@ import { SkisMainComponent } from './layouts/main/main.component';
 import { ErrorComponent } from './layouts/error/error.component';
 import { NewsFactDetailModalContentComponent } from 'app/worldmap/news-fact-detail-modal/news-fact-detail-modal.content.component';
 import { LoginModalComponent } from 'app/login/login.component';
-import { NewsfactManagementComponent } from './contrib/newsfact-management/newsfact-management.component';
 
 @NgModule({
-  declarations: [SkisMainComponent, ErrorComponent, LoginModalComponent, NewsfactManagementComponent],
+  declarations: [SkisMainComponent, ErrorComponent, LoginModalComponent],
   bootstrap: [SkisMainComponent],
   entryComponents: [NewsFactDetailModalContentComponent, LoginModalComponent],
   imports: [

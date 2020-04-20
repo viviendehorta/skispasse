@@ -21,7 +21,7 @@ export class UserManagementResolve implements Resolve<any> {
   }
 }
 
-export const userManagementRoute: Routes = [
+export const userManagementRoutes: Routes = [
   {
     path: '',
     component: UserManagementComponent,

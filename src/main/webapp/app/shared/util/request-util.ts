@@ -1,15 +1,15 @@
 import { HttpParams } from '@angular/common/http';
 
-export const createRequestOption = (req?: any): HttpParams => {
+export const createHttpPagingOption = (pagingParams?: any): HttpParams => {
   let options: HttpParams = new HttpParams();
-  if (req) {
-    Object.keys(req).forEach(key => {
+  if (pagingParams) {
+    Object.keys(pagingParams).forEach(key => {
       if (key !== 'sort') {
-        options = options.set(key, req[key]);
+        options = options.set(key, pagingParams[key]);
       }
     });
-    if (req.sort) {
-      req.sort.forEach(val => {
+    if (pagingParams.sort) {
+      pagingParams.sort.forEach(val => {
         options = options.append('sort', val);
       });
     }

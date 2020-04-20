@@ -39,10 +39,10 @@
     "userexists": "Login déjà utilisé !"
   },
   "global": {
-    "backtoworldmap": "Retour à la carte",
+    "backToMap": "Retour à la carte",
     "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
     "field": {
-      "id": "ID"
+      "id": "Id"
     },
     "form": {
       "username.label": "Nom d'utilisateur",
