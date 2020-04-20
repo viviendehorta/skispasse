@@ -14,7 +14,8 @@ import { User } from 'app/shared/beans/user.model';
 
 @Component({
   selector: 'skis-user-mgmt',
-  templateUrl: './user-management.component.html'
+  templateUrl: './user-management.component.html',
+  styleUrls: ['./user-management.component.scss']
 })
 export class UserManagementComponent implements OnInit, OnDestroy {
   currentAccount: any;
