@@ -1,31 +1,28 @@
 package vdehorta.repository;
 
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 import vdehorta.domain.NewsCategory;
+import vdehorta.domain.NewsFact;
+import vdehorta.domain.User;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
-public class NewsCategoryRepository {
+/**
+ * Spring Data MongoDB repository for the {@link NewsCategory} entity.
+ */
+@Repository
+public interface NewsCategoryRepository extends MongoRepository<NewsCategory, Integer> {
 
-    private final NewsCategory.Builder NEWS_CATEGORY_BUILDER = new NewsCategory.Builder();
+//    protected final List<NewsCategory> NEWS_CATEGORIES = Arrays.asList(
+//        NEWS_CATEGORY_BUILDER.id(1).label("Manifestation").build(),
+//        NEWS_CATEGORY_BUILDER.id(2).label("Sport").build(),
+//        NEWS_CATEGORY_BUILDER.id(3).label("Culture").build(),
+//        NEWS_CATEGORY_BUILDER.id(4).label("Spectacle").build(),
+//        NEWS_CATEGORY_BUILDER.id(5).label("Nature").build(),
+//        NEWS_CATEGORY_BUILDER.id(6).label("Autre").build()
+//    );
 
-    protected final List<NewsCategory> NEWS_CATEGORIES = Arrays.asList(
-        NEWS_CATEGORY_BUILDER.id(1).label("Manifestation").build(),
-        NEWS_CATEGORY_BUILDER.id(2).label("Sport").build(),
-        NEWS_CATEGORY_BUILDER.id(3).label("Culture").build(),
-        NEWS_CATEGORY_BUILDER.id(4).label("Spectacle").build(),
-        NEWS_CATEGORY_BUILDER.id(5).label("Nature").build(),
-        NEWS_CATEGORY_BUILDER.id(6).label("Autre").build()
-    );
-
-    protected Map<Integer, NewsCategory> NEWS_CATEGORIES_BY_ID = NEWS_CATEGORIES.stream().collect(Collectors.toMap(NewsCategory::getId, Function.identity()));
-
-    public List<NewsCategory> getAll() {
-        return new ArrayList<>(NEWS_CATEGORIES);
-    }
-
-    public NewsCategory getById(int id) {
-        return NEWS_CATEGORIES_BY_ID.get(id);
-    }
+    List<NewsCategory> findAll();
 }

@@ -15,7 +15,10 @@ import vdehorta.repository.PersistentTokenRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.AuthoritiesConstants;
 import vdehorta.security.SecurityUtils;
-import vdehorta.service.dto.UserDTO;
+import vdehorta.dto.UserDTO;
+import vdehorta.service.errors.EmailAlreadyUsedException;
+import vdehorta.service.errors.InvalidPasswordException;
+import vdehorta.service.errors.UsernameAlreadyUsedException;
 import vdehorta.service.util.RandomUtil;
 
 import java.time.Instant;

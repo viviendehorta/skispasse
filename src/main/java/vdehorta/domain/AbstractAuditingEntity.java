@@ -1,7 +1,6 @@
 package vdehorta.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -18,11 +17,6 @@ public abstract class AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @CreatedBy
-    @Field("created_by")
-    @JsonIgnore
-    private String createdBy;
-
     @CreatedDate
     @Field("created_date")
     @JsonIgnore
@@ -37,14 +31,6 @@ public abstract class AbstractAuditingEntity implements Serializable {
     @Field("last_modified_date")
     @JsonIgnore
     private Instant lastModifiedDate = Instant.now();
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
 
     public Instant getCreatedDate() {
         return createdDate;

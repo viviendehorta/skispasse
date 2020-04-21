@@ -1,4 +1,4 @@
-package vdehorta.service.dto;
+package vdehorta.dto;
 
 /**
  * A DTO representing a password change required data - current and new password.

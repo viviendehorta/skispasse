@@ -4,8 +4,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vdehorta.domain.NewsCategory;
-import vdehorta.repository.NewsCategoryRepository;
+import vdehorta.dto.NewsCategoryDto;
+import vdehorta.service.NewsCategoryService;
 
 import java.util.List;
 
@@ -13,7 +13,11 @@ import java.util.List;
 @RequestMapping("/newsCategory")
 public class NewsCategoryResource {
 
-    private NewsCategoryRepository newsCategoryRepository = new NewsCategoryRepository();
+    private NewsCategoryService newsCategoryService;
+
+    public NewsCategoryResource(NewsCategoryService newsCategoryService) {
+        this.newsCategoryService = newsCategoryService;
+    }
 
     /**
      * {@code POST  /all} : Get a list containing all news categories.
@@ -21,7 +25,7 @@ public class NewsCategoryResource {
      * @return list containing all news categories.
      */
     @PostMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<NewsCategory> getAll() {
-        return newsCategoryRepository.getAll();
+    public List<NewsCategoryDto> getAll() {
+        return newsCategoryService.getAll();
     }
 }

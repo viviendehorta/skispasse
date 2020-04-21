@@ -8,7 +8,7 @@ import { PublishedNewsFactUpdateComponent } from './published-news-fact-update.c
 import { NewsFactService } from 'app/core/newsfacts/news-facts.service';
 
 @Injectable({ providedIn: 'root' })
-export class NewsFactManagementResolve implements Resolve<any> {
+export class PublishedNewsFactsResolve implements Resolve<any> {
   constructor(private newsFactService: NewsFactService) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -39,7 +39,7 @@ export const publishedNewsFactsRoutes: Routes = [
       pageTitle: 'publishedNewsFacts.creation.title'
     },
     resolve: {
-      user: NewsFactManagementResolve
+      user: PublishedNewsFactsResolve
     }
   },
   {
@@ -49,7 +49,7 @@ export const publishedNewsFactsRoutes: Routes = [
       pageTitle: 'publishedNewsFacts.edition.title'
     },
     resolve: {
-      user: NewsFactManagementResolve
+      user: PublishedNewsFactsResolve
     }
   }
 ];

@@ -20,7 +20,7 @@ import vdehorta.repository.UserRepository;
 import vdehorta.security.AuthoritiesConstants;
 import vdehorta.service.MailService;
 import vdehorta.service.UserService;
-import vdehorta.service.dto.UserDTO;
+import vdehorta.dto.UserDTO;
 import vdehorta.web.rest.errors.BadRequestAlertException;
 import vdehorta.web.rest.errors.EmailAlreadyUsedException;
 import vdehorta.web.rest.errors.LoginAlreadyUsedException;

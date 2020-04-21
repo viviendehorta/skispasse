@@ -1,4 +1,4 @@
-package vdehorta.service;
+package vdehorta.service.errors;
 
 public class InvalidPasswordException extends RuntimeException {
 
