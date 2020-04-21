@@ -1,18 +1,33 @@
-package vdehorta.domain;
+package vdehorta.dto;
 
-public class NewsFactDetail {
+import vdehorta.domain.LocationCoordinate;
 
-    private long id;
+import java.time.Instant;
+import java.util.Objects;
+
+public class NewsFactDetailDto {
+
+    private Long id;
     private LocationCoordinate geoCoordinate;
-    private String date;
-    private String time;
-    private NewsCategory category;
+    private Instant eventDate;
+    private Integer newsCategoryId;
     private String country;
     private String city;
     private String address;
     private String videoPath;
 
-    public long getId() {
+    private NewsFactDetailDto(Builder builder) {
+        id = builder.id;
+        geoCoordinate = builder.geoCoordinate;
+        eventDate = builder.eventDate;
+        newsCategoryId = builder.newsCategoryId;
+        country = builder.country;
+        city = builder.city;
+        address = builder.address;
+        videoPath = builder.videoPath;
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -20,16 +35,12 @@ public class NewsFactDetail {
         return geoCoordinate;
     }
 
-    public String getDate() {
-        return date;
+    public Instant getEventDate() {
+        return eventDate;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public NewsCategory getCategory() {
-        return category;
+    public Integer getNewsCategoryId() {
+        return newsCategoryId;
     }
 
     public String getCountry() {
@@ -48,24 +59,24 @@ public class NewsFactDetail {
         return videoPath;
     }
 
-    private NewsFactDetail(Builder builder) {
-        id = builder.id;
-        geoCoordinate = builder.geoCoordinate;
-        date = builder.date;
-        time = builder.time;
-        category = builder.category;
-        country = builder.country;
-        city = builder.city;
-        address = builder.address;
-        videoPath = builder.videoPath;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NewsFactDetailDto that = (NewsFactDetailDto) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public static final class Builder {
-        private long id;
+        private Long id;
         private LocationCoordinate geoCoordinate;
-        private String date;
-        private String time;
-        private NewsCategory category;
+        private Instant eventDate;
+        private Integer newsCategoryId;
         private String country;
         private String city;
         private String address;
@@ -74,7 +85,7 @@ public class NewsFactDetail {
         public Builder() {
         }
 
-        public Builder id(long val) {
+        public Builder id(Long val) {
             id = val;
             return this;
         }
@@ -84,18 +95,13 @@ public class NewsFactDetail {
             return this;
         }
 
-        public Builder date(String val) {
-            date = val;
+        public Builder eventDate(Instant val) {
+            eventDate = val;
             return this;
         }
 
-        public Builder time(String val) {
-            time = val;
-            return this;
-        }
-
-        public Builder category(NewsCategory val) {
-            category = val;
+        public Builder newsCategoryId(Integer val) {
+            newsCategoryId = val;
             return this;
         }
 
@@ -119,8 +125,8 @@ public class NewsFactDetail {
             return this;
         }
 
-        public NewsFactDetail build() {
-            return new NewsFactDetail(this);
+        public NewsFactDetailDto build() {
+            return new NewsFactDetailDto(this);
         }
     }
 }

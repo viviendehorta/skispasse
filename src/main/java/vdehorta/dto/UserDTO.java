@@ -1,4 +1,4 @@
-package vdehorta.service.dto;
+package vdehorta.dto;
 
 import vdehorta.config.Constants;
 import vdehorta.domain.Authority;

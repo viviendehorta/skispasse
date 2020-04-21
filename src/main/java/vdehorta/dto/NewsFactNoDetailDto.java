@@ -1,6 +1,8 @@
-package vdehorta.domain;
+package vdehorta.dto;
 
-public class NewsFactNoDetail {
+import vdehorta.domain.LocationCoordinate;
+
+public class NewsFactNoDetailDto {
 
     private long id;
     private int categoryId;
@@ -18,7 +20,7 @@ public class NewsFactNoDetail {
         return categoryId;
     }
 
-    private NewsFactNoDetail(Builder builder) {
+    private NewsFactNoDetailDto(Builder builder) {
         id = builder.id;
         locationCoordinate = builder.locationCoordinate;
         categoryId = builder.categoryId;
@@ -47,8 +49,8 @@ public class NewsFactNoDetail {
             return this;
         }
 
-        public NewsFactNoDetail build() {
-            return new NewsFactNoDetail(this);
+        public NewsFactNoDetailDto build() {
+            return new NewsFactNoDetailDto(this);
         }
     }
 }

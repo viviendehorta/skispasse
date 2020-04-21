@@ -1,4 +1,4 @@
-package vdehorta.service;
+package vdehorta.service.errors;
 
 public class EmailAlreadyUsedException extends RuntimeException {
 

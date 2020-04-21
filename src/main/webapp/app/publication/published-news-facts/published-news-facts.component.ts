@@ -15,9 +15,8 @@ import { AccountService } from 'app/core/auth/account.service';
   styleUrls: ['./published-news-facts.component.scss']
 })
 export class PublishedNewsFactsComponent implements OnInit {
-  private publishedNewsFacts: NewsFactDetail[];
-  private currentAccount: Account;
-
+  publishedNewsFacts: NewsFactDetail[];
+  currentAccount: Account;
   routeData: Subscription;
   links: any;
   totalItems: any;

@@ -1,6 +1,6 @@
 package vdehorta.web.rest.vm;
 
-import vdehorta.service.dto.UserDTO;
+import vdehorta.dto.UserDTO;
 
 import javax.validation.constraints.Size;
 

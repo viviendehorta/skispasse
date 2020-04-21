@@ -1,4 +1,4 @@
 /**
  * Data Transfer Objects.
  */
-package vdehorta.service.dto;
+package vdehorta.dto;
