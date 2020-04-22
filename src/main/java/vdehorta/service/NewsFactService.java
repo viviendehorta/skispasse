@@ -41,7 +41,7 @@ public class NewsFactService {
         return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
     }
 
-    public List<NewsFactDetailDto> getByUser(String userLogin) {
-        return newsFactMapper.newsFactsToNewsFactDetailDtos(newsFactRepository.findAllByCreatedBy(userLogin));
+    public List<NewsFactDetailDto> getByOwner(String ownerLogin) {
+        return newsFactMapper.newsFactsToNewsFactDetailDtos(newsFactRepository.findAllByOwner(ownerLogin));
     }
 }

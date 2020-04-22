@@ -21,7 +21,7 @@ public class NewsFactResource {
     /**
      * {@code GET  /all} : Get a list containing all news facts.
      *
-     * @return list map containing news facts by news category id.
+     * @return list containing all news facts.
      */
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NewsFactNoDetailDto> getAll() {
@@ -38,13 +38,13 @@ public class NewsFactResource {
         return newsFactService.getById(newsFactId);
     }
 
-//    /**
-//     * {@code GET  /all} : Get a list containing all news facts.
-//     *
-//     * @return list map containing news facts by news category id.
-//     */
-//    @GetMapping(value = "/byUser/{userLogin}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public List<NewsFactDetailDto> getByUser(@PathVariable String userLogin) {
-//        return newsFactService.getByUser(userLogin);
-//    }
+    /**
+     * {@code GET  /user} : Get a list containing news facts of the given user.
+     *
+     * @return list containing news facts of the given user.
+     */
+    @GetMapping(value = "/contributor/{login}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<NewsFactDetailDto> getByUser(@PathVariable String login) {
+        return newsFactService.getByOwner(login);
+    }
 }

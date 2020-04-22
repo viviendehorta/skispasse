@@ -14,5 +14,5 @@ public interface NewsFactRepository extends MongoRepository<NewsFact, String> {
 
     List<NewsFact> findAll();
 
-    List<NewsFact> findAllByCreatedBy(String createdBy);
+    List<NewsFact> findAllByOwner(String owner);
 }

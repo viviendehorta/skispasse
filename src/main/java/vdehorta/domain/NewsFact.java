@@ -1,6 +1,5 @@
 package vdehorta.domain;
 
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -54,10 +53,9 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Field("video_path")
     private String videoPath;
 
-    @CreatedBy
     @Indexed
-    @Field("created_by")
-    private String createdBy;
+    @Field("owner")
+    private String owner;
 
 
     public NewsFact() {
@@ -76,7 +74,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         city = builder.city;
         address = builder.address;
         videoPath = builder.videoPath;
-        createdBy = builder.createdBy;
+        owner = builder.owner;
     }
 
     public String getId() {
@@ -87,36 +85,72 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         return geoCoordinateX;
     }
 
+    public void setGeoCoordinateX(Long geoCoordinateX) {
+        this.geoCoordinateX = geoCoordinateX;
+    }
+
     public Long getGeoCoordinateY() {
         return geoCoordinateY;
+    }
+
+    public void setGeoCoordinateY(Long geoCoordinateY) {
+        this.geoCoordinateY = geoCoordinateY;
     }
 
     public Instant getEventDate() {
         return eventDate;
     }
 
+    public void setEventDate(Instant eventDate) {
+        this.eventDate = eventDate;
+    }
+
     public String getCategoryId() {
         return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getCountry() {
         return country;
     }
 
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public String getCity() {
         return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getAddress() {
         return address;
     }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getVideoPath() {
         return videoPath;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
+    public void setVideoPath(String videoPath) {
+        this.videoPath = videoPath;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     @Override
@@ -144,7 +178,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             ", city='" + city + '\'' +
             ", address='" + address + '\'' +
             ", videoPath='" + videoPath + '\'' +
-            ", createdBy='" + createdBy + '\'' +
+            ", owner='" + owner + '\'' +
             '}';
     }
 
@@ -161,7 +195,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private @NotNull String city;
         private @NotNull String address;
         private @NotNull String videoPath;
-        private String createdBy;
+        private String owner;
 
         public Builder() {
         }
@@ -226,8 +260,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder createdBy(String val) {
-            createdBy = val;
+        public Builder owner(String val) {
+            owner = val;
             return this;
         }
 
