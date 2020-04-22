@@ -5,7 +5,7 @@ import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
 import { JhiAlertService, JhiParseLinks } from 'ng-jhipster';
-import { NewsFactService } from 'app/core/newsfacts/news-facts.service';
+import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
 import { Account } from 'app/shared/beans/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 

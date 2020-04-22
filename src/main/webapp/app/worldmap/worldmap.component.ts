@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import Map from 'ol/Map';
-import { NewsFactService } from 'app/core/newsfacts/news-facts.service';
+import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
 import { OpenLayersService } from 'app/core/openlayers/openlayers.service';
 import { Vector as VectorLayer } from 'ol/layer';
 import { MappingService } from 'app/core/mapping/mapping.service';
@@ -114,8 +114,8 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  onNewsCategorySelectionChanged(event: { name: string; content: { categoryId: number; isSelected: boolean } }): void {
-    this.newsCategorySelectionService.setCategorySelection(event.content.categoryId, event.content.isSelected);
+  onNewsCategorySelectionChanged(event: { name: string; content: { categoryId: string; isSelected: boolean } }): void {
+    this.newsCategorySelectionService.setNewsCategorySelection(event.content.categoryId, event.content.isSelected);
     const selectedCategoryIds = this.newsCategorySelectionService.getSelectedNewsCategoryIds();
     const toShowNewsFacts = this.newsFactService.filterByCategoryIds(this.newsFacts, selectedCategoryIds);
     this.openLayersService.refreshLayerFeatures(this.mappingService.newsFactNoDetailsToFeatures(toShowNewsFacts), this.newsFactMarkerLayer);

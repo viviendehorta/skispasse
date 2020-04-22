@@ -59,6 +59,10 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Field("created_by")
     private String createdBy;
 
+
+    public NewsFact() {
+    }
+
     private NewsFact(Builder builder) {
         setCreatedDate(builder.createdDate);
         setLastModifiedBy(builder.lastModifiedBy);

@@ -5,7 +5,7 @@ import { JhiResolvePagingParams } from 'ng-jhipster';
 import { User } from 'app/shared/beans//user.model';
 import { PublishedNewsFactsComponent } from './published-news-facts.component';
 import { PublishedNewsFactUpdateComponent } from './published-news-fact-update.component';
-import { NewsFactService } from 'app/core/newsfacts/news-facts.service';
+import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
 
 @Injectable({ providedIn: 'root' })
 export class PublishedNewsFactsResolve implements Resolve<any> {

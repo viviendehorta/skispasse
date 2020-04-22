@@ -18,6 +18,7 @@ public class NewsCategory implements Serializable {
     @Field("label")
     private String label;
 
+
     private NewsCategory() {}
 
     private NewsCategory(Builder builder) {

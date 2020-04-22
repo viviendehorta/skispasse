@@ -17,7 +17,7 @@ export class NewsCategoryCheckboxComponent {
     this.eventManager.broadcast({
       name: 'newsCategorySelectionChanged',
       content: {
-        categoryId: parseInt($event.target.value, 10),
+        categoryId: $event.target.value,
         isSelected: $event.target.checked
       }
     });

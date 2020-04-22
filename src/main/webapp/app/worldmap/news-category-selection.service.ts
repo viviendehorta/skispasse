@@ -3,20 +3,32 @@ import { NewsCategory } from 'app/shared/beans/news-category.model';
 
 @Injectable({ providedIn: 'root' })
 export class NewsCategorySelectionService {
-  private newsCategories: NewsCategory[];
+  private newsCategoriesSelection: {
+    newsCategory: NewsCategory;
+    isSelected: boolean;
+  }[];
 
   constructor() {}
 
-  setNewsCategories(newsCategories: NewsCategory[]) {
-    this.newsCategories = newsCategories;
+  setUnselectedNewsCategories(newsCategories: NewsCategory[]) {
+    this.newsCategoriesSelection = newsCategories.map(newsCategory => {
+      return {
+        newsCategory,
+        isSelected: false
+      };
+    });
   }
 
-  setCategorySelection(categoryId: number, isSelected: boolean) {
-    const category = this.newsCategories.find(newsCategory => newsCategory.id === categoryId);
-    category.isSelected = isSelected;
+  setNewsCategorySelection(categoryId: string, isSelected: boolean) {
+    const newsCategoriesSelection = this.newsCategoriesSelection.find(
+      newsCategorySelection => newsCategorySelection.newsCategory.id === categoryId
+    );
+    newsCategoriesSelection.isSelected = isSelected;
   }
 
-  getSelectedNewsCategoryIds(): number[] {
-    return this.newsCategories.filter(category => category.isSelected).map(category => category.id);
+  getSelectedNewsCategoryIds(): string[] {
+    return this.newsCategoriesSelection
+      .filter(newsCategorySelection => newsCategorySelection.isSelected)
+      .map(newsCategorySelection => newsCategorySelection.newsCategory.id);
   }
 }

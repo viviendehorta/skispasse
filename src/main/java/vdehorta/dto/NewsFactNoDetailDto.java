@@ -4,11 +4,11 @@ import vdehorta.domain.LocationCoordinate;
 
 public class NewsFactNoDetailDto {
 
-    private long id;
-    private int categoryId;
+    private String id;
+    private String newsCategoryId;
     private LocationCoordinate locationCoordinate;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -16,25 +16,25 @@ public class NewsFactNoDetailDto {
         return locationCoordinate;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public String getNewsCategoryId() {
+        return newsCategoryId;
     }
 
     private NewsFactNoDetailDto(Builder builder) {
         id = builder.id;
         locationCoordinate = builder.locationCoordinate;
-        categoryId = builder.categoryId;
+        newsCategoryId = builder.newsCategoryId;
     }
 
     public static final class Builder {
-        private long id;
+        private String id;
         private LocationCoordinate locationCoordinate;
-        private int categoryId;
+        private String newsCategoryId;
 
         public Builder() {
         }
 
-        public Builder id(long val) {
+        public Builder id(String val) {
             id = val;
             return this;
         }
@@ -44,8 +44,8 @@ public class NewsFactNoDetailDto {
             return this;
         }
 
-        public Builder categoryId(int val) {
-            categoryId = val;
+        public Builder newsCategoryId(String val) {
+            newsCategoryId = val;
             return this;
         }
 

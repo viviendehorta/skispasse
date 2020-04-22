@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import vdehorta.domain.LocationCoordinate;
 import vdehorta.domain.NewsFact;
 import vdehorta.dto.NewsFactDetailDto;
+import vdehorta.dto.NewsFactNoDetailDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,5 +35,18 @@ public class NewsFactMapper {
     public List<NewsFactDetailDto> newsFactsToNewsFactDetailDtos(List<NewsFact> newsFacts) {
         return newsFacts.stream()
             .map(this::newsFactToNewsFactDetailDto).collect(Collectors.toList());
+    }
+
+    public List<NewsFactNoDetailDto> newsFactsToNewsFactNoDetailDtos(List<NewsFact> newsFacts) {
+        return newsFacts.stream().map(this::newsFactToNewsFactNoDetailDto).collect(Collectors.toList());
+    }
+
+    public NewsFactNoDetailDto newsFactToNewsFactNoDetailDto(NewsFact newsFact) {
+        NewsFactNoDetailDto.Builder builder = new NewsFactNoDetailDto.Builder();
+        builder
+            .newsCategoryId(newsFact.getCategoryId())
+            .locationCoordinate(new LocationCoordinate(newsFact.getGeoCoordinateX(), newsFact.getGeoCoordinateY()))
+            .id(newsFact.getId());
+        return builder.build();
     }
 }

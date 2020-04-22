@@ -1,5 +1,4 @@
 export interface NewsCategory {
-  id: number;
+  id: string;
   label: string;
-  isSelected: boolean;
 }
