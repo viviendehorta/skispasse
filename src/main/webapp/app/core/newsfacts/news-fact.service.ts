@@ -27,7 +27,7 @@ export class NewsFactService {
 
   getByUser(userLogin: string, pagingParams?: any): Observable<HttpResponse<NewsFactDetail[]>> {
     const httpPagingOptions = createHttpPagingOptions(pagingParams);
-    return this.http.get<NewsFactDetail[]>(this.BASE_URL + 'byUser/' + userLogin, { params: httpPagingOptions, observe: 'response' });
+    return this.http.get<NewsFactDetail[]>(this.BASE_URL + 'contributor/' + userLogin, { params: httpPagingOptions, observe: 'response' });
   }
 
   flattenNewsFacts(unFlattenedNewsFacts: Object): NewsFactNoDetail[] {
