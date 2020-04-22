@@ -2,7 +2,7 @@ import { LocationCoordinate } from 'app/shared/beans/location-coordinate.model';
 import { NewsCategory } from 'app/shared/beans/news-category.model';
 
 export interface NewsFactDetail {
-  id: number;
+  id: string;
   geoCoordinate: LocationCoordinate;
   date: string;
   time: string;

@@ -21,8 +21,8 @@ export class NewsFactService {
     return this.http.get(this.BASE_URL + newsFactId);
   }
 
-  filterByCategoryIds(newsFacts: NewsFactNoDetail[], categoryIds: number[]) {
-    return newsFacts.filter(newsFact => categoryIds.includes(newsFact.categoryId));
+  filterByCategoryIds(newsFacts: NewsFactNoDetail[], categoryIds: string[]) {
+    return newsFacts.filter(newsFact => categoryIds.includes(newsFact.newsCategoryId));
   }
 
   getByUser(userLogin: string, pagingParams?: any): Observable<HttpResponse<NewsFactDetail[]>> {

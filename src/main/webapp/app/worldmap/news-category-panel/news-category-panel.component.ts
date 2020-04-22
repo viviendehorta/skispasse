@@ -19,7 +19,7 @@ export class NewsCategoryPanelComponent implements OnInit {
     this.newsCategoryService.fetchCategories().subscribe(unflattenedNewsCategories => {
       const flattenedNewsCategories = this.newsCategoryService.flattenNewsCategories(unflattenedNewsCategories);
       this.newsCategories = flattenedNewsCategories;
-      this.newsCategorySelectionService.setNewsCategories(flattenedNewsCategories);
+      this.newsCategorySelectionService.setUnselectedNewsCategories(flattenedNewsCategories);
     });
   }
 }

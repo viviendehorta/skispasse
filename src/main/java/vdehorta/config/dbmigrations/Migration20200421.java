@@ -21,12 +21,12 @@ public class Migration20200421 {
 
         final NewsCategory.Builder newsCategoryBuilder = new NewsCategory.Builder();
         final List<NewsCategory> initialNewsCategories = Arrays.asList(
-            newsCategoryBuilder.label("Manifestation").build(),
-            newsCategoryBuilder.label("Sport").build(),
-            newsCategoryBuilder.label("Culture").build(),
-            newsCategoryBuilder.label("Spectacle").build(),
-            newsCategoryBuilder.label("Nature").build(),
-            newsCategoryBuilder.label("Autre").build()
+            newsCategoryBuilder.id("1").label("Manifestation").build(),
+            newsCategoryBuilder.id("2").label("Sport").build(),
+            newsCategoryBuilder.id("3").label("Culture").build(),
+            newsCategoryBuilder.id("4").label("Spectacle").build(),
+            newsCategoryBuilder.id("5").label("Nature").build(),
+            newsCategoryBuilder.id("6").label("Autre").build()
         );
 
         mongoTemplate.insertAll(initialNewsCategories);
@@ -44,8 +44,8 @@ public class Migration20200421 {
         final NewsFact.Builder newsFactBuilder = new NewsFact.Builder();
         final List<NewsFact> initialNewsFacts = Arrays.asList(
             newsFactBuilder.categoryId(allCategories.get(0).getId()).address("Place de la République, 75011 Paris, France").city("Paris").country("France").createdBy("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").geoCoordinateX(baseCoord).geoCoordinateY(baseCoord).build(),
-            newsFactBuilder.categoryId(allCategories.get(1).getId()).address("Place de la République, 75011 Paris, France").city("Paris").country("France").createdBy("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").geoCoordinateX(baseCoord / 2).geoCoordinateY(baseCoord / 3).build(),
-            newsFactBuilder.categoryId(allCategories.get(2).getId()).address("Place de la République, 75011 Paris, France").city("Paris").country("France").createdBy("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").geoCoordinateX(baseCoord).geoCoordinateY(baseCoord).build(),
+            newsFactBuilder.categoryId(allCategories.get(1).getId()).address("Place de la République, 75011 Paris, France").city("Paris").country("France").createdBy("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").geoCoordinateX(baseCoord / 2).geoCoordinateY(baseCoord).build(),
+            newsFactBuilder.categoryId(allCategories.get(2).getId()).address("Place de la République, 75011 Paris, France").city("Paris").country("France").createdBy("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").geoCoordinateX(baseCoord).geoCoordinateY(baseCoord / 3).build(),
             newsFactBuilder.categoryId(allCategories.get(3).getId()).address("Place de la République, 75011 Paris, France").city("Paris").country("France").createdBy("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").geoCoordinateX(baseCoord / 4).geoCoordinateY(baseCoord / 4).build(),
             newsFactBuilder.categoryId(allCategories.get(4).getId()).address("Place de la République, 75011 Paris, France").city("Paris").country("France").createdBy("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").geoCoordinateX(baseCoord * 2).geoCoordinateY(baseCoord / 5).build(),
             newsFactBuilder.categoryId(allCategories.get(5).getId()).address("Place de la République, 75011 Paris, France").city("Paris").country("France").createdBy("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").geoCoordinateX(baseCoord).geoCoordinateY(baseCoord * 2).build()

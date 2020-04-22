@@ -14,11 +14,11 @@ export class NewsCategoryService {
   }
 
   flattenNewsCategories(unFlattenedNewsCategories: Object) {
-    const newsCategoriesFromBack = unFlattenedNewsCategories as { id: number; label: string }[];
+    const newsCategoriesFromBack = unFlattenedNewsCategories as { id: string; label: string }[];
     return newsCategoriesFromBack.map(backNewsCategory => this.backToFrontBean(backNewsCategory));
   }
 
-  private backToFrontBean(bean: { id: number; label: string }): NewsCategory {
+  private backToFrontBean(bean: { id: string; label: string }): NewsCategory {
     return {
       id: bean.id,
       label: bean.label,

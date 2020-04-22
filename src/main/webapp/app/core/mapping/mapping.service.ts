@@ -13,7 +13,7 @@ export class MappingService {
   }
 
   newsFactNoDetailToFeature(newsFactNoDetail: NewsFactNoDetail): Feature {
-    const style = this.getMarkerStyle(newsFactNoDetail.categoryId);
+    const style = this.getMarkerStyle(newsFactNoDetail.newsCategoryId);
     const markerFeature = new Feature({
       geometry: new Point([newsFactNoDetail.locationCoordinate.x, newsFactNoDetail.locationCoordinate.y]),
       newsFactId: newsFactNoDetail.id
@@ -22,11 +22,11 @@ export class MappingService {
     return markerFeature;
   }
 
-  private getMarkerStyle(categoryId: number): Style {
+  private getMarkerStyle(categoryId: string): Style {
     return new Style({
       image: new Icon({
         anchor: [0.5, 1],
-        src: 'content/images/news-categories/news-category' + categoryId + '.svg'
+        src: 'content/images/news-categories/news_category_' + categoryId + '.svg'
       })
     });
   }

@@ -31,7 +31,7 @@ public class NewsFactService {
     }
 
     public List<NewsFactNoDetailDto> getAll() {
-        return null;
+        return newsFactMapper.newsFactsToNewsFactNoDetailDtos(newsFactRepository.findAll());
     }
 
     public NewsFactDetailDto getById(String id) throws UnexistingNewsFactException {
