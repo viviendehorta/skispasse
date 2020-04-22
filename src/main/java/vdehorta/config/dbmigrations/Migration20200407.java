@@ -33,7 +33,6 @@ public class Migration20200407 {
         userAuthority.setName(AuthoritiesConstants.USER);
 
         User systemUser = new User();
-        systemUser.setId("user-0");
         systemUser.setLogin("system");
         systemUser.setPassword("$2a$10$mE.qmcV0mFU5NcKh73TZx.z4ueI/.bDWbj0T1BYyqP481kGGarKLG");
         systemUser.setFirstName("");
@@ -48,7 +47,6 @@ public class Migration20200407 {
         mongoTemplate.save(systemUser);
 
         User adminUser = new User();
-        adminUser.setId("user-2");
         adminUser.setLogin("admin");
         adminUser.setPassword("$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC");
         adminUser.setFirstName("admin");
@@ -61,19 +59,5 @@ public class Migration20200407 {
         adminUser.getAuthorities().add(adminAuthority);
         adminUser.getAuthorities().add(userAuthority);
         mongoTemplate.save(adminUser);
-
-        User userUser = new User();
-        userUser.setId("user-3");
-        userUser.setLogin("user");
-        userUser.setPassword("$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K");
-        userUser.setFirstName("");
-        userUser.setLastName("User");
-        userUser.setEmail("user@localhost");
-        userUser.setActivated(true);
-        userUser.setLangKey("en");
-        userUser.setCreatedBy(systemUser.getLogin());
-        userUser.setCreatedDate(Instant.now());
-        userUser.getAuthorities().add(userAuthority);
-        mongoTemplate.save(userUser);
     }
 }

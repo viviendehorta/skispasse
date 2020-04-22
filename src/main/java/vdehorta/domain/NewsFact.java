@@ -3,6 +3,7 @@ package vdehorta.domain;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotNull;
@@ -13,13 +14,13 @@ import java.util.Objects;
 /**
  * A News Fact.
  */
-@org.springframework.data.mongodb.core.mapping.Document(collection = "skis_newsfact")
+@Document(collection = "skis_newsfact")
 public class NewsFact extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private String id;
 
     @NotNull
     @Field("coord_x")
@@ -35,7 +36,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Field("category_id")
-    private Integer categoryId;
+    private String categoryId;
 
     @NotNull
     @Field("country")
@@ -58,84 +59,60 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Field("created_by")
     private String createdBy;
 
-    public long getId() {
-        return id;
+    private NewsFact(Builder builder) {
+        setCreatedDate(builder.createdDate);
+        setLastModifiedBy(builder.lastModifiedBy);
+        setLastModifiedDate(builder.lastModifiedDate);
+        id = builder.id;
+        geoCoordinateX = builder.geoCoordinateX;
+        geoCoordinateY = builder.geoCoordinateY;
+        eventDate = builder.eventDate;
+        categoryId = builder.categoryId;
+        country = builder.country;
+        city = builder.city;
+        address = builder.address;
+        videoPath = builder.videoPath;
+        createdBy = builder.createdBy;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getId() {
+        return id;
     }
 
     public Long getGeoCoordinateX() {
         return geoCoordinateX;
     }
 
-    public void setGeoCoordinateX(Long geoCoordinateX) {
-        this.geoCoordinateX = geoCoordinateX;
-    }
-
     public Long getGeoCoordinateY() {
         return geoCoordinateY;
-    }
-
-    public void setGeoCoordinateY(Long geoCoordinateY) {
-        this.geoCoordinateY = geoCoordinateY;
     }
 
     public Instant getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Instant eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public Integer getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
     }
 
     public String getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
     public String getCity() {
         return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getVideoPath() {
         return videoPath;
     }
 
-    public void setVideoPath(String videoPath) {
-        this.videoPath = videoPath;
-    }
-
     public String getCreatedBy() {
         return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     @Override
@@ -165,5 +142,93 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             ", videoPath='" + videoPath + '\'' +
             ", createdBy='" + createdBy + '\'' +
             '}';
+    }
+
+    public static final class Builder {
+        private Instant createdDate;
+        private String lastModifiedBy;
+        private Instant lastModifiedDate;
+        private String id;
+        private @NotNull Long geoCoordinateX;
+        private @NotNull Long geoCoordinateY;
+        private @NotNull Instant eventDate;
+        private @NotNull String categoryId;
+        private @NotNull String country;
+        private @NotNull String city;
+        private @NotNull String address;
+        private @NotNull String videoPath;
+        private String createdBy;
+
+        public Builder() {
+        }
+
+        public Builder createdDate(Instant val) {
+            createdDate = val;
+            return this;
+        }
+
+        public Builder lastModifiedBy(String val) {
+            lastModifiedBy = val;
+            return this;
+        }
+
+        public Builder lastModifiedDate(Instant val) {
+            lastModifiedDate = val;
+            return this;
+        }
+
+        public Builder id(String val) {
+            id = val;
+            return this;
+        }
+
+        public Builder geoCoordinateX(@NotNull Long val) {
+            geoCoordinateX = val;
+            return this;
+        }
+
+        public Builder geoCoordinateY(@NotNull Long val) {
+            geoCoordinateY = val;
+            return this;
+        }
+
+        public Builder eventDate(@NotNull Instant val) {
+            eventDate = val;
+            return this;
+        }
+
+        public Builder categoryId(@NotNull String val) {
+            categoryId = val;
+            return this;
+        }
+
+        public Builder country(@NotNull String val) {
+            country = val;
+            return this;
+        }
+
+        public Builder city(@NotNull String val) {
+            city = val;
+            return this;
+        }
+
+        public Builder address(@NotNull String val) {
+            address = val;
+            return this;
+        }
+
+        public Builder videoPath(@NotNull String val) {
+            videoPath = val;
+            return this;
+        }
+
+        public Builder createdBy(String val) {
+            createdBy = val;
+            return this;
+        }
+
+        public NewsFact build() {
+            return new NewsFact(this);
+        }
     }
 }

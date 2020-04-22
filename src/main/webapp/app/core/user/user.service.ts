@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
-import { createHttpPagingOption } from 'app/shared/util/request-util';
+import { createHttpPagingOptions } from 'app/shared/util/request-util';
 import { IUser } from 'app/shared/beans/user.model';
 import { NewsFactDetail } from 'app/shared/beans/news-fact-detail.model';
 
@@ -26,7 +26,7 @@ export class UserService {
   }
 
   query(pageRequest?: any): Observable<HttpResponse<NewsFactDetail[]>> {
-    const options = createHttpPagingOption(pageRequest);
+    const options = createHttpPagingOptions(pageRequest);
     return this.http.get<NewsFactDetail[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 

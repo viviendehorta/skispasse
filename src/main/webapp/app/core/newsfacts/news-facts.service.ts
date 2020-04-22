@@ -5,7 +5,7 @@ import { SERVER_API_URL } from 'app/app.constants';
 import { Observable } from 'rxjs';
 import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
 import { NewsFactDetail } from 'app/shared/beans/news-fact-detail.model';
-import { createHttpPagingOption } from 'app/shared/util/request-util';
+import { createHttpPagingOptions } from 'app/shared/util/request-util';
 
 @Injectable({ providedIn: 'root' })
 export class NewsFactService {
@@ -13,12 +13,12 @@ export class NewsFactService {
 
   constructor(private http: HttpClient) {}
 
-  fetchNewsFacts(): Observable<Object> {
-    return this.http.post(this.BASE_URL + 'all', {});
+  getAll(): Observable<Object> {
+    return this.http.get(this.BASE_URL + 'all');
   }
 
   getNewsFactDetail(newsFactId: number): Observable<Object> {
-    return this.http.post(this.BASE_URL + newsFactId, {});
+    return this.http.get(this.BASE_URL + newsFactId);
   }
 
   filterByCategoryIds(newsFacts: NewsFactNoDetail[], categoryIds: number[]) {
@@ -26,8 +26,8 @@ export class NewsFactService {
   }
 
   getByUser(userLogin: string, pagingParams?: any): Observable<HttpResponse<NewsFactDetail[]>> {
-    const options = createHttpPagingOption(pagingParams);
-    return this.http.get<NewsFactDetail[]>(this.BASE_URL + 'byUser/' + userLogin, { params: options, observe: 'response' });
+    const httpPagingOptions = createHttpPagingOptions(pagingParams);
+    return this.http.get<NewsFactDetail[]>(this.BASE_URL + 'byUser/' + userLogin, { params: httpPagingOptions, observe: 'response' });
   }
 
   flattenNewsFacts(unFlattenedNewsFacts: Object): NewsFactNoDetail[] {

@@ -34,7 +34,7 @@ public class NewsFactService {
         return null;
     }
 
-    public NewsFactDetailDto getById(Long id) throws UnexistingNewsFactException {
+    public NewsFactDetailDto getById(String id) throws UnexistingNewsFactException {
         log.debug("Getting news fact  with id {}", id);
         Optional<NewsFact> newsFactOptional = newsFactRepository.findById(id);
         NewsFact newsFact = newsFactOptional.orElseThrow(() -> new UnexistingNewsFactException(id));

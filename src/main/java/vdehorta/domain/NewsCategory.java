@@ -1,36 +1,36 @@
 package vdehorta.domain;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-@org.springframework.data.mongodb.core.mapping.Document(collection = "skis_newscategory")
+@Document(collection = "skis_news_category")
 public class NewsCategory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    private int id;
+    private String id;
 
     @Field("label")
     private String label;
 
-    public int getId() {
-        return id;
+    private NewsCategory() {}
+
+    private NewsCategory(Builder builder) {
+        id = builder.id;
+        label = builder.label;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getId() {
+        return id;
     }
 
     public String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     @Override
@@ -52,5 +52,27 @@ public class NewsCategory implements Serializable {
             "id=" + id +
             ", label='" + label + '\'' +
             '}';
+    }
+
+    public static final class Builder {
+        private String id;
+        private String label;
+
+        public Builder() {
+        }
+
+        public Builder id(String val) {
+            id = val;
+            return this;
+        }
+
+        public Builder label(String val) {
+            label = val;
+            return this;
+        }
+
+        public NewsCategory build() {
+            return new NewsCategory(this);
+        }
     }
 }

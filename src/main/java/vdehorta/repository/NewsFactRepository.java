@@ -10,7 +10,7 @@ import java.util.List;
  * Spring Data MongoDB repository for the {@link NewsFact} entity.
  */
 @Repository
-public interface NewsFactRepository extends MongoRepository<NewsFact, Long> {
+public interface NewsFactRepository extends MongoRepository<NewsFact, String> {
 
     List<NewsFact> findAll();
 

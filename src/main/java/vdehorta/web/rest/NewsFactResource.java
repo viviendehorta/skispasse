@@ -1,10 +1,7 @@
 package vdehorta.web.rest;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.service.NewsFactService;
@@ -22,22 +19,32 @@ public class NewsFactResource {
     }
 
     /**
-     * {@code POST  /all} : Get a list containing all news facts.
+     * {@code GET  /all} : Get a list containing all news facts.
      *
      * @return list map containing news facts by news category id.
      */
-    @PostMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NewsFactNoDetailDto> getAll() {
         return newsFactService.getAll();
     }
 
     /**
-     * {@code POST  /{newsFactId}} : Get the news fact detail having the given news fact id.
+     * {@code GET  /{newsFactId}} : Get the news fact detail having the given news fact id.
      *
      * @return news fact detail having the given news fact id.
      */
-    @PostMapping(value = "/{newsFactId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public NewsFactDetailDto getById(@PathVariable long newsFactId) {
+    @GetMapping(value = "/{newsFactId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public NewsFactDetailDto getById(@PathVariable String newsFactId) {
         return newsFactService.getById(newsFactId);
     }
+
+//    /**
+//     * {@code GET  /all} : Get a list containing all news facts.
+//     *
+//     * @return list map containing news facts by news category id.
+//     */
+//    @GetMapping(value = "/byUser/{userLogin}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public List<NewsFactDetailDto> getByUser(@PathVariable String userLogin) {
+//        return newsFactService.getByUser(userLogin);
+//    }
 }

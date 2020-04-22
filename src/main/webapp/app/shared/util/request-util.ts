@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 
-export const createHttpPagingOption = (pagingParams?: any): HttpParams => {
+export const createHttpPagingOptions = (pagingParams?: any): HttpParams => {
   let options: HttpParams = new HttpParams();
   if (pagingParams) {
     Object.keys(pagingParams).forEach(key => {
