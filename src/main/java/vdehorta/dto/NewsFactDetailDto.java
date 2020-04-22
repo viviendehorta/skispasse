@@ -7,10 +7,10 @@ import java.util.Objects;
 
 public class NewsFactDetailDto {
 
-    private Long id;
+    private String id;
     private LocationCoordinate geoCoordinate;
     private Instant eventDate;
-    private Integer newsCategoryId;
+    private String newsCategoryId;
     private String country;
     private String city;
     private String address;
@@ -27,7 +27,7 @@ public class NewsFactDetailDto {
         videoPath = builder.videoPath;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -39,7 +39,7 @@ public class NewsFactDetailDto {
         return eventDate;
     }
 
-    public Integer getNewsCategoryId() {
+    public String getNewsCategoryId() {
         return newsCategoryId;
     }
 
@@ -73,10 +73,10 @@ public class NewsFactDetailDto {
     }
 
     public static final class Builder {
-        private Long id;
+        private String id;
         private LocationCoordinate geoCoordinate;
         private Instant eventDate;
-        private Integer newsCategoryId;
+        private String newsCategoryId;
         private String country;
         private String city;
         private String address;
@@ -85,7 +85,7 @@ public class NewsFactDetailDto {
         public Builder() {
         }
 
-        public Builder id(Long val) {
+        public Builder id(String val) {
             id = val;
             return this;
         }
@@ -100,7 +100,7 @@ public class NewsFactDetailDto {
             return this;
         }
 
-        public Builder newsCategoryId(Integer val) {
+        public Builder newsCategoryId(String val) {
             newsCategoryId = val;
             return this;
         }

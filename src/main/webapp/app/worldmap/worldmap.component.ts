@@ -51,7 +51,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.newsFactService.fetchNewsFacts().subscribe(unflattenedNewsFacts => {
+    this.newsFactService.getAll().subscribe(unflattenedNewsFacts => {
       this.newsFacts = this.newsFactService.flattenNewsFacts(unflattenedNewsFacts);
       this.buildNewsFactsMap(this.newsFacts);
     });

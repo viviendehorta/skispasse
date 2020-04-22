@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class NewsCategoryDto {
 
-    private int id;
+    private String id;
 
     private String label;
 
@@ -13,7 +13,7 @@ public class NewsCategoryDto {
         label = builder.label;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -35,13 +35,13 @@ public class NewsCategoryDto {
     }
 
     public static final class Builder {
-        private int id;
+        private String id;
         private String label;
 
         public Builder() {
         }
 
-        public Builder id(int val) {
+        public Builder id(String val) {
             id = val;
             return this;
         }
