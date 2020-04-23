@@ -2,8 +2,6 @@ package vdehorta.config.dbmigrations;
 
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
-import com.mongodb.client.MongoCollection;
-import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
@@ -33,7 +31,7 @@ public class Migration20200409 {
 
         User contributorUser = new User();
         contributorUser.setLogin("contributor");
-        contributorUser.setPassword("$2a$10$mVbT.55DH1lG5qdAjnmaZ.tMqqUal84apKhovmCtasjXqu4aZNiuS");
+        contributorUser.setPassword("$2a$10$CAwQvWjl.qsMknf1STzDZ.rm6iCkXnN3YfgiJcvdyFjdtfjL3wV6S");
         contributorUser.setFirstName("");
         contributorUser.setLastName("Contributor");
         contributorUser.setEmail("contributor@localhost");

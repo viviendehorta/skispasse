@@ -3,9 +3,12 @@ package vdehorta.service.mapper;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import vdehorta.domain.LocationCoordinate;
+import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
+import vdehorta.dto.NewsCategoryDto;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
+import vdehorta.service.errors.UnexistingNewsCategoryException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,15 +22,22 @@ import java.util.stream.Collectors;
 @Service
 public class NewsFactMapper {
 
-    public NewsFactDetailDto newsFactToNewsFactDetailDto(NewsFact newsFact) {
+    /* TODO ne plus avoir l'intelligence de chercher la news category dans ce mapper, le service doit passer
+        la news category adaptée et ne pas requetter en BDD à chaque fois !! */
+    public NewsFactDetailDto newsFactToNewsFactDetailDto(NewsFact newsFact, List<NewsCategoryDto> allNewsCategories) throws UnexistingNewsCategoryException {
         NewsFactDetailDto.Builder builder = new NewsFactDetailDto.Builder();
+        NewsCategoryDto matchingNewsCategory = allNewsCategories.stream()
+            .filter(newsCategory -> newsCategory.getId().equals(newsFact.getCategoryId()))
+            .findFirst()
+            .orElseThrow(() -> new UnexistingNewsCategoryException(newsFact.getCategoryId()));
         builder
             .address(newsFact.getAddress())
-            .newsCategoryId(newsFact.getCategoryId())
+            .newsCategoryId(matchingNewsCategory.getId())
+            .newsCategoryLabel(matchingNewsCategory.getLabel())
             .city(newsFact.getCity())
             .country(newsFact.getCountry())
             .eventDate(newsFact.getEventDate())
-            .geoCoordinate(new LocationCoordinate(newsFact.getGeoCoordinateX(), newsFact.getGeoCoordinateY()))
+            .locationCoordinate(new LocationCoordinate(newsFact.getLocationCoordinateX(), newsFact.getLocationCoordinateY()))
             .id(newsFact.getId())
             .videoPath(newsFact.getVideoPath())
             .createdDate(newsFact.getCreatedDate());
@@ -42,12 +52,12 @@ public class NewsFactMapper {
         NewsFactNoDetailDto.Builder builder = new NewsFactNoDetailDto.Builder();
         builder
             .newsCategoryId(newsFact.getCategoryId())
-            .locationCoordinate(new LocationCoordinate(newsFact.getGeoCoordinateX(), newsFact.getGeoCoordinateY()))
+            .locationCoordinate(new LocationCoordinate(newsFact.getLocationCoordinateX(), newsFact.getLocationCoordinateY()))
             .id(newsFact.getId());
         return builder.build();
     }
 
-    public Page<NewsFactDetailDto> newsFactPageToNewsFactDetailDtoPage(Page<NewsFact> newsFactPage) {
-        return newsFactPage.map(this::newsFactToNewsFactDetailDto);
+    public Page<NewsFactDetailDto> newsFactPageToNewsFactDetailDtoPage(Page<NewsFact> newsFactPage, List<NewsCategoryDto> allNewsCategories) {
+        return newsFactPage.map(newsFact -> newsFactToNewsFactDetailDto(newsFact, allNewsCategories));
     }
 }

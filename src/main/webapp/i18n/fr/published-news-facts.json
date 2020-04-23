@@ -5,7 +5,7 @@
       "title": "Mes publications",
       "createLabel": "Nouvelle publication"
     },
-    "geoCoordinate": "Coord. Géo.",
+    "locationCoordinate": "Coord. Géo.",
     "eventDate": "Date Évènement",
     "createdDate": "Date de Création",
     "category": "Catégorie",

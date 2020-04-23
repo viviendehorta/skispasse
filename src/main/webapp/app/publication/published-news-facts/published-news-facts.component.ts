@@ -8,6 +8,7 @@ import { JhiAlertService, JhiParseLinks } from 'ng-jhipster';
 import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
 import { Account } from 'app/shared/beans/account.model';
 import { AccountService } from 'app/core/auth/account.service';
+import { LocationCoordinate } from 'app/shared/beans/location-coordinate.model';
 
 @Component({
   selector: 'skis-news-fact-management',
@@ -101,5 +102,9 @@ export class PublishedNewsFactsComponent implements OnInit {
 
   private onError(error) {
     this.alertService.error(error.error, error.message, null);
+  }
+
+  formatLocationCoordinate(locationCoordinate: LocationCoordinate) {
+    return '[' + locationCoordinate.x + '; ' + locationCoordinate.y + ']';
   }
 }

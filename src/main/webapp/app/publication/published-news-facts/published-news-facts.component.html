@@ -23,7 +23,7 @@
                 <thead>
                 <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
                     <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">Id</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                    <th scope="col"><span jhiTranslate="publishedNewsFacts.geoCoordinate">Geo. Coord.</span></th>
+                    <th scope="col"><span jhiTranslate="publishedNewsFacts.locationCoordinate">Geo. Coord.</span></th>
                     <th scope="col" jhiSortBy="eventDate"><span jhiTranslate="publishedNewsFacts.eventDate">Event Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
                     <th scope="col" jhiSortBy="createdDate"><span jhiTranslate="publishedNewsFacts.createdDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
                     <th scope="col" jhiSortBy="category"><span jhiTranslate="publishedNewsFacts.category">Category</span> <fa-icon [icon]="'sort'"></fa-icon></th>
@@ -35,10 +35,10 @@
                 <tbody *ngIf="publishedNewsFacts">
                 <tr *ngFor="let newsFact of publishedNewsFacts; trackBy: trackIdentity">
                     <td>{{newsFact.id}}</td>
-                    <td>{{newsFact.geoCoordinate}}</td>
+                    <td>{{formatLocationCoordinate(newsFact.locationCoordinate)}}</td>
                     <td>{{newsFact.eventDate | date:'dd/MM/yyyy HH:mm'}}</td>
                     <td>{{newsFact.createdDate | date:'dd/MM/yyyy HH:mm'}}</td>
-                    <td>{{newsFact.category}}</td>
+                    <td>{{newsFact.newsCategoryLabel}}</td>
                     <td>{{newsFact.country}}</td>
                     <td>{{newsFact.city}}</td>
                     <td>{{newsFact.address}}</td>

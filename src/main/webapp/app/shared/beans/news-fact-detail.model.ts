@@ -3,10 +3,11 @@ import { NewsCategory } from 'app/shared/beans/news-category.model';
 
 export interface NewsFactDetail {
   id: string;
-  geoCoordinate: LocationCoordinate;
+  locationCoordinate: LocationCoordinate;
   eventDate: string;
   createdDate: string;
-  category: NewsCategory;
+  newsCategoryId: string;
+  newsCategoryLabel: string;
   country: string;
   city: string;
   address: string;
