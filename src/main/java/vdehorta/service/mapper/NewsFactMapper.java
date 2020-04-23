@@ -1,5 +1,6 @@
 package vdehorta.service.mapper;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import vdehorta.domain.LocationCoordinate;
 import vdehorta.domain.NewsFact;
@@ -32,11 +33,6 @@ public class NewsFactMapper {
         return builder.build();
     }
 
-    public List<NewsFactDetailDto> newsFactsToNewsFactDetailDtos(List<NewsFact> newsFacts) {
-        return newsFacts.stream()
-            .map(this::newsFactToNewsFactDetailDto).collect(Collectors.toList());
-    }
-
     public List<NewsFactNoDetailDto> newsFactsToNewsFactNoDetailDtos(List<NewsFact> newsFacts) {
         return newsFacts.stream().map(this::newsFactToNewsFactNoDetailDto).collect(Collectors.toList());
     }
@@ -48,5 +44,9 @@ public class NewsFactMapper {
             .locationCoordinate(new LocationCoordinate(newsFact.getGeoCoordinateX(), newsFact.getGeoCoordinateY()))
             .id(newsFact.getId());
         return builder.build();
+    }
+
+    public Page<NewsFactDetailDto> newsFactPageToNewsFactDetailDtoPage(Page<NewsFact> newsFactPage) {
+        return newsFactPage.map(newsFact -> newsFactToNewsFactDetailDto(newsFact));
     }
 }

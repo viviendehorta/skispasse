@@ -2,6 +2,8 @@ package vdehorta.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vdehorta.domain.NewsFact;
 import vdehorta.dto.NewsFactDetailDto;
@@ -41,7 +43,7 @@ public class NewsFactService {
         return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
     }
 
-    public List<NewsFactDetailDto> getByOwner(String ownerLogin) {
-        return newsFactMapper.newsFactsToNewsFactDetailDtos(newsFactRepository.findAllByOwner(ownerLogin));
+    public Page<NewsFactDetailDto> getByOwner(Pageable pageable, String ownerLogin) {
+        return newsFactMapper.newsFactPageToNewsFactDetailDtoPage(newsFactRepository.findAllByOwner(pageable, ownerLogin));
     }
 }
