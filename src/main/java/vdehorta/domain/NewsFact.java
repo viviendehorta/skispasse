@@ -22,12 +22,12 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     private String id;
 
     @NotNull
-    @Field("coord_x")
-    private Long geoCoordinateX;
+    @Field("location_coord_x")
+    private Long locationCoordinateX;
 
     @NotNull
-    @Field("coord_y")
-    private Long geoCoordinateY;
+    @Field("location_coord_y")
+    private Long locationCoordinateY;
 
     @NotNull
     @Field("event_date")
@@ -66,8 +66,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         setLastModifiedBy(builder.lastModifiedBy);
         setLastModifiedDate(builder.lastModifiedDate);
         id = builder.id;
-        geoCoordinateX = builder.geoCoordinateX;
-        geoCoordinateY = builder.geoCoordinateY;
+        locationCoordinateX = builder.locationCoordinateX;
+        locationCoordinateY = builder.locationCoordinateY;
         eventDate = builder.eventDate;
         categoryId = builder.categoryId;
         country = builder.country;
@@ -81,20 +81,20 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         return id;
     }
 
-    public Long getGeoCoordinateX() {
-        return geoCoordinateX;
+    public Long getLocationCoordinateX() {
+        return locationCoordinateX;
     }
 
-    public void setGeoCoordinateX(Long geoCoordinateX) {
-        this.geoCoordinateX = geoCoordinateX;
+    public void setLocationCoordinateX(Long locationCoordinateX) {
+        this.locationCoordinateX = locationCoordinateX;
     }
 
-    public Long getGeoCoordinateY() {
-        return geoCoordinateY;
+    public Long getLocationCoordinateY() {
+        return locationCoordinateY;
     }
 
-    public void setGeoCoordinateY(Long geoCoordinateY) {
-        this.geoCoordinateY = geoCoordinateY;
+    public void setLocationCoordinateY(Long locationCoordinateY) {
+        this.locationCoordinateY = locationCoordinateY;
     }
 
     public Instant getEventDate() {
@@ -170,8 +170,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "NewsFact{" +
             "id=" + id +
-            ", geoCoordinateX='" + geoCoordinateX + '\'' +
-            ", geoCoordinateY='" + geoCoordinateY + '\'' +
+            ", locationCoordinateX='" + locationCoordinateX + '\'' +
+            ", locationCoordinateY='" + locationCoordinateY + '\'' +
             ", eventDate=" + eventDate +
             ", categoryId='" + categoryId + '\'' +
             ", country='" + country + '\'' +
@@ -187,8 +187,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private String lastModifiedBy;
         private Instant lastModifiedDate;
         private String id;
-        private @NotNull Long geoCoordinateX;
-        private @NotNull Long geoCoordinateY;
+        private @NotNull Long locationCoordinateX;
+        private @NotNull Long locationCoordinateY;
         private @NotNull Instant eventDate;
         private @NotNull String categoryId;
         private @NotNull String country;
@@ -220,13 +220,13 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder geoCoordinateX(@NotNull Long val) {
-            geoCoordinateX = val;
+        public Builder locationCoordinateX(@NotNull Long val) {
+            locationCoordinateX = val;
             return this;
         }
 
-        public Builder geoCoordinateY(@NotNull Long val) {
-            geoCoordinateY = val;
+        public Builder locationCoordinateY(@NotNull Long val) {
+            locationCoordinateY = val;
             return this;
         }
 

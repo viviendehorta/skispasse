@@ -8,9 +8,10 @@ import java.util.Objects;
 public class NewsFactDetailDto {
 
     private String id;
-    private LocationCoordinate geoCoordinate;
+    private LocationCoordinate locationCoordinate;
     private Instant eventDate;
     private String newsCategoryId;
+    private String newsCategoryLabel;
     private String country;
     private String city;
     private String address;
@@ -19,9 +20,10 @@ public class NewsFactDetailDto {
 
     private NewsFactDetailDto(Builder builder) {
         id = builder.id;
-        geoCoordinate = builder.geoCoordinate;
+        locationCoordinate = builder.locationCoordinate;
         eventDate = builder.eventDate;
         newsCategoryId = builder.newsCategoryId;
+        newsCategoryLabel = builder.newsCategoryLabel;
         country = builder.country;
         city = builder.city;
         address = builder.address;
@@ -33,8 +35,8 @@ public class NewsFactDetailDto {
         return id;
     }
 
-    public LocationCoordinate getGeoCoordinate() {
-        return geoCoordinate;
+    public LocationCoordinate getLocationCoordinate() {
+        return locationCoordinate;
     }
 
     public Instant getEventDate() {
@@ -43,6 +45,10 @@ public class NewsFactDetailDto {
 
     public String getNewsCategoryId() {
         return newsCategoryId;
+    }
+
+    public String getNewsCategoryLabel() {
+        return newsCategoryLabel;
     }
 
     public String getCountry() {
@@ -80,9 +86,10 @@ public class NewsFactDetailDto {
 
     public static final class Builder {
         private String id;
-        private LocationCoordinate geoCoordinate;
+        private LocationCoordinate locationCoordinate;
         private Instant eventDate;
         private String newsCategoryId;
+        private String newsCategoryLabel;
         private String country;
         private String city;
         private String address;
@@ -97,8 +104,8 @@ public class NewsFactDetailDto {
             return this;
         }
 
-        public Builder geoCoordinate(LocationCoordinate val) {
-            geoCoordinate = val;
+        public Builder locationCoordinate(LocationCoordinate val) {
+            locationCoordinate = val;
             return this;
         }
 
@@ -109,6 +116,11 @@ public class NewsFactDetailDto {
 
         public Builder newsCategoryId(String val) {
             newsCategoryId = val;
+            return this;
+        }
+
+        public Builder newsCategoryLabel(String val) {
+            newsCategoryLabel = val;
             return this;
         }
 

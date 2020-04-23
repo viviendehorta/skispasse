@@ -25,11 +25,14 @@ public class NewsFactService {
 
     private final NewsFactRepository newsFactRepository;
     private final NewsFactMapper newsFactMapper;
+    private final NewsCategoryService newsCategoryService;
 
     public NewsFactService(NewsFactRepository newsFactRepository,
-                           NewsFactMapper newsFactMapper) {
+                           NewsFactMapper newsFactMapper,
+                           NewsCategoryService newsCategoryService) {
         this.newsFactRepository = newsFactRepository;
         this.newsFactMapper = newsFactMapper;
+        this.newsCategoryService = newsCategoryService;
     }
 
     public List<NewsFactNoDetailDto> getAll() {
@@ -40,10 +43,10 @@ public class NewsFactService {
         log.debug("Getting news fact  with id {}", id);
         Optional<NewsFact> newsFactOptional = newsFactRepository.findById(id);
         NewsFact newsFact = newsFactOptional.orElseThrow(() -> new UnexistingNewsFactException(id));
-        return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
+        return newsFactMapper.newsFactToNewsFactDetailDto(newsFact, newsCategoryService.getAll());
     }
 
     public Page<NewsFactDetailDto> getByOwner(Pageable pageable, String ownerLogin) {
-        return newsFactMapper.newsFactPageToNewsFactDetailDtoPage(newsFactRepository.findAllByOwner(pageable, ownerLogin));
+        return newsFactMapper.newsFactPageToNewsFactDetailDtoPage(newsFactRepository.findAllByOwner(pageable, ownerLogin), newsCategoryService.getAll());
     }
 }
