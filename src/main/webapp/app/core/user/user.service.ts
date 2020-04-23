@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createHttpPagingOptions } from 'app/shared/util/request-util';
 import { IUser } from 'app/shared/beans/user.model';
-import { NewsFactDetail } from 'app/shared/beans/news-fact-detail.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -25,9 +24,9 @@ export class UserService {
     return this.http.get<IUser>(`${this.resourceUrl}/${login}`);
   }
 
-  query(pageRequest?: any): Observable<HttpResponse<NewsFactDetail[]>> {
+  query(pageRequest?: any): Observable<HttpResponse<IUser[]>> {
     const options = createHttpPagingOptions(pageRequest);
-    return this.http.get<NewsFactDetail[]>(this.resourceUrl, { params: options, observe: 'response' });
+    return this.http.get<IUser[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
   delete(login: string): Observable<any> {

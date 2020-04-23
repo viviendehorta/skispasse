@@ -6,8 +6,8 @@
       "createLabel": "Nouvelle publication"
     },
     "geoCoordinate": "Coord. Géo.",
-    "date": "Date",
-    "time": "Heure",
+    "eventDate": "Date Évènement",
+    "createdDate": "Date de Création",
     "category": "Catégorie",
     "country": "Pays",
     "city": "Ville",

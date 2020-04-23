@@ -15,6 +15,7 @@ public class NewsFactDetailDto {
     private String city;
     private String address;
     private String videoPath;
+    private Instant createdDate;
 
     private NewsFactDetailDto(Builder builder) {
         id = builder.id;
@@ -25,6 +26,7 @@ public class NewsFactDetailDto {
         city = builder.city;
         address = builder.address;
         videoPath = builder.videoPath;
+        createdDate = builder.createdDate;
     }
 
     public String getId() {
@@ -59,6 +61,10 @@ public class NewsFactDetailDto {
         return videoPath;
     }
 
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,6 +87,7 @@ public class NewsFactDetailDto {
         private String city;
         private String address;
         private String videoPath;
+        private Instant createdDate;
 
         public Builder() {
         }
@@ -122,6 +129,11 @@ public class NewsFactDetailDto {
 
         public Builder videoPath(String val) {
             videoPath = val;
+            return this;
+        }
+
+        public Builder createdDate(Instant val) {
+            createdDate = val;
             return this;
         }
 
