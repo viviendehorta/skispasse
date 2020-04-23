@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * Mapper for the entity {@link NewsFact} and its DTO called {@link NewsFact}.
- *
+ * <p>
  * Normal mappers are generated using MapStruct, this one is hand-coded as MapStruct
  * support is still in beta, and requires a manual step with an IDE.
  */
@@ -29,7 +29,8 @@ public class NewsFactMapper {
             .eventDate(newsFact.getEventDate())
             .geoCoordinate(new LocationCoordinate(newsFact.getGeoCoordinateX(), newsFact.getGeoCoordinateY()))
             .id(newsFact.getId())
-            .videoPath(newsFact.getVideoPath());
+            .videoPath(newsFact.getVideoPath())
+            .createdDate(newsFact.getCreatedDate());
         return builder.build();
     }
 
@@ -47,6 +48,6 @@ public class NewsFactMapper {
     }
 
     public Page<NewsFactDetailDto> newsFactPageToNewsFactDetailDtoPage(Page<NewsFact> newsFactPage) {
-        return newsFactPage.map(newsFact -> newsFactToNewsFactDetailDto(newsFact));
+        return newsFactPage.map(this::newsFactToNewsFactDetailDto);
     }
 }
