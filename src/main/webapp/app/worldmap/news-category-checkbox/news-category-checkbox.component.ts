@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { NewsCategory } from 'app/shared/beans/news-category.model';
+import { NewsCategorySelection } from 'app/shared/beans/news-category-selection.model';
 import { JhiEventManager } from 'ng-jhipster';
 
 @Component({
@@ -9,7 +9,7 @@ import { JhiEventManager } from 'ng-jhipster';
   encapsulation: ViewEncapsulation.None
 })
 export class NewsCategoryCheckboxComponent {
-  @Input() newsCategory: NewsCategory;
+  @Input() newsCategorySelection: NewsCategorySelection;
 
   constructor(private eventManager: JhiEventManager) {}
 

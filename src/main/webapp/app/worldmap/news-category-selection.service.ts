@@ -1,34 +1,32 @@
 import { Injectable } from '@angular/core';
 import { NewsCategory } from 'app/shared/beans/news-category.model';
+import { NewsCategorySelection } from 'app/shared/beans/news-category-selection.model';
 
 @Injectable({ providedIn: 'root' })
 export class NewsCategorySelectionService {
-  private newsCategoriesSelection: {
-    newsCategory: NewsCategory;
-    isSelected: boolean;
-  }[];
+  private newsCategorySelections: NewsCategorySelection[];
 
   constructor() {}
 
-  setUnselectedNewsCategories(newsCategories: NewsCategory[]) {
-    this.newsCategoriesSelection = newsCategories.map(newsCategory => {
+  resetNewsCategorySelections(newsCategories: NewsCategory[]): NewsCategorySelection[] {
+    this.newsCategorySelections = newsCategories.map(newsCategory => {
       return {
-        newsCategory,
-        isSelected: false
+        id: newsCategory.id,
+        label: newsCategory.label,
+        isSelected: true
       };
     });
+    return this.newsCategorySelections;
   }
 
   setNewsCategorySelection(categoryId: string, isSelected: boolean) {
-    const newsCategoriesSelection = this.newsCategoriesSelection.find(
-      newsCategorySelection => newsCategorySelection.newsCategory.id === categoryId
-    );
+    const newsCategoriesSelection = this.newsCategorySelections.find(newsCategorySelection => newsCategorySelection.id === categoryId);
     newsCategoriesSelection.isSelected = isSelected;
   }
 
   getSelectedNewsCategoryIds(): string[] {
-    return this.newsCategoriesSelection
+    return this.newsCategorySelections
       .filter(newsCategorySelection => newsCategorySelection.isSelected)
-      .map(newsCategorySelection => newsCategorySelection.newsCategory.id);
+      .map(newsCategorySelection => newsCategorySelection.id);
   }
 }
