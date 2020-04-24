@@ -8,6 +8,9 @@ public class NewsCategoryDto {
 
     private String label;
 
+    public NewsCategoryDto() {
+    }
+
     private NewsCategoryDto(Builder builder) {
         id = builder.id;
         label = builder.label;
@@ -17,8 +20,16 @@ public class NewsCategoryDto {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getLabel() {
         return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @Override

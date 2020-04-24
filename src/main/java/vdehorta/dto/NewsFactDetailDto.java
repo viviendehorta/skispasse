@@ -18,6 +18,9 @@ public class NewsFactDetailDto {
     private String videoPath;
     private Instant createdDate;
 
+    public NewsFactDetailDto() {
+    }
+
     private NewsFactDetailDto(Builder builder) {
         id = builder.id;
         locationCoordinate = builder.locationCoordinate;
@@ -35,40 +38,80 @@ public class NewsFactDetailDto {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public LocationCoordinate getLocationCoordinate() {
         return locationCoordinate;
+    }
+
+    public void setLocationCoordinate(LocationCoordinate locationCoordinate) {
+        this.locationCoordinate = locationCoordinate;
     }
 
     public Instant getEventDate() {
         return eventDate;
     }
 
+    public void setEventDate(Instant eventDate) {
+        this.eventDate = eventDate;
+    }
+
     public String getNewsCategoryId() {
         return newsCategoryId;
+    }
+
+    public void setNewsCategoryId(String newsCategoryId) {
+        this.newsCategoryId = newsCategoryId;
     }
 
     public String getNewsCategoryLabel() {
         return newsCategoryLabel;
     }
 
+    public void setNewsCategoryLabel(String newsCategoryLabel) {
+        this.newsCategoryLabel = newsCategoryLabel;
+    }
+
     public String getCountry() {
         return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getCity() {
         return city;
     }
 
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getAddress() {
         return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getVideoPath() {
         return videoPath;
     }
 
+    public void setVideoPath(String videoPath) {
+        this.videoPath = videoPath;
+    }
+
     public Instant getCreatedDate() {
         return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override

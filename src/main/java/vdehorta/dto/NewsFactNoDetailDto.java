@@ -12,12 +12,27 @@ public class NewsFactNoDetailDto {
         return id;
     }
 
-    public LocationCoordinate getLocationCoordinate() {
-        return locationCoordinate;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNewsCategoryId() {
         return newsCategoryId;
+    }
+
+    public void setNewsCategoryId(String newsCategoryId) {
+        this.newsCategoryId = newsCategoryId;
+    }
+
+    public LocationCoordinate getLocationCoordinate() {
+        return locationCoordinate;
+    }
+
+    public void setLocationCoordinate(LocationCoordinate locationCoordinate) {
+        this.locationCoordinate = locationCoordinate;
+    }
+
+    public NewsFactNoDetailDto() {
     }
 
     private NewsFactNoDetailDto(Builder builder) {

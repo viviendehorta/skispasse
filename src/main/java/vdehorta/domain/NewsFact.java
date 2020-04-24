@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * A News Fact.
  */
-@Document(collection = "skis_newsfact")
+@Document(collection = "skis_news_fact")
 public class NewsFact extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,8 +34,12 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     private Instant eventDate;
 
     @NotNull
-    @Field("category_id")
-    private String categoryId;
+    @Field("news_category_id")
+    private String newsCategoryId;
+
+    @NotNull
+    @Field("news_category_label")
+    private String newsCategoryLabel;
 
     @NotNull
     @Field("country")
@@ -62,19 +66,21 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     }
 
     private NewsFact(Builder builder) {
+        setCreatedBy(builder.createdBy);
         setCreatedDate(builder.createdDate);
         setLastModifiedBy(builder.lastModifiedBy);
         setLastModifiedDate(builder.lastModifiedDate);
         id = builder.id;
-        locationCoordinateX = builder.locationCoordinateX;
-        locationCoordinateY = builder.locationCoordinateY;
-        eventDate = builder.eventDate;
-        categoryId = builder.categoryId;
-        country = builder.country;
-        city = builder.city;
-        address = builder.address;
-        videoPath = builder.videoPath;
-        owner = builder.owner;
+        setLocationCoordinateX(builder.locationCoordinateX);
+        setLocationCoordinateY(builder.locationCoordinateY);
+        setEventDate(builder.eventDate);
+        setNewsCategoryId(builder.newsCategoryId);
+        setNewsCategoryLabel(builder.newsCategoryLabel);
+        setCountry(builder.country);
+        setCity(builder.city);
+        setAddress(builder.address);
+        setVideoPath(builder.videoPath);
+        setOwner(builder.owner);
     }
 
     public String getId() {
@@ -105,12 +111,20 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         this.eventDate = eventDate;
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public String getNewsCategoryId() {
+        return newsCategoryId;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
+    public void setNewsCategoryId(String newsCategoryId) {
+        this.newsCategoryId = newsCategoryId;
+    }
+
+    public String getNewsCategoryLabel() {
+        return newsCategoryLabel;
+    }
+
+    public void setNewsCategoryLabel(String newsCategoryLabel) {
+        this.newsCategoryLabel = newsCategoryLabel;
     }
 
     public String getCountry() {
@@ -173,7 +187,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             ", locationCoordinateX='" + locationCoordinateX + '\'' +
             ", locationCoordinateY='" + locationCoordinateY + '\'' +
             ", eventDate=" + eventDate +
-            ", categoryId='" + categoryId + '\'' +
+            ", newsCategoryId='" + newsCategoryId + '\'' +
+            ", newsCategoryLabel='" + newsCategoryLabel + '\'' +
             ", country='" + country + '\'' +
             ", city='" + city + '\'' +
             ", address='" + address + '\'' +
@@ -182,7 +197,9 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             '}';
     }
 
+
     public static final class Builder {
+        private String createdBy;
         private Instant createdDate;
         private String lastModifiedBy;
         private Instant lastModifiedDate;
@@ -190,7 +207,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private @NotNull Long locationCoordinateX;
         private @NotNull Long locationCoordinateY;
         private @NotNull Instant eventDate;
-        private @NotNull String categoryId;
+        private @NotNull String newsCategoryId;
+        private @NotNull String newsCategoryLabel;
         private @NotNull String country;
         private @NotNull String city;
         private @NotNull String address;
@@ -198,6 +216,11 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private String owner;
 
         public Builder() {
+        }
+
+        public Builder createdBy(String val) {
+            createdBy = val;
+            return this;
         }
 
         public Builder createdDate(Instant val) {
@@ -235,8 +258,13 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder categoryId(@NotNull String val) {
-            categoryId = val;
+        public Builder newsCategoryId(@NotNull String val) {
+            newsCategoryId = val;
+            return this;
+        }
+
+        public Builder newsCategoryLabel(@NotNull String val) {
+            newsCategoryLabel = val;
             return this;
         }
 

@@ -5,6 +5,9 @@ public class LocationCoordinate {
     private long x;
     private long y;
 
+    public LocationCoordinate() {
+    }
+
     public LocationCoordinate(long x, long y) {
         this.x = x;
         this.y = y;
