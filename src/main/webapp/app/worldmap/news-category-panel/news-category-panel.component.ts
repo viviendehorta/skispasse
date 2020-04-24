@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NewsCategory } from 'app/shared/beans/news-category.model';
 import { NewsCategoryService } from 'app/core/newscategory/news-category.service';
 import { NewsCategorySelectionService } from 'app/worldmap/news-category-selection.service';
+import { NewsCategorySelection } from 'app/shared/beans/news-category-selection.model';
 
 @Component({
   selector: 'skis-news-category-panel',
@@ -9,17 +9,16 @@ import { NewsCategorySelectionService } from 'app/worldmap/news-category-selecti
   styleUrls: ['./news-category-panel.component.scss']
 })
 export class NewsCategoryPanelComponent implements OnInit {
-  newsCategories: NewsCategory[];
+  newsCategorySelections: NewsCategorySelection[];
 
   constructor(private newsCategoryService: NewsCategoryService, private newsCategorySelectionService: NewsCategorySelectionService) {
-    this.newsCategories = [];
+    this.newsCategorySelections = [];
   }
 
   ngOnInit() {
     this.newsCategoryService.fetchCategories().subscribe(unflattenedNewsCategories => {
       const flattenedNewsCategories = this.newsCategoryService.flattenNewsCategories(unflattenedNewsCategories);
-      this.newsCategories = flattenedNewsCategories;
-      this.newsCategorySelectionService.setUnselectedNewsCategories(flattenedNewsCategories);
+      this.newsCategorySelections = this.newsCategorySelectionService.resetNewsCategorySelections(flattenedNewsCategories);
     });
   }
 }
