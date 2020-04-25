@@ -218,27 +218,27 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         public Builder() {
         }
 
-        public Builder createdBy(String val) {
+        public Builder createdBy(@NotNull String val) {
             createdBy = val;
             return this;
         }
 
-        public Builder createdDate(Instant val) {
+        public Builder createdDate(@NotNull Instant val) {
             createdDate = val;
             return this;
         }
 
-        public Builder lastModifiedBy(String val) {
+        public Builder lastModifiedBy(@NotNull String val) {
             lastModifiedBy = val;
             return this;
         }
 
-        public Builder lastModifiedDate(Instant val) {
+        public Builder lastModifiedDate(@NotNull Instant val) {
             lastModifiedDate = val;
             return this;
         }
 
-        public Builder id(String val) {
+        public Builder id(@NotNull String val) {
             id = val;
             return this;
         }
@@ -288,7 +288,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder owner(String val) {
+        public Builder owner(@NotNull String val) {
             owner = val;
             return this;
         }
