@@ -13,11 +13,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.SkispasseApp;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
+import vdehorta.dto.UserDTO;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.AuthoritiesConstants;
 import vdehorta.service.MailService;
 import vdehorta.service.UserService;
-import vdehorta.dto.UserDTO;
 import vdehorta.service.mapper.UserMapper;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 import vdehorta.web.rest.vm.ManagedUserVM;
@@ -40,28 +40,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = SkispasseApp.class)
 public class UserResourceIT {
 
-    private static final String DEFAULT_LOGIN = "johndoe";
-    private static final String UPDATED_LOGIN = "jhipster";
+    private final String DEFAULT_LOGIN = "johndoe";
+    private final String UPDATED_LOGIN = "jhipster";
 
-    private static final String DEFAULT_ID = "id1";
+    private final String DEFAULT_ID = "id1";
 
-    private static final String DEFAULT_PASSWORD = "passjohndoe";
-    private static final String UPDATED_PASSWORD = "passjhipster";
+    private final String DEFAULT_PASSWORD = "passjohndoe";
+    private final String UPDATED_PASSWORD = "passjhipster";
 
-    private static final String DEFAULT_EMAIL = "johndoe@localhost";
-    private static final String UPDATED_EMAIL = "jhipster@localhost";
+    private final String DEFAULT_EMAIL = "johndoe@localhost";
+    private final String UPDATED_EMAIL = "jhipster@localhost";
 
-    private static final String DEFAULT_FIRSTNAME = "john";
-    private static final String UPDATED_FIRSTNAME = "jhipsterFirstName";
+    private final String DEFAULT_FIRSTNAME = "john";
+    private final String UPDATED_FIRSTNAME = "jhipsterFirstName";
 
-    private static final String DEFAULT_LASTNAME = "doe";
-    private static final String UPDATED_LASTNAME = "jhipsterLastName";
+    private final String DEFAULT_LASTNAME = "doe";
+    private final String UPDATED_LASTNAME = "jhipsterLastName";
 
-    private static final String DEFAULT_IMAGEURL = "http://placehold.it/50x50";
-    private static final String UPDATED_IMAGEURL = "http://placehold.it/40x40";
+    private final String DEFAULT_IMAGEURL = "http://placehold.it/50x50";
+    private final String UPDATED_IMAGEURL = "http://placehold.it/40x40";
 
-    private static final String DEFAULT_LANGKEY = "en";
-    private static final String UPDATED_LANGKEY = "fr";
+    private final String DEFAULT_LANGKEY = "en";
+    private final String UPDATED_LANGKEY = "fr";
 
     @Autowired
     private UserRepository userRepository;
@@ -100,29 +100,10 @@ public class UserResourceIT {
             .build();
     }
 
-    /**
-     * Create a User.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which has a required relationship to the User entity.
-     */
-    public static User createEntity() {
-        User user = new User();
-        user.setLogin(DEFAULT_LOGIN);
-        user.setPassword(RandomStringUtils.random(60));
-        user.setActivated(true);
-        user.setEmail(DEFAULT_EMAIL);
-        user.setFirstName(DEFAULT_FIRSTNAME);
-        user.setLastName(DEFAULT_LASTNAME);
-        user.setImageUrl(DEFAULT_IMAGEURL);
-        user.setLangKey(DEFAULT_LANGKEY);
-        return user;
-    }
-
     @BeforeEach
     public void initTest() {
         userRepository.deleteAll();
-        user = createEntity();
+        user = createUserEntity();
     }
 
     @Test
@@ -572,5 +553,21 @@ public class UserResourceIT {
         authorityB.setName(AuthoritiesConstants.USER);
         assertThat(authorityA).isEqualTo(authorityB);
         assertThat(authorityA.hashCode()).isEqualTo(authorityB.hashCode());
+    }
+
+    /**
+     * Create a User.
+     */
+    private User createUserEntity() {
+        User user = new User();
+        user.setLogin(DEFAULT_LOGIN);
+        user.setPassword(RandomStringUtils.random(60));
+        user.setActivated(true);
+        user.setEmail(DEFAULT_EMAIL);
+        user.setFirstName(DEFAULT_FIRSTNAME);
+        user.setLastName(DEFAULT_LASTNAME);
+        user.setImageUrl(DEFAULT_IMAGEURL);
+        user.setLangKey(DEFAULT_LANGKEY);
+        return user;
     }
 }

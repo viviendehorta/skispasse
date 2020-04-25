@@ -7,16 +7,16 @@ import java.util.Objects;
 
 public class NewsFactDetailDto {
 
+    private String address;
+    private String city;
+    private String country;
+    private Instant createdDate;
+    private Instant eventDate;
     private String id;
     private LocationCoordinate locationCoordinate;
-    private Instant eventDate;
     private String newsCategoryId;
     private String newsCategoryLabel;
-    private String country;
-    private String city;
-    private String address;
     private String videoPath;
-    private Instant createdDate;
 
     public NewsFactDetailDto() {
     }
@@ -32,6 +32,46 @@ public class NewsFactDetailDto {
         address = builder.address;
         videoPath = builder.videoPath;
         createdDate = builder.createdDate;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Instant getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Instant eventDate) {
+        this.eventDate = eventDate;
     }
 
     public String getId() {
@@ -50,14 +90,6 @@ public class NewsFactDetailDto {
         this.locationCoordinate = locationCoordinate;
     }
 
-    public Instant getEventDate() {
-        return eventDate;
-    }
-
-    public void setEventDate(Instant eventDate) {
-        this.eventDate = eventDate;
-    }
-
     public String getNewsCategoryId() {
         return newsCategoryId;
     }
@@ -74,44 +106,12 @@ public class NewsFactDetailDto {
         this.newsCategoryLabel = newsCategoryLabel;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getVideoPath() {
         return videoPath;
     }
 
     public void setVideoPath(String videoPath) {
         this.videoPath = videoPath;
-    }
-
-    public Instant getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
     }
 
     @Override
