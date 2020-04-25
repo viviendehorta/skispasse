@@ -1,6 +1,7 @@
 package vdehorta.web.rest;
 
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +21,11 @@ public class NewsCategoryResource {
     }
 
     /**
-     * {@code POST  /all} : Get a list containing all news categories.
+     * {@code GET  /all} : Get a list containing all news categories.
      *
      * @return list containing all news categories.
      */
-    @PostMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NewsCategoryDto> getAll() {
         return newsCategoryService.getAll();
     }

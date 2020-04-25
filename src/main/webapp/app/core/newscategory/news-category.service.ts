@@ -10,7 +10,7 @@ export class NewsCategoryService {
   constructor(private http: HttpClient) {}
 
   fetchCategories() {
-    return this.http.post(this.BASE_URL + 'all', {});
+    return this.http.get(this.BASE_URL + 'all', {});
   }
 
   flattenNewsCategories(unFlattenedNewsCategories: Object) {

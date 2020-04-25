@@ -22,11 +22,10 @@ import java.util.Arrays;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Integration tests for the {@link UserResource} REST controller.
+ * Integration tests for the {@link NewsFactResource} REST controller.
  */
 @SpringBootTest(classes = SkispasseApp.class)
 public class NewsFactResourceIT {
@@ -84,10 +83,9 @@ public class NewsFactResourceIT {
 
         // Call /newsFact/all controller method
         restNewsFactMockMvc.perform(get("/newsFact/all").accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$..*").isArray())
+            .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").value(hasSize(2)))
             .andExpect(jsonPath("$[*].id").value(hasItems("id1", "id2")))
             .andExpect(jsonPath("$[*].newsCategoryId").value(hasItems("newsCategoryId1", "newsCategoryId2")))
@@ -143,7 +141,7 @@ public class NewsFactResourceIT {
      * Create a News Fact entity with all fields initialized with fixed value, and string fields suffixed by the
      * given suffix.
      *
-     * @param suffix the suffix to add at the end of User's String type fields
+     * @param suffix the suffix to add at the end of NewsFact fields
      * @return The NewsFact created
      */
     private NewsFact createBasicNewsFact(String suffix) {
