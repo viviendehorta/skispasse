@@ -18,7 +18,7 @@ import vdehorta.security.SecurityUtils;
 import vdehorta.dto.UserDTO;
 import vdehorta.service.errors.EmailAlreadyUsedException;
 import vdehorta.service.errors.InvalidPasswordException;
-import vdehorta.service.errors.UsernameAlreadyUsedException;
+import vdehorta.service.errors.LoginAlreadyUsedException;
 import vdehorta.service.util.RandomUtil;
 
 import java.time.Instant;
@@ -94,7 +94,7 @@ public class UserService {
         userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).ifPresent(existingUser -> {
             boolean removed = removeNonActivatedUser(existingUser);
             if (!removed) {
-                throw new UsernameAlreadyUsedException();
+                throw new LoginAlreadyUsedException();
             }
         });
         userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).ifPresent(existingUser -> {

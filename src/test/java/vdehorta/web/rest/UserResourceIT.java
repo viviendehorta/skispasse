@@ -33,35 +33,13 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vdehorta.web.rest.EntityTestUtil.*;
 
 /**
  * Integration tests for the {@link UserResource} REST controller.
  */
 @SpringBootTest(classes = SkispasseApp.class)
 public class UserResourceIT {
-
-    private final String DEFAULT_LOGIN = "johndoe";
-    private final String UPDATED_LOGIN = "jhipster";
-
-    private final String DEFAULT_ID = "id1";
-
-    private final String DEFAULT_PASSWORD = "passjohndoe";
-    private final String UPDATED_PASSWORD = "passjhipster";
-
-    private final String DEFAULT_EMAIL = "johndoe@localhost";
-    private final String UPDATED_EMAIL = "jhipster@localhost";
-
-    private final String DEFAULT_FIRSTNAME = "john";
-    private final String UPDATED_FIRSTNAME = "jhipsterFirstName";
-
-    private final String DEFAULT_LASTNAME = "doe";
-    private final String UPDATED_LASTNAME = "jhipsterLastName";
-
-    private final String DEFAULT_IMAGEURL = "http://placehold.it/50x50";
-    private final String UPDATED_IMAGEURL = "http://placehold.it/40x40";
-
-    private final String DEFAULT_LANGKEY = "en";
-    private final String UPDATED_LANGKEY = "fr";
 
     @Autowired
     private UserRepository userRepository;
@@ -103,7 +81,7 @@ public class UserResourceIT {
     @BeforeEach
     public void initTest() {
         userRepository.deleteAll();
-        user = createUserEntity();
+        user = EntityTestUtil.createUser();
     }
 
     @Test
@@ -473,7 +451,7 @@ public class UserResourceIT {
     @Test
     public void testUserDTOtoUser() {
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(DEFAULT_ID);
+        userDTO.setId(DEFAULT_USER_ID);
         userDTO.setLogin(DEFAULT_LOGIN);
         userDTO.setFirstName(DEFAULT_FIRSTNAME);
         userDTO.setLastName(DEFAULT_LASTNAME);
@@ -486,7 +464,7 @@ public class UserResourceIT {
         userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
 
         User user = userMapper.userDTOToUser(userDTO);
-        assertThat(user.getId()).isEqualTo(DEFAULT_ID);
+        assertThat(user.getId()).isEqualTo(DEFAULT_USER_ID);
         assertThat(user.getLogin()).isEqualTo(DEFAULT_LOGIN);
         assertThat(user.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
         assertThat(user.getLastName()).isEqualTo(DEFAULT_LASTNAME);
@@ -503,7 +481,7 @@ public class UserResourceIT {
 
     @Test
     public void testUserToUserDTO() {
-        user.setId(DEFAULT_ID);
+        user.setId(DEFAULT_USER_ID);
         user.setCreatedBy(DEFAULT_LOGIN);
         user.setCreatedDate(Instant.now());
         user.setLastModifiedBy(DEFAULT_LOGIN);
@@ -516,7 +494,7 @@ public class UserResourceIT {
 
         UserDTO userDTO = userMapper.userToUserDTO(user);
 
-        assertThat(userDTO.getId()).isEqualTo(DEFAULT_ID);
+        assertThat(userDTO.getId()).isEqualTo(DEFAULT_USER_ID);
         assertThat(userDTO.getLogin()).isEqualTo(DEFAULT_LOGIN);
         assertThat(userDTO.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
         assertThat(userDTO.getLastName()).isEqualTo(DEFAULT_LASTNAME);
@@ -553,21 +531,5 @@ public class UserResourceIT {
         authorityB.setName(AuthoritiesConstants.USER);
         assertThat(authorityA).isEqualTo(authorityB);
         assertThat(authorityA.hashCode()).isEqualTo(authorityB.hashCode());
-    }
-
-    /**
-     * Create a User.
-     */
-    private User createUserEntity() {
-        User user = new User();
-        user.setLogin(DEFAULT_LOGIN);
-        user.setPassword(RandomStringUtils.random(60));
-        user.setActivated(true);
-        user.setEmail(DEFAULT_EMAIL);
-        user.setFirstName(DEFAULT_FIRSTNAME);
-        user.setLastName(DEFAULT_LASTNAME);
-        user.setImageUrl(DEFAULT_IMAGEURL);
-        user.setLangKey(DEFAULT_LANGKEY);
-        return user;
     }
 }

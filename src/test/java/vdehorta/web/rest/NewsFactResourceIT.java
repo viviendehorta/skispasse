@@ -12,18 +12,19 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.SkispasseApp;
 import vdehorta.domain.NewsFact;
+import vdehorta.domain.User;
 import vdehorta.repository.NewsFactRepository;
+import vdehorta.repository.UserRepository;
 import vdehorta.service.NewsFactService;
+import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vdehorta.web.rest.EntityTestUtil.*;
 
 /**
  * Integration tests for the {@link NewsFactResource} REST controller.
@@ -31,24 +32,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = SkispasseApp.class)
 public class NewsFactResourceIT {
 
-    public static final Long DEFAULT_LOCATION_COORDINATE_X = 100L;
-    public static final Long DEFAULT_LOCATION_COORDINATE_Y = 2000L;
-    public static final Instant DEFAULT_CREATED_DATE = LocalDateTime.parse("2020-04-02T20:15:39").toInstant(ZoneOffset.UTC);
-    public static final Instant DEFAULT_EVENT_DATE = LocalDateTime.parse("2020-04-01T00:00:00").toInstant(ZoneOffset.UTC);
-    public static final String DEFAULT_ADDRESS = "address";
-    public static final String DEFAULT_CITY = "city";
-    public static final String DEFAULT_COUNTRY = "country";
-    public static final String DEFAULT_ID = "id";
-    public static final String DEFAULT_NEWS_CATEGORY_ID = "newsCategoryId";
-    public static final String DEFAULT_NEWS_CATEGORY_LABEL = "newsCategoryLabel";
-    public static final String DEFAULT_OWNER = "owner";
-    public static final String DEFAULT_VIDEO_PATH = "videoPath";
-
     @Autowired
     private NewsFactRepository newsFactRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private NewsFactService newsFactService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -82,8 +76,8 @@ public class NewsFactResourceIT {
     public void getAll_caseOk() throws Exception {
 
         // Initialize the database
-        NewsFact newsFact1 = createBasicNewsFact("1");
-        NewsFact newsFact2 = createBasicNewsFact("2");
+        NewsFact newsFact1 = createSuffixFieldNewsFact("1");
+        NewsFact newsFact2 = createSuffixFieldNewsFact("2");
         newsFactRepository.saveAll(Arrays.asList(newsFact1, newsFact2));
 
         // Call /newsFact/all controller method
@@ -92,7 +86,7 @@ public class NewsFactResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").value(hasSize(2)))
-            .andExpect(jsonPath("$[*].id").value(hasItems("id1", "id2")))
+            .andExpect(jsonPath("$[*].id").value(hasItems("news_fact_id1", "news_fact_id2")))
             .andExpect(jsonPath("$[*].newsCategoryId").value(hasItems("newsCategoryId1", "newsCategoryId2")))
             .andExpect(jsonPath("$[*].locationCoordinate").value(hasSize(2)))
             .andExpect(jsonPath("$[*].locationCoordinate.x").value(hasItems(DEFAULT_LOCATION_COORDINATE_X.intValue(), DEFAULT_LOCATION_COORDINATE_X.intValue())))
@@ -100,38 +94,18 @@ public class NewsFactResourceIT {
     }
 
     @Test
-    public void getByOwner_caseOk() throws Exception {
-
-        // Initialize the database
-        NewsFact newsFact1 = createBasicNewsFact("1");
-        newsFact1.setOwner("marco");
-        NewsFact newsFact2 = createBasicNewsFact("2");
-        newsFact2.setOwner("polo");
-        newsFactRepository.saveAll(Arrays.asList(newsFact1, newsFact2));
-
-        // Call /newsFact/contributor/{login} controller method
-        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/contributor/polo").accept(MediaType.APPLICATION_JSON));
-        resultActions
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].id", is("id2")))
-            .andExpect(jsonPath("$[0].newsCategoryId", is(DEFAULT_NEWS_CATEGORY_ID + 2)));
-    }
-
-    @Test
     public void getById_caseOk() throws Exception {
 
         // Initialize the database
-        NewsFact newsFact1 = createBasicNewsFact("");
-        newsFactRepository.save(newsFact1);
+        NewsFact newsFact = createNewsFact();
+        newsFactRepository.save(newsFact);
 
         // Call /newsFact/{newsFactId} controller method
-        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/id").accept(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/" + DEFAULT_NEWS_FACT_ID).accept(MediaType.APPLICATION_JSON));
         resultActions
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id", is(DEFAULT_ID)))
+            .andExpect(jsonPath("$.id", is(DEFAULT_NEWS_FACT_ID)))
             .andExpect(jsonPath("$.address", is(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.city", is(DEFAULT_CITY)))
             .andExpect(jsonPath("$.country", is(DEFAULT_COUNTRY)))
@@ -143,10 +117,13 @@ public class NewsFactResourceIT {
     }
 
     @Test
-    public void getById_shouldThrowExceptionWhenIdDoesnotExist() throws Exception {
+    public void getById_shouldThrowExceptionWhenIdDoesNotExist() throws Exception {
 
         // Initialize the database
-        NewsFact newsFact = createBasicNewsFact("");
+        User user = EntityTestUtil.createUser();
+
+        //User is useless for this test but better to have a persisted user
+        NewsFact newsFact = createNewsFact();
         newsFact.setId("existingId");
         newsFactRepository.save(newsFact);
 
@@ -157,27 +134,44 @@ public class NewsFactResourceIT {
             .andExpect(header().string("X-skispasseApp-error", "error.wrongNewsFactId"));
     }
 
-    /**
-     * Create a News Fact entity with all fields initialized with fixed value, and string fields suffixed by the
-     * given suffix.
-     *
-     * @param suffix the suffix to add at the end of NewsFact fields
-     * @return The NewsFact created
-     */
-    private NewsFact createBasicNewsFact(String suffix) {
-        return new NewsFact.Builder()
-            .address(DEFAULT_ADDRESS + suffix)
-            .city(DEFAULT_CITY + suffix)
-            .country(DEFAULT_COUNTRY + suffix)
-            .createdDate(DEFAULT_CREATED_DATE)
-            .eventDate(DEFAULT_EVENT_DATE)
-            .id(DEFAULT_ID + suffix)
-            .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
-            .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + suffix)
-            .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + suffix)
-            .owner(DEFAULT_OWNER + suffix)
-            .videoPath(DEFAULT_VIDEO_PATH + suffix)
-            .build();
+    @Test
+    public void getByOwner_caseOk() throws Exception {
+
+        String poloLogin = "polo";
+
+        // Initialize the database
+        User poloUser = createUser();
+        poloUser.setLogin(poloLogin);
+        userRepository.save(poloUser);
+
+        NewsFact newsFact1 = createSuffixFieldNewsFact("1");
+        newsFact1.setOwner("marco");
+        NewsFact newsFact2 = createSuffixFieldNewsFact("2");
+        newsFact2.setOwner(poloLogin);
+        newsFactRepository.saveAll(Arrays.asList(newsFact1, newsFact2));
+
+        // Call /newsFact/contributor/{login} controller method
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/contributor/" + poloLogin).accept(MediaType.APPLICATION_JSON));
+        resultActions
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].id", is("news_fact_id2")))
+            .andExpect(jsonPath("$[0].newsCategoryId", is(DEFAULT_NEWS_CATEGORY_ID + 2)));
+    }
+
+    @Test
+    public void getByOwner_shouldThrowExceptionWhenLoginDoesNotExist() throws Exception {
+
+        // Initialize the database
+        User aUser = createUser();
+        aUser.setLogin("aLogin");
+        userRepository.save(aUser);
+
+        // Call /newsFact/{newsFactId} controller method
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/contributor/unexisting_login").accept(MediaType.APPLICATION_JSON));
+        resultActions
+            .andExpect(status().isBadRequest())
+            .andExpect(header().string("X-skispasseApp-error", "error.unexistingLogin"));
     }
 }

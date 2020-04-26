@@ -16,7 +16,7 @@ import org.zalando.problem.Status;
 import org.zalando.problem.spring.web.advice.ProblemHandling;
 import org.zalando.problem.spring.web.advice.security.SecurityAdviceTrait;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-import vdehorta.service.errors.UsernameAlreadyUsedException;
+import vdehorta.service.errors.LoginAlreadyUsedException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -108,8 +108,8 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
 
     @ExceptionHandler
-    public ResponseEntity<Problem> handleUsernameAlreadyUsedException(UsernameAlreadyUsedException ex, NativeWebRequest request) {
-        LoginAlreadyUsedException problem = new LoginAlreadyUsedException();
+    public ResponseEntity<Problem> handleUsernameAlreadyUsedException(LoginAlreadyUsedException ex, NativeWebRequest request) {
+        vdehorta.web.rest.errors.LoginAlreadyUsedException problem = new vdehorta.web.rest.errors.LoginAlreadyUsedException();
         return create(problem, request, HeaderUtil.createFailureAlert(applicationName,  true, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
     }
 
@@ -134,6 +134,12 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     @ExceptionHandler
     public ResponseEntity<Problem> handleWrongNewsFactIdException(vdehorta.service.errors.WrongNewsFactIdException ex, NativeWebRequest request) {
         WrongNewsFactIdException problem = new WrongNewsFactIdException();
+        return create(problem, request, HeaderUtil.createFailureAlert(applicationName,  true, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleUnexistingLoginException(vdehorta.service.errors.UnexistingLoginException ex, NativeWebRequest request) {
+        UnexistingLoginException problem = new UnexistingLoginException();
         return create(problem, request, HeaderUtil.createFailureAlert(applicationName,  true, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
     }
 }

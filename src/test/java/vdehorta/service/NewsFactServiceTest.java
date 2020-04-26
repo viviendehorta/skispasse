@@ -9,9 +9,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import vdehorta.domain.LocationCoordinate;
 import vdehorta.domain.NewsFact;
+import vdehorta.domain.User;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
+import vdehorta.service.errors.UnexistingLoginException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
@@ -33,12 +35,15 @@ class NewsFactServiceTest {
 
     private NewsFactRepository newsFactRepositoryMock;
 
+    private UserService userServiceMock;
+
     private NewsFactMapper newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
 
     @BeforeEach
     public void setup() {
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
-        newsFactService = new NewsFactService(newsFactRepositoryMock, newsFactMapper);
+        userServiceMock = Mockito.mock(UserService.class);
+        newsFactService = new NewsFactService(newsFactRepositoryMock, newsFactMapper, userServiceMock);
     }
 
     @Test
@@ -147,6 +152,18 @@ class NewsFactServiceTest {
     }
 
     @Test
+    void getById_shouldThrowWrongNewsFactIdExceptionWhenGivenIdDoesNotExist() {
+
+        //Given
+        final String unexistingId = "unexisting_id";
+        Mockito.when(newsFactRepositoryMock.findById(unexistingId)).thenReturn(Optional.empty());
+
+        //Assert-Thrown
+        assertThatThrownBy(() -> newsFactService.getById(unexistingId))
+            .isInstanceOf(WrongNewsFactIdException.class);
+    }
+
+    @Test
     void getByOwner_shouldReturnOnlyNewsFactOwnedByUserWithGivenLogin() {
 
         @NotNull String ownerId = "idOwned";
@@ -155,6 +172,7 @@ class NewsFactServiceTest {
 
         //Given
         NewsFact ownedNewsFact = new NewsFact.Builder().id(ownerId).owner(ownerLogin).build();
+        when(userServiceMock.getUserWithAuthoritiesByLogin(ownerLogin)).thenReturn(Optional.of(new User()));
         when(newsFactRepositoryMock.findAllByOwner(pageable, ownerLogin)).thenReturn(new PageImpl<>(Collections.singletonList(ownedNewsFact)));
 
         //When
@@ -165,14 +183,15 @@ class NewsFactServiceTest {
     }
 
     @Test
-    void getById_shouldThrowNewsFactNotFoundExceptionWhenGivenIdDoesNotExist() {
+    void getByOwner_shouldThrowUnexistingLoginExceptionWhenNoUserWithGivenLoginExists() {
+
+        String unexistingLogin = "unexisting-login";
+        PageRequest pageable = PageRequest.of(1, 10);
 
         //Given
-        final String unexistingId = "unexisting_id";
-        Mockito.when(newsFactRepositoryMock.findById(unexistingId)).thenReturn(Optional.empty());
+        when(userServiceMock.getUserWithAuthoritiesByLogin(unexistingLogin)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> newsFactService.getById(unexistingId))
-            .isInstanceOf(WrongNewsFactIdException.class)
-            .hasMessageContaining(unexistingId);
+        //Assert-Thrown
+        assertThatThrownBy(() -> newsFactService.getByOwner(pageable, unexistingLogin)).isInstanceOf(UnexistingLoginException.class);
     }
 }
