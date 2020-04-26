@@ -14,6 +14,7 @@ import vdehorta.SkispasseApp;
 import vdehorta.domain.NewsFact;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.service.NewsFactService;
+import vdehorta.web.rest.errors.ExceptionTranslator;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -55,6 +56,9 @@ public class NewsFactResourceIT {
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
     private MockMvc restNewsFactMockMvc;
 
 
@@ -64,6 +68,7 @@ public class NewsFactResourceIT {
 
         this.restNewsFactMockMvc = MockMvcBuilders.standaloneSetup(newsFactResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter)
             .build();
     }
@@ -135,6 +140,21 @@ public class NewsFactResourceIT {
             .andExpect(jsonPath("$.newsCategoryId", is(DEFAULT_NEWS_CATEGORY_ID)))
             .andExpect(jsonPath("$.newsCategoryLabel", is(DEFAULT_NEWS_CATEGORY_LABEL)))
             .andExpect(jsonPath("$.videoPath", is(DEFAULT_VIDEO_PATH)));
+    }
+
+    @Test
+    public void getById_shouldThrowExceptionWhenIdDoesnotExist() throws Exception {
+
+        // Initialize the database
+        NewsFact newsFact = createBasicNewsFact("");
+        newsFact.setId("existingId");
+        newsFactRepository.save(newsFact);
+
+        // Call /newsFact/{newsFactId} controller method
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/unexistingId").accept(MediaType.APPLICATION_JSON));
+        resultActions
+            .andExpect(status().isBadRequest())
+            .andExpect(header().string("X-skispasseApp-error", "error.wrongNewsFactId"));
     }
 
     /**

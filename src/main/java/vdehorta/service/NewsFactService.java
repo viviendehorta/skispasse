@@ -9,7 +9,7 @@ import vdehorta.domain.NewsFact;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
-import vdehorta.service.errors.UnexistingNewsFactException;
+import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
 import java.util.List;
@@ -36,10 +36,10 @@ public class NewsFactService {
         return newsFactMapper.newsFactsToNewsFactNoDetailDtos(newsFactRepository.findAll());
     }
 
-    public NewsFactDetailDto getById(String id) throws UnexistingNewsFactException {
+    public NewsFactDetailDto getById(String id) throws WrongNewsFactIdException {
         log.debug("Getting news fact  with id {}", id);
         Optional<NewsFact> newsFactOptional = newsFactRepository.findById(id);
-        NewsFact newsFact = newsFactOptional.orElseThrow(() -> new UnexistingNewsFactException(id));
+        NewsFact newsFact = newsFactOptional.orElseThrow(() -> new WrongNewsFactIdException());
         return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
     }
 
