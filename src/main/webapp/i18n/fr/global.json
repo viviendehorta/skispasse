@@ -37,7 +37,8 @@
     "Size": "Le champ {{fieldName}} ne respecte pas les critères minimum et maximum !",
     "url.not.found": "Non trouvé",
     "userexists": "Login déjà utilisé !",
-    "wrongNewsFactId": "Id de News Fact erroné !"
+    "wrongNewsFactId": "Id de News Fact erroné !",
+    "unexistingLogin": "Login inexistant !"
   },
   "global": {
     "backToMap": "Retour à la carte",
