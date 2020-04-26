@@ -12,7 +12,7 @@ import vdehorta.domain.NewsFact;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
-import vdehorta.service.errors.UnexistingNewsFactException;
+import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
 import javax.validation.constraints.NotNull;
@@ -165,14 +165,14 @@ class NewsFactServiceTest {
     }
 
     @Test
-    void getById_shouldThrowUnexistingNewsFactExceptionWhenGivenIdDoesNotExist() {
+    void getById_shouldThrowNewsFactNotFoundExceptionWhenGivenIdDoesNotExist() {
 
         //Given
         final String unexistingId = "unexisting_id";
         Mockito.when(newsFactRepositoryMock.findById(unexistingId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> newsFactService.getById(unexistingId))
-            .isInstanceOf(UnexistingNewsFactException.class)
+            .isInstanceOf(WrongNewsFactIdException.class)
             .hasMessageContaining(unexistingId);
     }
 }
