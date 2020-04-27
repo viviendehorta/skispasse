@@ -6,7 +6,7 @@ import { LoginModalService } from 'app/core/login/login-modal.service';
 import { AccountService } from 'app/core/auth/account.service';
 import { JhiEventManager } from 'ng-jhipster';
 import { Router } from '@angular/router';
-import { Account } from 'app/shared/beans/account.model';
+import { Account } from 'app/shared/model/account.model';
 import { Subscription } from 'rxjs';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
+import { NewsFactNoDetail } from 'app/shared/model/news-fact-no-detail.model';
 import { Icon, Style } from 'ol/style';
 
 @Injectable({ providedIn: 'root' })

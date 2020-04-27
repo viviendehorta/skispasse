@@ -6,7 +6,7 @@ import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
 import View from 'ol/View';
 import { MappingService } from 'app/core/mapping/mapping.service';
-import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
+import { NewsFactNoDetail } from 'app/shared/model/news-fact-no-detail.model';
 
 @Injectable({ providedIn: 'root' })
 export class OpenLayersService {

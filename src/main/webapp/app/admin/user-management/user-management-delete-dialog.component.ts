@@ -3,7 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { UserService } from 'app/core/user/user.service';
-import { User } from 'app/shared/beans/user.model';
+import { User } from 'app/shared/model/user.model';
 
 @Component({
   selector: 'skis-user-mgmt-delete-dialog',

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NewsCategoryService } from 'app/core/newscategory/news-category.service';
-import { NewsCategorySelectionService } from 'app/worldmap/news-category-selection.service';
-import { NewsCategorySelection } from 'app/shared/beans/news-category-selection.model';
+import { NewsCategorySelectionService } from 'app/core/newscategory/news-category-selection.service';
+import { NewsCategorySelection } from 'app/shared/model/news-category-selection.model';
 
 @Component({
   selector: 'skis-news-category-panel',

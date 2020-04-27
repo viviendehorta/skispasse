@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { NewsCategorySelection } from 'app/shared/beans/news-category-selection.model';
+import { NewsCategorySelection } from 'app/shared/model/news-category-selection.model';
 import { JhiEventManager } from 'ng-jhipster';
 
 @Component({

@@ -10,7 +10,7 @@ import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
 import { AccountService } from 'app/core/auth/account.service';
 import { UserService } from 'app/core/user/user.service';
 import { UserManagementDeleteDialogComponent } from './user-management-delete-dialog.component';
-import { User } from 'app/shared/beans/user.model';
+import { User } from 'app/shared/model/user.model';
 
 @Component({
   selector: 'skis-user-mgmt',

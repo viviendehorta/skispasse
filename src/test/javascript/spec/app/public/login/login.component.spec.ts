@@ -5,10 +5,10 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { LoginService } from 'app/core/login/login.service';
 import { StateStorageService } from 'app/core/auth/state-storage.service';
-import { SkispasseTestModule } from '../../test.module';
-import { MockLoginService } from '../../helpers/mock-login.service';
-import { MockStateStorageService } from '../../helpers/mock-state-storage.service';
-import { LoginModalComponent } from 'app/login/login.component';
+import { SkispasseTestModule } from '../../../test.module';
+import { MockLoginService } from '../../../helpers/mock-login.service';
+import { MockStateStorageService } from '../../../helpers/mock-state-storage.service';
+import { LoginModalComponent } from 'app/public/login/login.component';
 import { Router } from '@angular/router';
 
 describe('Component Tests', () => {

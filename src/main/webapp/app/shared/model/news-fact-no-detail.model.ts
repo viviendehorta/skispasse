@@ -1,4 +1,4 @@
-import { LocationCoordinate } from 'app/shared/beans/location-coordinate.model';
+import { LocationCoordinate } from 'app/shared/model/location-coordinate.model';
 
 export interface NewsFactNoDetail {
   id: string;

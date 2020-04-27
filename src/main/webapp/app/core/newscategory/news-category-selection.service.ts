@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { NewsCategory } from 'app/shared/beans/news-category.model';
-import { NewsCategorySelection } from 'app/shared/beans/news-category-selection.model';
+import { NewsCategory } from 'app/shared/model/news-category.model';
+import { NewsCategorySelection } from 'app/shared/model/news-category-selection.model';
 
 @Injectable({ providedIn: 'root' })
 export class NewsCategorySelectionService {

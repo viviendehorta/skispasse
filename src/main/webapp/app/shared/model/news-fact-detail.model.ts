@@ -1,5 +1,5 @@
-import { LocationCoordinate } from 'app/shared/beans/location-coordinate.model';
-import { NewsCategory } from 'app/shared/beans/news-category.model';
+import { LocationCoordinate } from 'app/shared/model/location-coordinate.model';
+import { NewsCategory } from 'app/shared/model/news-category.model';
 
 export interface NewsFactDetail {
   id: string;

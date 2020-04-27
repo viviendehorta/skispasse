@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ModalService } from 'app/core/modal/modal.service';
-import { LoginModalComponent } from 'app/login/login.component';
+import { LoginModalComponent } from 'app/public/login/login.component';
 
 @Injectable({ providedIn: 'root' })
 export class LoginModalService {

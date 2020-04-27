@@ -3,8 +3,8 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { Observable } from 'rxjs';
-import { NewsFactNoDetail } from 'app/shared/beans/news-fact-no-detail.model';
-import { NewsFactDetail } from 'app/shared/beans/news-fact-detail.model';
+import { NewsFactNoDetail } from 'app/shared/model/news-fact-no-detail.model';
+import { NewsFactDetail } from 'app/shared/model/news-fact-detail.model';
 import { createHttpPagingOptions } from 'app/shared/util/request-util';
 
 @Injectable({ providedIn: 'root' })
