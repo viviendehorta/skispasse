@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
     RouterModule.forChild([
       {
         path: 'my-news-facts',
-        loadChildren: () => import('./published-news-facts/published-news-facts.module').then(m => m.PublishedNewsFactsModule)
+        loadChildren: () => import('./my-news-facts/my-news-facts.module').then(m => m.MyNewsFactsModule)
       }
     ])
   ]

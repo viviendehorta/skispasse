@@ -5,7 +5,7 @@ import { DEBUG_INFO_ENABLED } from 'app/app.constants';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
 import { WorldmapComponent } from 'app/public/worldmap/worldmap.component';
-import { ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_CONTRIBUTOR, ROLE_USER } from 'app/shared/constants/role.constants';
+import { ROLE_ADMIN, ROLE_CONTRIBUTOR, ROLE_USER } from 'app/shared/constants/role.constants';
 
 const LAYOUT_ROUTES = [...errorRoute];
 

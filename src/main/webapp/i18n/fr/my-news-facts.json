@@ -1,0 +1,32 @@
+{
+  "myNewsFacts": {
+    "address": "Adresse",
+    "category": "Catégorie",
+    "city": "Ville",
+    "country": "Pays",
+    "createdDate": "Date de Création",
+    "creation": {
+      "title": "Nouvelle publication"
+    },
+    "edition": {
+      "title": "Édition de publication"
+    },
+    "eventDate": "Date Évènement",
+    "form": {
+      "enterAddress": "Entrez l'adresse",
+      "enterCity": "Entrez la ville",
+      "enterCountry": "Entrez le pays",
+      "enterLocationCoordinateX": "Entrez la coordonnée X",
+      "enterLocationCoordinateY": "Entrez la coordonnée Y"
+    },
+    "list": {
+      "title": "Mes publications",
+      "createLabel": "Nouvelle publication"
+    },
+    "locationCoordinate": "Coord. Géo.",
+    "locationCoordinateX": "Coordonnée. Géo. X",
+    "locationCoordinateY": "Coordonnée Géo. Y",
+    "newsFactVideo": "Vidéo",
+    "title": "Publication"
+  }
+}

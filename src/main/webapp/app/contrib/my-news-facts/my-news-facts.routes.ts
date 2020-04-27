@@ -3,12 +3,12 @@ import { ActivatedRouteSnapshot, Resolve, Routes } from '@angular/router';
 import { JhiResolvePagingParams } from 'ng-jhipster';
 
 import { User } from 'app/shared/model//user.model';
-import { PublishedNewsFactsComponent } from './published-news-facts.component';
-import { PublishedNewsFactUpdateComponent } from './published-news-fact-update.component';
+import { MyNewsFactsComponent } from './my-news-facts.component';
+import { MyNewsFactEditionComponent } from './my-news-fact-edition.component';
 import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
 
 @Injectable({ providedIn: 'root' })
-export class PublishedNewsFactsResolve implements Resolve<any> {
+export class MyNewsFactsResolve implements Resolve<any> {
   constructor(private newsFactService: NewsFactService) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -20,36 +20,36 @@ export class PublishedNewsFactsResolve implements Resolve<any> {
   }
 }
 
-export const publishedNewsFactsRoutes: Routes = [
+export const myNewsFactsRoutes: Routes = [
   {
     path: '',
-    component: PublishedNewsFactsComponent,
+    component: MyNewsFactsComponent,
     resolve: {
       pagingParams: JhiResolvePagingParams
     },
     data: {
-      pageTitle: 'publishedNewsFacts.list.title',
+      pageTitle: 'myNewsFacts.list.title',
       defaultSort: 'id,asc'
     }
   },
   {
     path: 'new',
-    component: PublishedNewsFactUpdateComponent,
+    component: MyNewsFactEditionComponent,
     data: {
-      pageTitle: 'publishedNewsFacts.creation.title'
+      pageTitle: 'myNewsFacts.creation.title'
     },
     resolve: {
-      user: PublishedNewsFactsResolve
+      user: MyNewsFactsResolve
     }
   },
   {
     path: ':id/edit',
-    component: PublishedNewsFactUpdateComponent,
+    component: MyNewsFactEditionComponent,
     data: {
-      pageTitle: 'publishedNewsFacts.edition.title'
+      pageTitle: 'myNewsFacts.edition.title'
     },
     resolve: {
-      user: PublishedNewsFactsResolve
+      user: MyNewsFactsResolve
     }
   }
 ];

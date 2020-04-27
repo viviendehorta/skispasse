@@ -47,7 +47,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.registerChangeInCategories();
+    this.subscribeToNewsCategorySelectionEvents();
   }
 
   ngAfterViewInit() {
@@ -66,7 +66,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  registerChangeInCategories() {
+  subscribeToNewsCategorySelectionEvents() {
     this.categorySelectionSubscription = this.eventManager.subscribe('newsCategorySelectionChanged', event =>
       this.onNewsCategorySelectionChanged(event)
     );
