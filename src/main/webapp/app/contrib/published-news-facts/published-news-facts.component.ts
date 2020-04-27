@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { NewsFactDetail } from 'app/shared/beans/news-fact-detail.model';
+import { NewsFactDetail } from 'app/shared/model/news-fact-detail.model';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
 import { JhiAlertService, JhiParseLinks } from 'ng-jhipster';
 import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
-import { Account } from 'app/shared/beans/account.model';
+import { Account } from 'app/shared/model/account.model';
 import { AccountService } from 'app/core/auth/account.service';
-import { LocationCoordinate } from 'app/shared/beans/location-coordinate.model';
+import { LocationCoordinate } from 'app/shared/model/location-coordinate.model';
 
 @Component({
   selector: 'skis-news-fact-management',

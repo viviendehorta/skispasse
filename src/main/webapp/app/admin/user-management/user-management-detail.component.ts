@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User } from 'app/shared/beans/user.model';
+import { User } from 'app/shared/model/user.model';
 
 @Component({
   selector: 'skis-user-mgmt-detail',

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { createHttpPagingOptions } from 'app/shared/util/request-util';
-import { IUser } from 'app/shared/beans/user.model';
+import { IUser } from 'app/shared/model/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {

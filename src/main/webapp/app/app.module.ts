@@ -5,12 +5,12 @@ import './vendor';
 import { SkispasseSharedModule } from 'app/shared/shared.module';
 import { SkispasseCoreModule } from 'app/core/core.module';
 import { SkispasseAppRoutingModule } from './app-routing.module';
-import { SkispasseWorldmapModule } from './worldmap/worldmap.module';
+import { WorldmapModule } from './public/worldmap/worldmap.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
-import { SkisMainComponent } from './layouts/main/main.component';
-import { ErrorComponent } from './layouts/error/error.component';
-import { NewsFactDetailModalContentComponent } from 'app/worldmap/news-fact-detail-modal/news-fact-detail-modal.content.component';
-import { LoginModalComponent } from 'app/login/login.component';
+import { SkisMainComponent } from './main/main.component';
+import { ErrorComponent } from './shared/error/error.component';
+import { NewsFactDetailModalContentComponent } from 'app/public/worldmap/news-fact-detail-modal/news-fact-detail-modal.content.component';
+import { LoginModalComponent } from 'app/public/login/login.component';
 
 @NgModule({
   declarations: [SkisMainComponent, ErrorComponent, LoginModalComponent],
@@ -20,7 +20,7 @@ import { LoginModalComponent } from 'app/login/login.component';
     BrowserModule,
     SkispasseSharedModule,
     SkispasseCoreModule,
-    SkispasseWorldmapModule,
+    WorldmapModule,
     SkispasseAppRoutingModule
     // jhipster-needle-angular-add-module JHipster will add new module here
   ]

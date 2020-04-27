@@ -5,10 +5,10 @@ import { RouterModule } from '@angular/router';
   imports: [
     RouterModule.forChild([
       {
-        path: 'my-publications',
+        path: 'my-news-facts',
         loadChildren: () => import('./published-news-facts/published-news-facts.module').then(m => m.PublishedNewsFactsModule)
       }
     ])
   ]
 })
-export class PublicationRoutingModule {}
+export class ContribRoutingModule {}

@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { JhiLanguageHelper } from 'app/core/language/language.helper';
-import { User } from 'app/shared/beans/user.model';
+import { User } from 'app/shared/model/user.model';
 import { UserService } from 'app/core/user/user.service';
 
 @Component({

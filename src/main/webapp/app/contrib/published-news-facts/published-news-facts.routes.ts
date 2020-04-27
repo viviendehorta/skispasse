@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Routes } from '@angular/router';
 import { JhiResolvePagingParams } from 'ng-jhipster';
 
-import { User } from 'app/shared/beans//user.model';
+import { User } from 'app/shared/model//user.model';
 import { PublishedNewsFactsComponent } from './published-news-facts.component';
 import { PublishedNewsFactUpdateComponent } from './published-news-fact-update.component';
 import { NewsFactService } from 'app/core/newsfacts/news-fact.service';

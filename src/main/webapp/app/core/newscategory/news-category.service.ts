@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SERVER_API_URL } from 'app/app.constants';
-import { NewsCategory } from 'app/shared/beans/news-category.model';
+import { NewsCategory } from 'app/shared/model/news-category.model';
 
 @Injectable({ providedIn: 'root' })
 export class NewsCategoryService {

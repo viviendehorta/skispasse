@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
 import { AccountService } from 'app/core/auth/account.service';
-import { Account } from 'app/shared/beans/account.model';
+import { Account } from 'app/shared/model/account.model';
 import { PasswordService } from 'app/core/account/password.service';
 
 @Component({
