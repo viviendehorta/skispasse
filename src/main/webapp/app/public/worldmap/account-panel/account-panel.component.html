@@ -15,7 +15,7 @@
             <fa-icon *ngIf="this.isAdmin()" [icon]="['fas', 'user-cog']" align=""></fa-icon>
 
             <!--Contributor account icon-->
-            <fa-icon *ngIf="this.isContributor()" [icon]="['fas', 'user-edit']"></fa-icon>
+            <fa-icon *ngIf="!this.isAdmin() && this.isContributor()" [icon]="['fas', 'user-edit']"></fa-icon>
 
             <!--User login text-->
             <span class="account-user-name card-text">{{this.account.login}}</span>

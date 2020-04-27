@@ -1,23 +1,23 @@
 {
   "myNewsFacts": {
     "address": "Adresse",
-    "category": "Catégorie",
+    "newsCategory": "Catégorie",
     "city": "Ville",
     "country": "Pays",
-    "createdDate": "Date de Création",
+    "createdDate": "Date de création",
     "creation": {
       "title": "Nouvelle publication"
     },
     "edition": {
       "title": "Édition de publication"
     },
-    "eventDate": "Date Évènement",
+    "eventDate": "Date évènement",
     "form": {
       "enterAddress": "Entrez l'adresse",
       "enterCity": "Entrez la ville",
       "enterCountry": "Entrez le pays",
-      "enterLocationCoordinateX": "Entrez la coordonnée X",
-      "enterLocationCoordinateY": "Entrez la coordonnée Y"
+      "enterLocationCoordinateX": "Entrez la coordonnée géo. X",
+      "enterLocationCoordinateY": "Entrez la coordonnée géo. Y"
     },
     "list": {
       "title": "Mes publications",
@@ -26,7 +26,8 @@
     "locationCoordinate": "Coord. Géo.",
     "locationCoordinateX": "Coordonnée. Géo. X",
     "locationCoordinateY": "Coordonnée Géo. Y",
-    "newsFactVideo": "Vidéo",
+    "newsFactVideo": "Fichier vidéo",
+    "publish": "Publier",
     "title": "Publication"
   }
 }

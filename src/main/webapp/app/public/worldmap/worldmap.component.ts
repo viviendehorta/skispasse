@@ -122,10 +122,10 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   isAdmin() {
-    return this.accountService.getRole() === ROLE_ADMIN;
+    return this.accountService.hasAnyAuthority(ROLE_ADMIN);
   }
 
   isContributor() {
-    return this.accountService.getRole() === ROLE_CONTRIBUTOR;
+    return this.accountService.hasAnyAuthority(ROLE_CONTRIBUTOR);
   }
 }
