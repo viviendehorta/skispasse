@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Routes } from '@angular/router';
 import { JhiResolvePagingParams } from 'ng-jhipster';
-
-import { User } from 'app/shared/model//user.model';
 import { MyNewsFactsComponent } from './my-news-facts.component';
 import { MyNewsFactEditionComponent } from './my-news-fact-edition.component';
 import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
+import { NewsFactDetail } from 'app/shared/model/news-fact-detail.model';
 
 @Injectable({ providedIn: 'root' })
-export class MyNewsFactsResolve implements Resolve<any> {
+export class NewsFactResolve implements Resolve<any> {
   constructor(private newsFactService: NewsFactService) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -16,7 +15,7 @@ export class MyNewsFactsResolve implements Resolve<any> {
     if (id) {
       return this.newsFactService.getNewsFactDetail(id);
     }
-    return new User();
+    return new NewsFactDetail();
   }
 }
 
@@ -39,7 +38,7 @@ export const myNewsFactsRoutes: Routes = [
       pageTitle: 'myNewsFacts.creation.title'
     },
     resolve: {
-      user: MyNewsFactsResolve
+      newsFact: NewsFactResolve
     }
   },
   {
@@ -49,7 +48,7 @@ export const myNewsFactsRoutes: Routes = [
       pageTitle: 'myNewsFacts.edition.title'
     },
     resolve: {
-      user: MyNewsFactsResolve
+      newsFact: NewsFactResolve
     }
   }
 ];

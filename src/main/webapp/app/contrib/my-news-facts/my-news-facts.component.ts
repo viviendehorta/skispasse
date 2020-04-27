@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { NewsFactDetail } from 'app/shared/model/news-fact-detail.model';
+import { INewsFactDetail } from 'app/shared/model/news-fact-detail.model';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
@@ -8,7 +8,7 @@ import { JhiAlertService, JhiParseLinks } from 'ng-jhipster';
 import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
 import { Account } from 'app/shared/model/account.model';
 import { AccountService } from 'app/core/auth/account.service';
-import { LocationCoordinate } from 'app/shared/model/location-coordinate.model';
+import { ILocationCoordinate } from 'app/shared/model/location-coordinate.model';
 
 @Component({
   selector: 'skis-news-fact-management',
@@ -16,7 +16,7 @@ import { LocationCoordinate } from 'app/shared/model/location-coordinate.model';
   styleUrls: ['./my-news-facts.component.scss']
 })
 export class MyNewsFactsComponent implements OnInit {
-  myNewsFacts: NewsFactDetail[];
+  myNewsFacts: INewsFactDetail[];
   currentAccount: Account;
   routeData: Subscription;
   links: any;
@@ -59,7 +59,7 @@ export class MyNewsFactsComponent implements OnInit {
         sort: this.sort()
       })
       .subscribe(
-        (res: HttpResponse<NewsFactDetail[]>) => this.onSuccess(res.body, res.headers),
+        (res: HttpResponse<INewsFactDetail[]>) => this.onSuccess(res.body, res.headers),
         (res: HttpResponse<any>) => this.onError(res.body)
       );
   }
@@ -83,7 +83,7 @@ export class MyNewsFactsComponent implements OnInit {
     this.loadAll();
   }
 
-  trackIdentity(index, newsFactDetail: NewsFactDetail) {
+  trackIdentity(index, newsFactDetail: INewsFactDetail) {
     return newsFactDetail.id;
   }
 
@@ -104,7 +104,7 @@ export class MyNewsFactsComponent implements OnInit {
     this.alertService.error(error.error, error.message, null);
   }
 
-  formatLocationCoordinate(locationCoordinate: LocationCoordinate) {
+  formatLocationCoordinate(locationCoordinate: ILocationCoordinate) {
     return '[' + locationCoordinate.x + '; ' + locationCoordinate.y + ']';
   }
 }

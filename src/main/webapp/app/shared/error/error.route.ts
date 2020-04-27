@@ -12,7 +12,7 @@ export const errorRoute: Routes = [
     }
   },
   {
-    path: 'accessdenied',
+    path: 'access-denied',
     component: ErrorComponent,
     data: {
       authorities: [],
