@@ -1,0 +1,77 @@
+<form class="form">
+
+    <!-- News category -->
+    <div class="form-group">
+        <label>News Category</label>
+        <div>
+            <div *ngFor="let newsCategory of this.newsCategories" class="form-check form-check-inline">
+                <input class="form-check-input"
+                       type="radio"
+                       name="news-category"
+                       id="news-category-{{newsCategory.id}}" value="{{newsCategory.id}}">
+                <label class="form-check-label" for="news-category-{{newsCategory.id}}">{{newsCategory.label}}</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event date -->
+    <div class="form-group">
+        <label for="eventDateInput">Event date</label>
+        <div class="input-group">
+            <input class="form-control"
+                   id="eventDateInput"
+                   placeholder="yyyy-mm-dd"
+                   name="eventDatePicker" [(ngModel)]="eventDateModel"
+                   ngbDatepicker #d="ngbDatepicker">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                    <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        <!-- Address -->
+        <div class="form-group col-md-6">
+            <label for="addressInput" jhiTranslate="myNewsFacts.address">Address</label>
+            <input type="text" class="form-control" id="addressInput" placeholder="{{'myNewsFacts.form.enterAddress' | translate}}">
+        </div>
+
+        <!-- City -->
+        <div class="form-group col-md-3">
+            <label for="cityInput" jhiTranslate="myNewsFacts.city">City</label>
+            <input type="text" class="form-control" id="cityInput" placeholder="{{'myNewsFacts.form.enterCity' | translate}}">
+        </div>
+
+        <!-- Country -->
+        <div class="form-group col-md-3">
+            <label for="countryInput" jhiTranslate="myNewsFacts.country">City</label>
+            <input type="text" class="form-control" id="countryInput" placeholder="{{'myNewsFacts.form.enterCountry' | translate}}">
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        <!-- Location Coordinate X -->
+        <div class="form-group col-md-6">
+            <label for="locationCoordinateXInput" jhiTranslate="myNewsFacts.locationCoordinateX">Location Coordinate X</label>
+            <input type="number" class="form-control" id="locationCoordinateXInput" placeholder="{{'myNewsFacts.form.enterLocationCoordinateX' | translate}}">
+        </div>
+
+        <!-- Location Coordinate Y -->
+        <div class="form-group col-md-6">
+            <label for="locationCoordinateYInput" jhiTranslate="myNewsFacts.locationCoordinateY">Location Coordinate Y</label>
+            <input type="number" class="form-control" id="locationCoordinateYInput" placeholder="{{'myNewsFacts.form.enterLocationCoordinateY' | translate}}">
+        </div>
+
+        <!-- News fact video upload -->
+        <div class="form-group col-md-6">
+            <label for="videoFileInput" jhiTranslate="myNewsFacts.newsFactVideo">Location Coordinate Y</label>
+            <input type="file" class="form-control-file" id="videoFileInput">
+        </div>
+    </div>
+
+
+</form>

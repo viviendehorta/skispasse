@@ -12,11 +12,11 @@ import { LocationCoordinate } from 'app/shared/model/location-coordinate.model';
 
 @Component({
   selector: 'skis-news-fact-management',
-  templateUrl: './published-news-facts.component.html',
-  styleUrls: ['./published-news-facts.component.scss']
+  templateUrl: './my-news-facts.component.html',
+  styleUrls: ['./my-news-facts.component.scss']
 })
-export class PublishedNewsFactsComponent implements OnInit {
-  publishedNewsFacts: NewsFactDetail[];
+export class MyNewsFactsComponent implements OnInit {
+  myNewsFacts: NewsFactDetail[];
   currentAccount: Account;
   routeData: Subscription;
   links: any;
@@ -97,7 +97,7 @@ export class PublishedNewsFactsComponent implements OnInit {
   private onSuccess(data, headers) {
     this.links = this.parseLinks.parse(headers.get('link'));
     this.totalItems = headers.get('X-Total-Count');
-    this.publishedNewsFacts = data;
+    this.myNewsFacts = data;
   }
 
   private onError(error) {
