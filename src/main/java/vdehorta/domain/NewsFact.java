@@ -53,7 +53,6 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Field("address")
     private String address;
 
-    @NotNull
     @Field("video_path")
     private String videoPath;
 

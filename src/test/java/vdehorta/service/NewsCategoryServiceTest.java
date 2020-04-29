@@ -4,16 +4,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import vdehorta.EntityTestUtil;
 import vdehorta.domain.NewsCategory;
 import vdehorta.dto.NewsCategoryDto;
 import vdehorta.repository.NewsCategoryRepository;
+import vdehorta.service.errors.WrongNewsCategoryIdException;
 import vdehorta.service.mapper.NewsCategoryMapper;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 class NewsCategoryServiceTest {
@@ -56,5 +58,40 @@ class NewsCategoryServiceTest {
                 tuple(newsCategoryId1, newsCategoryLabel1),
                 // NewsCategory2
                 tuple(newsCategoryId2, newsCategoryLabel2));
+    }
+
+    @Test
+    void getById_shouldReturnUniqueNewsCategoryDtoMatchingGivenId() {
+
+        String id1 = "Id1";
+        String id2 = "Id2";
+
+        //Given
+        NewsCategory newsCategory1 = EntityTestUtil.createDefaultCategory1();
+        newsCategory1.setId(id1);
+        NewsCategory newsCategory2 = EntityTestUtil.createDefaultCategory2();
+        newsCategory2.setId(id2);
+
+        when(newsCategoryRepositoryMock.findById(id1)).thenReturn(Optional.of(newsCategory1));
+        when(newsCategoryRepositoryMock.findById(id2)).thenReturn(Optional.of(newsCategory2));
+
+        //When
+        NewsCategoryDto newsCategoryDto = newsCategoryService.getById(id2);
+
+        //Then
+        assertThat(newsCategoryDto.getId()).isEqualTo(id2);
+        assertThat(newsCategoryDto.getLabel()).isEqualTo(newsCategory2.getLabel());
+    }
+
+    @Test
+    void getById_shouldThrowWrongNewsFactIdExceptionWhenGivenIdDoesNotExist() {
+
+        //Given
+        final String unexistingId = "unexisting_id";
+        Mockito.when(newsCategoryRepositoryMock.findById(unexistingId)).thenReturn(Optional.empty());
+
+        //Assert-Thrown
+        assertThatThrownBy(() -> newsCategoryService.getById(unexistingId))
+            .isInstanceOf(WrongNewsCategoryIdException.class);
     }
 }

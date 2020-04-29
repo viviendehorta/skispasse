@@ -9,7 +9,9 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
@@ -33,7 +35,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static vdehorta.web.rest.EntityTestUtil.*;
+import static vdehorta.EntityTestUtil.*;
 
 /**
  * Integration tests for the {@link UserResource} REST controller.
@@ -81,7 +83,7 @@ public class UserResourceIT {
     @BeforeEach
     public void initTest() {
         userRepository.deleteAll();
-        user = EntityTestUtil.createUser();
+        user = EntityTestUtil.createDefaultUser1();
     }
 
     @Test
@@ -100,9 +102,13 @@ public class UserResourceIT {
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
         managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
 
-        restUserMockMvc.perform(post("/api/users")
+        //Then
+        ResultActions resultActions = restUserMockMvc.perform(post("/api/users")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(managedUserVM)))
+            .content(TestUtil.convertObjectToJsonBytes(managedUserVM)));
+
+        // Assert
+        resultActions
             .andExpect(status().isCreated());
 
         // Validate the User in the database

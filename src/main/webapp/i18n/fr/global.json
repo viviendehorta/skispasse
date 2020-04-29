@@ -29,7 +29,7 @@
   },
   "error": {
     "emailexists": "Email déjà utilisé !",
-    "idexists": "Une nouvelle entité {{entityName}} ne peut pas avoir d'ID !",
+    "idExists": "Une nouvelle entité {{entityName}} ne peut pas avoir d'ID !",
     "idnull": "Invalid ID",
     "internalServerError": "Erreur interne du serveur",
     "NotNull": "Le champ {{fieldName}} ne peut pas être vide !",
