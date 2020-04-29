@@ -27,13 +27,16 @@ public class NewsFactService {
     private final NewsFactRepository newsFactRepository;
     private final NewsFactMapper newsFactMapper;
     private final UserService userService;
+    private final NewsCategoryService newsCategoryService;
 
     public NewsFactService(NewsFactRepository newsFactRepository,
                            NewsFactMapper newsFactMapper,
-                           UserService userService) {
+                           UserService userService,
+                           NewsCategoryService newsCategoryService) {
         this.newsFactRepository = newsFactRepository;
         this.newsFactMapper = newsFactMapper;
         this.userService = userService;
+        this.newsCategoryService = newsCategoryService;
     }
 
     public List<NewsFactNoDetailDto> getAll() {
@@ -53,5 +56,14 @@ public class NewsFactService {
         userService.getUserWithAuthoritiesByLogin(ownerLogin).orElseThrow(() -> new UnexistingLoginException());
 
         return newsFactRepository.findAllByOwner(pageable, ownerLogin).map(newsFactMapper::newsFactToNewsFactDetailDto);
+    }
+
+    public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto) {
+        log.debug("Creating  news fact");
+        NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
+        newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
+        this.newsFactRepository.save(newsFact);
+        log.debug("Created Information for News Fact: {}", newsFact);
+        return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
     }
 }

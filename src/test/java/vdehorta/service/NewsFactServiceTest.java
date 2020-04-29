@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import vdehorta.domain.LocationCoordinate;
+import vdehorta.EntityTestUtil;
 import vdehorta.domain.NewsFact;
 import vdehorta.domain.User;
 import vdehorta.dto.NewsFactDetailDto;
@@ -18,9 +18,6 @@ import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -37,30 +34,24 @@ class NewsFactServiceTest {
 
     private UserService userServiceMock;
 
+    private NewsCategoryService newsCategoryServiceMock;
+
     private NewsFactMapper newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
 
     @BeforeEach
     public void setup() {
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
         userServiceMock = Mockito.mock(UserService.class);
-        newsFactService = new NewsFactService(newsFactRepositoryMock, newsFactMapper, userServiceMock);
+        newsCategoryServiceMock = Mockito.mock(NewsCategoryService.class);
+        newsFactService = new NewsFactService(newsFactRepositoryMock, newsFactMapper, userServiceMock, newsCategoryServiceMock);
     }
 
     @Test
     void getAll_shouldReturnAllNewsFactsInNewsFactNoDetailDTOs() {
 
-        String idNewsFact1 = "2";
-        String idNewsFact2 = "po";
-
-        String idNewsCategory1 = "id-newsCategory1";
-        String idNewsCategory2 = "09099";
-
-        LocationCoordinate locationCoordinate1 = new LocationCoordinate.Builder().x(1L).y(2L).build();
-        LocationCoordinate locationCoordinate2 = new LocationCoordinate.Builder().x(222222222222L).y(-3333333333333L).build();
-
         //Given
-        NewsFact newsFact1 = new NewsFact.Builder().id(idNewsFact1).newsCategoryId(idNewsCategory1).locationCoordinateX(locationCoordinate1.getX()).locationCoordinateY(locationCoordinate1.getY()).build();
-        NewsFact newsFact2 = new NewsFact.Builder().id(idNewsFact2).newsCategoryId(idNewsCategory2).locationCoordinateX(locationCoordinate2.getX()).locationCoordinateY(locationCoordinate2.getY()).build();
+        NewsFact newsFact1 = EntityTestUtil.createDefaultNewsFact1();
+        NewsFact newsFact2 = EntityTestUtil.createDefaultNewsFact2();
         when(newsFactRepositoryMock.findAll()).thenReturn(Arrays.asList(newsFact1, newsFact2));
 
         //When
@@ -72,65 +63,23 @@ class NewsFactServiceTest {
             .extracting("id", "newsCategoryId", "locationCoordinate.x", "locationCoordinate.y")
             .containsOnly(
                 //NewsFact1
-                tuple(idNewsFact1, idNewsCategory1, locationCoordinate1.getX(), locationCoordinate1.getY()
+                tuple(newsFact1.getId(), newsFact1.getNewsCategoryId(), newsFact1.getLocationCoordinateX(), newsFact1.getLocationCoordinateY()
                 ),
                 //NewsFact2
-                tuple(idNewsFact2, idNewsCategory2, locationCoordinate2.getX(), locationCoordinate2.getY()));
+                tuple(newsFact2.getId(), newsFact2.getNewsCategoryId(), newsFact2.getLocationCoordinateX(), newsFact2.getLocationCoordinateY()));
     }
 
     @Test
-    void getById_shouldReturnUniqueNewsFactMatchingGivenIdInNewsFactDetailDTO() {
+    void getById_shouldReturnUniqueNewsFactDetailDtoMatchingGivenId() {
 
-        @NotNull String id1 = "id1";
-        @NotNull String address1 = "address1";
-        @NotNull String city1 = "city1";
-        @NotNull String country1 = "country1";
-        @NotNull Instant createdDate1 = LocalDate.parse("2020-04-02").atStartOfDay().toInstant(ZoneOffset.UTC);
-        @NotNull Instant eventDate1 = LocalDate.parse("2020-04-01").atStartOfDay().toInstant(ZoneOffset.UTC);
-        @NotNull LocationCoordinate locationCoordinate1 = new LocationCoordinate.Builder().x(1L).y(2L).build();
-        @NotNull String newsCategoryId1 = "newsCategoryId";
-        @NotNull String newsCategoryLabel1 = "newsCategoryLabel";
-        @NotNull String videoPath1 = "videoPath1";
-
-        @NotNull String id2 = "id2";
-        @NotNull String address2 = "address2";
-        @NotNull String city2 = "city2";
-        @NotNull String country2 = "country2";
-        @NotNull Instant createdDate2 = LocalDate.parse("2020-05-02").atStartOfDay().toInstant(ZoneOffset.UTC);
-        @NotNull Instant eventDate2 = LocalDate.parse("2020-05-01").atStartOfDay().toInstant(ZoneOffset.UTC);
-        @NotNull LocationCoordinate locationCoordinate2 = new LocationCoordinate.Builder().x(4L).y(1000L).build();
-        @NotNull String newsCategoryId2 = "newsCategoryId2";
-        @NotNull String newsCategoryLabel2 = "newsCategoryLabel2";
-        @NotNull String videoPath2 = "videoPath2";
+        String id1 = "Id1";
+        String id2 = "Id2";
 
         //Given
-        NewsFact newsFact1 = new NewsFact.Builder()
-            .address(address1)
-            .city(city1)
-            .country(country1)
-            .createdDate(createdDate1)
-            .eventDate(eventDate1)
-            .id(id1)
-            .locationCoordinateX(locationCoordinate1.getX())
-            .locationCoordinateY(locationCoordinate1.getY())
-            .newsCategoryId(newsCategoryId1)
-            .newsCategoryLabel(newsCategoryLabel1)
-            .videoPath(videoPath1)
-            .build();
-
-        NewsFact newsFact2 = new NewsFact.Builder()
-            .address(address2)
-            .city(city2)
-            .country(country2)
-            .createdDate(createdDate2)
-            .eventDate(eventDate2)
-            .id(id2)
-            .locationCoordinateX(locationCoordinate2.getX())
-            .locationCoordinateY(locationCoordinate2.getY())
-            .newsCategoryId(newsCategoryId2)
-            .newsCategoryLabel(newsCategoryLabel2)
-            .videoPath(videoPath2)
-            .build();
+        NewsFact newsFact1 = EntityTestUtil.createDefaultNewsFact1();
+        newsFact1.setId(id1);
+        NewsFact newsFact2 = EntityTestUtil.createDefaultNewsFact2();
+        newsFact2.setId(id2);
 
         when(newsFactRepositoryMock.findById(id1)).thenReturn(Optional.of(newsFact1));
         when(newsFactRepositoryMock.findById(id2)).thenReturn(Optional.of(newsFact2));
@@ -139,16 +88,18 @@ class NewsFactServiceTest {
         NewsFactDetailDto newsFactDetailDto = newsFactService.getById(id2);
 
         //Then
-        assertThat(newsFactDetailDto.getAddress()).isEqualTo(address2);
-        assertThat(newsFactDetailDto.getCity()).isEqualTo(city2);
-        assertThat(newsFactDetailDto.getCountry()).isEqualTo(country2);
-        assertThat(newsFactDetailDto.getCreatedDate()).isEqualTo(createdDate2);
-        assertThat(newsFactDetailDto.getEventDate()).isEqualTo(eventDate2);
+        assertThat(newsFactDetailDto.getAddress()).isEqualTo(newsFact2.getAddress());
+        assertThat(newsFactDetailDto.getCity()).isEqualTo(newsFact2.getCity());
+        assertThat(newsFactDetailDto.getCountry()).isEqualTo(newsFact2.getCountry());
+        assertThat(newsFactDetailDto.getCreatedDate()).isEqualTo(newsFact2.getCreatedDate());
+        assertThat(newsFactDetailDto.getEventDate()).isEqualTo(newsFact2.getEventDate());
         assertThat(newsFactDetailDto.getId()).isEqualTo(id2);
-        assertThat(newsFactDetailDto.getLocationCoordinate()).isEqualTo(locationCoordinate2);
-        assertThat(newsFactDetailDto.getNewsCategoryId()).isEqualTo(newsCategoryId2);
-        assertThat(newsFactDetailDto.getNewsCategoryLabel()).isEqualTo(newsCategoryLabel2);
-        assertThat(newsFactDetailDto.getVideoPath()).isEqualTo(videoPath2);
+        assertThat(newsFactDetailDto.getLocationCoordinate()).isNotNull();
+        assertThat(newsFactDetailDto.getLocationCoordinate().getX()).isEqualTo(newsFact2.getLocationCoordinateX());
+        assertThat(newsFactDetailDto.getLocationCoordinate().getY()).isEqualTo(newsFact2.getLocationCoordinateY());
+        assertThat(newsFactDetailDto.getNewsCategoryId()).isEqualTo(newsFact2.getNewsCategoryId());
+        assertThat(newsFactDetailDto.getNewsCategoryLabel()).isEqualTo(newsFact2.getNewsCategoryLabel());
+        assertThat(newsFactDetailDto.getVideoPath()).isEqualTo(newsFact2.getVideoPath());
     }
 
     @Test

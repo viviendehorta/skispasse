@@ -27,5 +27,11 @@ public interface NewsFactMapper {
     NewsFactNoDetailDto newsFactToNewsFactNoDetailDto(NewsFact newsFact);
 
     List<NewsFactNoDetailDto> newsFactsToNewsFactNoDetailDtos(List<NewsFact> newsFact);
+
+    @Mappings({
+        @Mapping(source = "locationCoordinate.x", target = "locationCoordinateX"),
+        @Mapping(source = "locationCoordinate.y", target = "locationCoordinateY"),
+    })
+    NewsFact newsFactDetailDtoToNewsFact(NewsFactDetailDto newsFactDetailDto);
 }
 

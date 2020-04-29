@@ -15,7 +15,7 @@ export class MyNewsFactEditionComponent implements OnInit {
   newsFact: INewsFactDetail;
   newsCategories: NewsCategory[];
 
-  isSaving: boolean;
+  isPublihing: boolean;
 
   editionForm = this.fb.group({
     id: [null],
@@ -37,7 +37,7 @@ export class MyNewsFactEditionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isSaving = false;
+    this.isPublihing = false;
 
     this.route.data.subscribe(({ newsFact }) => {
       this.newsFact = newsFact;
@@ -64,12 +64,12 @@ export class MyNewsFactEditionComponent implements OnInit {
   }
 
   publish() {
-    this.isSaving = true;
+    this.isPublihing = true;
     this.updateNewsFactFromForm();
     if (this.newsFact.id !== null) {
-      this.newsFactService.update(this.newsFact).subscribe(() => this.onSaveSuccess(), () => this.onSaveError());
+      this.newsFactService.update(this.newsFact).subscribe(() => this.onPublishSuccess(), () => this.onPublishError());
     } else {
-      this.newsFactService.create(this.newsFact).subscribe(() => this.onSaveSuccess(), () => this.onSaveError());
+      this.newsFactService.create(this.newsFact).subscribe(() => this.onPublishSuccess(), () => this.onPublishError());
     }
   }
 
@@ -85,7 +85,10 @@ export class MyNewsFactEditionComponent implements OnInit {
     this.newsFact.videoPath = this.editionForm.get(['newsFactVideoPath']).value;
   }
 
-  private onSaveSuccess() {}
+  private onPublishSuccess() {
+    this.editionForm;
+    this.isPublihing = false;
+  }
 
-  private onSaveError() {}
+  private onPublishError() {}
 }
