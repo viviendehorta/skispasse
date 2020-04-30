@@ -53,6 +53,8 @@ public class UserMapper {
             user.setLangKey(userDTO.getLangKey());
             Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
             user.setAuthorities(authorities);
+            user.setCreatedDate(userDTO.getCreatedDate());
+            user.setLastModifiedDate(userDTO.getLastModifiedDate());
             return user;
         }
     }

@@ -5,6 +5,7 @@ import com.github.mongobee.changeset.ChangeSet;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
+import vdehorta.service.ClockService;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -15,6 +16,8 @@ import java.util.List;
  */
 @ChangeLog(order = "20200409")
 public class Migration20200422 {
+
+    private ClockService clockService = new ClockService();
 
     @ChangeSet(order = "01", author = "admin", id = "01-addInitialCategories")
     public void addInitialCategories(MongoTemplate mongoTemplate) {
@@ -43,12 +46,12 @@ public class Migration20200422 {
 
         final NewsFact.Builder newsFactBuilder = new NewsFact.Builder();
         final List<NewsFact> initialNewsFacts = Arrays.asList(
-            newsFactBuilder.newsCategoryId(allCategories.get(0).getId()).newsCategoryLabel(allCategories.get(0).getLabel()).address("12 Place de la République, 75011 Bondy, France").city("Bondy").country("Portugal").owner("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord).locationCoordinateY(baseCoord).build(),
-            newsFactBuilder.newsCategoryId(allCategories.get(1).getId()).newsCategoryLabel(allCategories.get(1).getLabel()).address("5 Place de la République, 75011 Montreuil, France").city("Montreuil").country("France").owner("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord / 2).locationCoordinateY(baseCoord).build(),
-            newsFactBuilder.newsCategoryId(allCategories.get(2).getId()).newsCategoryLabel(allCategories.get(2).getLabel()).address("8 Place de la République, 75011 Paris, France").city("Paris").country("Brésil").owner("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord).locationCoordinateY(baseCoord / 3).build(),
-            newsFactBuilder.newsCategoryId(allCategories.get(3).getId()).newsCategoryLabel(allCategories.get(3).getLabel()).address("76 Place de la République, 75011 Aulnay, France").city("Aulnay").country("Chili").owner("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord / 4).locationCoordinateY(baseCoord / 4).build(),
-            newsFactBuilder.newsCategoryId(allCategories.get(4).getId()).newsCategoryLabel(allCategories.get(4).getLabel()).address("Place de la République, 75011 Bobigny, France").city("Bobigny").country("Argentine").owner("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord * 2).locationCoordinateY(baseCoord / 5).build(),
-            newsFactBuilder.newsCategoryId(allCategories.get(5).getId()).newsCategoryLabel(allCategories.get(5).getLabel()).address("9 Place de la République, 75011 Grenoble, France").city("Grenoble").country("Colombie").owner("contributor").eventDate(Instant.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord).locationCoordinateY(baseCoord * 2).build()
+            newsFactBuilder.newsCategoryId(allCategories.get(0).getId()).newsCategoryLabel(allCategories.get(0).getLabel()).address("12 Place de la République, 75011 Bondy, France").city("Bondy").country("Portugal").owner("contributor").eventDate(clockService.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord).locationCoordinateY(baseCoord).build(),
+            newsFactBuilder.newsCategoryId(allCategories.get(1).getId()).newsCategoryLabel(allCategories.get(1).getLabel()).address("5 Place de la République, 75011 Montreuil, France").city("Montreuil").country("France").owner("contributor").eventDate(clockService.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord / 2).locationCoordinateY(baseCoord).build(),
+            newsFactBuilder.newsCategoryId(allCategories.get(2).getId()).newsCategoryLabel(allCategories.get(2).getLabel()).address("8 Place de la République, 75011 Paris, France").city("Paris").country("Brésil").owner("contributor").eventDate(clockService.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord).locationCoordinateY(baseCoord / 3).build(),
+            newsFactBuilder.newsCategoryId(allCategories.get(3).getId()).newsCategoryLabel(allCategories.get(3).getLabel()).address("76 Place de la République, 75011 Aulnay, France").city("Aulnay").country("Chili").owner("contributor").eventDate(clockService.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord / 4).locationCoordinateY(baseCoord / 4).build(),
+            newsFactBuilder.newsCategoryId(allCategories.get(4).getId()).newsCategoryLabel(allCategories.get(4).getLabel()).address("Place de la République, 75011 Bobigny, France").city("Bobigny").country("Argentine").owner("contributor").eventDate(clockService.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord * 2).locationCoordinateY(baseCoord / 5).build(),
+            newsFactBuilder.newsCategoryId(allCategories.get(5).getId()).newsCategoryLabel(allCategories.get(5).getLabel()).address("9 Place de la République, 75011 Grenoble, France").city("Grenoble").country("Colombie").owner("contributor").eventDate(clockService.now()).videoPath("/content/videos/small.mp4").locationCoordinateX(baseCoord).locationCoordinateY(baseCoord * 2).build()
         );
 
         mongoTemplate.insertAll(initialNewsFacts);

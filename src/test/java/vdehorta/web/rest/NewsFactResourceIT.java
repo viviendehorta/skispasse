@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,7 +24,6 @@ import vdehorta.service.NewsFactService;
 import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 
-import java.time.Instant;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.*;
