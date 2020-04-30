@@ -26,7 +26,7 @@ public abstract class AbstractAuditingEntity implements Serializable {
     @CreatedDate
     @Field("created_date")
     @JsonIgnore
-    private Instant createdDate = Instant.now();
+    private Instant createdDate;
 
     @LastModifiedBy
     @Field("last_modified_by")
@@ -36,7 +36,7 @@ public abstract class AbstractAuditingEntity implements Serializable {
     @LastModifiedDate
     @Field("last_modified_date")
     @JsonIgnore
-    private Instant lastModifiedDate = Instant.now();
+    private Instant lastModifiedDate;
 
     public String getCreatedBy() {
         return createdBy;

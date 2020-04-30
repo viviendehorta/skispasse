@@ -18,19 +18,19 @@ import vdehorta.config.Constants;
 import vdehorta.domain.Authority;
 import vdehorta.domain.PersistentToken;
 import vdehorta.domain.User;
+import vdehorta.dto.PasswordChangeDTO;
+import vdehorta.dto.UserDTO;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.PersistentTokenRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.AuthoritiesConstants;
+import vdehorta.service.ClockService;
 import vdehorta.service.MailService;
 import vdehorta.service.UserService;
-import vdehorta.dto.PasswordChangeDTO;
-import vdehorta.dto.UserDTO;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 import vdehorta.web.rest.vm.KeyAndPasswordVM;
 import vdehorta.web.rest.vm.ManagedUserVM;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
@@ -59,6 +59,9 @@ public class AccountResourceIT {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ClockService clockService;
 
     @Autowired
     private PersistentTokenRepository persistentTokenRepository;
@@ -792,7 +795,7 @@ public class AccountResourceIT {
         user.setPassword(RandomStringUtils.random(60));
         user.setLogin("finish-password-reset");
         user.setEmail("finish-password-reset@example.com");
-        user.setResetDate(Instant.now().plusSeconds(60));
+        user.setResetDate(clockService.now().plusSeconds(60));
         user.setResetKey("reset key");
         userRepository.save(user);
 
@@ -816,7 +819,7 @@ public class AccountResourceIT {
         user.setPassword(RandomStringUtils.random(60));
         user.setLogin("finish-password-reset-too-small");
         user.setEmail("finish-password-reset-too-small@example.com");
-        user.setResetDate(Instant.now().plusSeconds(60));
+        user.setResetDate(clockService.now().plusSeconds(60));
         user.setResetKey("reset key too small");
         userRepository.save(user);
 

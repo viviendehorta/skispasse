@@ -18,13 +18,13 @@ import vdehorta.domain.User;
 import vdehorta.dto.UserDTO;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.AuthoritiesConstants;
+import vdehorta.service.ClockService;
 import vdehorta.service.MailService;
 import vdehorta.service.UserService;
 import vdehorta.service.mapper.UserMapper;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 import vdehorta.web.rest.vm.ManagedUserVM;
 
-import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +56,9 @@ public class UserResourceIT {
     private UserMapper userMapper;
 
     @Autowired
+    private ClockService clockService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -83,7 +86,7 @@ public class UserResourceIT {
     @BeforeEach
     public void initTest() {
         userRepository.deleteAll();
-        user = EntityTestUtil.createDefaultUser1();
+        user = EntityTestUtil.createDefaultUser();
     }
 
     @Test
@@ -128,7 +131,7 @@ public class UserResourceIT {
         int databaseSizeBeforeCreate = userRepository.findAll().size();
 
         ManagedUserVM managedUserVM = new ManagedUserVM();
-        managedUserVM.setId("1L");
+        managedUserVM.setId(DEFAULT_USER_ID); // Existing id
         managedUserVM.setLogin(DEFAULT_LOGIN);
         managedUserVM.setPassword(DEFAULT_PASSWORD);
         managedUserVM.setFirstName(DEFAULT_FIRSTNAME);
@@ -157,7 +160,7 @@ public class UserResourceIT {
         int databaseSizeBeforeCreate = userRepository.findAll().size();
 
         ManagedUserVM managedUserVM = new ManagedUserVM();
-        managedUserVM.setLogin(DEFAULT_LOGIN);// this login should already be used
+        managedUserVM.setLogin(DEFAULT_LOGIN);// login is already used
         managedUserVM.setPassword(DEFAULT_PASSWORD);
         managedUserVM.setFirstName(DEFAULT_FIRSTNAME);
         managedUserVM.setLastName(DEFAULT_LASTNAME);
@@ -189,16 +192,19 @@ public class UserResourceIT {
         managedUserVM.setPassword(DEFAULT_PASSWORD);
         managedUserVM.setFirstName(DEFAULT_FIRSTNAME);
         managedUserVM.setLastName(DEFAULT_LASTNAME);
-        managedUserVM.setEmail(DEFAULT_EMAIL);// this email should already be used
+        managedUserVM.setEmail(DEFAULT_EMAIL);// this email is already used
         managedUserVM.setActivated(true);
         managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
         managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
 
         // Create the User
-        restUserMockMvc.perform(post("/api/users")
+        ResultActions resultActions = restUserMockMvc.perform(post("/api/users")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(managedUserVM)))
+            .content(TestUtil.convertObjectToJsonBytes(managedUserVM)));
+
+        // Assert
+        resultActions
             .andExpect(status().isBadRequest());
 
         // Validate the User in the database
@@ -468,6 +474,8 @@ public class UserResourceIT {
         userDTO.setCreatedBy(DEFAULT_LOGIN);
         userDTO.setLastModifiedBy(DEFAULT_LOGIN);
         userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        userDTO.setCreatedDate(DEFAULT_CREATED_DATE);
+        userDTO.setLastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
 
         User user = userMapper.userDTOToUser(userDTO);
         assertThat(user.getId()).isEqualTo(DEFAULT_USER_ID);
@@ -489,9 +497,9 @@ public class UserResourceIT {
     public void testUserToUserDTO() {
         user.setId(DEFAULT_USER_ID);
         user.setCreatedBy(DEFAULT_LOGIN);
-        user.setCreatedDate(Instant.now());
+        user.setCreatedDate(clockService.now());
         user.setLastModifiedBy(DEFAULT_LOGIN);
-        user.setLastModifiedDate(Instant.now());
+        user.setLastModifiedDate(clockService.now());
         Set<Authority> authorities = new HashSet<>();
         Authority authority = new Authority();
         authority.setName(AuthoritiesConstants.USER);

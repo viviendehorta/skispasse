@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.security.AuthoritiesConstants;
+import vdehorta.service.ClockService;
 
 import java.time.Instant;
 
@@ -14,6 +15,8 @@ import java.time.Instant;
  */
 @ChangeLog(order = "20200407")
 public class Migration20200407 {
+
+    private ClockService clockService = new ClockService();
 
     @ChangeSet(order = "01", author = "initiator", id = "01-addAuthorities")
     public void addAuthorities(MongoTemplate mongoTemplate) {
@@ -39,9 +42,9 @@ public class Migration20200407 {
         systemUser.setLastName("System");
         systemUser.setEmail("system@localhost");
         systemUser.setActivated(true);
-        systemUser.setLangKey("en");
+        systemUser.setLangKey("fr");
         systemUser.setCreatedBy(systemUser.getLogin());
-        systemUser.setCreatedDate(Instant.now());
+        systemUser.setCreatedDate(clockService.now());
         systemUser.getAuthorities().add(adminAuthority);
         systemUser.getAuthorities().add(userAuthority);
         mongoTemplate.save(systemUser);
@@ -53,9 +56,9 @@ public class Migration20200407 {
         adminUser.setLastName("Administrator");
         adminUser.setEmail("admin@localhost");
         adminUser.setActivated(true);
-        adminUser.setLangKey("en");
+        adminUser.setLangKey("fr");
         adminUser.setCreatedBy(systemUser.getLogin());
-        adminUser.setCreatedDate(Instant.now());
+        adminUser.setCreatedDate(clockService.now());
         adminUser.getAuthorities().add(adminAuthority);
         adminUser.getAuthorities().add(userAuthority);
         mongoTemplate.save(adminUser);
