@@ -21,11 +21,11 @@ export class MyNewsFactEditionComponent implements OnInit {
     id: [null],
     newsCategoryId: [null, Validators.required],
     eventDate: [null, Validators.required],
-    address: [''],
-    city: [''],
-    country: [''],
-    locationCoordinateX: [-1],
-    locationCoordinateY: [-1],
+    address: [null, Validators.required],
+    city: [null, Validators.required],
+    country: [null, Validators.required],
+    locationCoordinateX: [null, Validators.required],
+    locationCoordinateY: [null, Validators.required],
     newsFactVideoPath: ['']
   });
 
@@ -49,6 +49,16 @@ export class MyNewsFactEditionComponent implements OnInit {
     });
   }
 
+  publish() {
+    this.isPublihing = true;
+    this.updateNewsFactFromForm();
+    if (this.newsFact.id !== null) {
+      this.newsFactService.update(this.newsFact).subscribe(() => this.onPublishSuccess(), () => this.onPublishError());
+    } else {
+      this.newsFactService.create(this.newsFact).subscribe(() => this.onPublishSuccess(), () => this.onPublishError());
+    }
+  }
+
   private updateForm(newsFact: INewsFactDetail): void {
     this.editionForm.patchValue({
       id: newsFact.id,
@@ -61,16 +71,6 @@ export class MyNewsFactEditionComponent implements OnInit {
       locationCoordinateY: newsFact.locationCoordinate.y,
       newsFactVideoPath: ''
     });
-  }
-
-  publish() {
-    this.isPublihing = true;
-    this.updateNewsFactFromForm();
-    if (this.newsFact.id !== null) {
-      this.newsFactService.update(this.newsFact).subscribe(() => this.onPublishSuccess(), () => this.onPublishError());
-    } else {
-      this.newsFactService.create(this.newsFact).subscribe(() => this.onPublishSuccess(), () => this.onPublishError());
-    }
   }
 
   private updateNewsFactFromForm(): void {
@@ -86,9 +86,15 @@ export class MyNewsFactEditionComponent implements OnInit {
   }
 
   private onPublishSuccess() {
-    this.editionForm;
+    this.isPublihing = false;
+    this.previousState();
+  }
+
+  private onPublishError() {
     this.isPublihing = false;
   }
 
-  private onPublishError() {}
+  previousState() {
+    window.history.back();
+  }
 }

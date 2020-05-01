@@ -15,12 +15,14 @@
 
         <form class="form" name="editForm" role="form" novalidate (ngSubmit)="publish()" [formGroup]="editionForm">
 
+            <skis-alert-error></skis-alert-error>
+
             <!-- News fact Id (hidden and not null when updating existing news fact) -->
             <div class="form-group" [hidden]="!newsFact.id">
                 <label jhiTranslate="global.field.id">Id</label>
                 <input type="text" class="form-control" readonly
                        name="id"
-                       formControlName="id" >
+                       formControlName="id">
             </div>
 
             <!-- News category -->
@@ -33,6 +35,14 @@
                         {{newsCategory.label}}
                     </option>
                 </select>
+
+                <div *ngIf="editionForm.get('newsCategoryId').invalid && (editionForm.get('newsCategoryId').touched)">
+                    <small class="form-text text-danger"
+                           *ngIf="editionForm.get('newsCategoryId').errors.required"
+                           jhiTranslate="entity.validation.required">
+                        This field is required.
+                    </small>
+                </div>
             </div>
 
             <!-- Event date -->
@@ -49,6 +59,15 @@
                         </button>
                     </div>
                 </div>
+
+                <div
+                    *ngIf="editionForm.get('eventDate').invalid && (editionForm.get('eventDate').dirty || editionForm.get('eventDate').touched)">
+                    <small class="form-text text-danger"
+                           *ngIf="editionForm.get('eventDate').errors.required"
+                           jhiTranslate="entity.validation.required">
+                        This field is required.
+                    </small>
+                </div>
             </div>
 
             <div class="form-row">
@@ -60,6 +79,14 @@
                            placeholder="{{'myNewsFacts.form.enterAddress' | translate}}"
                            name="address"
                            formControlName="address">
+
+                    <div *ngIf="editionForm.get('address').invalid && (editionForm.get('address').dirty || editionForm.get('address').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editionForm.get('address').errors.required"
+                               jhiTranslate="entity.validation.required">
+                            This field is required.
+                        </small>
+                    </div>
                 </div>
 
                 <!-- City -->
@@ -69,6 +96,14 @@
                            placeholder="{{'myNewsFacts.form.enterCity' | translate}}"
                            name="city"
                            formControlName="city">
+
+                    <div *ngIf="editionForm.get('city').invalid && (editionForm.get('city').dirty || editionForm.get('city').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editionForm.get('city').errors.required"
+                               jhiTranslate="entity.validation.required">
+                            This field is required.
+                        </small>
+                    </div>
                 </div>
 
                 <!-- Country -->
@@ -78,6 +113,14 @@
                            placeholder="{{'myNewsFacts.form.enterCountry' | translate}}"
                            name="country"
                            formControlName="country">
+
+                    <div *ngIf="editionForm.get('country').invalid && (editionForm.get('country').dirty || editionForm.get('country').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editionForm.get('country').errors.required"
+                               jhiTranslate="entity.validation.required">
+                            This field is required.
+                        </small>
+                    </div>
                 </div>
             </div>
 
@@ -92,6 +135,14 @@
                            placeholder="{{'myNewsFacts.form.enterLocationCoordinateX' | translate}}"
                            name="locationCoordinateX"
                            formControlName="locationCoordinateX">
+
+                    <div *ngIf="editionForm.get('locationCoordinateX').invalid && (editionForm.get('locationCoordinateX').dirty || editionForm.get('locationCoordinateX').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editionForm.get('locationCoordinateX').errors.required"
+                               jhiTranslate="entity.validation.required">
+                            This field is required.
+                        </small>
+                    </div>
                 </div>
 
                 <!-- Location Coordinate Y -->
@@ -103,6 +154,13 @@
                            placeholder="{{'myNewsFacts.form.enterLocationCoordinateY' | translate}}"
                            name="locationCoordinateY"
                            formControlName="locationCoordinateY">
+                    <div *ngIf="editionForm.get('locationCoordinateY').invalid && (editionForm.get('locationCoordinateY').dirty || editionForm.get('locationCoordinateY').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editionForm.get('locationCoordinateY').errors.required"
+                               jhiTranslate="entity.validation.required">
+                            This field is required.
+                        </small>
+                    </div>
                 </div>
             </div>
 
@@ -114,7 +172,14 @@
                        formControlName="newsFactVideoPath">
             </div>
 
-            <button type="submit" class="btn btn-primary" jhiTranslate="myNewsFacts.publish">Publish</button>
+            <div>
+
+                <button type="button" class="btn btn-primary" (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+
+                <button type="submit" [disabled]="editionForm.invalid || isPublihing" class="btn btn-primary" jhiTranslate="myNewsFacts.publish">Publish</button>
+            </div>
         </form>
 
     </div>

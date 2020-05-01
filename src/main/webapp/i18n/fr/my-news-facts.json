@@ -7,8 +7,8 @@
     "createdDate": "Date de création",
     "creation": {
       "title": "Nouvelle publication",
-      "created": "L'utilisateur {{ param }} a été créé.",
-      "updated": "L'utilisateur {{ param }} a été mis à jour."
+      "created": "Votre publication #{{ param }} vient d'être publiée.",
+      "updated": "Votre publication #{{ param }} a été mis à jour."
     },
     "edition": {
       "title": "Édition de publication"
