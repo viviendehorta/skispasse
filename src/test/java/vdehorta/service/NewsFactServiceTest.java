@@ -38,12 +38,14 @@ class NewsFactServiceTest {
 
     private NewsFactMapper newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
 
+    private ClockService clockService = new ClockService();
+
     @BeforeEach
     public void setup() {
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
         userServiceMock = Mockito.mock(UserService.class);
         newsCategoryServiceMock = Mockito.mock(NewsCategoryService.class);
-        newsFactService = new NewsFactService(newsFactRepositoryMock, newsFactMapper, userServiceMock, newsCategoryServiceMock);
+        newsFactService = new NewsFactService(newsFactRepositoryMock, newsFactMapper, userServiceMock, newsCategoryServiceMock, clockService);
     }
 
     @Test

@@ -28,7 +28,10 @@ import java.util.List;
 @EnableMongoRepositories("vdehorta.repository")
 @Profile("!" + JHipsterConstants.SPRING_PROFILE_CLOUD)
 @Import(value = MongoAutoConfiguration.class)
-@EnableMongoAuditing(auditorAwareRef = "springSecurityAuditorAware")
+@EnableMongoAuditing(
+    auditorAwareRef = "springSecurityAuditorAware",
+    setDates = false
+)
 public class DatabaseConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);

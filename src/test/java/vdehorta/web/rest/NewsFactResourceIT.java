@@ -20,10 +20,12 @@ import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.repository.UserRepository;
+import vdehorta.service.ClockService;
 import vdehorta.service.NewsFactService;
 import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 
+import java.time.*;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.*;
@@ -52,6 +54,9 @@ public class NewsFactResourceIT {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ClockService clockService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -198,6 +203,10 @@ public class NewsFactResourceIT {
     @Test
     void createNewsFact_caseOk() throws Exception {
 
+        // Init ClockService with a fix clock to be able to assert the date values
+        Instant expectedNow = LocalDateTime.parse("2020-03-24T20:30:23").toInstant(ZoneOffset.UTC);
+        clockService.setClock(Clock.fixed(expectedNow, ZoneId.of("Z"))); // "Z" for UTC time zone
+
         // Nothing to initialize in database
         NewsCategory newsCategory = createDefaultCategory1();
         newsCategoryRepository.save(newsCategory);
@@ -209,7 +218,7 @@ public class NewsFactResourceIT {
             .country(DEFAULT_COUNTRY)
             .eventDate(DEFAULT_EVENT_DATE)
             .locationCoordinate(new LocationCoordinate.Builder()
-                .x(DEFAULT_LOCATION_COORDINATE_Y)
+                .x(DEFAULT_LOCATION_COORDINATE_X)
                 .y(DEFAULT_LOCATION_COORDINATE_Y)
                 .build())
             .newsCategoryId(newsCategory.getId())
@@ -224,12 +233,14 @@ public class NewsFactResourceIT {
         resultActions
             .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id", isA(String.class)))
             .andExpect(jsonPath("$.address", is(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.city", is(DEFAULT_CITY)))
             .andExpect(jsonPath("$.country", is(DEFAULT_COUNTRY)))
-            .andExpect(jsonPath("$.createdDate", isA(String.class)))
+            .andExpect(jsonPath("$.createdDate", is(expectedNow.toString())))
             .andExpect(jsonPath("$.eventDate", is(DEFAULT_EVENT_DATE.toString())))
+            .andExpect(jsonPath("$.id", isA(String.class)))
+            .andExpect(jsonPath("$.locationCoordinate.x", is(DEFAULT_LOCATION_COORDINATE_X.intValue())))
+            .andExpect(jsonPath("$.locationCoordinate.y", is(DEFAULT_LOCATION_COORDINATE_Y.intValue())))
             .andExpect(jsonPath("$.newsCategoryId", is(newsCategory.getId())))
             .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())))
             .andExpect(jsonPath("$.videoPath", isEmptyOrNullString()));

@@ -13,6 +13,7 @@ import vdehorta.service.errors.UnexistingLoginException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,15 +29,18 @@ public class NewsFactService {
     private final NewsFactMapper newsFactMapper;
     private final UserService userService;
     private final NewsCategoryService newsCategoryService;
+    private final ClockService clockService;
 
     public NewsFactService(NewsFactRepository newsFactRepository,
                            NewsFactMapper newsFactMapper,
                            UserService userService,
-                           NewsCategoryService newsCategoryService) {
+                           NewsCategoryService newsCategoryService,
+                           ClockService clockService) {
         this.newsFactRepository = newsFactRepository;
         this.newsFactMapper = newsFactMapper;
         this.userService = userService;
         this.newsCategoryService = newsCategoryService;
+        this.clockService = clockService;
     }
 
     public List<NewsFactNoDetailDto> getAll() {
@@ -46,24 +50,25 @@ public class NewsFactService {
     public NewsFactDetailDto getById(String id) {
         log.debug("Getting news fact  with id {}", id);
         Optional<NewsFact> newsFactOptional = newsFactRepository.findById(id);
-        NewsFact newsFact = newsFactOptional.orElseThrow(() -> new WrongNewsFactIdException());
+        NewsFact newsFact = newsFactOptional.orElseThrow(WrongNewsFactIdException::new);
         return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
     }
 
     public Page<NewsFactDetailDto> getByOwner(Pageable pageable, String ownerLogin) {
-
         //Check that user with given login exists, throws exception if it doesn't
-        userService.getUserWithAuthoritiesByLogin(ownerLogin).orElseThrow(() -> new UnexistingLoginException());
-
+        userService.getUserWithAuthoritiesByLogin(ownerLogin).orElseThrow(UnexistingLoginException::new);
         return newsFactRepository.findAllByOwner(pageable, ownerLogin).map(newsFactMapper::newsFactToNewsFactDetailDto);
     }
 
     public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto) {
-        log.debug("Creating  news fact");
+        log.debug("Creating  news fact...");
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
-        this.newsFactRepository.save(newsFact);
-        log.debug("Created Information for News Fact: {}", newsFact);
-        return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
+        Instant now = clockService.now();
+        newsFact.setCreatedDate(now);
+        newsFact.setLastModifiedDate(now);
+        NewsFact createdNewsFact = this.newsFactRepository.save(newsFact);
+        log.debug("Created Information for News Fact: {}", createdNewsFact);
+        return newsFactMapper.newsFactToNewsFactDetailDto(createdNewsFact);
     }
 }
