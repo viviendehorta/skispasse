@@ -5,10 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import vdehorta.config.Constants;
 import vdehorta.domain.NewsFact;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
+import vdehorta.security.SecurityUtils;
 import vdehorta.service.errors.UnexistingLoginException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
@@ -63,6 +65,7 @@ public class NewsFactService {
     public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto) {
         log.debug("Creating  news fact...");
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
+        newsFact.setOwner(SecurityUtils.getCurrentUserLogin().orElse(Constants.SYSTEM_ACCOUNT));
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
         Instant now = clockService.now();
         newsFact.setCreatedDate(now);
