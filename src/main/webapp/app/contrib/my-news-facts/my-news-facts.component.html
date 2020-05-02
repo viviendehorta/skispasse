@@ -9,7 +9,8 @@
                 <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="global.backToMap">Back to map</span>
             </button>
             <button class="btn btn-primary float-right jh-create-entity ml-2" [routerLink]="['./new']">
-                <fa-icon [icon]="'plus'"></fa-icon> <span jhiTranslate="myNewsFacts.list.createLabel">
+                <fa-icon [icon]="'plus'"></fa-icon>
+                <span jhiTranslate="myNewsFacts.list.createLabel">
                     Create a new User
                 </span>
             </button>
@@ -22,26 +23,64 @@
             <table class="table table-striped" aria-describedby="my-news-facts-page-heading">
                 <thead>
                 <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-                    <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">Id</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                    <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">Id</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col" jhiSortBy="newsCategoryLabel"><span
+                        jhiTranslate="myNewsFacts.newsCategory">Category</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col" jhiSortBy="eventDate"><span jhiTranslate="myNewsFacts.eventDate">Event Date</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
                     <th scope="col"><span jhiTranslate="myNewsFacts.locationCoordinate">Geo. Coord.</span></th>
-                    <th scope="col" jhiSortBy="eventDate"><span jhiTranslate="myNewsFacts.eventDate">Event Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                    <th scope="col" jhiSortBy="createdDate"><span jhiTranslate="myNewsFacts.createdDate">Creation Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                    <th scope="col" jhiSortBy="newsCategoryLabel"><span jhiTranslate="myNewsFacts.newsCategory">Category</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                    <th scope="col" jhiSortBy="country"><span jhiTranslate="myNewsFacts.country">Country</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                    <th scope="col" jhiSortBy="city"><span jhiTranslate="myNewsFacts.city">City</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                    <th scope="col" jhiSortBy="address"><span jhiTranslate="myNewsFacts.address">Address</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                    <th scope="col" jhiSortBy="country"><span jhiTranslate="myNewsFacts.country">Country</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col" jhiSortBy="city"><span jhiTranslate="myNewsFacts.city">City</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col" jhiSortBy="address"><span jhiTranslate="myNewsFacts.address">Address</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col" jhiSortBy="createdDate"><span
+                        jhiTranslate="myNewsFacts.createdDate">Creation Date</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody *ngIf="myNewsFacts">
                 <tr *ngFor="let newsFact of myNewsFacts; trackBy: trackIdentity">
                     <td>{{newsFact.id}}</td>
-                    <td>{{formatLocationCoordinate(newsFact.locationCoordinate)}}</td>
-                    <td>{{newsFact.eventDate | date:'dd/MM/yyyy HH:mm'}}</td>
-                    <td>{{newsFact.createdDate | date:'dd/MM/yyyy HH:mm'}}</td>
                     <td>{{newsFact.newsCategoryLabel}}</td>
+                    <td>{{newsFact.eventDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                    <td>{{formatLocationCoordinate(newsFact.locationCoordinate)}}</td>
                     <td>{{newsFact.country}}</td>
                     <td>{{newsFact.city}}</td>
                     <td>{{newsFact.address}}</td>
+                    <td>{{newsFact.createdDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-info btn-sm">
+                                <fa-icon [icon]="'eye'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+                            <button type="submit"
+                                    [routerLink]="['./', newsFact.id, 'edit']"
+                                    queryParamsHandling="merge"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+                            <button type="button"
+                                    (click)="showDeleteNewsFactDialog(newsFact)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon [icon]="'times'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>

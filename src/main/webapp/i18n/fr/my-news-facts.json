@@ -10,6 +10,10 @@
       "created": "Votre publication #{{ param }} vient d'être publiée.",
       "updated": "Votre publication #{{ param }} a été mis à jour."
     },
+    "delete": {
+      "question": "Êtes-vous certain de vouloir supprimer la publication # {{ id }} ?",
+      "deleted": "La publication {{ param }} a été supprimée."
+    },
     "edition": {
       "title": "Édition de publication"
     },

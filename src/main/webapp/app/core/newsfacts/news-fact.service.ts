@@ -48,4 +48,8 @@ export class NewsFactService {
   update(newsFact: INewsFactDetail): Observable<INewsFactDetail> {
     return this.http.put<INewsFactDetail>(this.resourceUrl, newsFact);
   }
+
+  delete(newsFactId: string): Observable<any> {
+    return this.http.delete(this.resourceUrl + newsFactId);
+  }
 }

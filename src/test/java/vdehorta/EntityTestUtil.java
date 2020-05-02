@@ -4,7 +4,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.domain.User;
-import vdehorta.service.ClockService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -56,30 +55,7 @@ public final class EntityTestUtil {
 
     public static final String DEFAULT_ENCODED_PASSWORD = RandomStringUtils.random(60);
 
-    private static final ClockService CLOCK_SERVICE = new ClockService();
-
-
     public static User createDefaultUser() {
-        return createDefaultUser(CLOCK_SERVICE.now());
-    }
-
-    public static User createDefaultUser1() {
-        return createDefaultUser1(CLOCK_SERVICE.now());
-    }
-
-    public static User createDefaultUser2() {
-        return createDefaultUser2(CLOCK_SERVICE.now());
-    }
-
-    public static NewsFact createDefaultNewsFact1() {
-        return createDefaultNewsFact1(CLOCK_SERVICE.now());
-    }
-
-    public static NewsFact createDefaultNewsFact2() {
-        return createDefaultNewsFact2(CLOCK_SERVICE.now());
-    }
-
-    public static User createDefaultUser(Instant now) {
         User user = new User();
         user.setLogin(DEFAULT_LOGIN);
         user.setPassword(DEFAULT_ENCODED_PASSWORD);
@@ -92,7 +68,7 @@ public final class EntityTestUtil {
         return user;
     }
 
-    public static User createDefaultUser1(Instant now) {
+    public static User createDefaultUser1() {
         User user = new User();
         user.setLogin(DEFAULT_LOGIN + "1");
         user.setPassword(DEFAULT_ENCODED_PASSWORD.substring(0, DEFAULT_ENCODED_PASSWORD.length() - 1) + "1"); //replace last char of DEFAULT_ENCODED_PASSWORD by 1
@@ -105,7 +81,7 @@ public final class EntityTestUtil {
         return user;
     }
 
-    public static User createDefaultUser2(Instant now) {
+    public static User createDefaultUser2() {
         User user = new User();
         user.setLogin(DEFAULT_LOGIN + "2");
         user.setPassword(DEFAULT_ENCODED_PASSWORD.substring(0, DEFAULT_ENCODED_PASSWORD.length() - 1) + "2"); //replace last char of DEFAULT_ENCODED_PASSWORD by 2
@@ -118,7 +94,25 @@ public final class EntityTestUtil {
         return user;
     }
 
-    public static NewsFact createDefaultNewsFact1(Instant now) {
+    public static NewsFact createDefaultNewsFact() {
+        return new NewsFact.Builder()
+            .address(DEFAULT_ADDRESS)
+            .city(DEFAULT_CITY)
+            .country(DEFAULT_COUNTRY)
+            .createdDate(DEFAULT_CREATED_DATE)
+            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
+            .eventDate(DEFAULT_EVENT_DATE)
+            .id(DEFAULT_NEWS_FACT_ID)
+            .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
+            .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
+            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+            .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
+            .owner(DEFAULT_OWNER)
+            .videoPath(DEFAULT_VIDEO_PATH)
+            .build();
+    }
+
+    public static NewsFact createDefaultNewsFact1() {
         return new NewsFact.Builder()
             .address(DEFAULT_ADDRESS + "1")
             .city(DEFAULT_CITY + "1")
@@ -136,7 +130,7 @@ public final class EntityTestUtil {
             .build();
     }
 
-    public static NewsFact createDefaultNewsFact2(Instant now) {
+    public static NewsFact createDefaultNewsFact2() {
         return new NewsFact.Builder()
             .address(DEFAULT_ADDRESS + "2")
             .city(DEFAULT_CITY + "2")
@@ -151,6 +145,13 @@ public final class EntityTestUtil {
             .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "2")
             .owner(DEFAULT_OWNER + "2")
             .videoPath(DEFAULT_VIDEO_PATH + "2")
+            .build();
+    }
+
+    public static NewsCategory createDefaultCategory() {
+        return new NewsCategory.Builder()
+            .id(DEFAULT_NEWS_CATEGORY_ID)
+            .label(DEFAULT_NEWS_CATEGORY_LABEL)
             .build();
     }
 

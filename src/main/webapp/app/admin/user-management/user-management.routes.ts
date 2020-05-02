@@ -13,9 +13,9 @@ export class UserManagementResolve implements Resolve<any> {
   constructor(private service: UserService) {}
 
   resolve(route: ActivatedRouteSnapshot) {
-    const id = route.params['login'] ? route.params['login'] : null;
-    if (id) {
-      return this.service.find(id);
+    const login = route.params['login'] ? route.params['login'] : null;
+    if (login) {
+      return this.service.find(login);
     }
     return new User();
   }
