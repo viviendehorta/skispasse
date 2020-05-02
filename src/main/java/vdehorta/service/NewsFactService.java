@@ -46,6 +46,7 @@ public class NewsFactService {
     }
 
     public List<NewsFactNoDetailDto> getAll() {
+        log.debug("Getting all news facts...");
         return newsFactMapper.newsFactsToNewsFactNoDetailDtos(newsFactRepository.findAll());
     }
 
@@ -57,6 +58,7 @@ public class NewsFactService {
     }
 
     public Page<NewsFactDetailDto> getByOwner(Pageable pageable, String ownerLogin) {
+        log.debug("Getting news facts owned by user {}", ownerLogin);
         //Check that user with given login exists, throws exception if it doesn't
         userService.getUserWithAuthoritiesByLogin(ownerLogin).orElseThrow(UnexistingLoginException::new);
         return newsFactRepository.findAllByOwner(pageable, ownerLogin).map(newsFactMapper::newsFactToNewsFactDetailDto);
@@ -73,5 +75,10 @@ public class NewsFactService {
         NewsFact createdNewsFact = this.newsFactRepository.save(newsFact);
         log.debug("Created Information for News Fact: {}", createdNewsFact);
         return newsFactMapper.newsFactToNewsFactDetailDto(createdNewsFact);
+    }
+
+    public void delete(String newsFactId) {
+        log.debug("Deleting news fact  with id {}", newsFactId);
+        newsFactRepository.deleteById(newsFactId);
     }
 }

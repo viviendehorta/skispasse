@@ -27,10 +27,11 @@ import vdehorta.web.rest.errors.ExceptionTranslator;
 
 import java.time.*;
 import java.util.Arrays;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static vdehorta.EntityTestUtil.*;
 
@@ -244,5 +245,21 @@ public class NewsFactResourceIT {
             .andExpect(jsonPath("$.newsCategoryId", is(newsCategory.getId())))
             .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())))
             .andExpect(jsonPath("$.videoPath", isEmptyOrNullString()));
+    }
+
+    @Test
+    public void deleteNewsFact_caseOk() throws Exception {
+        // Initialize the database
+        newsFactRepository.save(createDefaultNewsFact());
+        int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
+
+        // Delete the user
+        restNewsFactMockMvc.perform(delete("/newsFact/{id}", DEFAULT_NEWS_FACT_ID)
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isNoContent());
+
+        // Validate the database is empty
+        List<NewsFact> newsFacts = newsFactRepository.findAll();
+        assertThat(newsFacts).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

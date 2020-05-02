@@ -4,11 +4,13 @@ import { INewsFactDetail } from 'app/shared/model/news-fact-detail.model';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
-import { JhiAlertService, JhiParseLinks } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager, JhiParseLinks } from 'ng-jhipster';
 import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
 import { Account } from 'app/shared/model/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { ILocationCoordinate } from 'app/shared/model/location-coordinate.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DeleteNewsFactDialogComponent } from 'app/contrib/my-news-facts/delete-news-fact-dialog.component';
 
 @Component({
   selector: 'skis-news-fact-management',
@@ -26,6 +28,7 @@ export class MyNewsFactsComponent implements OnInit {
   predicate: any;
   previousPage: any;
   reverse: any;
+  myNewsFactsSubscription: Subscription;
 
   constructor(
     private newsFactService: NewsFactService,
@@ -33,7 +36,9 @@ export class MyNewsFactsComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private alertService: JhiAlertService,
-    private parseLinks: JhiParseLinks
+    private parseLinks: JhiParseLinks,
+    private modalService: NgbModal,
+    private eventManager: JhiEventManager
   ) {
     this.itemsPerPage = ITEMS_PER_PAGE;
     this.routeData = this.activatedRoute.data.subscribe(data => {
@@ -49,6 +54,11 @@ export class MyNewsFactsComponent implements OnInit {
       this.currentAccount = account;
       this.loadAll();
     });
+    this.subscribeToChangesInMyNewsFactList();
+  }
+
+  subscribeToChangesInMyNewsFactList() {
+    this.myNewsFactsSubscription = this.eventManager.subscribe('myNewsFactListModification', () => this.loadAll());
   }
 
   loadAll() {
@@ -106,5 +116,10 @@ export class MyNewsFactsComponent implements OnInit {
 
   formatLocationCoordinate(locationCoordinate: ILocationCoordinate) {
     return '[' + locationCoordinate.x + '; ' + locationCoordinate.y + ']';
+  }
+
+  showDeleteNewsFactDialog(newsFactDetail: INewsFactDetail) {
+    const modalRef = this.modalService.open(DeleteNewsFactDialogComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.newsFact = newsFactDetail;
   }
 }

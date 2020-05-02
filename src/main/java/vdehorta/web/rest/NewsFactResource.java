@@ -11,10 +11,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import vdehorta.config.Constants;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
+import vdehorta.security.AuthoritiesConstants;
 import vdehorta.service.NewsFactService;
 import vdehorta.web.rest.errors.BadRequestAlertException;
 
@@ -91,5 +94,18 @@ public class NewsFactResource {
                 .headers(HeaderUtil.createAlert(applicationName,  "myNewsFacts.creation.created", createdNewsFact.getId()))
                 .body(createdNewsFact);
         }
+    }
+
+    /**
+     * {@code DELETE /newssFact/:newsFactId} : delete the news fact with id {newsFactId}.
+     *
+     * @param newsFactId the news fact id to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/{newsFactId}")
+    public ResponseEntity<Void> deleteNewsFact(@PathVariable String newsFactId) {
+        log.debug("REST request to delete News Fact: {}", newsFactId);
+        newsFactService.delete(newsFactId);
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "myNewsFacts.delete.deleted", newsFactId)).build();
     }
 }
