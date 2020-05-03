@@ -7,7 +7,6 @@ import { catchError, shareReplay, tap } from 'rxjs/operators';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { Account } from 'app/shared/model/account.model';
-import { ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_CONTRIBUTOR } from 'app/shared/constants/role.constants';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
