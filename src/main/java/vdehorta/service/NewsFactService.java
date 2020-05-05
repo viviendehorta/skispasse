@@ -83,4 +83,20 @@ public class NewsFactService {
         log.debug("Deleting news fact  with id {}", newsFactId);
         newsFactRepository.deleteById(newsFactId);
     }
+
+    public Optional<NewsFactDetailDto> update(NewsFactDetailDto newsFactDto) {
+        return Optional.of(newsFactRepository
+            .findById(newsFactDto.getId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(oldNewsFact -> {
+                NewsFact newValue = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDto);
+                newValue.setId(oldNewsFact.getId());
+                newValue.setOwner(oldNewsFact.getOwner());
+                newsFactRepository.save(newValue);
+                log.debug("Changed Information for User: {}", oldNewsFact);
+                return oldNewsFact;
+            })
+            .map(newsFactMapper::newsFactToNewsFactDetailDto);
+    }
 }

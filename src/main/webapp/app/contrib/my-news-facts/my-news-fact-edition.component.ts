@@ -3,7 +3,7 @@ import { NewsCategory } from 'app/shared/model/news-category.model';
 import { NewsCategoryService } from 'app/core/newscategory/news-category.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { INewsFactDetail } from 'app/shared/model/news-fact-detail.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
 
 @Component({
@@ -33,7 +33,8 @@ export class MyNewsFactEditionComponent implements OnInit {
     private newsCategoryService: NewsCategoryService,
     private newsFactService: NewsFactService,
     private route: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -90,7 +91,7 @@ export class MyNewsFactEditionComponent implements OnInit {
   }
 
   private onPublishSuccess(newsFact: INewsFactDetail) {
-    this.newsFact = newsFact;
+    this.router.navigate(['/contrib/my-news-facts']);
   }
 
   private onPublishError() {

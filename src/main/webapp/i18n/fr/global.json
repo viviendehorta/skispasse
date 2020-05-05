@@ -30,7 +30,7 @@
   "error": {
     "emailexists": "Email déjà utilisé !",
     "idExists": "Une nouvelle entité {{entityName}} ne peut pas avoir d'ID !",
-    "idnull": "Invalid ID",
+    "idnull": "Invalid Id",
     "internalServerError": "Erreur interne du serveur",
     "NotNull": "Le champ {{fieldName}} ne peut pas être vide !",
     "server.not.reachable": "Serveur inaccessible",
