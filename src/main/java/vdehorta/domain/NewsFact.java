@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**

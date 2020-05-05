@@ -2,6 +2,7 @@ package vdehorta.web.rest;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,13 +12,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import vdehorta.config.Constants;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
-import vdehorta.security.AuthoritiesConstants;
 import vdehorta.service.NewsFactService;
 import vdehorta.web.rest.errors.BadRequestAlertException;
 
@@ -25,6 +23,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/newsFact")
@@ -63,7 +62,8 @@ public class NewsFactResource {
 
     /**
      * {@code GET /contributor/{login}} : Get a list containing all news facts of the given contributor user.
-     * @param login Login of the contributor owner
+     *
+     * @param login    Login of the contributor owner
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body news facts of the given contributor user.
      */
@@ -75,23 +75,23 @@ public class NewsFactResource {
     }
 
     /**
-     *
      * {@code POST  / : Create a news fact.
+     *
      * @param newsFact The NewsFactDetail containing all data of news fact to create
-     * @return
+     * @return A ResponseEntity with a body containing the created news fact
      * @throws URISyntaxException
      */
     @PostMapping()
     public ResponseEntity<NewsFactDetailDto> createNewsFact(@Valid @RequestBody NewsFactDetailDto newsFact) throws URISyntaxException {
-        log.debug("REST request to create News Fact : {}", newsFact);
+        log.debug("REST request to create a news fact : {}", newsFact);
 
         if (newsFact.getId() != null) {
-            throw new BadRequestAlertException("A new news fact cannot already have an id", "news-fact", "idExists");
+            throw new BadRequestAlertException("A news fact to create cannot have an id!", "news-fact", "idExists");
         } else {
             NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact);
             return ResponseEntity
                 .created(new URI("/newsFact/" + createdNewsFact.getId()))
-                .headers(HeaderUtil.createAlert(applicationName,  "myNewsFacts.creation.created", createdNewsFact.getId()))
+                .headers(HeaderUtil.createAlert(applicationName, "myNewsFacts.creation.created", createdNewsFact.getId()))
                 .body(createdNewsFact);
         }
     }
@@ -104,8 +104,28 @@ public class NewsFactResource {
      */
     @DeleteMapping("/{newsFactId}")
     public ResponseEntity<Void> deleteNewsFact(@PathVariable String newsFactId) {
-        log.debug("REST request to delete News Fact: {}", newsFactId);
+        log.debug("REST request to delete a news fact: {}", newsFactId);
         newsFactService.delete(newsFactId);
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "myNewsFacts.delete.deleted", newsFactId)).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "myNewsFacts.delete.deleted", newsFactId)).build();
+    }
+
+    /**
+     * {@code PUT  / : Update a news fact.
+     *
+     * @param newsFact The NewsFactDetail containing all data of news fact to update
+     * @return A ResponseEntity with a body containing the updated news fact
+     * @throws URISyntaxException
+     */
+    @PutMapping
+    public ResponseEntity<NewsFactDetailDto> updateNewsFact(@Valid @RequestBody NewsFactDetailDto newsFact) throws URISyntaxException {
+        log.debug("REST request to update a news fact : {}", newsFact);
+
+        if (newsFact.getId() == null) {
+            throw new BadRequestAlertException("A news fact to update must have an id!", "news-fact", "idnull");
+        }
+
+        Optional<NewsFactDetailDto> updatedNewsFact = newsFactService.update(newsFact);
+        return ResponseUtil.wrapOrNotFound(updatedNewsFact,
+            HeaderUtil.createAlert(applicationName, "myNewsFacts.edition.updated", newsFact.getId()));
     }
 }
