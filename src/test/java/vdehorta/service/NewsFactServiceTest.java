@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static vdehorta.EntityTestUtil.DEFAULT_DATE_FORMATTER;
 
 class NewsFactServiceTest {
 
@@ -93,8 +94,8 @@ class NewsFactServiceTest {
         assertThat(newsFactDetailDto.getAddress()).isEqualTo(newsFact2.getAddress());
         assertThat(newsFactDetailDto.getCity()).isEqualTo(newsFact2.getCity());
         assertThat(newsFactDetailDto.getCountry()).isEqualTo(newsFact2.getCountry());
-        assertThat(newsFactDetailDto.getCreatedDate()).isEqualTo(newsFact2.getCreatedDate());
-        assertThat(newsFactDetailDto.getEventDate()).isEqualTo(newsFact2.getEventDate());
+        assertThat(newsFactDetailDto.getCreatedDate()).isEqualTo(DEFAULT_DATE_FORMATTER.format(newsFact2.getCreatedDate()));
+        assertThat(newsFactDetailDto.getEventDate()).isEqualTo(DEFAULT_DATE_FORMATTER.format(newsFact2.getEventDate()));
         assertThat(newsFactDetailDto.getId()).isEqualTo(id2);
         assertThat(newsFactDetailDto.getLocationCoordinate()).isNotNull();
         assertThat(newsFactDetailDto.getLocationCoordinate().getX()).isEqualTo(newsFact2.getLocationCoordinateX());

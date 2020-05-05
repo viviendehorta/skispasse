@@ -7,7 +7,6 @@ import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.service.ClockService;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 

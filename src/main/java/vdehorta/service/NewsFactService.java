@@ -15,7 +15,7 @@ import vdehorta.service.errors.UnexistingLoginException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,11 +69,13 @@ public class NewsFactService {
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
         newsFact.setOwner(SecurityUtils.getCurrentUserLogin().orElse(Constants.SYSTEM_ACCOUNT));
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
-        Instant now = clockService.now();
+
+        LocalDateTime now = clockService.now();
         newsFact.setCreatedDate(now);
         newsFact.setLastModifiedDate(now);
         NewsFact createdNewsFact = this.newsFactRepository.save(newsFact);
         log.debug("Created Information for News Fact: {}", createdNewsFact);
+
         return newsFactMapper.newsFactToNewsFactDetailDto(createdNewsFact);
     }
 

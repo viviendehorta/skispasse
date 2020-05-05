@@ -8,8 +8,6 @@ import vdehorta.domain.User;
 import vdehorta.security.AuthoritiesConstants;
 import vdehorta.service.ClockService;
 
-import java.time.Instant;
-
 /**
  * Initial migration: 07/04/2020
  */

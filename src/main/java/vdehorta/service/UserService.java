@@ -23,6 +23,7 @@ import vdehorta.service.util.RandomUtil;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
@@ -156,7 +157,7 @@ public class UserService {
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
 
-        final Instant now = clockService.now();
+        final LocalDateTime now = clockService.now();
 
         user.setCreatedDate(now);
         user.setLastModifiedDate(now);

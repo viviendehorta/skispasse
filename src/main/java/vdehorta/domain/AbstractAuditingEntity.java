@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Base abstract class for entities which will hold definitions for created, last modified by and created,
@@ -26,7 +27,7 @@ public abstract class AbstractAuditingEntity implements Serializable {
     @CreatedDate
     @Field("created_date")
     @JsonIgnore
-    private Instant createdDate;
+    private LocalDateTime createdDate;
 
     @LastModifiedBy
     @Field("last_modified_by")
@@ -36,7 +37,7 @@ public abstract class AbstractAuditingEntity implements Serializable {
     @LastModifiedDate
     @Field("last_modified_date")
     @JsonIgnore
-    private Instant lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     public String getCreatedBy() {
         return createdBy;
@@ -46,11 +47,11 @@ public abstract class AbstractAuditingEntity implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public Instant getCreatedDate() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Instant createdDate) {
+    public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -62,11 +63,11 @@ public abstract class AbstractAuditingEntity implements Serializable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    public Instant getLastModifiedDate() {
+    public LocalDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 }

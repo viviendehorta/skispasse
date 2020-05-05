@@ -2,7 +2,6 @@ package vdehorta.dto;
 
 import vdehorta.domain.LocationCoordinate;
 
-import java.time.Instant;
 import java.util.Objects;
 
 public class NewsFactDetailDto {
@@ -10,8 +9,8 @@ public class NewsFactDetailDto {
     private String address;
     private String city;
     private String country;
-    private Instant createdDate;
-    private Instant eventDate;
+    private String createdDate;
+    private String eventDate;
     private String id;
     private LocationCoordinate locationCoordinate;
     private String newsCategoryId;
@@ -58,19 +57,19 @@ public class NewsFactDetailDto {
         this.country = country;
     }
 
-    public Instant getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Instant createdDate) {
+    public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
 
-    public Instant getEventDate() {
+    public String getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Instant eventDate) {
+    public void setEventDate(String eventDate) {
         this.eventDate = eventDate;
     }
 
@@ -130,14 +129,14 @@ public class NewsFactDetailDto {
     public static final class Builder {
         private String id;
         private LocationCoordinate locationCoordinate;
-        private Instant eventDate;
+        private String eventDate;
         private String newsCategoryId;
         private String newsCategoryLabel;
         private String country;
         private String city;
         private String address;
         private String videoPath;
-        private Instant createdDate;
+        private String createdDate;
 
         public Builder() {
         }
@@ -152,7 +151,7 @@ public class NewsFactDetailDto {
             return this;
         }
 
-        public Builder eventDate(Instant val) {
+        public Builder eventDate(String val) {
             eventDate = val;
             return this;
         }
@@ -187,7 +186,7 @@ public class NewsFactDetailDto {
             return this;
         }
 
-        public Builder createdDate(Instant val) {
+        public Builder createdDate(String val) {
             createdDate = val;
             return this;
         }
