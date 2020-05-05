@@ -4,13 +4,14 @@ import { INewsFactDetail } from 'app/shared/model/news-fact-detail.model';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
-import { JhiAlertService, JhiEventManager, JhiParseLinks } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { NewsFactService } from 'app/core/newsfacts/news-fact.service';
 import { Account } from 'app/shared/model/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { ILocationCoordinate } from 'app/shared/model/location-coordinate.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteNewsFactDialogComponent } from 'app/contrib/my-news-facts/delete-news-fact-dialog.component';
+import { INewsFactPage, NewsFactPage } from 'app/shared/model/news-fact-page.model';
 
 @Component({
   selector: 'skis-news-fact-management',
@@ -36,7 +37,6 @@ export class MyNewsFactsComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private alertService: JhiAlertService,
-    private parseLinks: JhiParseLinks,
     private modalService: NgbModal,
     private eventManager: JhiEventManager
   ) {
@@ -68,10 +68,7 @@ export class MyNewsFactsComponent implements OnInit {
         size: this.itemsPerPage,
         sort: this.sort()
       })
-      .subscribe(
-        (res: HttpResponse<INewsFactDetail[]>) => this.onSuccess(res.body, res.headers),
-        (res: HttpResponse<any>) => this.onError(res.body)
-      );
+      .subscribe((newsFactPage: NewsFactPage) => this.onSuccess(newsFactPage), (res: HttpResponse<any>) => this.onError(res.body));
   }
 
   sort() {
@@ -104,10 +101,10 @@ export class MyNewsFactsComponent implements OnInit {
     }
   }
 
-  private onSuccess(data, headers) {
-    this.links = this.parseLinks.parse(headers.get('link'));
-    this.totalItems = headers.get('X-Total-Count');
-    this.myNewsFacts = data;
+  private onSuccess(newsFactPage: INewsFactPage) {
+    this.links = newsFactPage.links;
+    this.totalItems = newsFactPage.itemCount;
+    this.myNewsFacts = newsFactPage.newsFactDetails;
   }
 
   private onError(error) {

@@ -53,9 +53,13 @@ export class MyNewsFactEditionComponent implements OnInit {
     this.isPublihing = true;
     this.updateNewsFactFromForm();
     if (this.newsFact.id !== null) {
-      this.newsFactService.update(this.newsFact).subscribe(() => this.onPublishSuccess(), () => this.onPublishError());
+      this.newsFactService
+        .update(this.newsFact)
+        .subscribe((updatedNewsFact: INewsFactDetail) => this.onPublishSuccess(updatedNewsFact), () => this.onPublishError());
     } else {
-      this.newsFactService.create(this.newsFact).subscribe(() => this.onPublishSuccess(), () => this.onPublishError());
+      this.newsFactService
+        .create(this.newsFact)
+        .subscribe((createdNewsFact: INewsFactDetail) => this.onPublishSuccess(createdNewsFact), () => this.onPublishError());
     }
   }
 
@@ -85,9 +89,8 @@ export class MyNewsFactEditionComponent implements OnInit {
     this.newsFact.videoPath = this.editionForm.get(['newsFactVideoPath']).value;
   }
 
-  private onPublishSuccess() {
-    this.isPublihing = false;
-    this.previousState();
+  private onPublishSuccess(newsFact: INewsFactDetail) {
+    this.newsFact = newsFact;
   }
 
   private onPublishError() {
