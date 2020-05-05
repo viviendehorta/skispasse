@@ -7,7 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -31,7 +32,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Field("event_date")
-    private Instant eventDate;
+    private LocalDateTime eventDate;
 
     @NotNull
     @Field("news_category_id")
@@ -106,11 +107,11 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         this.locationCoordinateY = locationCoordinateY;
     }
 
-    public Instant getEventDate() {
+    public LocalDateTime getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Instant eventDate) {
+    public void setEventDate(LocalDateTime eventDate) {
         this.eventDate = eventDate;
     }
 
@@ -203,13 +204,13 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
 
     public static final class Builder {
         private String createdBy;
-        private Instant createdDate;
+        private LocalDateTime createdDate;
         private String lastModifiedBy;
-        private Instant lastModifiedDate;
+        private LocalDateTime lastModifiedDate;
         private String id;
         private @NotNull Long locationCoordinateX;
         private @NotNull Long locationCoordinateY;
-        private @NotNull Instant eventDate;
+        private @NotNull LocalDateTime eventDate;
         private @NotNull String newsCategoryId;
         private @NotNull String newsCategoryLabel;
         private @NotNull String country;
@@ -226,7 +227,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder createdDate(@NotNull Instant val) {
+        public Builder createdDate(@NotNull LocalDateTime val) {
             createdDate = val;
             return this;
         }
@@ -236,7 +237,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder lastModifiedDate(@NotNull Instant val) {
+        public Builder lastModifiedDate(@NotNull LocalDateTime val) {
             lastModifiedDate = val;
             return this;
         }
@@ -256,7 +257,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder eventDate(@NotNull Instant val) {
+        public Builder eventDate(@NotNull LocalDateTime val) {
             eventDate = val;
             return this;
         }

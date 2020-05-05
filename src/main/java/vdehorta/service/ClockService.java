@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Component
 public class ClockService {
@@ -14,8 +15,8 @@ public class ClockService {
         this.clock = Clock.systemUTC();
     }
 
-    public Instant now() {
-        return clock.instant();
+    public LocalDateTime now() {
+        return LocalDateTime.now(clock);
     }
 
     public void setClock(Clock clock) {

@@ -116,6 +116,8 @@ public class NewsFactResourceIT {
 
         // Initialize the database
         NewsFact newsFact = createDefaultNewsFact1();
+        newsFact.setCreatedDate(LocalDateTime.parse("2020-05-01T23:30:00"));
+        newsFact.setEventDate(LocalDateTime.parse("2020-02-28T22:30:00"));
         newsFactRepository.save(newsFact);
 
         // Call /newsFact/{newsFactId} controller GET method
@@ -129,8 +131,8 @@ public class NewsFactResourceIT {
             .andExpect(jsonPath("$.address", is(newsFact.getAddress())))
             .andExpect(jsonPath("$.city", is(newsFact.getCity())))
             .andExpect(jsonPath("$.country", is(newsFact.getCountry())))
-            .andExpect(jsonPath("$.createdDate", is(newsFact.getCreatedDate().toString())))
-            .andExpect(jsonPath("$.eventDate", is(newsFact.getEventDate().toString())))
+            .andExpect(jsonPath("$.createdDate", is("2020-05-01")))
+            .andExpect(jsonPath("$.eventDate", is("2020-02-28")))
             .andExpect(jsonPath("$.newsCategoryId", is(newsFact.getNewsCategoryId())))
             .andExpect(jsonPath("$.newsCategoryLabel", is(newsFact.getNewsCategoryLabel())))
             .andExpect(jsonPath("$.videoPath", is(newsFact.getVideoPath())));
@@ -205,8 +207,8 @@ public class NewsFactResourceIT {
     void createNewsFact_caseOk() throws Exception {
 
         // Init ClockService with a fix clock to be able to assert the date values
-        Instant expectedNow = LocalDateTime.parse("2020-03-24T20:30:23").toInstant(ZoneOffset.UTC);
-        clockService.setClock(Clock.fixed(expectedNow, ZoneId.of("Z"))); // "Z" for UTC time zone
+        LocalDateTime expectedNow = LocalDateTime.parse("2020-03-24T20:30:23");
+        clockService.setClock(Clock.fixed(expectedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
 
         // Nothing to initialize in database
         NewsCategory newsCategory = createDefaultCategory1();
@@ -217,7 +219,7 @@ public class NewsFactResourceIT {
             .address(DEFAULT_ADDRESS)
             .city(DEFAULT_CITY)
             .country(DEFAULT_COUNTRY)
-            .eventDate(DEFAULT_EVENT_DATE)
+            .eventDate(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))
             .locationCoordinate(new LocationCoordinate.Builder()
                 .x(DEFAULT_LOCATION_COORDINATE_X)
                 .y(DEFAULT_LOCATION_COORDINATE_Y)
@@ -237,8 +239,8 @@ public class NewsFactResourceIT {
             .andExpect(jsonPath("$.address", is(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.city", is(DEFAULT_CITY)))
             .andExpect(jsonPath("$.country", is(DEFAULT_COUNTRY)))
-            .andExpect(jsonPath("$.createdDate", is(expectedNow.toString())))
-            .andExpect(jsonPath("$.eventDate", is(DEFAULT_EVENT_DATE.toString())))
+            .andExpect(jsonPath("$.createdDate", is("2020-03-24")))
+            .andExpect(jsonPath("$.eventDate", is(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))))
             .andExpect(jsonPath("$.id", isA(String.class)))
             .andExpect(jsonPath("$.locationCoordinate.x", is(DEFAULT_LOCATION_COORDINATE_X.intValue())))
             .andExpect(jsonPath("$.locationCoordinate.y", is(DEFAULT_LOCATION_COORDINATE_Y.intValue())))

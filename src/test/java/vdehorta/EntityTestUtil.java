@@ -6,20 +6,21 @@ import vdehorta.domain.NewsFact;
 import vdehorta.domain.User;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Utility Class containing methods that create entities used in controller tests.
  */
 public final class EntityTestUtil {
 
+    public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     public static final Long DEFAULT_LOCATION_COORDINATE_X = 100L;
     public static final Long DEFAULT_LOCATION_COORDINATE_Y = 2000L;
-    public static final Instant DEFAULT_CREATED_DATE = LocalDateTime.parse("2020-04-02T20:15:39").toInstant(ZoneOffset.UTC);
-    public static final Instant DEFAULT_LAST_MODIFIED_DATE = LocalDateTime.parse("2020-04-03T20:16:39").toInstant(ZoneOffset.UTC);
-    public static final Instant DEFAULT_EVENT_DATE = LocalDateTime.parse("2020-04-01T00:00:00").toInstant(ZoneOffset.UTC);
+    public static final LocalDateTime DEFAULT_CREATED_DATE = LocalDateTime.parse("2020-04-02T20:15:39");
+    public static final LocalDateTime DEFAULT_LAST_MODIFIED_DATE = LocalDateTime.parse("2020-04-03T20:16:39");
+    public static final LocalDateTime DEFAULT_EVENT_DATE = LocalDateTime.parse("2020-04-01T00:00:00");
     public static final String DEFAULT_ADDRESS = "address";
     public static final String DEFAULT_CITY = "city";
     public static final String DEFAULT_COUNTRY = "country";
