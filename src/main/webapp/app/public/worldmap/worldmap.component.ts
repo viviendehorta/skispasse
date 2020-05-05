@@ -51,8 +51,8 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.newsFactService.getAll().subscribe(unflattenedNewsFacts => {
-      this.newsFacts = this.newsFactService.flattenNewsFacts(unflattenedNewsFacts);
+    this.newsFactService.getAll().subscribe(newsFactNoDetails => {
+      this.newsFacts = newsFactNoDetails;
       this.buildNewsFactsMap(this.newsFacts);
     });
   }
@@ -106,8 +106,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   showNewsFactDetail(newsFactId: number) {
-    this.newsFactService.getNewsFactDetail(newsFactId).subscribe(unFlattenedNewsFactDetail => {
-      const newsFactDetail = this.newsFactService.flattenNewsFactDetail(unFlattenedNewsFactDetail);
+    this.newsFactService.getNewsFactDetail(newsFactId).subscribe(newsFactDetail => {
       const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
       const detailComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
       detailComponentInstance.setNewsFactDetail(newsFactDetail);

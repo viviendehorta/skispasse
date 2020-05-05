@@ -17,7 +17,7 @@
 
             <skis-alert-error></skis-alert-error>
 
-            <!-- News fact Id (hidden and not null when updating existing news fact) -->
+            <!-- Id (hidden and not null when updating existing news fact) -->
             <div class="form-group" [hidden]="!newsFact.id">
                 <label jhiTranslate="global.field.id">Id</label>
                 <input type="text" class="form-control" readonly
@@ -48,17 +48,9 @@
             <!-- Event date -->
             <div class="form-group">
                 <label for="eventDateInput" jhiTranslate="myNewsFacts.eventDate">Event date</label>
-                <div class="input-group">
-                    <input class="form-control" id="eventDateInput" placeholder="yyyy-mm-dd"
-                           ngbDatepicker #d="ngbDatepicker"
-                           name="eventDate"
-                           formControlName="eventDate">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
-                            <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
-                        </button>
-                    </div>
-                </div>
+                <input type="date" class="form-control" id="eventDateInput"
+                       name="eventDate"
+                       formControlName="eventDate">
 
                 <div
                     *ngIf="editionForm.get('eventDate').invalid && (editionForm.get('eventDate').dirty || editionForm.get('eventDate').touched)">
@@ -80,7 +72,8 @@
                            name="address"
                            formControlName="address">
 
-                    <div *ngIf="editionForm.get('address').invalid && (editionForm.get('address').dirty || editionForm.get('address').touched)">
+                    <div
+                        *ngIf="editionForm.get('address').invalid && (editionForm.get('address').dirty || editionForm.get('address').touched)">
                         <small class="form-text text-danger"
                                *ngIf="editionForm.get('address').errors.required"
                                jhiTranslate="entity.validation.required">
@@ -97,7 +90,8 @@
                            name="city"
                            formControlName="city">
 
-                    <div *ngIf="editionForm.get('city').invalid && (editionForm.get('city').dirty || editionForm.get('city').touched)">
+                    <div
+                        *ngIf="editionForm.get('city').invalid && (editionForm.get('city').dirty || editionForm.get('city').touched)">
                         <small class="form-text text-danger"
                                *ngIf="editionForm.get('city').errors.required"
                                jhiTranslate="entity.validation.required">
@@ -114,7 +108,8 @@
                            name="country"
                            formControlName="country">
 
-                    <div *ngIf="editionForm.get('country').invalid && (editionForm.get('country').dirty || editionForm.get('country').touched)">
+                    <div
+                        *ngIf="editionForm.get('country').invalid && (editionForm.get('country').dirty || editionForm.get('country').touched)">
                         <small class="form-text text-danger"
                                *ngIf="editionForm.get('country').errors.required"
                                jhiTranslate="entity.validation.required">
@@ -136,7 +131,8 @@
                            name="locationCoordinateX"
                            formControlName="locationCoordinateX">
 
-                    <div *ngIf="editionForm.get('locationCoordinateX').invalid && (editionForm.get('locationCoordinateX').dirty || editionForm.get('locationCoordinateX').touched)">
+                    <div
+                        *ngIf="editionForm.get('locationCoordinateX').invalid && (editionForm.get('locationCoordinateX').dirty || editionForm.get('locationCoordinateX').touched)">
                         <small class="form-text text-danger"
                                *ngIf="editionForm.get('locationCoordinateX').errors.required"
                                jhiTranslate="entity.validation.required">
@@ -154,7 +150,8 @@
                            placeholder="{{'myNewsFacts.form.enterLocationCoordinateY' | translate}}"
                            name="locationCoordinateY"
                            formControlName="locationCoordinateY">
-                    <div *ngIf="editionForm.get('locationCoordinateY').invalid && (editionForm.get('locationCoordinateY').dirty || editionForm.get('locationCoordinateY').touched)">
+                    <div
+                        *ngIf="editionForm.get('locationCoordinateY').invalid && (editionForm.get('locationCoordinateY').dirty || editionForm.get('locationCoordinateY').touched)">
                         <small class="form-text text-danger"
                                *ngIf="editionForm.get('locationCoordinateY').errors.required"
                                jhiTranslate="entity.validation.required">
@@ -178,7 +175,9 @@
                     <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
 
-                <button type="submit" [disabled]="editionForm.invalid || isPublihing" class="btn btn-primary" jhiTranslate="myNewsFacts.publish">Publish</button>
+                <button type="submit" [disabled]="editionForm.invalid || isPublihing" class="btn btn-primary"
+                        jhiTranslate="myNewsFacts.publish">Publish
+                </button>
             </div>
         </form>
 
