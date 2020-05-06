@@ -117,15 +117,15 @@ public class NewsFactResource {
      * @throws URISyntaxException
      */
     @PutMapping
-    public ResponseEntity<NewsFactDetailDto> updateNewsFact(@Valid @RequestBody NewsFactDetailDto newsFact) throws URISyntaxException {
+    public ResponseEntity<NewsFactDetailDto> updateNewsFact(@Valid @RequestBody NewsFactDetailDto newsFact) {
         log.debug("REST request to update a news fact : {}", newsFact);
 
         if (newsFact.getId() == null) {
-            throw new BadRequestAlertException("A news fact to update must have an id!", "news-fact", "idnull");
+            throw new BadRequestAlertException("A news fact to update must have an id!", "news-fact", "idNull");
         }
 
-        Optional<NewsFactDetailDto> updatedNewsFact = newsFactService.update(newsFact);
-        return ResponseUtil.wrapOrNotFound(updatedNewsFact,
+        return ResponseUtil.wrapOrNotFound(
+            newsFactService.update(newsFact),
             HeaderUtil.createAlert(applicationName, "myNewsFacts.edition.updated", newsFact.getId()));
     }
 }
