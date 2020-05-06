@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -21,35 +20,27 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Id
     private String id;
 
-    @NotNull
     @Field("location_coord_x")
     private Long locationCoordinateX;
 
-    @NotNull
     @Field("location_coord_y")
     private Long locationCoordinateY;
 
-    @NotNull
     @Field("event_date")
     private LocalDateTime eventDate;
 
-    @NotNull
     @Field("news_category_id")
     private String newsCategoryId;
 
-    @NotNull
     @Field("news_category_label")
     private String newsCategoryLabel;
 
-    @NotNull
     @Field("country")
     private String country;
 
-    @NotNull
     @Field("city")
     private String city;
 
-    @NotNull
     @Field("address")
     private String address;
 
@@ -207,91 +198,91 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private String lastModifiedBy;
         private LocalDateTime lastModifiedDate;
         private String id;
-        private @NotNull Long locationCoordinateX;
-        private @NotNull Long locationCoordinateY;
-        private @NotNull LocalDateTime eventDate;
-        private @NotNull String newsCategoryId;
-        private @NotNull String newsCategoryLabel;
-        private @NotNull String country;
-        private @NotNull String city;
-        private @NotNull String address;
-        private @NotNull String videoPath;
+        private Long locationCoordinateX;
+        private Long locationCoordinateY;
+        private LocalDateTime eventDate;
+        private String newsCategoryId;
+        private String newsCategoryLabel;
+        private String country;
+        private String city;
+        private String address;
+        private String videoPath;
         private String owner;
 
         public Builder() {
         }
 
-        public Builder createdBy(@NotNull String val) {
+        public Builder createdBy(String val) {
             createdBy = val;
             return this;
         }
 
-        public Builder createdDate(@NotNull LocalDateTime val) {
+        public Builder createdDate(LocalDateTime val) {
             createdDate = val;
             return this;
         }
 
-        public Builder lastModifiedBy(@NotNull String val) {
+        public Builder lastModifiedBy(String val) {
             lastModifiedBy = val;
             return this;
         }
 
-        public Builder lastModifiedDate(@NotNull LocalDateTime val) {
+        public Builder lastModifiedDate(LocalDateTime val) {
             lastModifiedDate = val;
             return this;
         }
 
-        public Builder id(@NotNull String val) {
+        public Builder id(String val) {
             id = val;
             return this;
         }
 
-        public Builder locationCoordinateX(@NotNull Long val) {
+        public Builder locationCoordinateX(Long val) {
             locationCoordinateX = val;
             return this;
         }
 
-        public Builder locationCoordinateY(@NotNull Long val) {
+        public Builder locationCoordinateY(Long val) {
             locationCoordinateY = val;
             return this;
         }
 
-        public Builder eventDate(@NotNull LocalDateTime val) {
+        public Builder eventDate(LocalDateTime val) {
             eventDate = val;
             return this;
         }
 
-        public Builder newsCategoryId(@NotNull String val) {
+        public Builder newsCategoryId(String val) {
             newsCategoryId = val;
             return this;
         }
 
-        public Builder newsCategoryLabel(@NotNull String val) {
+        public Builder newsCategoryLabel(String val) {
             newsCategoryLabel = val;
             return this;
         }
 
-        public Builder country(@NotNull String val) {
+        public Builder country(String val) {
             country = val;
             return this;
         }
 
-        public Builder city(@NotNull String val) {
+        public Builder city(String val) {
             city = val;
             return this;
         }
 
-        public Builder address(@NotNull String val) {
+        public Builder address(String val) {
             address = val;
             return this;
         }
 
-        public Builder videoPath(@NotNull String val) {
+        public Builder videoPath(String val) {
             videoPath = val;
             return this;
         }
 
-        public Builder owner(@NotNull String val) {
+        public Builder owner(String val) {
             owner = val;
             return this;
         }

@@ -2,19 +2,36 @@ package vdehorta.dto;
 
 import vdehorta.domain.LocationCoordinate;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class NewsFactDetailDto {
 
+    @NotBlank(message = "Address is mandatory")
     private String address;
+
+    @NotBlank(message = "City is mandatory")
     private String city;
+
+    @NotBlank(message = "Country is mandatory")
     private String country;
+
     private String createdDate;
+
+    @NotBlank(message = "Event date is mandatory")
     private String eventDate;
+
     private String id;
+
+    @NotNull(message = "Location coordinate is mandatory")
     private LocationCoordinate locationCoordinate;
+
+    @NotBlank(message = "News category id is mandatory")
     private String newsCategoryId;
+
     private String newsCategoryLabel;
+
     private String videoPath;
 
     public NewsFactDetailDto() {

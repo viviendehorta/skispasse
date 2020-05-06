@@ -25,7 +25,10 @@ import vdehorta.service.NewsFactService;
 import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -251,17 +254,197 @@ public class NewsFactResourceIT {
 
     @Test
     public void deleteNewsFact_caseOk() throws Exception {
+
         // Initialize the database
         newsFactRepository.save(createDefaultNewsFact());
         int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
 
-        // Delete the user
-        restNewsFactMockMvc.perform(delete("/newsFact/{id}", DEFAULT_NEWS_FACT_ID)
-            .accept(TestUtil.APPLICATION_JSON_UTF8))
+        // Then
+        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFact/{id}", DEFAULT_NEWS_FACT_ID)
+            .accept(TestUtil.APPLICATION_JSON_UTF8));
+
+        // Assert
+        resultActions
             .andExpect(status().isNoContent());
 
         // Validate the database is empty
         List<NewsFact> newsFacts = newsFactRepository.findAll();
         assertThat(newsFacts).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenIdIsNull() throws Exception {
+
+        //Given
+        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
+            .id(null)
+            .address(DEFAULT_ADDRESS)
+            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+            .eventDate("eventDate")
+            .city(DEFAULT_CITY)
+            .country(DEFAULT_COUNTRY)
+            .locationCoordinate(new LocationCoordinate(1L, 1L))
+            .build();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+
+        // Then
+        resultActions
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(header().string("X-skispasseApp-error", "error.idNull"));
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenNewsCategoryIsMissing() throws Exception {
+
+        //Given
+        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
+            .newsCategoryId(null)
+            .address(DEFAULT_ADDRESS)
+            .city(DEFAULT_CITY)
+            .country(DEFAULT_COUNTRY)
+            .eventDate("eventDate")
+            .id(DEFAULT_NEWS_FACT_ID)
+            .locationCoordinate(new LocationCoordinate(1L, 1L))
+            .build();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+
+        // Then
+        resultActions
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenEventDateIsMissing() throws Exception {
+
+        //Given
+        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
+            .eventDate(null)
+            .address(DEFAULT_ADDRESS)
+            .city(DEFAULT_CITY)
+            .country(DEFAULT_COUNTRY)
+            .id(DEFAULT_NEWS_FACT_ID)
+            .locationCoordinate(new LocationCoordinate(1L, 1L))
+            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+            .build();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+
+        // Then
+        resultActions
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenAddressIsMissing() throws Exception {
+
+        //Given
+        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
+            .address(null)
+            .city(DEFAULT_CITY)
+            .country(DEFAULT_COUNTRY)
+            .eventDate("eventDate")
+            .id(DEFAULT_NEWS_FACT_ID)
+            .locationCoordinate(new LocationCoordinate(1L, 1L))
+            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+            .build();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+
+        // Then
+        resultActions
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenCityIsMissing() throws Exception {
+
+        //Given
+        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
+            .city(null)
+            .address(DEFAULT_ADDRESS)
+            .country(DEFAULT_COUNTRY)
+            .eventDate("eventDate")
+            .id(DEFAULT_NEWS_FACT_ID)
+            .locationCoordinate(new LocationCoordinate(1L, 1L))
+            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+            .build();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+
+        // Then
+        resultActions
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenCountryIsMissing() throws Exception {
+
+        //Given
+        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
+            .country(null)
+            .address(DEFAULT_ADDRESS)
+            .city(DEFAULT_CITY)
+            .eventDate("eventDate")
+            .id(DEFAULT_NEWS_FACT_ID)
+            .locationCoordinate(new LocationCoordinate(1L, 1L))
+            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+            .build();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+
+        // Then
+        resultActions
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenLocationCoordinateIsMissing() throws Exception {
+
+        //Given
+        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
+            .locationCoordinate(null)
+            .address(DEFAULT_ADDRESS)
+            .city(DEFAULT_CITY)
+            .country(DEFAULT_COUNTRY)
+            .eventDate("eventDate")
+            .id(DEFAULT_NEWS_FACT_ID)
+            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+            .build();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+
+        // Then
+        resultActions
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 }
