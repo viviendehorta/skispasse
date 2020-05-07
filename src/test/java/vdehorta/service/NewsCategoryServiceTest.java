@@ -67,9 +67,9 @@ class NewsCategoryServiceTest {
         String id2 = "Id2";
 
         //Given
-        NewsCategory newsCategory1 = EntityTestUtil.createDefaultCategory1();
+        NewsCategory newsCategory1 = EntityTestUtil.createDefaultNewsCategory1();
         newsCategory1.setId(id1);
-        NewsCategory newsCategory2 = EntityTestUtil.createDefaultCategory2();
+        NewsCategory newsCategory2 = EntityTestUtil.createDefaultNewsCategory2();
         newsCategory2.setId(id2);
 
         when(newsCategoryRepositoryMock.findById(id1)).thenReturn(Optional.of(newsCategory1));

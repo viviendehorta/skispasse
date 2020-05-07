@@ -7,8 +7,8 @@ export class LocationCoordinate implements ILocationCoordinate {
   x: number;
   y: number;
 
-  constructor(x?: number, y?: number) {
-    this.x = x ? x : null;
-    this.y = y ? y : null;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
   }
 }

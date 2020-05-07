@@ -43,7 +43,7 @@ export class NewsFactDetail implements INewsFactDetail {
     this.createdDate = createdDate ? createdDate : null;
     this.eventDate = eventDate ? eventDate : null;
     this.id = id ? id : null;
-    this.locationCoordinate = locationCoordinate ? locationCoordinate : new LocationCoordinate();
+    this.locationCoordinate = locationCoordinate ? locationCoordinate : new LocationCoordinate(locationCoordinate.x, locationCoordinate.y);
     this.newsCategoryId = newsCategoryId ? newsCategoryId : null;
     this.newsCategoryLabel = newsCategoryLabel ? newsCategoryLabel : null;
     this.videoPath = videoPath ? videoPath : null;

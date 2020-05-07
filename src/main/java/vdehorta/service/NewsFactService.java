@@ -1,5 +1,6 @@
 package vdehorta.service;
 
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vdehorta.config.Constants;
 import vdehorta.domain.NewsFact;
+import vdehorta.dto.NewsCategoryDto;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
@@ -15,9 +17,12 @@ import vdehorta.service.errors.UnexistingLoginException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import static vdehorta.service.util.DateUtil.LOCAL_DATE_FORMATTER;
 
 /**
  * Service class for managing news facts.
@@ -84,19 +89,25 @@ public class NewsFactService {
         newsFactRepository.deleteById(newsFactId);
     }
 
-    public Optional<NewsFactDetailDto> update(NewsFactDetailDto newsFactDto) {
-        return Optional.of(newsFactRepository
-            .findById(newsFactDto.getId()))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .map(oldNewsFact -> {
-                NewsFact newValue = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDto);
-                newValue.setId(oldNewsFact.getId());
-                newValue.setOwner(oldNewsFact.getOwner());
-                newsFactRepository.save(newValue);
-                log.debug("Changed Information for User: {}", oldNewsFact);
-                return oldNewsFact;
-            })
-            .map(newsFactMapper::newsFactToNewsFactDetailDto);
-    }
+    public NewsFactDetailDto update(NewsFactDetailDto newsFactDetailDto) {
+
+        //Validation
+        Preconditions.checkNotNull(newsFactDetailDto.getId(), "News fact id is null!");
+        final NewsCategoryDto newNewsCategory = newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId());// Validate news category
+        final LocalDateTime newEventDate = LocalDate.parse(newsFactDetailDto.getEventDate(), LOCAL_DATE_FORMATTER).atStartOfDay(); //Validate event date format
+
+        NewsFact toUpdateNewsFact = newsFactRepository.findById(newsFactDetailDto.getId()).orElseThrow(WrongNewsFactIdException::new);
+
+        //Update
+        toUpdateNewsFact.setAddress(newsFactDetailDto.getAddress());
+        toUpdateNewsFact.setEventDate(newEventDate);
+        toUpdateNewsFact.setLocationCoordinateX(newsFactDetailDto.getLocationCoordinate().getX());
+        toUpdateNewsFact.setLocationCoordinateY(newsFactDetailDto.getLocationCoordinate().getY());
+        toUpdateNewsFact.setNewsCategoryId(newNewsCategory.getId());
+        toUpdateNewsFact.setNewsCategoryLabel(newNewsCategory.getLabel());
+        toUpdateNewsFact.setCity(newsFactDetailDto.getCity());
+        toUpdateNewsFact.setCountry(newsFactDetailDto.getCountry());
+        toUpdateNewsFact.setLastModifiedDate(clockService.now());
+        return newsFactMapper.newsFactToNewsFactDetailDto(newsFactRepository.save(toUpdateNewsFact));
+}
 }

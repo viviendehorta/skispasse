@@ -149,21 +149,21 @@ public final class EntityTestUtil {
             .build();
     }
 
-    public static NewsCategory createDefaultCategory() {
+    public static NewsCategory createDefaultNewsCategory() {
         return new NewsCategory.Builder()
             .id(DEFAULT_NEWS_CATEGORY_ID)
             .label(DEFAULT_NEWS_CATEGORY_LABEL)
             .build();
     }
 
-    public static NewsCategory createDefaultCategory1() {
+    public static NewsCategory createDefaultNewsCategory1() {
         return new NewsCategory.Builder()
             .id(DEFAULT_NEWS_CATEGORY_ID + "1")
             .label(DEFAULT_NEWS_CATEGORY_LABEL + "1")
             .build();
     }
 
-    public static NewsCategory createDefaultCategory2() {
+    public static NewsCategory createDefaultNewsCategory2() {
         return new NewsCategory.Builder()
             .id(DEFAULT_NEWS_CATEGORY_ID + "2")
             .label(DEFAULT_NEWS_CATEGORY_LABEL + "2")

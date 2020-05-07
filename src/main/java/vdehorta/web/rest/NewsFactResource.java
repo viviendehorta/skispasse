@@ -2,7 +2,6 @@ package vdehorta.web.rest;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/newsFact")
@@ -124,8 +122,11 @@ public class NewsFactResource {
             throw new BadRequestAlertException("A news fact to update must have an id!", "news-fact", "idNull");
         }
 
-        return ResponseUtil.wrapOrNotFound(
-            newsFactService.update(newsFact),
-            HeaderUtil.createAlert(applicationName, "myNewsFacts.edition.updated", newsFact.getId()));
+        NewsFactDetailDto updated = newsFactService.update(newsFact);
+
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createAlert(applicationName, "myNewsFacts.edition.updated", updated.getId()))
+            .body(updated);
     }
 }
