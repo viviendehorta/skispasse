@@ -14,10 +14,12 @@ import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.service.errors.UnexistingLoginException;
+import vdehorta.service.errors.WrongNewsCategoryIdException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
 import javax.validation.constraints.NotNull;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -147,5 +149,54 @@ class NewsFactServiceTest {
 
         //Assert-Thrown
         assertThatThrownBy(() -> newsFactService.getByOwner(pageable, unexistingLogin)).isInstanceOf(UnexistingLoginException.class);
+    }
+
+    @Test
+    void update_shouldThrowExceptionIfNewsFactIdIsNull() {
+
+        //Given
+        NewsFactDetailDto nullIdNewsFact = new NewsFactDetailDto.Builder()
+            .id(null)
+            .build();
+
+        //Assert-Thrown
+        assertThatThrownBy(() -> newsFactService.update(nullIdNewsFact)).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void update_shouldThrowExceptionIfEventDateFormatIsWrong() {
+
+        //Given
+        NewsFactDetailDto.Builder builder = new NewsFactDetailDto.Builder().id("id");
+
+        //Assert-Thrown
+
+        //format dd-MM-yyyy
+        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("17-04-1989").build())).isInstanceOf(DateTimeParseException.class);
+
+        //format dd/MM/yyyy
+        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("17/04/1989").build())).isInstanceOf(DateTimeParseException.class);
+
+        //format yyyy/MM/dd
+        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("1989/04/17").build())).isInstanceOf(DateTimeParseException.class);
+
+        //format yyyy/M/dd
+        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("1989/4/17").build())).isInstanceOf(DateTimeParseException.class);
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenNewsCategoryIdDoesntExist() {
+        String unexistingCategoryId = "unexisting";
+
+        //Given
+        when(newsCategoryServiceMock.getById(unexistingCategoryId)).thenThrow(new WrongNewsCategoryIdException());
+        NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
+            .newsCategoryId(unexistingCategoryId)
+            .id("id")
+            .eventDate("1989-04-17")
+            .build();
+
+        //Assert-Thrown
+        assertThatThrownBy(() -> newsFactService.update(toUpdateNewsFact)).isInstanceOf(WrongNewsCategoryIdException.class);
     }
 }

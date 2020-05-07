@@ -15,7 +15,7 @@
     },
     "edition": {
       "title": "Édition de publication",
-      "updated": "Votre publication #{{ param }} a été mis à jour."
+      "updated": "Votre publication #{{ param }} a été mise à jour."
     },
     "eventDate": "Date évènement",
     "form": {

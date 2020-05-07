@@ -25,10 +25,7 @@ import vdehorta.service.NewsFactService;
 import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -214,7 +211,7 @@ public class NewsFactResourceIT {
         clockService.setClock(Clock.fixed(expectedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
 
         // Nothing to initialize in database
-        NewsCategory newsCategory = createDefaultCategory1();
+        NewsCategory newsCategory = createDefaultNewsCategory1();
         newsCategoryRepository.save(newsCategory);
 
         //Given
@@ -446,5 +443,69 @@ public class NewsFactResourceIT {
         resultActions
             .andExpect(status().isBadRequest())
             .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+    }
+
+    @Test
+    void update_shouldReturnUpdatedNewsFactInOptional() throws Exception {
+        String yesterdayString = "2020-05-01";
+        String todayString = "2020-05-02";
+        LocalDateTime today = LocalDate.parse(todayString).atStartOfDay();
+        LocalDateTime yesterday = LocalDate.parse(yesterdayString).atStartOfDay();
+        String newAddress = DEFAULT_ADDRESS + "-updated";
+        String newCity = DEFAULT_CITY + "-updated";
+        String newCountry = DEFAULT_COUNTRY + "-updated";
+        LocationCoordinate newLocationCoordinate = new LocationCoordinate.Builder().x(2000L).y(700L).build();
+        NewsCategory oldNewsCategory = createDefaultNewsCategory1();
+        NewsCategory newNewsCategory = createDefaultNewsCategory2();
+
+        // Initialize the database
+        final NewsFact initialNewsFact = createDefaultNewsFact();
+        initialNewsFact.setCreatedDate(yesterday);
+        initialNewsFact.setEventDate(yesterday);
+        initialNewsFact.setOwner("oldOwner");
+        newsFactRepository.save(initialNewsFact);
+        newsCategoryRepository.save(oldNewsCategory);
+        newsCategoryRepository.save(newNewsCategory);
+        clockService.setClock(Clock.fixed(today.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // to simulate creation today
+
+        //Given
+        final NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
+            .address(newAddress)
+            .city(newCity)
+            .country(newCountry)
+            .eventDate(todayString)
+            .id(DEFAULT_NEWS_FACT_ID)
+            .locationCoordinate(newLocationCoordinate)
+            .newsCategoryId(newNewsCategory.getId())
+            .build();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(toUpdateNewsFact)));
+
+        // Then
+        resultActions
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.address", is(newAddress)))
+            .andExpect(jsonPath("$.city", is(newCity)))
+            .andExpect(jsonPath("$.country", is(newCountry)))
+            .andExpect(jsonPath("$.createdDate", is(yesterdayString)))
+            .andExpect(jsonPath("$.eventDate", is(todayString)))
+            .andExpect(jsonPath("$.id", is(DEFAULT_NEWS_FACT_ID)))
+            .andExpect(jsonPath("$.locationCoordinate.x", is(newLocationCoordinate.getX().intValue())))
+            .andExpect(jsonPath("$.locationCoordinate.y", is(newLocationCoordinate.getY().intValue())))
+            .andExpect(jsonPath("$.newsCategoryId", is(newNewsCategory.getId())))
+            .andExpect(jsonPath("$.newsCategoryLabel", is(newNewsCategory.getLabel())));
+
+        // Validate the news fact in database
+        List<NewsFact> newsFacts = newsFactRepository.findAll();
+        assertThat(newsFacts).hasSize(1);
+        NewsFact updatedNewsFact = newsFacts.get(0);
+        assertThat(updatedNewsFact.getLastModifiedDate()).isEqualTo(today);
+        assertThat(updatedNewsFact.getOwner()).isEqualTo("oldOwner"); // Owner should not change
+
+
     }
 }

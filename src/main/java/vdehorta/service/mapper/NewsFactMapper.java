@@ -14,18 +14,18 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static vdehorta.service.util.DateUtil.LOCAL_DATE_FORMATTER;
+
 @Mapper(componentModel = "spring")
 @Service
 public interface NewsFactMapper {
-
-    DateTimeFormatter DATE_TO_STRING_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Named("localDateTimeToString")
     static String localDateTimeToString(LocalDateTime localDateTime) {
         if (localDateTime == null) {
             return null;
         }
-        return DATE_TO_STRING_FORMATTER.format(localDateTime);
+        return LOCAL_DATE_FORMATTER.format(localDateTime);
     }
 
     @Named("stringToLocalDateTime")
@@ -33,7 +33,7 @@ public interface NewsFactMapper {
         if (stringDate == null || stringDate.isEmpty()) {
             return null;
         }
-        return DATE_TO_STRING_FORMATTER.parse(stringDate, LocalDate::from).atStartOfDay();
+        return LOCAL_DATE_FORMATTER.parse(stringDate, LocalDate::from).atStartOfDay();
     }
 
     @Mappings({
