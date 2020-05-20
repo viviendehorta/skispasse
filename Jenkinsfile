@@ -13,19 +13,12 @@ node {
         sh "chmod +x mvnw"
         sh "./mvnw -ntp clean"
     }
-    stage('nohttp') {
+
+    stage('checkstyle') {
         sh "./mvnw -ntp checkstyle:check"
     }
 
-    stage('install tools') {
-        sh "./mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm -DnodeVersion=v12.13.0 -DnpmVersion=6.13.0"
-    }
-
-    stage('npm install') {
-        sh "./mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm"
-    }
-
-    stage('backend tests') {
+    stage('compile with tests') {
         try {
             sh "./mvnw -ntp verify"
         } catch(err) {
@@ -35,23 +28,8 @@ node {
         }
     }
 
-    stage('frontend tests') {
-        try {
-            sh "./mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dfrontend.npm.arguments='run test'"
-        } catch(err) {
-            throw err
-        } finally {
-            junit '**/target/test-results/**/TEST-*.xml'
-        }
-    }
-
     stage('packaging') {
-        sh "./mvnw -ntp verify -Pprod -DskipTests"
+        sh "./mvnw -ntp install -DskipTests"
         archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
     }
-//    stage('quality analysis') {
-//        withSonarQubeEnv('sonar') {
-//            sh "./mvnw -ntp initialize sonar:sonar"
-//        }
-//    }
 }

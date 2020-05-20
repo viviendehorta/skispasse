@@ -32,21 +32,21 @@ public final class EntityTestUtil {
 
 
     public static final String DEFAULT_LOGIN = "johndoe";
-    public static final String UPDATED_LOGIN = "jhipster";
+    public static final String UPDATED_LOGIN = "updated_login";
 
     public static final String DEFAULT_USER_ID = "user_id";
 
     public static final String DEFAULT_PASSWORD = "passjohndoe";
-    public static final String UPDATED_PASSWORD = "passjhipster";
+    public static final String UPDATED_PASSWORD = "passSkispasse";
 
     public static final String DEFAULT_EMAIL = "johndoe@localhost";
-    public static final String UPDATED_EMAIL = "jhipster@localhost";
+    public static final String UPDATED_EMAIL = "updated@localhost";
 
     public static final String DEFAULT_FIRSTNAME = "john";
-    public static final String UPDATED_FIRSTNAME = "jhipsterFirstName";
+    public static final String UPDATED_FIRSTNAME = "updatedFirstName";
 
     public static final String DEFAULT_LASTNAME = "doe";
-    public static final String UPDATED_LASTNAME = "jhipsterLastName";
+    public static final String UPDATED_LASTNAME = "updatedLastName";
 
     public static final String DEFAULT_IMAGEURL = "http://placehold.it/50x50";
     public static final String UPDATED_IMAGEURL = "http://placehold.it/40x40";

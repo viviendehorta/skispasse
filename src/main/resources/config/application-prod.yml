@@ -1,12 +1,6 @@
 # ===================================================================
 # Spring Boot configuration for the "prod" profile.
-#
 # This configuration overrides the application.yml file.
-#
-# More information on profiles: https://www.jhipster.tech/profiles/
-# More information on configuration properties: https://www.jhipster.tech/common-application-properties/
-# ===================================================================
-
 # ===================================================================
 # Standard Spring Boot properties.
 # Full reference is available at:
@@ -16,14 +10,7 @@
 logging:
   level:
     ROOT: INFO
-    io.github.jhipster: INFO
     vdehorta: INFO
-
-management:
-  metrics:
-    export:
-      prometheus:
-        enabled: false
 
 spring:
   devtools:
@@ -35,13 +22,6 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017
       database: skispasse
-  mail:
-    host: localhost
-    port: 25
-    username:
-    password:
-  thymeleaf:
-    cache: true
 
 # ===================================================================
 # To enable TLS in production, generate a certificate using:
@@ -70,25 +50,10 @@ server:
     min-response-size: 1024
 
 # ===================================================================
-# JHipster specific properties
-#
-# Full reference is available at: https://www.jhipster.tech/common-application-properties/
+# Skispasse Application specific properties
 # ===================================================================
 
-jhipster:
-  http:
-    cache: # Used by the CachingHttpHeadersFilter
-      timeToLiveInDays: 1461
-  security:
-    remember-me:
-      # security key (this key should be unique for your application, and kept secret)
-      key: 1fe6c580e568dabbaae25bf20b7095b7aff6515039e4fbbd1f288f2edd2d26b37380164ec7140042844344db425ce0dee9eb
-  mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: http://my-server-url-to-change # Modify according to your server's URL
-  metrics:
-    logs: # Reports metrics in the logs
-      enabled: false
-      report-frequency: 60 # in seconds
+skispasse:
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
@@ -96,16 +61,4 @@ jhipster:
       host: localhost
       port: 5000
       queue-size: 512
-  audit-events:
-    retention-period: 30 # Number of days before audit events are deleted.
 
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the JHipsterProperties above
-#
-# More documentation is available at:
-# https://www.jhipster.tech/common-application-properties/
-# ===================================================================
-
-# application:

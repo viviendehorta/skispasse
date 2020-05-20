@@ -1,0 +1,12 @@
+<!--News Categories panel-->
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Category filters</h5>
+        <div class="form-check">
+            <skis-news-category-checkbox
+                *ngFor="let newsCategorySelection of this.newsCategorySelections"
+                [newsCategorySelection]="newsCategorySelection">
+            </skis-news-category-checkbox>
+        </div>
+    </div>
+</div>

@@ -5,7 +5,6 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
@@ -35,7 +34,7 @@ class ArchTest {
      * The ClockService.now method should be used instead, allowing testing instants easily.
      */
     @Test
-    void nowMethodShouldOnlyBeCalledInCLockService() {
+    void nowMethodShouldNeverBeCalledInServicesNorRepositoriesNorRestResources() {
         JavaClasses importedClasses = new ClassFileImporter()
             .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
             .importPackages("vdehorta");

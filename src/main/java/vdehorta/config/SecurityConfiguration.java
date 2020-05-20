@@ -1,12 +1,5 @@
 package vdehorta.config;
 
-import vdehorta.security.*;
-
-import io.github.jhipster.config.JHipsterProperties;
-import io.github.jhipster.security.*;
-
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
@@ -17,29 +10,25 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
-import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
+import vdehorta.security.AjaxAuthenticationFailureHandler;
+import vdehorta.security.AjaxAuthenticationSuccessHandler;
+import vdehorta.security.AjaxLogoutSuccessHandler;
+import vdehorta.security.AuthoritiesConstants;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Import(SecurityProblemSupport.class)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final JHipsterProperties jHipsterProperties;
+    private final ApplicationProperties applicationProperties;
 
-    private final RememberMeServices rememberMeServices;
-
-    private final CorsFilter corsFilter;
     private final SecurityProblemSupport problemSupport;
 
-    public SecurityConfiguration(JHipsterProperties jHipsterProperties, RememberMeServices rememberMeServices, CorsFilter corsFilter, SecurityProblemSupport problemSupport) {
-        this.jHipsterProperties = jHipsterProperties;
-        this.rememberMeServices = rememberMeServices;
-        this.corsFilter = corsFilter;
+    public SecurityConfiguration(ApplicationProperties applicationProperties, SecurityProblemSupport problemSupport) {
+        this.applicationProperties = applicationProperties;
         this.problemSupport = problemSupport;
     }
 
@@ -68,9 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring()
             .antMatchers(HttpMethod.OPTIONS, "/**")
             .antMatchers("/app/**/*.{js,html}")
-            .antMatchers("/i18n/**")
-            .antMatchers("/content/**")
-            .antMatchers("/swagger-ui/index.html")
+            .antMatchers("/assets/**")
             .antMatchers("/test/**");
     }
 
@@ -81,15 +68,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .csrf()
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             .and()
-            .addFilterBefore(corsFilter, CsrfFilter.class)
             .exceptionHandling()
             .authenticationEntryPoint(problemSupport)
             .accessDeniedHandler(problemSupport)
-            .and()
-            .rememberMe()
-            .rememberMeServices(rememberMeServices)
-            .rememberMeParameter("remember-me")
-            .key(jHipsterProperties.getSecurity().getRememberMe().getKey())
             .and()
             .formLogin()
             .loginProcessingUrl("/api/authentication")
@@ -104,8 +85,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
             .headers()
             .contentSecurityPolicy("default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:")
-            .and()
-            .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
+//            .and()
+//            .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
             .and()
             .featurePolicy("geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none'")
             .and()
@@ -116,11 +97,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/authenticate").permitAll()
             .antMatchers("/api/register").permitAll()
             .antMatchers("/api/activate").permitAll()
-            .antMatchers("/api/account/reset-password/init").permitAll()
-            .antMatchers("/api/account/reset-password/finish").permitAll()
             .antMatchers("/api/**").authenticated()
-            .antMatchers("/management/health").permitAll()
-            .antMatchers("/management/info").permitAll()
             .antMatchers("/management/prometheus").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/newsFact/all").permitAll()

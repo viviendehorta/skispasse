@@ -1,7 +1,5 @@
 package vdehorta.web.rest;
 
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +15,8 @@ import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.service.NewsFactService;
 import vdehorta.web.rest.errors.BadRequestAlertException;
+import vdehorta.web.rest.util.HeaderUtil;
+import vdehorta.web.rest.util.PaginationUtil;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -29,7 +29,7 @@ public class NewsFactResource {
 
     private final Logger log = LoggerFactory.getLogger(NewsFactResource.class);
 
-    @Value("${jhipster.clientApp.name}")
+    @Value("${skispasse.clientApp.name}")
     private String applicationName;
 
     private NewsFactService newsFactService;
@@ -88,9 +88,9 @@ public class NewsFactResource {
         } else {
             NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact);
             return ResponseEntity
-                .created(new URI("/newsFact/" + createdNewsFact.getId()))
-                .headers(HeaderUtil.createAlert(applicationName, "myNewsFacts.creation.created", createdNewsFact.getId()))
-                .body(createdNewsFact);
+                    .created(new URI("/newsFact/" + createdNewsFact.getId()))
+                    .headers(HeaderUtil.createAlert(applicationName,  "A news fact was created with id " + createdNewsFact.getId(), createdNewsFact.getId()))
+                    .body(createdNewsFact);
         }
     }
 
@@ -104,7 +104,7 @@ public class NewsFactResource {
     public ResponseEntity<Void> deleteNewsFact(@PathVariable String newsFactId) {
         log.debug("REST request to delete a news fact: {}", newsFactId);
         newsFactService.delete(newsFactId);
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "myNewsFacts.delete.deleted", newsFactId)).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A news fact was deleted with id " + newsFactId, newsFactId)).build();
     }
 
     /**
@@ -125,8 +125,8 @@ public class NewsFactResource {
         NewsFactDetailDto updated = newsFactService.update(newsFact);
 
         return ResponseEntity
-            .ok()
-            .headers(HeaderUtil.createAlert(applicationName, "myNewsFacts.edition.updated", updated.getId()))
-            .body(updated);
+                .ok()
+                .headers(HeaderUtil.createAlert(applicationName, "A news fact was updated with id " + newsFact.getId(), newsFact.getId()))
+                .body(updated);
     }
 }
