@@ -1,8 +1,5 @@
 package vdehorta.web.rest;
 
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.PaginationUtil;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,14 +13,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vdehorta.config.Constants;
 import vdehorta.domain.User;
+import vdehorta.dto.UserDTO;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.AuthoritiesConstants;
-import vdehorta.service.MailService;
 import vdehorta.service.UserService;
-import vdehorta.dto.UserDTO;
 import vdehorta.web.rest.errors.BadRequestAlertException;
 import vdehorta.web.rest.errors.EmailAlreadyUsedException;
 import vdehorta.web.rest.errors.LoginAlreadyUsedException;
+import vdehorta.web.rest.util.HeaderUtil;
+import vdehorta.web.rest.util.PaginationUtil;
+import vdehorta.web.rest.util.ResponseUtil;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -61,20 +60,17 @@ public class UserResource {
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
-    @Value("${jhipster.clientApp.name}")
+    @Value("${skispasse.clientApp.name}")
     private String applicationName;
 
     private final UserService userService;
 
     private final UserRepository userRepository;
 
-    private final MailService mailService;
-
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    public UserResource(UserService userService, UserRepository userRepository) {
 
         this.userService = userService;
         this.userRepository = userRepository;
-        this.mailService = mailService;
     }
 
     /**
@@ -103,9 +99,8 @@ public class UserResource {
             throw new EmailAlreadyUsedException();
         } else {
             User newUser = userService.createUser(userDTO);
-            mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlert(applicationName,  "userManagement.created", newUser.getLogin()))
+                .headers(HeaderUtil.createAlert(applicationName,  "A user was created with id " + newUser.getLogin(), newUser.getLogin()))
                 .body(newUser);
         }
     }
@@ -133,7 +128,7 @@ public class UserResource {
         Optional<UserDTO> updatedUser = userService.updateUser(userDTO);
 
         return ResponseUtil.wrapOrNotFound(updatedUser,
-            HeaderUtil.createAlert(applicationName, "userManagement.updated", userDTO.getLogin()));
+                HeaderUtil.createAlert(applicationName, "A user was updated with id " + userDTO.getLogin(), userDTO.getLogin()));
     }
 
     /**
@@ -184,6 +179,6 @@ public class UserResource {
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "userManagement.deleted", login)).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A user was deleted with id " + login, login)).build();
     }
 }
