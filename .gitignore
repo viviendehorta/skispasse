@@ -1,24 +1,9 @@
+(.gitignore)
+
 ######################
 # Project Specific
 ######################
-/src/main/webapp/content/css/main.css
 /target/classes/static/**
-/src/test/javascript/coverage/
-
-######################
-# Node
-######################
-/node/
-node_tmp/
-node_modules/
-npm-debug.log.*
-/.awcache/*
-/.cache-loader/*
-
-######################
-# SASS
-######################
-.sass-cache/
 
 ######################
 # Eclipse
@@ -53,6 +38,7 @@ local.properties
 
 # STS-specific
 /.sts4-cache/*
+
 ######################
 # Intellij
 ######################
@@ -68,7 +54,16 @@ out/
 ######################
 # Visual Studio Code
 ######################
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# IDEs and editors
+.c9/
+*.sublime-workspace
 
 ######################
 # Maven
@@ -141,7 +136,33 @@ Desktop.ini
 ######################
 !.mvn/wrapper/maven-wrapper.jar
 
+
+
 ######################
-# ESLint
+# Frontend
 ######################
-.eslintcache
+
+# compiled output
+/skispasse-front/dist
+/skispasse-front/tmp
+/skispasse-front/out-tsc
+# Only exists if Bazel was run
+/skispasse-front//bazel-out
+
+# dependencies
+/skispasse-front/node_modules
+/skispasse-front/node
+
+# profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
