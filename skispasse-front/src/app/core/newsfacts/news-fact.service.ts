@@ -50,8 +50,12 @@ export class NewsFactService {
       );
   }
 
-  create(newsFact: INewsFactDetail): Observable<INewsFactDetail> {
-    return this.http.post<INewsFactDetail>(this.resourceUrl, newsFact).pipe(
+  create(newsFactDetail: INewsFactDetail, newsFactVideoFile: File): Observable<INewsFactDetail> {
+    const formData = new FormData();
+    formData.append("newsFactJson", JSON.stringify(newsFactDetail));
+    formData.append("videoFile", newsFactVideoFile);
+
+    return this.http.post<INewsFactDetail>(this.resourceUrl, formData).pipe(
       map((unparsedNewsFactDetail: any) => {
         return this.parseNewsFactDetail(unparsedNewsFactDetail);
       })
@@ -64,9 +68,9 @@ export class NewsFactService {
 
   update(newsFact: INewsFactDetail): Observable<INewsFactDetail> {
     return this.http.put<INewsFactDetail>(this.resourceUrl, newsFact).pipe(
-      map((unparsedNewsFactDetail: any) => {
-        return this.parseNewsFactDetail(unparsedNewsFactDetail);
-      })
+        map((unparsedNewsFactDetail: any) => {
+          return this.parseNewsFactDetail(unparsedNewsFactDetail);
+        })
     );
   }
 

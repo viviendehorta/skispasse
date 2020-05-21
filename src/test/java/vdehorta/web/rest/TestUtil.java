@@ -8,7 +8,6 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
-import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -23,12 +22,8 @@ public final class TestUtil {
 
     private static final ObjectMapper mapper = createObjectMapper();
 
-    /** MediaType for JSON UTF8 */
-    public static final MediaType APPLICATION_JSON_UTF8 = MediaType.APPLICATION_JSON_UTF8;
-
     private static ObjectMapper createObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         mapper.registerModule(new JavaTimeModule());
         return mapper;
     }
@@ -42,6 +37,17 @@ public final class TestUtil {
      */
     public static byte[] convertObjectToJsonBytes(Object object) throws IOException {
         return mapper.writeValueAsBytes(object);
+    }
+
+    /**
+     * Convert an object to JSON String.
+     *
+     * @param object the object to convert.
+     * @return the JSON String value.
+     * @throws IOException
+     */
+    public static String convertObjectToJsonString(Object object) throws IOException {
+        return mapper.writeValueAsString(object);
     }
 
     /**

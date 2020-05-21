@@ -1,5 +1,6 @@
 package vdehorta.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
@@ -19,6 +21,7 @@ import vdehorta.web.rest.util.HeaderUtil;
 import vdehorta.web.rest.util.PaginationUtil;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -79,32 +82,42 @@ public class NewsFactResource {
      * @return A ResponseEntity with a body containing the created news fact
      * @throws URISyntaxException
      */
-    @PostMapping()
-    public ResponseEntity<NewsFactDetailDto> createNewsFact(@Valid @RequestBody NewsFactDetailDto newsFact) throws URISyntaxException {
-        log.debug("REST request to create a news fact : {}", newsFact);
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<NewsFactDetailDto> createNewsFact(@RequestParam("videoFile") MultipartFile file, @RequestParam("newsFactJson") String newsFactJson) throws URISyntaxException {
+        log.debug("REST request to create a news fact : {}", newsFactJson);
 
-        if (newsFact.getId() != null) {
-            throw new BadRequestAlertException("A news fact to create cannot have an id!", "news-fact", "idExists");
-        } else {
-            NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact);
-            return ResponseEntity
-                    .created(new URI("/newsFact/" + createdNewsFact.getId()))
-                    .headers(HeaderUtil.createAlert(applicationName,  "A news fact was created with id " + createdNewsFact.getId(), createdNewsFact.getId()))
-                    .body(createdNewsFact);
+        NewsFactDetailDto newsFact;
+        try {
+            newsFact = new ObjectMapper().readValue(newsFactJson, NewsFactDetailDto.class);
+        } catch (IOException e) {
+            throw new BadRequestAlertException("News fact data is invalid!", "news-fact", "invalidData");
         }
+        if (newsFact.getId() != null) {
+            throw new BadRequestAlertException("A news fact to create can't have an id!", "news-fact", "idExists");
+        }
+
+        //Reset the input news fact video path because browser inits with a fake value
+        newsFact.setVideoPath(null);
+
+        NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact);
+        return ResponseEntity
+                .created(new URI("/newsFact/" + createdNewsFact.getId()))
+                .headers(HeaderUtil.createAlert(applicationName, "A news fact was created with id " + createdNewsFact.getId(), createdNewsFact.getId()))
+                .body(createdNewsFact);
+
     }
 
     /**
      * {@code DELETE /newssFact/:newsFactId} : delete the news fact with id {newsFactId}.
      *
-     * @param newsFactId the news fact id to delete.
+     * @param newsFactId the news fact id to delete.videoPath = "C:\fakepath\olmap.txt"
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{newsFactId}")
     public ResponseEntity<Void> deleteNewsFact(@PathVariable String newsFactId) {
         log.debug("REST request to delete a news fact: {}", newsFactId);
         newsFactService.delete(newsFactId);
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A news fact was deleted with id " + newsFactId, newsFactId)).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "A news fact was deleted with id " + newsFactId, newsFactId)).build();
     }
 
     /**

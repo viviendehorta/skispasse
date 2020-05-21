@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static vdehorta.EntityTestUtil.*;
@@ -76,10 +78,10 @@ public class NewsFactResourceITest {
         NewsFactResource newsFactResource = new NewsFactResource(newsFactService);
 
         this.restNewsFactMockMvc = MockMvcBuilders.standaloneSetup(newsFactResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setMessageConverters(jacksonMessageConverter)
-            .build();
+                .setCustomArgumentResolvers(pageableArgumentResolver)
+                .setControllerAdvice(exceptionTranslator)
+                .setMessageConverters(jacksonMessageConverter)
+                .build();
     }
 
     @BeforeEach
@@ -100,15 +102,15 @@ public class NewsFactResourceITest {
 
         // Assert
         resultActions
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").value(hasSize(2)))
-            .andExpect(jsonPath("$[*].id").value(hasItems("news_fact_id1", "news_fact_id2")))
-            .andExpect(jsonPath("$[*].newsCategoryId").value(hasItems("newsCategoryId1", "newsCategoryId2")))
-            .andExpect(jsonPath("$[*].locationCoordinate").value(hasSize(2)))
-            .andExpect(jsonPath("$[*].locationCoordinate.x").value(hasItems(DEFAULT_LOCATION_COORDINATE_X.intValue(), DEFAULT_LOCATION_COORDINATE_X.intValue())))
-            .andExpect(jsonPath("$[*].locationCoordinate.y").value(hasItems(DEFAULT_LOCATION_COORDINATE_Y.intValue(), DEFAULT_LOCATION_COORDINATE_Y.intValue())));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").value(hasSize(2)))
+                .andExpect(jsonPath("$[*].id").value(hasItems("news_fact_id1", "news_fact_id2")))
+                .andExpect(jsonPath("$[*].newsCategoryId").value(hasItems("newsCategoryId1", "newsCategoryId2")))
+                .andExpect(jsonPath("$[*].locationCoordinate").value(hasSize(2)))
+                .andExpect(jsonPath("$[*].locationCoordinate.x").value(hasItems(DEFAULT_LOCATION_COORDINATE_X.intValue(), DEFAULT_LOCATION_COORDINATE_X.intValue())))
+                .andExpect(jsonPath("$[*].locationCoordinate.y").value(hasItems(DEFAULT_LOCATION_COORDINATE_Y.intValue(), DEFAULT_LOCATION_COORDINATE_Y.intValue())));
     }
 
     @Test
@@ -125,17 +127,17 @@ public class NewsFactResourceITest {
 
         // Assert
         resultActions
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id", is(newsFact.getId())))
-            .andExpect(jsonPath("$.address", is(newsFact.getAddress())))
-            .andExpect(jsonPath("$.city", is(newsFact.getCity())))
-            .andExpect(jsonPath("$.country", is(newsFact.getCountry())))
-            .andExpect(jsonPath("$.createdDate", is("2020-05-01")))
-            .andExpect(jsonPath("$.eventDate", is("2020-02-28")))
-            .andExpect(jsonPath("$.newsCategoryId", is(newsFact.getNewsCategoryId())))
-            .andExpect(jsonPath("$.newsCategoryLabel", is(newsFact.getNewsCategoryLabel())))
-            .andExpect(jsonPath("$.videoPath", is(newsFact.getVideoPath())));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id", is(newsFact.getId())))
+                .andExpect(jsonPath("$.address", is(newsFact.getAddress())))
+                .andExpect(jsonPath("$.city", is(newsFact.getCity())))
+                .andExpect(jsonPath("$.country", is(newsFact.getCountry())))
+                .andExpect(jsonPath("$.createdDate", is("2020-05-01")))
+                .andExpect(jsonPath("$.eventDate", is("2020-02-28")))
+                .andExpect(jsonPath("$.newsCategoryId", is(newsFact.getNewsCategoryId())))
+                .andExpect(jsonPath("$.newsCategoryLabel", is(newsFact.getNewsCategoryLabel())))
+                .andExpect(jsonPath("$.videoPath", is(newsFact.getVideoPath())));
     }
 
     @Test
@@ -154,8 +156,8 @@ public class NewsFactResourceITest {
 
         // Assert
         resultActions
-            .andExpect(status().isBadRequest())
-            .andExpect(header().string("X-skispasseApp-error", "Wrong news fact id!"));
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("X-skispasseApp-error", "Wrong news fact id!"));
     }
 
     @Test
@@ -179,11 +181,11 @@ public class NewsFactResourceITest {
 
         // Assert
         resultActions
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].id", is("news_fact_id2")))
-            .andExpect(jsonPath("$[0].newsCategoryId", is(DEFAULT_NEWS_CATEGORY_ID + 2)));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is("news_fact_id2")))
+                .andExpect(jsonPath("$[0].newsCategoryId", is(DEFAULT_NEWS_CATEGORY_ID + 2)));
     }
 
     @Test
@@ -199,12 +201,14 @@ public class NewsFactResourceITest {
 
         // Assert
         resultActions
-            .andExpect(status().isBadRequest())
-            .andExpect(header().string("X-skispasseApp-error", "Unexisting user login!"));
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("X-skispasseApp-error", "Unexisting user login!"));
     }
 
     @Test
     void createNewsFact_caseOk() throws Exception {
+
+        String videoFilePath = "skispasse.txt";
 
         // Init ClockService with a fix clock to be able to assert the date values
         LocalDateTime expectedNow = LocalDateTime.parse("2020-03-24T20:30:23");
@@ -216,37 +220,41 @@ public class NewsFactResourceITest {
 
         //Given
         NewsFactDetailDto toCreateNewsFact = new NewsFactDetailDto.Builder()
-            .address(DEFAULT_ADDRESS)
-            .city(DEFAULT_CITY)
-            .country(DEFAULT_COUNTRY)
-            .eventDate(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))
-            .locationCoordinate(new LocationCoordinate.Builder()
-                .x(DEFAULT_LOCATION_COORDINATE_X)
-                .y(DEFAULT_LOCATION_COORDINATE_Y)
-                .build())
-            .newsCategoryId(newsCategory.getId())
-            .build();
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .eventDate(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))
+                .locationCoordinate(new LocationCoordinate.Builder()
+                        .x(DEFAULT_LOCATION_COORDINATE_X)
+                        .y(DEFAULT_LOCATION_COORDINATE_Y)
+                        .build())
+                .newsCategoryId(newsCategory.getId())
+                .videoPath("/browserFakePath/" + videoFilePath)
+                .build();
+
+        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "text/plain", "video file content".getBytes());
+        String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
 
         // When: Call /newsFact controller POST method
-        ResultActions resultActions = restNewsFactMockMvc.perform(post("/newsFact")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(toCreateNewsFact)));
+        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFact")
+                .file(videoMultiPartFile)
+                .param("newsFactJson", newsFactJson));
 
         // Then
         resultActions
-            .andExpect(status().isCreated())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.address", is(DEFAULT_ADDRESS)))
-            .andExpect(jsonPath("$.city", is(DEFAULT_CITY)))
-            .andExpect(jsonPath("$.country", is(DEFAULT_COUNTRY)))
-            .andExpect(jsonPath("$.createdDate", is("2020-03-24")))
-            .andExpect(jsonPath("$.eventDate", is(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))))
-            .andExpect(jsonPath("$.id", isA(String.class)))
-            .andExpect(jsonPath("$.locationCoordinate.x", is(DEFAULT_LOCATION_COORDINATE_X.intValue())))
-            .andExpect(jsonPath("$.locationCoordinate.y", is(DEFAULT_LOCATION_COORDINATE_Y.intValue())))
-            .andExpect(jsonPath("$.newsCategoryId", is(newsCategory.getId())))
-            .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())))
-            .andExpect(jsonPath("$.videoPath", isEmptyOrNullString()));
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.address", is(DEFAULT_ADDRESS)))
+                .andExpect(jsonPath("$.city", is(DEFAULT_CITY)))
+                .andExpect(jsonPath("$.country", is(DEFAULT_COUNTRY)))
+                .andExpect(jsonPath("$.createdDate", is("2020-03-24")))
+                .andExpect(jsonPath("$.eventDate", is(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))))
+                .andExpect(jsonPath("$.id", isA(String.class)))
+                .andExpect(jsonPath("$.locationCoordinate.x", is(DEFAULT_LOCATION_COORDINATE_X.intValue())))
+                .andExpect(jsonPath("$.locationCoordinate.y", is(DEFAULT_LOCATION_COORDINATE_Y.intValue())))
+                .andExpect(jsonPath("$.newsCategoryId", is(newsCategory.getId())))
+                .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())))
+                .andExpect(jsonPath("$.videoPath", isA(String.class)));
     }
 
     @Test
@@ -258,11 +266,11 @@ public class NewsFactResourceITest {
 
         // Then
         ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFact/{id}", DEFAULT_NEWS_FACT_ID)
-            .accept(TestUtil.APPLICATION_JSON_UTF8));
+                .accept(APPLICATION_JSON_UTF8));
 
         // Assert
         resultActions
-            .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
 
         // Validate the database is empty
         List<NewsFact> newsFacts = newsFactRepository.findAll();
@@ -274,25 +282,25 @@ public class NewsFactResourceITest {
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-            .id(null)
-            .address(DEFAULT_ADDRESS)
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-            .eventDate("eventDate")
-            .city(DEFAULT_CITY)
-            .country(DEFAULT_COUNTRY)
-            .locationCoordinate(new LocationCoordinate(1L, 1L))
-            .build();
+                .id(null)
+                .address(DEFAULT_ADDRESS)
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .eventDate("eventDate")
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .build();
 
         // When
         ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
         // Then
         resultActions
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-            .andExpect(header().string("X-skispasseApp-error", "A news fact to update must have an id!"));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(header().string("X-skispasseApp-error", "A news fact to update must have an id!"));
     }
 
     @Test
@@ -300,24 +308,24 @@ public class NewsFactResourceITest {
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-            .newsCategoryId(null)
-            .address(DEFAULT_ADDRESS)
-            .city(DEFAULT_CITY)
-            .country(DEFAULT_COUNTRY)
-            .eventDate("eventDate")
-            .id(DEFAULT_NEWS_FACT_ID)
-            .locationCoordinate(new LocationCoordinate(1L, 1L))
-            .build();
+                .newsCategoryId(null)
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .build();
 
         // When
         ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
         // Then
         resultActions
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
@@ -325,24 +333,24 @@ public class NewsFactResourceITest {
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-            .eventDate(null)
-            .address(DEFAULT_ADDRESS)
-            .city(DEFAULT_CITY)
-            .country(DEFAULT_COUNTRY)
-            .id(DEFAULT_NEWS_FACT_ID)
-            .locationCoordinate(new LocationCoordinate(1L, 1L))
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-            .build();
+                .eventDate(null)
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
 
         // When
         ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
         // Then
         resultActions
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
@@ -350,24 +358,24 @@ public class NewsFactResourceITest {
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-            .address(null)
-            .city(DEFAULT_CITY)
-            .country(DEFAULT_COUNTRY)
-            .eventDate("eventDate")
-            .id(DEFAULT_NEWS_FACT_ID)
-            .locationCoordinate(new LocationCoordinate(1L, 1L))
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-            .build();
+                .address(null)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
 
         // When
         ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
         // Then
         resultActions
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
@@ -375,24 +383,24 @@ public class NewsFactResourceITest {
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-            .city(null)
-            .address(DEFAULT_ADDRESS)
-            .country(DEFAULT_COUNTRY)
-            .eventDate("eventDate")
-            .id(DEFAULT_NEWS_FACT_ID)
-            .locationCoordinate(new LocationCoordinate(1L, 1L))
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-            .build();
+                .city(null)
+                .address(DEFAULT_ADDRESS)
+                .country(DEFAULT_COUNTRY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
 
         // When
         ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
         // Then
         resultActions
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
@@ -400,24 +408,24 @@ public class NewsFactResourceITest {
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-            .country(null)
-            .address(DEFAULT_ADDRESS)
-            .city(DEFAULT_CITY)
-            .eventDate("eventDate")
-            .id(DEFAULT_NEWS_FACT_ID)
-            .locationCoordinate(new LocationCoordinate(1L, 1L))
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-            .build();
+                .country(null)
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
 
         // When
         ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
         // Then
         resultActions
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
@@ -425,24 +433,24 @@ public class NewsFactResourceITest {
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-            .locationCoordinate(null)
-            .address(DEFAULT_ADDRESS)
-            .city(DEFAULT_CITY)
-            .country(DEFAULT_COUNTRY)
-            .eventDate("eventDate")
-            .id(DEFAULT_NEWS_FACT_ID)
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-            .build();
+                .locationCoordinate(null)
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
 
         // When
         ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
         // Then
         resultActions
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
@@ -470,34 +478,34 @@ public class NewsFactResourceITest {
 
         //Given
         final NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
-            .address(newAddress)
-            .city(newCity)
-            .country(newCountry)
-            .eventDate(todayString)
-            .id(DEFAULT_NEWS_FACT_ID)
-            .locationCoordinate(newLocationCoordinate)
-            .newsCategoryId(newNewsCategory.getId())
-            .build();
+                .address(newAddress)
+                .city(newCity)
+                .country(newCountry)
+                .eventDate(todayString)
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(newLocationCoordinate)
+                .newsCategoryId(newNewsCategory.getId())
+                .build();
 
         // When
         ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(toUpdateNewsFact)));
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(toUpdateNewsFact)));
 
         // Then
         resultActions
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.address", is(newAddress)))
-            .andExpect(jsonPath("$.city", is(newCity)))
-            .andExpect(jsonPath("$.country", is(newCountry)))
-            .andExpect(jsonPath("$.createdDate", is(yesterdayString)))
-            .andExpect(jsonPath("$.eventDate", is(todayString)))
-            .andExpect(jsonPath("$.id", is(DEFAULT_NEWS_FACT_ID)))
-            .andExpect(jsonPath("$.locationCoordinate.x", is(newLocationCoordinate.getX().intValue())))
-            .andExpect(jsonPath("$.locationCoordinate.y", is(newLocationCoordinate.getY().intValue())))
-            .andExpect(jsonPath("$.newsCategoryId", is(newNewsCategory.getId())))
-            .andExpect(jsonPath("$.newsCategoryLabel", is(newNewsCategory.getLabel())));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.address", is(newAddress)))
+                .andExpect(jsonPath("$.city", is(newCity)))
+                .andExpect(jsonPath("$.country", is(newCountry)))
+                .andExpect(jsonPath("$.createdDate", is(yesterdayString)))
+                .andExpect(jsonPath("$.eventDate", is(todayString)))
+                .andExpect(jsonPath("$.id", is(DEFAULT_NEWS_FACT_ID)))
+                .andExpect(jsonPath("$.locationCoordinate.x", is(newLocationCoordinate.getX().intValue())))
+                .andExpect(jsonPath("$.locationCoordinate.y", is(newLocationCoordinate.getY().intValue())))
+                .andExpect(jsonPath("$.newsCategoryId", is(newNewsCategory.getId())))
+                .andExpect(jsonPath("$.newsCategoryLabel", is(newNewsCategory.getLabel())));
 
         // Validate the news fact in database
         List<NewsFact> newsFacts = newsFactRepository.findAll();

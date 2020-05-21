@@ -34,6 +34,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -172,7 +173,7 @@ public class AccountResourceITest {
 
         restMvc.perform(
             post("/api/account")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(userDTO)))
             .andExpect(status().isOk());
 
@@ -210,7 +211,7 @@ public class AccountResourceITest {
 
         restMvc.perform(
             post("/api/account")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(userDTO)))
             .andExpect(status().isBadRequest());
 
@@ -248,7 +249,7 @@ public class AccountResourceITest {
 
         restMvc.perform(
             post("/api/account")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(userDTO)))
             .andExpect(status().isBadRequest());
 
@@ -279,7 +280,7 @@ public class AccountResourceITest {
 
         restMvc.perform(
             post("/api/account")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(userDTO)))
             .andExpect(status().isOk());
 
@@ -298,7 +299,7 @@ public class AccountResourceITest {
         userRepository.save(user);
 
         restMvc.perform(post("/api/account/change-password")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .contentType(APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO("1"+currentPassword, "new password"))))
             .andExpect(status().isBadRequest());
 
@@ -318,7 +319,7 @@ public class AccountResourceITest {
         userRepository.save(user);
 
         restMvc.perform(post("/api/account/change-password")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .contentType(APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, "new password"))))
             .andExpect(status().isOk());
 
@@ -339,7 +340,7 @@ public class AccountResourceITest {
         String newPassword = RandomStringUtils.random(ManagedUserVM.PASSWORD_MIN_LENGTH - 1);
 
         restMvc.perform(post("/api/account/change-password")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .contentType(APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
             .andExpect(status().isBadRequest());
 
@@ -360,7 +361,7 @@ public class AccountResourceITest {
         String newPassword = RandomStringUtils.random(ManagedUserVM.PASSWORD_MAX_LENGTH + 1);
 
         restMvc.perform(post("/api/account/change-password")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .contentType(APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
             .andExpect(status().isBadRequest());
 
@@ -379,7 +380,7 @@ public class AccountResourceITest {
         userRepository.save(user);
 
         restMvc.perform(post("/api/account/change-password")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .contentType(APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, ""))))
             .andExpect(status().isBadRequest());
 

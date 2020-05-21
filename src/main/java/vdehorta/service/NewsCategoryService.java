@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service class for managing news facts.
+ * Service class for managing news categories.
  */
 @Service
 public class NewsCategoryService {
