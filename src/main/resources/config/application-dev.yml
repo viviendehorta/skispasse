@@ -15,6 +15,10 @@ logging:
 spring:
   profiles:
     active: dev
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: skispasse
   devtools:
     restart:
       enabled: true
@@ -24,10 +28,6 @@ spring:
   jackson:
     serialization:
       indent-output: true
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017
-      database: skispasse
 server:
   port: 8080
 

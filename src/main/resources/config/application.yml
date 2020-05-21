@@ -26,6 +26,9 @@ spring:
   output:
     ansi:
       console-available: true
+  thymeleaf:
+    enabled: false
+    check-template-location: false
 
 server:
   servlet:
