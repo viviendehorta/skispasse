@@ -2,7 +2,7 @@ package vdehorta.service.errors;
 
 public class WrongNewsCategoryIdException extends RuntimeException {
 
-    public WrongNewsCategoryIdException() {
-        super("Wrong news category id!");
+    public WrongNewsCategoryIdException(String categoryId) {
+        super(String.format("Wrong news category id '{}' !", categoryId));
     }
 }
