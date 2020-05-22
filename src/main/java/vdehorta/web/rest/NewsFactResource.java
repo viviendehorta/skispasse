@@ -83,7 +83,7 @@ public class NewsFactResource {
      * @throws URISyntaxException
      */
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<NewsFactDetailDto> createNewsFact(@RequestParam("videoFile") MultipartFile file, @RequestParam("newsFactJson") String newsFactJson) throws URISyntaxException {
+    public ResponseEntity<NewsFactDetailDto> createNewsFact(@RequestParam("videoFile") MultipartFile videoFile, @RequestParam("newsFactJson") String newsFactJson) throws URISyntaxException {
         log.debug("REST request to create a news fact : {}", newsFactJson);
 
         NewsFactDetailDto newsFact;
@@ -99,7 +99,7 @@ public class NewsFactResource {
         //Reset the input news fact video path because browser inits with a fake value
         newsFact.setVideoPath(null);
 
-        NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact);
+        NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact, videoFile);
         return ResponseEntity
                 .created(new URI("/newsFact/" + createdNewsFact.getId()))
                 .headers(HeaderUtil.createAlert(applicationName, "A news fact was created with id " + createdNewsFact.getId(), createdNewsFact.getId()))

@@ -37,7 +37,7 @@ public class NewsCategoryService {
     public NewsCategoryDto getById(String id) {
         log.debug("Getting news category  with id {}", id);
         Optional<NewsCategory> newsCategoryOptional = newsCategoryRepository.findById(id);
-        NewsCategory newsCategory = newsCategoryOptional.orElseThrow(() -> new WrongNewsCategoryIdException());
+        NewsCategory newsCategory = newsCategoryOptional.orElseThrow(() -> new WrongNewsCategoryIdException(id));
         return newsCategoryMapper.newsCategoryToNewsCategoryDto(newsCategory);
     }
 }

@@ -43,12 +43,15 @@ class NewsFactServiceTest {
 
     private ClockService clockService = new ClockService();
 
+    private VideoFileService videoFileServiceMock;
+
     @BeforeEach
     public void setup() {
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
         userServiceMock = Mockito.mock(UserService.class);
         newsCategoryServiceMock = Mockito.mock(NewsCategoryService.class);
-        newsFactService = new NewsFactService(newsFactRepositoryMock, newsFactMapper, userServiceMock, newsCategoryServiceMock, clockService);
+        videoFileServiceMock = Mockito.mock(VideoFileService.class);
+        newsFactService = new NewsFactService(newsFactRepositoryMock, newsFactMapper, userServiceMock, newsCategoryServiceMock, clockService, videoFileServiceMock);
     }
 
     @Test
@@ -189,7 +192,7 @@ class NewsFactServiceTest {
         String unexistingCategoryId = "unexisting";
 
         //Given
-        when(newsCategoryServiceMock.getById(unexistingCategoryId)).thenThrow(new WrongNewsCategoryIdException());
+        when(newsCategoryServiceMock.getById(unexistingCategoryId)).thenThrow(new WrongNewsCategoryIdException(unexistingCategoryId));
         NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
             .newsCategoryId(unexistingCategoryId)
             .id("id")
