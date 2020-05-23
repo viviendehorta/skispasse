@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import vdehorta.service.AuthenticationRequiredException;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -34,6 +35,15 @@ public final class SecurityUtils {
                 }
                 return null;
             });
+    }
+
+    /**
+     * Get the login of the current user or throw error if there is nobody connected.
+     * @return the login of the current user
+     * @throws AuthenticationRequiredException if there is nobody connected
+     */
+    public static String getCurrentUserLoginOrThrowError() throws AuthenticationRequiredException {
+        return getCurrentUserLogin().orElseThrow(AuthenticationRequiredException::new);
     }
 
     /**

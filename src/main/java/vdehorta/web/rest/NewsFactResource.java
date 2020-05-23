@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.service.NewsFactService;
@@ -32,12 +33,12 @@ public class NewsFactResource {
 
     private final Logger log = LoggerFactory.getLogger(NewsFactResource.class);
 
-    @Value("${skispasse.clientApp.name}")
     private String applicationName;
 
     private NewsFactService newsFactService;
 
-    public NewsFactResource(NewsFactService newsFactService) {
+    public NewsFactResource(ApplicationProperties applicationProperties, NewsFactService newsFactService) {
+        this.applicationName = applicationProperties.getClientAppName();
         this.newsFactService = newsFactService;
     }
 

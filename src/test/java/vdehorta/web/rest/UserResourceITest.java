@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.dto.UserDTO;
@@ -44,6 +45,9 @@ import static vdehorta.EntityTestUtil.*;
 public class UserResourceITest {
 
     @Autowired
+    private ApplicationProperties applicationProperties;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -71,7 +75,7 @@ public class UserResourceITest {
 
     @BeforeEach
     public void setup() {
-        UserResource userResource = new UserResource(userService, userRepository);
+        UserResource userResource = new UserResource(applicationProperties, userService, userRepository);
 
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)

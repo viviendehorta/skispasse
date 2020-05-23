@@ -53,7 +53,7 @@ server:
 # Skispasse Application specific properties
 # ===================================================================
 
-skispasse:
+application:
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
@@ -61,4 +61,7 @@ skispasse:
       host: localhost
       port: 5000
       queue-size: 512
+  mongo:
+    grid-fs:
+      newsfact-video-bucket: newsFactVideo
 
