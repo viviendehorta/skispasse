@@ -79,6 +79,9 @@ public class NewsFactService {
         videoFileService.save(videoFile);
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
+
+        /* TODO replace by SecurityUtils.getCurrentUserLoginOrThrowError() mais changer le code
+             de migration qui n'est pas authentifié d'abord */
         newsFact.setOwner(SecurityUtils.getCurrentUserLogin().orElse(Constants.SYSTEM_ACCOUNT));
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
 

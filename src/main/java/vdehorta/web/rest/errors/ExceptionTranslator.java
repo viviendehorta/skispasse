@@ -1,6 +1,5 @@
 package vdehorta.web.rest.errors;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,6 +14,7 @@ import org.zalando.problem.Status;
 import org.zalando.problem.spring.web.advice.ProblemHandling;
 import org.zalando.problem.spring.web.advice.security.SecurityAdviceTrait;
 import org.zalando.problem.violations.ConstraintViolationProblem;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.service.errors.LoginAlreadyUsedException;
 import vdehorta.web.rest.util.HeaderUtil;
 
@@ -37,8 +37,11 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     private static final String PATH_KEY = "path";
     private static final String VIOLATIONS_KEY = "violations";
 
-    @Value("${skispasse.clientApp.name}")
-    private String applicationName;
+    private String clientAppName;
+
+    public ExceptionTranslator(ApplicationProperties applicationProperties) {
+        this.clientAppName = applicationProperties.getClientAppName();
+    }
 
     /**
      * Post-process the Problem payload to add the message key for the front-end if needed.
@@ -104,13 +107,13 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     @ExceptionHandler
     public ResponseEntity<Problem> handleEmailAlreadyUsedException(vdehorta.service.errors.EmailAlreadyUsedException ex, NativeWebRequest request) {
         EmailAlreadyUsedException problem = new EmailAlreadyUsedException();
-        return create(problem, request, HeaderUtil.createFailureAlert(applicationName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
+        return create(problem, request, HeaderUtil.createFailureAlert(clientAppName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleUsernameAlreadyUsedException(LoginAlreadyUsedException ex, NativeWebRequest request) {
         vdehorta.web.rest.errors.LoginAlreadyUsedException problem = new vdehorta.web.rest.errors.LoginAlreadyUsedException();
-        return create(problem, request, HeaderUtil.createFailureAlert(applicationName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
+        return create(problem, request, HeaderUtil.createFailureAlert(clientAppName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
     }
 
     @ExceptionHandler
@@ -119,7 +122,7 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
     @ExceptionHandler
     public ResponseEntity<Problem> handleBadRequestAlertException(BadRequestAlertException ex, NativeWebRequest request) {
-        return create(ex, request, HeaderUtil.createFailureAlert(applicationName, false, ex.getEntityName(), ex.getErrorKey(), ex.getMessage()));
+        return create(ex, request, HeaderUtil.createFailureAlert(clientAppName, false, ex.getEntityName(), ex.getErrorKey(), ex.getMessage()));
     }
 
     @ExceptionHandler
@@ -134,12 +137,12 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     @ExceptionHandler
     public ResponseEntity<Problem> handleWrongNewsFactIdException(vdehorta.service.errors.WrongNewsFactIdException ex, NativeWebRequest request) {
         WrongNewsFactIdException problem = new WrongNewsFactIdException();
-        return create(problem, request, HeaderUtil.createFailureAlert(applicationName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
+        return create(problem, request, HeaderUtil.createFailureAlert(clientAppName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleUnexistingLoginException(vdehorta.service.errors.UnexistingLoginException ex, NativeWebRequest request) {
         UnexistingLoginException problem = new UnexistingLoginException();
-        return create(problem, request, HeaderUtil.createFailureAlert(applicationName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
+        return create(problem, request, HeaderUtil.createFailureAlert(clientAppName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
     }
 }

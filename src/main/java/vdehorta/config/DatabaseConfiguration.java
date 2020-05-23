@@ -9,9 +9,12 @@ import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.core.mapping.event.ValidatingMongoEventListener;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
@@ -25,6 +28,17 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class DatabaseConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
+
+    private final ApplicationProperties applicationProperties;
+
+    private MongoDbFactory mongoDbFactory;
+    private MongoConverter mongoConverter;
+
+    public DatabaseConfiguration(MongoDbFactory mongoDbFactory, MongoConverter mongoConverter, ApplicationProperties applicationProperties) {
+        this.mongoDbFactory = mongoDbFactory;
+        this.mongoConverter = mongoConverter;
+        this.applicationProperties = applicationProperties;
+    }
 
     @Bean
     public ValidatingMongoEventListener validatingMongoEventListener() {
@@ -47,6 +61,13 @@ public class DatabaseConfiguration {
         mongobee.setEnabled(true);
         return mongobee;
     }
+
+    @Bean
+    public GridFsTemplate gridFsTemplate() {
+        GridFsTemplate gridFsTemplate = new GridFsTemplate(
+                mongoDbFactory,
+                mongoConverter,
+                applicationProperties.getMongo().getGridFs().getNewsFactVideoBucket());
+        return gridFsTemplate;
+    }
 }
-
-

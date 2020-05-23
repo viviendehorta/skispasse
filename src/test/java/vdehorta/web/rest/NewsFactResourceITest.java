@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.domain.LocationCoordinate;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
@@ -42,6 +43,9 @@ import static vdehorta.EntityTestUtil.*;
  */
 @SpringBootTest(classes = SkispasseApp.class)
 public class NewsFactResourceITest {
+
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
     @Autowired
     private NewsFactRepository newsFactRepository;
@@ -75,7 +79,7 @@ public class NewsFactResourceITest {
 
     @BeforeEach
     public void setup() {
-        NewsFactResource newsFactResource = new NewsFactResource(newsFactService);
+        NewsFactResource newsFactResource = new NewsFactResource(applicationProperties, newsFactService);
 
         this.restNewsFactMockMvc = MockMvcBuilders.standaloneSetup(newsFactResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)

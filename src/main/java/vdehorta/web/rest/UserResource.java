@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.config.Constants;
 import vdehorta.domain.User;
 import vdehorta.dto.UserDTO;
@@ -60,15 +61,14 @@ public class UserResource {
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
-    @Value("${skispasse.clientApp.name}")
-    private String applicationName;
+    private String clientAppName;
 
     private final UserService userService;
 
     private final UserRepository userRepository;
 
-    public UserResource(UserService userService, UserRepository userRepository) {
-
+    public UserResource(ApplicationProperties applicationProperties, UserService userService, UserRepository userRepository) {
+        this.clientAppName = applicationProperties.getClientAppName();
         this.userService = userService;
         this.userRepository = userRepository;
     }
@@ -100,7 +100,7 @@ public class UserResource {
         } else {
             User newUser = userService.createUser(userDTO);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlert(applicationName,  "A user was created with id " + newUser.getLogin(), newUser.getLogin()))
+                .headers(HeaderUtil.createAlert(clientAppName,  "A user was created with id " + newUser.getLogin(), newUser.getLogin()))
                 .body(newUser);
         }
     }
@@ -128,7 +128,7 @@ public class UserResource {
         Optional<UserDTO> updatedUser = userService.updateUser(userDTO);
 
         return ResponseUtil.wrapOrNotFound(updatedUser,
-                HeaderUtil.createAlert(applicationName, "A user was updated with id " + userDTO.getLogin(), userDTO.getLogin()));
+                HeaderUtil.createAlert(clientAppName, "A user was updated with id " + userDTO.getLogin(), userDTO.getLogin()));
     }
 
     /**
@@ -179,6 +179,6 @@ public class UserResource {
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A user was deleted with id " + login, login)).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(clientAppName,  "A user was deleted with id " + login, login)).build();
     }
 }
