@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -210,6 +211,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
     void createNewsFact_caseOk() throws Exception {
 
         String videoFilePath = "skispasse.txt";
@@ -218,7 +220,7 @@ public class NewsFactResourceITest {
         LocalDateTime expectedNow = LocalDateTime.parse("2020-03-24T20:30:23");
         clockService.setClock(Clock.fixed(expectedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
 
-        // Nothing to initialize in database
+        // Initialize database
         NewsCategory newsCategory = createDefaultNewsCategory1();
         newsCategoryRepository.save(newsCategory);
 

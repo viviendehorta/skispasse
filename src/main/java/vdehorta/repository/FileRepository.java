@@ -16,7 +16,7 @@ public class FileRepository {
         this.gridFsTemplate = gridFsTemplate;
     }
 
-    public String saveFile(byte[] bytes, String filename, String contentType) {
+    public String saveVideoFile(byte[] bytes, String filename, String contentType) {
         InputStream inputStream = new ByteArrayInputStream(bytes);
         return gridFsTemplate.store(inputStream, filename, contentType, null).toString();
     }

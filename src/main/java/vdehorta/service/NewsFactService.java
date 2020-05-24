@@ -76,9 +76,10 @@ public class NewsFactService {
     public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, MultipartFile videoFile) {
         log.debug("Creating  news fact...");
 
-        videoFileService.save(videoFile);
-
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
+
+        String videoFileRef = videoFileService.save(videoFile);
+        newsFact.setVideoPath(videoFileRef);
 
         /* TODO replace by SecurityUtils.getCurrentUserLoginOrThrowError() mais changer le code
              de migration qui n'est pas authentifié d'abord */
