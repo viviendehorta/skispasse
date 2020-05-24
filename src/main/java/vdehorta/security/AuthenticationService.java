@@ -5,25 +5,27 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 import vdehorta.service.AuthenticationRequiredException;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * Utility class for Spring Security.
+ * Utility Service for Spring Security.
+ *
+ * Should be used by all other services instead of calling SecurityContextHolder static methods.
+ * This allows mocking of security methods in unit tests.
  */
-public final class SecurityUtils {
-
-    private SecurityUtils() {
-    }
+@Service
+public class AuthenticationService {
 
     /**
      * Get the login of the current user.
      *
      * @return the login of the current user.
      */
-    public static Optional<String> getCurrentUserLogin() {
+    public Optional<String> getCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(securityContext.getAuthentication())
             .map(authentication -> {
@@ -42,7 +44,7 @@ public final class SecurityUtils {
      * @return the login of the current user
      * @throws AuthenticationRequiredException if there is nobody connected
      */
-    public static String getCurrentUserLoginOrThrowError() throws AuthenticationRequiredException {
+    public String getCurrentUserLoginOrThrowError() throws AuthenticationRequiredException {
         return getCurrentUserLogin().orElseThrow(AuthenticationRequiredException::new);
     }
 
@@ -51,7 +53,7 @@ public final class SecurityUtils {
      *
      * @return true if the user is authenticated, false otherwise.
      */
-    public static boolean isAuthenticated() {
+    public boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null &&
             getAuthorities(authentication).noneMatch(AuthoritiesConstants.ANONYMOUS::equals);
@@ -65,13 +67,13 @@ public final class SecurityUtils {
      * @param authority the authority to check.
      * @return true if the current user has the authority, false otherwise.
      */
-    public static boolean isCurrentUserInRole(String authority) {
+    public boolean isCurrentUserInRole(String authority) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null &&
             getAuthorities(authentication).anyMatch(authority::equals);
     }
 
-    private static Stream<String> getAuthorities(Authentication authentication) {
+    private Stream<String> getAuthorities(Authentication authentication) {
         return authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority);
     }
