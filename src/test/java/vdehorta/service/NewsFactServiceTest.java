@@ -13,6 +13,7 @@ import vdehorta.domain.User;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
+import vdehorta.security.AuthenticationService;
 import vdehorta.service.errors.UnexistingLoginException;
 import vdehorta.service.errors.WrongNewsCategoryIdException;
 import vdehorta.service.errors.WrongNewsFactIdException;
@@ -45,13 +46,23 @@ class NewsFactServiceTest {
 
     private VideoFileService videoFileServiceMock;
 
+    private AuthenticationService authenticationServiceMock;
+
     @BeforeEach
     public void setup() {
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
         userServiceMock = Mockito.mock(UserService.class);
         newsCategoryServiceMock = Mockito.mock(NewsCategoryService.class);
         videoFileServiceMock = Mockito.mock(VideoFileService.class);
-        newsFactService = new NewsFactService(newsFactRepositoryMock, newsFactMapper, userServiceMock, newsCategoryServiceMock, clockService, videoFileServiceMock);
+        authenticationServiceMock = Mockito.mock(AuthenticationService.class);
+        newsFactService = new NewsFactService(
+                newsFactRepositoryMock,
+                newsFactMapper,
+                userServiceMock,
+                newsCategoryServiceMock,
+                clockService,
+                videoFileServiceMock,
+                authenticationServiceMock);
     }
 
     @Test

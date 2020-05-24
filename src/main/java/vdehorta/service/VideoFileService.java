@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vdehorta.repository.FileRepository;
-import vdehorta.security.SecurityUtils;
+import vdehorta.security.AuthenticationService;
 import vdehorta.service.errors.UnreadableFileContentException;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
 import vdehorta.service.errors.VideoFileTooLargeException;
@@ -23,22 +23,19 @@ public class VideoFileService {
     private final Logger log = LoggerFactory.getLogger(VideoFileService.class);
 
     protected static final long MAX_FILE_SIZE_IN_BYTE = 1024L * 1024;
-
     protected static DateTimeFormatter COMPACT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:MM:ss");
 
     private FileRepository fileRepository;
-
     private ClockService clockService;
-
-    private UserService userService;
+    private AuthenticationService authenticationService;
 
     public VideoFileService(
             FileRepository videoFileRepository,
             ClockService clockService,
-            UserService userService) {
+            AuthenticationService authenticationService) {
         this.fileRepository = videoFileRepository;
         this.clockService = clockService;
-        this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     public String save(MultipartFile file) throws UnreadableFileContentException {
@@ -65,7 +62,7 @@ public class VideoFileService {
 
     private String generateUniqueFilename(ContentTypeEnum contentTypeEnum) {
         String dateString = COMPACT_DATE_TIME_FORMATTER.format(clockService.now());
-        String userLogin = SecurityUtils.getCurrentUserLoginOrThrowError();
+        String userLogin = authenticationService.getCurrentUserLoginOrThrowError();
         return userLogin + "_" + dateString + "." + contentTypeEnum.getExtension();
     }
 

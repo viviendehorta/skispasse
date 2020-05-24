@@ -21,6 +21,7 @@ import vdehorta.dto.PasswordChangeDTO;
 import vdehorta.dto.UserDTO;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
+import vdehorta.security.AuthenticationService;
 import vdehorta.security.AuthoritiesConstants;
 import vdehorta.service.ClockService;
 import vdehorta.service.UserService;
@@ -58,6 +59,9 @@ public class AccountResourceITest {
     private ClockService clockService;
 
     @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -78,10 +82,10 @@ public class AccountResourceITest {
         userRepository.deleteAll();
         MockitoAnnotations.initMocks(this);
         AccountResource accountResource =
-            new AccountResource(userRepository, userService);
+            new AccountResource(userRepository, userService, authenticationService);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService);
+            new AccountResource(userRepository, mockUserService, authenticationService);
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource)
             .setMessageConverters(httpMessageConverters)
             .setControllerAdvice(exceptionTranslator)

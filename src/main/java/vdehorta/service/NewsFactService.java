@@ -13,7 +13,7 @@ import vdehorta.dto.NewsCategoryDto;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
-import vdehorta.security.SecurityUtils;
+import vdehorta.security.AuthenticationService;
 import vdehorta.service.errors.UnexistingLoginException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
@@ -39,19 +39,22 @@ public class NewsFactService {
     private final NewsCategoryService newsCategoryService;
     private final ClockService clockService;
     private final VideoFileService videoFileService;
+    private final AuthenticationService authenticationService;
 
     public NewsFactService(NewsFactRepository newsFactRepository,
                            NewsFactMapper newsFactMapper,
                            UserService userService,
                            NewsCategoryService newsCategoryService,
                            ClockService clockService,
-                           VideoFileService videoFileService) {
+                           VideoFileService videoFileService,
+                           AuthenticationService authenticationService) {
         this.newsFactRepository = newsFactRepository;
         this.newsFactMapper = newsFactMapper;
         this.userService = userService;
         this.newsCategoryService = newsCategoryService;
         this.clockService = clockService;
         this.videoFileService = videoFileService;
+        this.authenticationService = authenticationService;
     }
 
     public List<NewsFactNoDetailDto> getAll() {
@@ -83,7 +86,7 @@ public class NewsFactService {
 
         /* TODO replace by SecurityUtils.getCurrentUserLoginOrThrowError() mais changer le code
              de migration qui n'est pas authentifié d'abord */
-        newsFact.setOwner(SecurityUtils.getCurrentUserLogin().orElse(Constants.SYSTEM_ACCOUNT));
+        newsFact.setOwner(authenticationService.getCurrentUserLogin().orElse(Constants.SYSTEM_ACCOUNT));
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
 
         LocalDateTime now = clockService.now();
