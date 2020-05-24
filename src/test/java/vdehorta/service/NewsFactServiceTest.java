@@ -13,7 +13,7 @@ import vdehorta.domain.User;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
-import vdehorta.security.AuthenticationService;
+import vdehorta.security.RoleEnum;
 import vdehorta.service.errors.UnexistingLoginException;
 import vdehorta.service.errors.WrongNewsCategoryIdException;
 import vdehorta.service.errors.WrongNewsFactIdException;
@@ -29,32 +29,27 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static vdehorta.EntityTestUtil.DEFAULT_DATE_FORMATTER;
+import static vdehorta.security.RoleEnum.ADMIN;
+import static vdehorta.security.RoleEnum.USER;
 
-class NewsFactServiceTest {
+class NewsFactServiceTest extends AbstractMockedAuthenticationTest {
 
     private NewsFactService newsFactService;
-
     private NewsFactRepository newsFactRepositoryMock;
-
     private UserService userServiceMock;
-
     private NewsCategoryService newsCategoryServiceMock;
-
     private NewsFactMapper newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
-
     private ClockService clockService = new ClockService();
 
     private VideoFileService videoFileServiceMock;
 
-    private AuthenticationService authenticationServiceMock;
-
     @BeforeEach
     public void setup() {
+        super.setup();
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
         userServiceMock = Mockito.mock(UserService.class);
         newsCategoryServiceMock = Mockito.mock(NewsCategoryService.class);
         videoFileServiceMock = Mockito.mock(VideoFileService.class);
-        authenticationServiceMock = Mockito.mock(AuthenticationService.class);
         newsFactService = new NewsFactService(
                 newsFactRepositoryMock,
                 newsFactMapper,
@@ -212,5 +207,36 @@ class NewsFactServiceTest {
 
         //Assert-Thrown
         assertThatThrownBy(() -> newsFactService.update(toUpdateNewsFact)).isInstanceOf(WrongNewsCategoryIdException.class);
+    }
+
+    @Test
+    void create_shouldThrowErrorForNoneAuthenticatedUsers() {
+        //None authenticated user
+        //Anonymous is never used for real by the app but just use it here for understanding that all 'true' roles will throw exception
+        super.mockAuthenticatedRole(RoleEnum.ANONYMOUS);
+        assertThatThrownBy(() -> {
+            //Give null values because error should be thrown before reaching access to the parameters
+            newsFactService.create(null, null);
+        }).isInstanceOf(AuthenticationRequiredException.class);
+    }
+
+    @Test
+    void create_shouldThrowErrorForOnlyUserRole() {
+        //USER
+        super.mockAuthenticatedRole(USER);
+        assertThatThrownBy(() -> {
+            //Give null values because error should be thrown before reaching access to the parameters
+            newsFactService.create(null, null);
+        }).isInstanceOf(AuthenticationRequiredException.class);
+    }
+
+    @Test
+    void create_shouldThrowErrorForOnlyAdminRole() {
+        //ADMIN
+        super.mockAuthenticatedRole(ADMIN);
+        assertThatThrownBy(() -> {
+            //Give null values because error should be thrown before reaching access to the parameters
+            newsFactService.create(null, null);
+        }).isInstanceOf(AuthenticationRequiredException.class);
     }
 }

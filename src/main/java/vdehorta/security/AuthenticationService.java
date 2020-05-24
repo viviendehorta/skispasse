@@ -49,33 +49,27 @@ public class AuthenticationService {
     }
 
     /**
-     * Check if a user is authenticated.
-     *
-     * @return true if the user is authenticated, false otherwise.
-     */
-    public boolean isAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null &&
-            getAuthorities(authentication).noneMatch(AuthoritiesConstants.ANONYMOUS::equals);
-    }
-
-    /**
-     * If the current user has a specific authority (security role).
+     * If the current user has a specific role (security role).
      * <p>
      * The name of this method comes from the {@code isUserInRole()} method in the Servlet API.
      *
-     * @param authority the authority to check.
-     * @return true if the current user has the authority, false otherwise.
+     * @param role the role to check.
+     * @return true if the current user has the role, false otherwise.
      */
-    public boolean isCurrentUserInRole(String authority) {
+    protected boolean isCurrentUserInRole(RoleEnum role) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null &&
-            getAuthorities(authentication).anyMatch(authority::equals);
+            getAuthorities(authentication).anyMatch(role.getValue()::equals);
+    }
+
+    public void assertIsAuthenticatedRole(RoleEnum requiredRole) throws AuthenticationRequiredException {
+        if (!isCurrentUserInRole(requiredRole)) {
+            throw new AuthenticationRequiredException(requiredRole);
+        }
     }
 
     private Stream<String> getAuthorities(Authentication authentication) {
         return authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority);
     }
-
 }

@@ -18,7 +18,7 @@ import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.dto.UserDTO;
 import vdehorta.repository.UserRepository;
-import vdehorta.security.AuthoritiesConstants;
+import vdehorta.security.RoleEnum;
 import vdehorta.service.ClockService;
 import vdehorta.service.UserService;
 import vdehorta.service.mapper.UserMapper;
@@ -104,7 +104,7 @@ public class UserResourceITest {
         managedUserVM.setActivated(true);
         managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
 
         //Then
         ResultActions resultActions = restUserMockMvc.perform(post("/api/users")
@@ -141,7 +141,7 @@ public class UserResourceITest {
         managedUserVM.setActivated(true);
         managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserMockMvc.perform(post("/api/users")
@@ -169,7 +169,7 @@ public class UserResourceITest {
         managedUserVM.setActivated(true);
         managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
 
         // Create the User
         restUserMockMvc.perform(post("/api/users")
@@ -197,7 +197,7 @@ public class UserResourceITest {
         managedUserVM.setActivated(true);
         managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
 
         // Create the User
         ResultActions resultActions = restUserMockMvc.perform(post("/api/users")
@@ -278,7 +278,7 @@ public class UserResourceITest {
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
         managedUserVM.setLastModifiedDate(updatedUser.getLastModifiedDate());
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
 
         restUserMockMvc.perform(put("/api/users")
             .contentType(APPLICATION_JSON_UTF8)
@@ -319,7 +319,7 @@ public class UserResourceITest {
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
         managedUserVM.setLastModifiedDate(updatedUser.getLastModifiedDate());
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
 
         restUserMockMvc.perform(put("/api/users")
             .contentType(APPLICATION_JSON_UTF8)
@@ -371,7 +371,7 @@ public class UserResourceITest {
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
         managedUserVM.setLastModifiedDate(updatedUser.getLastModifiedDate());
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
 
         restUserMockMvc.perform(put("/api/users")
             .contentType(APPLICATION_JSON_UTF8)
@@ -412,7 +412,7 @@ public class UserResourceITest {
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
         managedUserVM.setLastModifiedDate(updatedUser.getLastModifiedDate());
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
 
         restUserMockMvc.perform(put("/api/users")
             .contentType(APPLICATION_JSON_UTF8)
@@ -444,7 +444,7 @@ public class UserResourceITest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").value(hasItems(AuthoritiesConstants.USER, AuthoritiesConstants.ADMIN)));
+            .andExpect(jsonPath("$").value(hasItems(RoleEnum.USER.getValue(), RoleEnum.ADMIN.getValue())));
     }
 
     @Test
@@ -474,7 +474,7 @@ public class UserResourceITest {
         userDTO.setLangKey(DEFAULT_LANGKEY);
         userDTO.setCreatedBy(DEFAULT_LOGIN);
         userDTO.setLastModifiedBy(DEFAULT_LOGIN);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        userDTO.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
         userDTO.setCreatedDate(DEFAULT_CREATED_DATE);
         userDTO.setLastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
 
@@ -491,7 +491,7 @@ public class UserResourceITest {
         assertThat(user.getCreatedDate()).isNotNull();
         assertThat(user.getLastModifiedBy()).isNull();
         assertThat(user.getLastModifiedDate()).isNotNull();
-        assertThat(user.getAuthorities()).extracting("name").containsExactly(AuthoritiesConstants.USER);
+        assertThat(user.getAuthorities()).extracting("name").containsExactly(RoleEnum.USER.getValue());
     }
 
     @Test
@@ -503,7 +503,7 @@ public class UserResourceITest {
         user.setLastModifiedDate(clockService.now());
         Set<Authority> authorities = new HashSet<>();
         Authority authority = new Authority();
-        authority.setName(AuthoritiesConstants.USER);
+        authority.setName(RoleEnum.USER.getValue());
         authorities.add(authority);
         user.setAuthorities(authorities);
 
@@ -521,7 +521,7 @@ public class UserResourceITest {
         assertThat(userDTO.getCreatedDate()).isEqualTo(user.getCreatedDate());
         assertThat(userDTO.getLastModifiedBy()).isEqualTo(DEFAULT_LOGIN);
         assertThat(userDTO.getLastModifiedDate()).isEqualTo(user.getLastModifiedDate());
-        assertThat(userDTO.getAuthorities()).containsExactly(AuthoritiesConstants.USER);
+        assertThat(userDTO.getAuthorities()).containsExactly(RoleEnum.USER.getValue());
         assertThat(userDTO.toString()).isNotNull();
     }
 
@@ -537,13 +537,13 @@ public class UserResourceITest {
         Authority authorityB = new Authority();
         assertThat(authorityA).isEqualTo(authorityB);
 
-        authorityB.setName(AuthoritiesConstants.ADMIN);
+        authorityB.setName(RoleEnum.ADMIN.getValue());
         assertThat(authorityA).isNotEqualTo(authorityB);
 
-        authorityA.setName(AuthoritiesConstants.USER);
+        authorityA.setName(RoleEnum.USER.getValue());
         assertThat(authorityA).isNotEqualTo(authorityB);
 
-        authorityB.setName(AuthoritiesConstants.USER);
+        authorityB.setName(RoleEnum.USER.getValue());
         assertThat(authorityA).isEqualTo(authorityB);
         assertThat(authorityA.hashCode()).isEqualTo(authorityB.hashCode());
     }

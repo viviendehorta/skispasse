@@ -5,7 +5,7 @@ import com.github.mongobee.changeset.ChangeSet;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
-import vdehorta.security.AuthoritiesConstants;
+import vdehorta.security.RoleEnum;
 import vdehorta.service.ClockService;
 
 /**
@@ -19,9 +19,9 @@ public class Migration20200407 {
     @ChangeSet(order = "01", author = "initiator", id = "01-addAuthorities")
     public void addAuthorities(MongoTemplate mongoTemplate) {
         Authority adminAuthority = new Authority();
-        adminAuthority.setName(AuthoritiesConstants.ADMIN);
+        adminAuthority.setName(RoleEnum.ADMIN.getValue());
         Authority userAuthority = new Authority();
-        userAuthority.setName(AuthoritiesConstants.USER);
+        userAuthority.setName(RoleEnum.USER.getValue());
         mongoTemplate.save(adminAuthority);
         mongoTemplate.save(userAuthority);
     }
@@ -29,9 +29,9 @@ public class Migration20200407 {
     @ChangeSet(order = "02", author = "initiator", id = "02-addUsers")
     public void addUsers(MongoTemplate mongoTemplate) {
         Authority adminAuthority = new Authority();
-        adminAuthority.setName(AuthoritiesConstants.ADMIN);
+        adminAuthority.setName(RoleEnum.ADMIN.getValue());
         Authority userAuthority = new Authority();
-        userAuthority.setName(AuthoritiesConstants.USER);
+        userAuthority.setName(RoleEnum.USER.getValue());
 
         User systemUser = new User();
         systemUser.setLogin("system");
