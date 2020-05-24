@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
-import vdehorta.security.AuthoritiesConstants;
+import vdehorta.security.RoleEnum;
 import vdehorta.service.ClockService;
 
 /**
@@ -23,18 +23,18 @@ public class Migration20200409 {
     @ChangeSet(order = "01", author = "admin", id = "01-addContributorAuthority")
     public void addContributorAuthority(MongoTemplate mongoTemplate) {
         Authority contributorAuthority = new Authority();
-        contributorAuthority.setName(AuthoritiesConstants.CONTRIBUTOR);
+        contributorAuthority.setName(RoleEnum.CONTRIBUTOR.getValue());
         mongoTemplate.save(contributorAuthority);
     }
 
     @ChangeSet(order = "02", author = "admin", id = "02-addContributorAuthorityToAdminAndSystemUsers")
     public void addContributorAuthorityToAdminAndSystemUsers(MongoTemplate mongoTemplate) {
         Authority adminAuthority = new Authority();
-        adminAuthority.setName(AuthoritiesConstants.ADMIN);
+        adminAuthority.setName(RoleEnum.ADMIN.getValue());
         Authority userAuthority = new Authority();
-        userAuthority.setName(AuthoritiesConstants.USER);
+        userAuthority.setName(RoleEnum.USER.getValue());
         Authority contributorAuthority = new Authority();
-        contributorAuthority.setName(AuthoritiesConstants.CONTRIBUTOR);
+        contributorAuthority.setName(RoleEnum.CONTRIBUTOR.getValue());
 
         // Update system user
         Query systemQuery = new Query();
@@ -54,9 +54,9 @@ public class Migration20200409 {
     @ChangeSet(order = "03", author = "admin", id = "03-addContributorUser")
     public void addContributorUser(MongoTemplate mongoTemplate) {
         Authority contributorAuthority = new Authority();
-        contributorAuthority.setName(AuthoritiesConstants.CONTRIBUTOR);
+        contributorAuthority.setName(RoleEnum.CONTRIBUTOR.getValue());
         Authority userAuthority = new Authority();
-        userAuthority.setName(AuthoritiesConstants.USER);
+        userAuthority.setName(RoleEnum.USER.getValue());
 
         User contributorUser = new User();
         contributorUser.setLogin("contributor");

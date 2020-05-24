@@ -14,6 +14,7 @@ import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.security.AuthenticationService;
+import vdehorta.security.RoleEnum;
 import vdehorta.service.errors.UnexistingLoginException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
@@ -78,6 +79,8 @@ public class NewsFactService {
 
     public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, MultipartFile videoFile) {
         log.debug("Creating  news fact...");
+
+        authenticationService.assertIsAuthenticatedRole(RoleEnum.CONTRIBUTOR);
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
 

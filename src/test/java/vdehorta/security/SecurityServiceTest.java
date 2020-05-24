@@ -36,35 +36,15 @@ public class SecurityServiceTest {
     }
 
     @Test
-    public void testIsAuthenticated() {
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
-        SecurityContextHolder.setContext(securityContext);
-        boolean isAuthenticated = authenticationService.isAuthenticated();
-        assertThat(isAuthenticated).isTrue();
-    }
-
-    @Test
-    public void testAnonymousIsNotAuthenticated() {
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ANONYMOUS));
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("anonymous", "anonymous", authorities));
-        SecurityContextHolder.setContext(securityContext);
-        boolean isAuthenticated = authenticationService.isAuthenticated();
-        assertThat(isAuthenticated).isFalse();
-    }
-
-    @Test
     public void testIsCurrentUserInRole() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.USER));
+        authorities.add(new SimpleGrantedAuthority(RoleEnum.USER.getValue()));
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("user", "user", authorities));
         SecurityContextHolder.setContext(securityContext);
 
-        assertThat(authenticationService.isCurrentUserInRole(AuthoritiesConstants.USER)).isTrue();
-        assertThat(authenticationService.isCurrentUserInRole(AuthoritiesConstants.ADMIN)).isFalse();
+        assertThat(authenticationService.isCurrentUserInRole(RoleEnum.USER)).isTrue();
+        assertThat(authenticationService.isCurrentUserInRole(RoleEnum.ADMIN)).isFalse();
     }
 
 }

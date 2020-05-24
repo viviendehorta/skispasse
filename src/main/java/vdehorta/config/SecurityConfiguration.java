@@ -11,12 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
-import vdehorta.security.AjaxAuthenticationFailureHandler;
-import vdehorta.security.AjaxAuthenticationSuccessHandler;
-import vdehorta.security.AjaxLogoutSuccessHandler;
-import vdehorta.security.AuthoritiesConstants;
+import vdehorta.security.*;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -99,7 +95,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/activate").permitAll()
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/prometheus").permitAll()
-            .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/management/**").hasAuthority(RoleEnum.ADMIN.getValue())
             .antMatchers("/newsFact/all").permitAll()
             .antMatchers("/newsCategory/all").permitAll()
             .antMatchers("/newsFact/contributor/**").permitAll();

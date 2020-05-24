@@ -22,7 +22,7 @@ import vdehorta.dto.UserDTO;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.AuthenticationService;
-import vdehorta.security.AuthoritiesConstants;
+import vdehorta.security.RoleEnum;
 import vdehorta.service.ClockService;
 import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.ExceptionTranslator;
@@ -119,7 +119,7 @@ public class AccountResourceITest {
     public void testGetExistingAccount() throws Exception {
         Set<Authority> authorities = new HashSet<>();
         Authority authority = new Authority();
-        authority.setName(AuthoritiesConstants.ADMIN);
+        authority.setName(RoleEnum.ADMIN.getValue());
         authorities.add(authority);
 
         User user = new User();
@@ -142,7 +142,7 @@ public class AccountResourceITest {
             .andExpect(jsonPath("$.email").value("john.doe@skispasse.com"))
             .andExpect(jsonPath("$.imageUrl").value("http://placehold.it/50x50"))
             .andExpect(jsonPath("$.langKey").value("en"))
-            .andExpect(jsonPath("$.authorities").value(AuthoritiesConstants.ADMIN));
+            .andExpect(jsonPath("$.authorities").value(RoleEnum.ADMIN));
     }
 
     @Test
@@ -173,7 +173,7 @@ public class AccountResourceITest {
         userDTO.setActivated(false);
         userDTO.setImageUrl("http://placehold.it/50x50");
         userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+        userDTO.setAuthorities(Collections.singleton(RoleEnum.ADMIN.getValue()));
 
         restMvc.perform(
             post("/api/account")
@@ -211,7 +211,7 @@ public class AccountResourceITest {
         userDTO.setActivated(false);
         userDTO.setImageUrl("http://placehold.it/50x50");
         userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+        userDTO.setAuthorities(Collections.singleton(RoleEnum.ADMIN.getValue()));
 
         restMvc.perform(
             post("/api/account")
@@ -249,7 +249,7 @@ public class AccountResourceITest {
         userDTO.setActivated(false);
         userDTO.setImageUrl("http://placehold.it/50x50");
         userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+        userDTO.setAuthorities(Collections.singleton(RoleEnum.ADMIN.getValue()));
 
         restMvc.perform(
             post("/api/account")
@@ -280,7 +280,7 @@ public class AccountResourceITest {
         userDTO.setActivated(false);
         userDTO.setImageUrl("http://placehold.it/50x50");
         userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+        userDTO.setAuthorities(Collections.singleton(RoleEnum.ADMIN.getValue()));
 
         restMvc.perform(
             post("/api/account")
