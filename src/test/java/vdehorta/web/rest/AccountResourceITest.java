@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.SkispasseApp;
 import vdehorta.config.Constants;
@@ -132,8 +133,10 @@ public class AccountResourceITest {
         user.setAuthorities(authorities);
         when(mockUserService.getUserWithAuthorities()).thenReturn(Optional.of(user));
 
-        restUserMockMvc.perform(get("/api/account")
-            .accept(MediaType.APPLICATION_JSON))
+        ResultActions resultActions = restUserMockMvc.perform(get("/api/account")
+                .accept(MediaType.APPLICATION_JSON));
+
+        resultActions
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.login").value("test"))
@@ -142,7 +145,7 @@ public class AccountResourceITest {
             .andExpect(jsonPath("$.email").value("john.doe@skispasse.com"))
             .andExpect(jsonPath("$.imageUrl").value("http://placehold.it/50x50"))
             .andExpect(jsonPath("$.langKey").value("en"))
-            .andExpect(jsonPath("$.authorities").value(RoleEnum.ADMIN));
+            .andExpect(jsonPath("$.authorities").value(RoleEnum.ADMIN.getValue()));
     }
 
     @Test
