@@ -145,4 +145,10 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
         UnexistingLoginException problem = new UnexistingLoginException();
         return create(problem, request, HeaderUtil.createFailureAlert(clientAppName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleAuthenticationRequiredException(vdehorta.service.AuthenticationRequiredException ex, NativeWebRequest request) {
+        AuthenticationRequiredException problem = new AuthenticationRequiredException(ex.getRequiredRole());
+        return create(ex, problem, request);
+    }
 }

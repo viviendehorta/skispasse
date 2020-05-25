@@ -211,10 +211,10 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
+    @WithMockUser(username = "Toto", roles = {"USER", "CONTRIBUTOR"})
     void createNewsFact_caseOk() throws Exception {
 
-        String videoFilePath = "skispasse.txt";
+        String videoFilePath = "skispasse.mp4";
 
         // Init ClockService with a fix clock to be able to assert the date values
         LocalDateTime expectedNow = LocalDateTime.parse("2020-03-24T20:30:23");
@@ -238,7 +238,7 @@ public class NewsFactResourceITest {
                 .videoPath("/browserFakePath/" + videoFilePath)
                 .build();
 
-        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "text/plain", "video file content".getBytes());
+        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "video/mp4", "video file content".getBytes());
         String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
 
         // When: Call /newsFact controller POST method
@@ -261,6 +261,46 @@ public class NewsFactResourceITest {
                 .andExpect(jsonPath("$.newsCategoryId", is(newsCategory.getId())))
                 .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())))
                 .andExpect(jsonPath("$.videoPath", isA(String.class)));
+    }
+
+    @Test
+    @WithMockUser(username = "Toto", roles = {"USER", "ADMIN"})
+    void createNewsFact_shouldThrowExceptionForNoneContributorUser() throws Exception {
+
+        String videoFilePath = "skispasse.mp4";
+
+        // Init ClockService with a fix clock to be able to assert the date values
+        LocalDateTime expectedNow = LocalDateTime.parse("2020-03-24T20:30:23");
+        clockService.setClock(Clock.fixed(expectedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
+
+        // Initialize database
+        NewsCategory newsCategory = createDefaultNewsCategory1();
+        newsCategoryRepository.save(newsCategory);
+
+        //Given
+        NewsFactDetailDto toCreateNewsFact = new NewsFactDetailDto.Builder()
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .eventDate(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))
+                .locationCoordinate(new LocationCoordinate.Builder()
+                        .x(DEFAULT_LOCATION_COORDINATE_X)
+                        .y(DEFAULT_LOCATION_COORDINATE_Y)
+                        .build())
+                .newsCategoryId(newsCategory.getId())
+                .videoPath("/browserFakePath/" + videoFilePath)
+                .build();
+
+        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "video/mp4", "video file content".getBytes());
+        String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
+
+        // When: Call /newsFact controller POST method
+        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFact")
+                .file(videoMultiPartFile)
+                .param("newsFactJson", newsFactJson));
+
+        // Then
+        resultActions.andExpect(status().isUnauthorized());
     }
 
     @Test
