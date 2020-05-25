@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vdehorta.repository.FileRepository;
-import vdehorta.security.AuthenticationService;
 import vdehorta.service.errors.UnreadableFileContentException;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
 import vdehorta.service.errors.VideoFileTooLargeException;
@@ -38,6 +37,7 @@ public class VideoFileService {
         this.authenticationService = authenticationService;
     }
 
+    //TODO add file owner
     public String save(MultipartFile file) throws UnreadableFileContentException {
         log.debug("Save file...");
         ContentTypeEnum contentTypeEnum = validateFileContentType(file.getContentType());
@@ -60,9 +60,10 @@ public class VideoFileService {
         }
     }
 
+    //TODO pass the file owner login as parameter and don't call authenticationService.getCurrentUserLoginOrNull()
     private String generateUniqueFilename(ContentTypeEnum contentTypeEnum) {
         String dateString = COMPACT_DATE_TIME_FORMATTER.format(clockService.now());
-        String userLogin = authenticationService.getCurrentUserLoginOrThrowError();
+        String userLogin = authenticationService.getCurrentUserLoginOrNull();
         return userLogin + "_" + dateString + "." + contentTypeEnum.getExtension();
     }
 

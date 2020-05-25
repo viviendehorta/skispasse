@@ -62,15 +62,14 @@ public class NewsFactResource {
     }
 
     /**
-     * {@code GET /contributor/{login}} : Get a list containing all news facts of the given contributor user.
+     * {@code GET /contributor/{login}} : Get a list containing all news facts of the current user, if contributor.
      *
-     * @param login    Login of the contributor owner
      * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body news facts of the given contributor user.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body news facts of the current  user, if contributor.
      */
-    @GetMapping(value = "/contributor/{login}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<NewsFactDetailDto>> getByOwner(@PathVariable String login, Pageable pageable) {
-        Page<NewsFactDetailDto> ownerNewsFactPage = newsFactService.getByOwner(pageable, login);
+    @GetMapping(value = "/contributor", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<NewsFactDetailDto>> getMyNewsFacts(Pageable pageable) {
+        Page<NewsFactDetailDto> ownerNewsFactPage = newsFactService.getMyNewsFacts(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), ownerNewsFactPage);
         return new ResponseEntity<>(ownerNewsFactPage.getContent(), headers, HttpStatus.OK);
     }
@@ -131,6 +130,7 @@ public class NewsFactResource {
     public ResponseEntity<NewsFactDetailDto> updateNewsFact(@Valid @RequestBody NewsFactDetailDto newsFact) {
         log.debug("REST request to update a news fact : {}", newsFact);
 
+        //TODO suppriner ce check d'id, à faire dans la couche service; Controller fait uniquement mapping depuis dto et génération de HttpResponse
         if (newsFact.getId() == null) {
             throw new BadRequestAlertException("A news fact to update must have an id!", "news-fact", "idNull");
         }

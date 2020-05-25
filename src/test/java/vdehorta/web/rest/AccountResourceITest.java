@@ -22,7 +22,7 @@ import vdehorta.dto.PasswordChangeDTO;
 import vdehorta.dto.UserDTO;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
-import vdehorta.security.AuthenticationService;
+import vdehorta.service.AuthenticationService;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.ClockService;
 import vdehorta.service.UserService;

@@ -4,22 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import vdehorta.EntityTestUtil;
 import vdehorta.domain.NewsFact;
-import vdehorta.domain.User;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
-import vdehorta.security.RoleEnum;
-import vdehorta.service.errors.UnexistingLoginException;
+import vdehorta.service.errors.AuthenticationRequiredException;
 import vdehorta.service.errors.WrongNewsCategoryIdException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
-import javax.validation.constraints.NotNull;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +34,6 @@ class NewsFactServiceTest extends AbstractMockedAuthenticationTest {
     private NewsCategoryService newsCategoryServiceMock;
     private NewsFactMapper newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
     private ClockService clockService = new ClockService();
-
     private VideoFileService videoFileServiceMock;
 
     @BeforeEach
@@ -73,14 +66,14 @@ class NewsFactServiceTest extends AbstractMockedAuthenticationTest {
 
         //Then
         assertThat(allNewsFacts)
-            .hasSize(2)
-            .extracting("id", "newsCategoryId", "locationCoordinate.x", "locationCoordinate.y")
-            .containsOnly(
-                //NewsFact1
-                tuple(newsFact1.getId(), newsFact1.getNewsCategoryId(), newsFact1.getLocationCoordinateX(), newsFact1.getLocationCoordinateY()
-                ),
-                //NewsFact2
-                tuple(newsFact2.getId(), newsFact2.getNewsCategoryId(), newsFact2.getLocationCoordinateX(), newsFact2.getLocationCoordinateY()));
+                .hasSize(2)
+                .extracting("id", "newsCategoryId", "locationCoordinate.x", "locationCoordinate.y")
+                .containsOnly(
+                        //NewsFact1
+                        tuple(newsFact1.getId(), newsFact1.getNewsCategoryId(), newsFact1.getLocationCoordinateX(), newsFact1.getLocationCoordinateY()
+                        ),
+                        //NewsFact2
+                        tuple(newsFact2.getId(), newsFact2.getNewsCategoryId(), newsFact2.getLocationCoordinateX(), newsFact2.getLocationCoordinateY()));
     }
 
     @Test
@@ -125,50 +118,39 @@ class NewsFactServiceTest extends AbstractMockedAuthenticationTest {
 
         //Assert-Thrown
         assertThatThrownBy(() -> newsFactService.getById(unexistingId))
-            .isInstanceOf(WrongNewsFactIdException.class);
+                .isInstanceOf(WrongNewsFactIdException.class);
     }
 
     @Test
-    void getByOwner_shouldReturnOnlyNewsFactOwnedByUserWithGivenLogin() {
+    void getMyNewsFacts_shouldThrowErrorForNoneContributorUsers() {
 
-        @NotNull String ownerId = "idOwned";
-        PageRequest pageable = PageRequest.of(1, 10);
-        String ownerLogin = "Vivien";
+        //USER role
+        super.mockAuthenticated(Collections.singletonList(USER));
+        assertThatThrownBy(() -> newsFactService.getMyNewsFacts(null)).isInstanceOf(AuthenticationRequiredException.class);
 
-        //Given
-        NewsFact ownedNewsFact = new NewsFact.Builder().id(ownerId).owner(ownerLogin).build();
-        when(userServiceMock.getUserWithAuthoritiesByLogin(ownerLogin)).thenReturn(Optional.of(new User()));
-        when(newsFactRepositoryMock.findAllByOwner(pageable, ownerLogin)).thenReturn(new PageImpl<>(Collections.singletonList(ownedNewsFact)));
+        Mockito.reset(authenticationServiceMock);
 
-        //When
-        Page<NewsFactDetailDto> byOwnerNewsFactPage = newsFactService.getByOwner(pageable, ownerLogin);
+        //ADMIN role
+        super.mockAuthenticated(Collections.singletonList(ADMIN));
+        assertThatThrownBy(() -> newsFactService.getMyNewsFacts(null)).isInstanceOf(AuthenticationRequiredException.class);
 
-        //Then
-        assertThat(byOwnerNewsFactPage.getContent()).extracting("id").containsOnly(ownerId);
+        Mockito.reset(authenticationServiceMock);
+
+        //Various roles
+        super.mockAuthenticated(Arrays.asList(USER, ADMIN));
+        assertThatThrownBy(() -> newsFactService.getMyNewsFacts(null)).isInstanceOf(AuthenticationRequiredException.class);
+
     }
 
     @Test
-    void getByOwner_shouldThrowUnexistingLoginExceptionWhenNoUserWithGivenLoginExists() {
-
-        String unexistingLogin = "unexisting-login";
-        PageRequest pageable = PageRequest.of(1, 10);
-
-        //Given
-        when(userServiceMock.getUserWithAuthoritiesByLogin(unexistingLogin)).thenReturn(Optional.empty());
-
-        //Assert-Thrown
-        assertThatThrownBy(() -> newsFactService.getByOwner(pageable, unexistingLogin)).isInstanceOf(UnexistingLoginException.class);
+    void getMyNewsFacts_shouldThrowErrorIfUserIsNotLoggedIn() {
+        super.mockAnonymousUser();
+        assertThatThrownBy(() -> newsFactService.getMyNewsFacts(null)).isInstanceOf(AuthenticationRequiredException.class);
     }
 
     @Test
     void update_shouldThrowExceptionIfNewsFactIdIsNull() {
-
-        //Given
-        NewsFactDetailDto nullIdNewsFact = new NewsFactDetailDto.Builder()
-            .id(null)
-            .build();
-
-        //Assert-Thrown
+        NewsFactDetailDto nullIdNewsFact = new NewsFactDetailDto.Builder() .id(null).build();
         assertThatThrownBy(() -> newsFactService.update(nullIdNewsFact)).isInstanceOf(NullPointerException.class);
     }
 
@@ -200,43 +182,38 @@ class NewsFactServiceTest extends AbstractMockedAuthenticationTest {
         //Given
         when(newsCategoryServiceMock.getById(unexistingCategoryId)).thenThrow(new WrongNewsCategoryIdException(unexistingCategoryId));
         NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
-            .newsCategoryId(unexistingCategoryId)
-            .id("id")
-            .eventDate("1989-04-17")
-            .build();
+                .newsCategoryId(unexistingCategoryId)
+                .id("id")
+                .eventDate("1989-04-17")
+                .build();
 
         //Assert-Thrown
         assertThatThrownBy(() -> newsFactService.update(toUpdateNewsFact)).isInstanceOf(WrongNewsCategoryIdException.class);
     }
 
     @Test
-    void create_shouldThrowErrorForNoneAuthenticatedUsers() {
-        //None authenticated user
-        //Anonymous is never used for real by the app but just use it here for understanding that all 'true' roles will throw exception
-        super.mockAuthenticatedRole(RoleEnum.ANONYMOUS);
-        assertThatThrownBy(() -> {
-            //Give null values because error should be thrown before reaching access to the parameters
-            newsFactService.create(null, null);
-        }).isInstanceOf(AuthenticationRequiredException.class);
+    void create_shouldThrowErrorIfUserIsNotLoggedIn() {
+        super.mockAnonymousUser();
+        assertThatThrownBy(() -> newsFactService.create(null, null)).isInstanceOf(AuthenticationRequiredException.class);
     }
 
     @Test
-    void create_shouldThrowErrorForOnlyUserRole() {
+    void create_shouldThrowErrorForANoneContributorUsers() {
+
         //USER
-        super.mockAuthenticatedRole(USER);
-        assertThatThrownBy(() -> {
-            //Give null values because error should be thrown before reaching access to the parameters
-            newsFactService.create(null, null);
-        }).isInstanceOf(AuthenticationRequiredException.class);
-    }
+        super.mockAuthenticated(Collections.singletonList(USER));
+        assertThatThrownBy(() -> newsFactService.create(null, null)).isInstanceOf(AuthenticationRequiredException.class);
 
-    @Test
-    void create_shouldThrowErrorForOnlyAdminRole() {
+        Mockito.reset(authenticationServiceMock);
+
         //ADMIN
-        super.mockAuthenticatedRole(ADMIN);
-        assertThatThrownBy(() -> {
-            //Give null values because error should be thrown before reaching access to the parameters
-            newsFactService.create(null, null);
-        }).isInstanceOf(AuthenticationRequiredException.class);
+        super.mockAuthenticated(Arrays.asList(ADMIN, USER));
+        assertThatThrownBy(() -> newsFactService.create(null, null)).isInstanceOf(AuthenticationRequiredException.class);
+
+        Mockito.reset(authenticationServiceMock);
+
+        //MULTI-ROLES
+        super.mockAuthenticated(Arrays.asList(ADMIN, USER));
+        assertThatThrownBy(() -> newsFactService.create(null, null)).isInstanceOf(AuthenticationRequiredException.class);
     }
 }

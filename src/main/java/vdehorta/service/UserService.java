@@ -12,7 +12,7 @@ import vdehorta.domain.User;
 import vdehorta.dto.UserDTO;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
-import vdehorta.security.AuthenticationService;
+import vdehorta.security.RoleEnum;
 import vdehorta.service.errors.InvalidPasswordException;
 import vdehorta.service.util.RandomUtil;
 
@@ -94,17 +94,18 @@ public class UserService {
      * @param imageUrl  image URL of user.
      */
     public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
-        authenticationService.getCurrentUserLogin()
-                .flatMap(userRepository::findOneByLogin)
-                .ifPresent(user -> {
-                    user.setFirstName(firstName);
-                    user.setLastName(lastName);
-                    user.setEmail(email.toLowerCase());
-                    user.setLangKey(langKey);
-                    user.setImageUrl(imageUrl);
-                    userRepository.save(user);
-                    log.debug("Changed Information for User: {}", user);
-                });
+        authenticationService.assertCurrentUserHasRole(RoleEnum.USER);
+
+        String currentLogin = authenticationService.getCurrentUserLoginOrNull();
+        userRepository.findOneByLogin(currentLogin).ifPresent(user -> {
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setEmail(email.toLowerCase());
+            user.setLangKey(langKey);
+            user.setImageUrl(imageUrl);
+            userRepository.save(user);
+            log.debug("Changed Information for User: {}", user);
+        });
     }
 
     /**
@@ -148,18 +149,19 @@ public class UserService {
     }
 
     public void changePassword(String currentClearTextPassword, String newPassword) {
-        authenticationService.getCurrentUserLogin()
-                .flatMap(userRepository::findOneByLogin)
-                .ifPresent(user -> {
-                    String currentEncryptedPassword = user.getPassword();
-                    if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
-                        throw new InvalidPasswordException();
-                    }
-                    String encryptedPassword = passwordEncoder.encode(newPassword);
-                    user.setPassword(encryptedPassword);
-                    userRepository.save(user);
-                    log.debug("Changed password for User: {}", user);
-                });
+        authenticationService.assertCurrentUserHasRole(RoleEnum.USER);
+
+        String currentLogin = authenticationService.getCurrentUserLoginOrNull();
+        userRepository.findOneByLogin(currentLogin).ifPresent(user -> {
+            String currentEncryptedPassword = user.getPassword();
+            if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
+                throw new InvalidPasswordException();
+            }
+            String encryptedPassword = passwordEncoder.encode(newPassword);
+            user.setPassword(encryptedPassword);
+            userRepository.save(user);
+            log.debug("Changed password for User: {}", user);
+        });
     }
 
     public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
@@ -171,7 +173,7 @@ public class UserService {
     }
 
     public Optional<User> getUserWithAuthorities() {
-        return authenticationService.getCurrentUserLogin().flatMap(userRepository::findOneByLogin);
+        return authenticationService.getCurrentUserLoginOptional().flatMap(userRepository::findOneByLogin);
     }
 
     /**

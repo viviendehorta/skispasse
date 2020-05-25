@@ -7,15 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import vdehorta.config.Constants;
 import vdehorta.domain.NewsFact;
 import vdehorta.dto.NewsCategoryDto;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
-import vdehorta.security.AuthenticationService;
 import vdehorta.security.RoleEnum;
-import vdehorta.service.errors.UnexistingLoginException;
+import vdehorta.service.errors.AuthenticationRequiredException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
@@ -70,26 +68,25 @@ public class NewsFactService {
         return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
     }
 
-    public Page<NewsFactDetailDto> getByOwner(Pageable pageable, String ownerLogin) {
-        log.debug("Getting news facts owned by user {}", ownerLogin);
-        //Check that user with given login exists, throws exception if it doesn't
-        userService.getUserWithAuthoritiesByLogin(ownerLogin).orElseThrow(UnexistingLoginException::new);
-        return newsFactRepository.findAllByOwner(pageable, ownerLogin).map(newsFactMapper::newsFactToNewsFactDetailDto);
+    public Page<NewsFactDetailDto> getMyNewsFacts(Pageable pageable) throws AuthenticationRequiredException {
+        log.debug("Getting news facts of connected user");
+
+        authenticationService.assertCurrentUserHasRole(RoleEnum.CONTRIBUTOR);
+        String loggedUser = authenticationService.getCurrentUserLoginOrNull();
+        return newsFactRepository.findAllByOwner(pageable, loggedUser).map(newsFactMapper::newsFactToNewsFactDetailDto);
     }
 
-    public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, MultipartFile videoFile) {
+    public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, MultipartFile videoFile) throws AuthenticationRequiredException {
         log.debug("Creating  news fact...");
 
-        authenticationService.assertIsAuthenticatedRole(RoleEnum.CONTRIBUTOR);
+        authenticationService.assertCurrentUserHasRole(RoleEnum.CONTRIBUTOR);
+        String currentUserLogin = authenticationService.getCurrentUserLoginOrNull();
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
 
         String videoFileRef = videoFileService.save(videoFile);
         newsFact.setVideoPath(videoFileRef);
-
-        /* TODO replace by SecurityUtils.getCurrentUserLoginOrThrowError() mais changer le code
-             de migration qui n'est pas authentifié d'abord */
-        newsFact.setOwner(authenticationService.getCurrentUserLogin().orElse(Constants.SYSTEM_ACCOUNT));
+        newsFact.setOwner(currentUserLogin);
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
 
         LocalDateTime now = clockService.now();
@@ -101,7 +98,7 @@ public class NewsFactService {
         return newsFactMapper.newsFactToNewsFactDetailDto(createdNewsFact);
     }
 
-    public void delete(String newsFactId) {
+    public void delete(String newsFactId) throws AuthenticationRequiredException {
         log.debug("Deleting news fact  with id {}", newsFactId);
         newsFactRepository.deleteById(newsFactId);
     }

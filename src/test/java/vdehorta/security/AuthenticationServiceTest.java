@@ -3,21 +3,17 @@ package vdehorta.security;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import vdehorta.service.AuthenticationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Test class for the {@link AuthenticationService} utility class.
  */
-public class SecurityServiceTest {
+public class AuthenticationServiceTest {
 
     private AuthenticationService authenticationService;
 
@@ -27,24 +23,22 @@ public class SecurityServiceTest {
     }
 
     @Test
-    public void testGetCurrentUserLogin() {
+    public void getCurrentUserLoginOrNull_shouldReturnTheAuthenticatedUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
         SecurityContextHolder.setContext(securityContext);
-        Optional<String> login = authenticationService.getCurrentUserLogin();
+
+        String login = authenticationService.getCurrentUserLoginOrNull();
+
         assertThat(login).contains("admin");
     }
 
     @Test
-    public void testIsCurrentUserInRole() {
+    public void getCurrentUserLoginOrNull_shouldReturnNullIfNobodyIsAuthenticated() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(RoleEnum.USER.getValue()));
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("user", "user", authorities));
         SecurityContextHolder.setContext(securityContext);
 
-        assertThat(authenticationService.isCurrentUserInRole(RoleEnum.USER)).isTrue();
-        assertThat(authenticationService.isCurrentUserInRole(RoleEnum.ADMIN)).isFalse();
+        assertThat(authenticationService.getCurrentUserLoginOrNull()).isNull();
     }
 
 }
