@@ -3,6 +3,7 @@ package vdehorta.security;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 import vdehorta.config.Constants;
+import vdehorta.service.AuthenticationService;
 
 import java.util.Optional;
 
@@ -20,6 +21,6 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of(securityService.getCurrentUserLogin().orElse(Constants.SYSTEM_ACCOUNT));
+        return Optional.of(securityService.getCurrentUserLoginOptional().orElse(Constants.SYSTEM_ACCOUNT));
     }
 }

@@ -7,8 +7,7 @@ public enum RoleEnum {
 
     ADMIN("ROLE_ADMIN"),
     CONTRIBUTOR("ROLE_CONTRIBUTOR"),
-    USER("ROLE_USER"),
-    ANONYMOUS("ROLE_ANONYMOUS");
+    USER("ROLE_USER");
 
     private String value;
 

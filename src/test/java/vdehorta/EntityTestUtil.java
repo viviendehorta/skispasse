@@ -1,9 +1,12 @@
 package vdehorta;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.mapstruct.ap.internal.util.Collections;
+import vdehorta.domain.Authority;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.domain.User;
+import vdehorta.security.RoleEnum;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,6 +32,7 @@ public final class EntityTestUtil {
     public static final String DEFAULT_NEWS_CATEGORY_LABEL = "newsCategoryLabel";
     public static final String DEFAULT_OWNER = "owner";
     public static final String DEFAULT_VIDEO_PATH = "videoPath";
+    public static final String DEFAULT_AUTHORITY_VALUE = RoleEnum.USER.getValue();
 
 
     public static final String DEFAULT_LOGIN = "johndoe";
@@ -66,6 +70,10 @@ public final class EntityTestUtil {
         user.setLastName(DEFAULT_LASTNAME);
         user.setImageUrl(DEFAULT_IMAGEURL);
         user.setLangKey(DEFAULT_LANGKEY);
+
+        Authority authority = new Authority();
+        authority.setName(DEFAULT_AUTHORITY_VALUE);
+        user.setAuthorities(Collections.asSet(authority));
         return user;
     }
 
@@ -79,6 +87,10 @@ public final class EntityTestUtil {
         user.setLastName(DEFAULT_LASTNAME + "1");
         user.setImageUrl(DEFAULT_IMAGEURL + "1");
         user.setLangKey(DEFAULT_LANGKEY + "1");
+
+        Authority authority = new Authority();
+        authority.setName(DEFAULT_AUTHORITY_VALUE);
+        user.setAuthorities(Collections.asSet(authority));
         return user;
     }
 
@@ -92,6 +104,10 @@ public final class EntityTestUtil {
         user.setLastName(DEFAULT_LASTNAME + "2");
         user.setImageUrl(DEFAULT_IMAGEURL + "2");
         user.setLangKey(DEFAULT_LANGKEY + "2");
+
+        Authority authority = new Authority();
+        authority.setName(DEFAULT_AUTHORITY_VALUE);
+        user.setAuthorities(Collections.asSet(authority));
         return user;
     }
 

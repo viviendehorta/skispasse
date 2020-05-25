@@ -9,7 +9,7 @@ import vdehorta.domain.User;
 import vdehorta.dto.PasswordChangeDTO;
 import vdehorta.dto.UserDTO;
 import vdehorta.repository.UserRepository;
-import vdehorta.security.AuthenticationService;
+import vdehorta.service.AuthenticationService;
 import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.EmailAlreadyUsedException;
 import vdehorta.web.rest.errors.InvalidPasswordException;
@@ -81,7 +81,7 @@ public class AccountResource {
      */
     @PostMapping("/account")
     public void saveAccount(@Valid @RequestBody UserDTO userDTO) {
-        String userLogin = authenticationService.getCurrentUserLoginOrThrowError();
+        String userLogin = authenticationService.getCurrentUserLoginOrNull();
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userLogin))) {
             throw new EmailAlreadyUsedException();

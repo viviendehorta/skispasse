@@ -166,9 +166,10 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void getByOwner_caseOk() throws Exception {
+    @WithMockUser(username = "Polo", roles = {"CONTRIBUTOR"})
+    public void getMyNewsFacts_caseOk() throws Exception {
 
-        String poloLogin = "polo";
+        String poloLogin = "Polo";
 
         // Initialize the database
         User poloUser = createDefaultUser1();
@@ -182,7 +183,7 @@ public class NewsFactResourceITest {
         newsFactRepository.saveAll(Arrays.asList(newsFact1, newsFact2));
 
         // Call /newsFact/contributor/{login} controller GET method
-        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/contributor/" + poloLogin).accept(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/contributor").accept(MediaType.APPLICATION_JSON));
 
         // Assert
         resultActions
@@ -194,20 +195,19 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void getByOwner_shouldThrowExceptionWhenLoginDoesNotExist() throws Exception {
+    @WithMockUser(username = "Skisp", roles = {"USER", "ADMIN"})
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsNotContributor() throws Exception {
 
         // Initialize the database
-        User aUser = createDefaultUser1();
-        aUser.setLogin("aLogin");
+        User aUser = createDefaultUser();
+        aUser.setLogin("Skisp");
         userRepository.save(aUser);
 
         // Call /newsFact/{newsFactId} controller GET method
-        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/contributor/unexisting_login").accept(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/contributor").accept(MediaType.APPLICATION_JSON));
 
         // Assert
-        resultActions
-                .andExpect(status().isBadRequest())
-                .andExpect(header().string("X-skispasseApp-error", "Unexisting user login!"));
+        resultActions.andExpect(status().isForbidden());
     }
 
     @Test
@@ -300,7 +300,7 @@ public class NewsFactResourceITest {
                 .param("newsFactJson", newsFactJson));
 
         // Then
-        resultActions.andExpect(status().isUnauthorized());
+        resultActions.andExpect(status().isForbidden());
     }
 
     @Test

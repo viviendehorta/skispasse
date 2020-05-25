@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
 import vdehorta.repository.FileRepository;
-import vdehorta.security.AuthenticationService;
 import vdehorta.service.VideoFileService.ContentTypeEnum;
 import vdehorta.service.errors.UnreadableFileContentException;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
