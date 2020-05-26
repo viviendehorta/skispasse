@@ -19,7 +19,6 @@ import vdehorta.service.mapper.NewsFactMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static vdehorta.security.RoleEnum.CONTRIBUTOR;
 import static vdehorta.service.util.DateUtil.LOCAL_DATE_FORMATTER;
@@ -57,20 +56,18 @@ public class NewsFactService {
     }
 
     public List<NewsFactNoDetailDto> getAll() {
-        log.debug("Getting all news facts...");
+        log.debug("Getting all news facts");
         return newsFactMapper.newsFactsToNewsFactNoDetailDtos(newsFactRepository.findAll());
     }
 
     public NewsFactDetailDto getById(String id) {
-        log.debug("Getting news fact  with id {}", id);
-        Optional<NewsFact> newsFactOptional = newsFactRepository.findById(id);
-        NewsFact newsFact = newsFactOptional.orElseThrow(() -> new WrongNewsFactIdException(id));
+        log.debug("Getting news fact  by id");
+        NewsFact newsFact = newsFactRepository.findById(id).orElseThrow(() -> new WrongNewsFactIdException(id));
         return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
     }
 
     public Page<NewsFactDetailDto> getMyNewsFacts(Pageable pageable) throws AuthenticationRequiredException {
         log.debug("Getting news facts of connected user");
-
         authenticationService.assertCurrentUserHasRole(CONTRIBUTOR);
         String loggedUser = authenticationService.getCurrentUserLoginOrNull();
         return newsFactRepository.findAllByOwner(pageable, loggedUser).map(newsFactMapper::newsFactToNewsFactDetailDto);
@@ -80,7 +77,6 @@ public class NewsFactService {
         log.debug("Creating  news fact...");
 
         authenticationService.assertCurrentUserHasRole(CONTRIBUTOR);
-
         String currentUserLogin = authenticationService.getCurrentUserLoginOrNull();
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
