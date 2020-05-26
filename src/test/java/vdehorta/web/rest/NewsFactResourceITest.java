@@ -156,7 +156,7 @@ public class NewsFactResourceITest {
         newsFact.setId("existingId");
         newsFactRepository.save(newsFact);
 
-        // Call /newsFact/{newsFactId} controller GET method
+        // Then
         ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/unexistingId").accept(MediaType.APPLICATION_JSON));
 
         // Assert

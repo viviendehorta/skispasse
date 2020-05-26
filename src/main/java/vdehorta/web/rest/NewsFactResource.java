@@ -103,7 +103,6 @@ public class NewsFactResource {
                 .created(new URI("/newsFact/" + createdNewsFact.getId()))
                 .headers(HeaderUtil.createAlert(applicationName, "A news fact was created with id " + createdNewsFact.getId(), createdNewsFact.getId()))
                 .body(createdNewsFact);
-
     }
 
     /**
