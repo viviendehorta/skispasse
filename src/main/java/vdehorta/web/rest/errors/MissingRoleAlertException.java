@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static vdehorta.security.RoleEnum.*;
 
-public class ForbiddenActionAlertException extends ForbiddenAlertException {
+public class MissingRoleAlertException extends ForbiddenAlertException {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,7 +15,7 @@ public class ForbiddenActionAlertException extends ForbiddenAlertException {
 
     private RoleEnum requiredRole;
 
-    public ForbiddenActionAlertException(RoleEnum requiredRole) {
+    public MissingRoleAlertException(RoleEnum requiredRole) {
         super(" Role '" + getReadableRole(requiredRole) + "' is required!");
         this.requiredRole = requiredRole;
     }

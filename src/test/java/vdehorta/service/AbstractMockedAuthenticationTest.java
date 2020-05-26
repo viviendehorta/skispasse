@@ -3,7 +3,9 @@ package vdehorta.service;
 import org.mockito.Mockito;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.errors.AuthenticationRequiredException;
+import vdehorta.service.errors.MissingRoleException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,10 @@ public abstract class AbstractMockedAuthenticationTest {
 
     public void setup() {
         authenticationServiceMock = Mockito.mock(AuthenticationService.class);
+    }
+
+    protected void mockAuthenticated(RoleEnum role) {
+        mockAuthenticated(Collections.singletonList(role));
     }
 
     protected void mockAuthenticated(List<RoleEnum> roles) {
@@ -36,7 +42,7 @@ public abstract class AbstractMockedAuthenticationTest {
 
         for (RoleEnum roleEnum : RoleEnum.values()) {
             if (!roles.contains(roleEnum)) {
-                doThrow(new AuthenticationRequiredException())
+                doThrow(new MissingRoleException(roleEnum))
                         .when(authenticationServiceMock).assertCurrentUserHasRole(roleEnum);
             }
         }

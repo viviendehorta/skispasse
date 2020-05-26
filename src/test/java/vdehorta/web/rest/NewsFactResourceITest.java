@@ -304,10 +304,13 @@ public class NewsFactResourceITest {
     }
 
     @Test
+    @WithMockUser(username = "Titi", roles = {"CONTRIBUTOR"})
     public void deleteNewsFact_caseOk() throws Exception {
 
         // Initialize the database
-        newsFactRepository.save(createDefaultNewsFact());
+        NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setOwner("Titi");
+        newsFactRepository.save(newsFact);
         int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
 
         // Then
@@ -321,6 +324,46 @@ public class NewsFactResourceITest {
         // Validate the database is empty
         List<NewsFact> newsFacts = newsFactRepository.findAll();
         assertThat(newsFacts).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @WithMockUser(username = "Titi", roles = {"CONTRIBUTOR"})
+    public void deleteNewsFact_shouldThrowBadRequestWhenIdDoesntExist() throws Exception {
+
+        // Initialize the database
+        newsFactRepository.save(createDefaultNewsFact());
+        int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
+
+        // Then
+        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFact/{id}", "unexistingId")
+                .accept(APPLICATION_JSON_UTF8));
+
+        // Assert
+        resultActions.andExpect(status().isBadRequest());
+
+        // Validate the database is empty
+        assertThat(newsFactRepository.findAll()).hasSize(databaseSizeBeforeDelete);
+    }
+
+    @Test
+    @WithMockUser(username = "Titi", roles = {"CONTRIBUTOR"})
+    public void deleteNewsFact_shouldThrowBadRequestWhenLoggedUserIsNotOwner() throws Exception {
+
+        // Initialize the database
+        NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setOwner("Toto");
+        newsFactRepository.save(newsFact);
+        int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
+
+        // Then
+        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFact/{id}", DEFAULT_NEWS_FACT_ID)
+                .accept(APPLICATION_JSON_UTF8));
+
+        // Assert
+        resultActions.andExpect(status().isBadRequest());
+
+        // Validate the database is empty
+        assertThat(newsFactRepository.findAll()).hasSize(databaseSizeBeforeDelete);
     }
 
     @Test
@@ -500,7 +543,60 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    void update_shouldReturnUpdatedNewsFactInOptional() throws Exception {
+    void update_shouldThrowUnauthorizedWhenUserIsNotConnected() throws Exception {
+
+        //Given
+        NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(newsFactDetailDto)));
+
+        // Then
+        resultActions.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(roles = {"USER", "ADMIN"})
+    void update_shouldThrowForbiddenWhenConnectedUserIsNotContributor() throws Exception {
+
+        //Given
+        NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(newsFactDetailDto)));
+
+        // Then
+        resultActions.andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "Mandela", roles = {"CONTRIBUTOR"})
+    void update_shouldThrowBadRequestWhenConnectedUserIsNotOwner() throws Exception {
+
+        //Given
+        newsCategoryRepository.save(EntityTestUtil.createDefaultNewsCategory());
+        NewsFact lulaNewsFact = EntityTestUtil.createDefaultNewsFact();
+        lulaNewsFact.setOwner("Lula");
+        newsFactRepository.save(lulaNewsFact);
+        NewsFactDetailDto lulaNewsFactDto = EntityTestUtil.createDefaultNewsFactDetailDto();
+        lulaNewsFactDto.setId(lulaNewsFact.getId()); //The DTO and the Domain news facts share the same id
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(lulaNewsFactDto)));
+
+        // Then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "Mandela", roles = {"CONTRIBUTOR"})
+    void update_caseOk() throws Exception {
         String yesterdayString = "2020-05-01";
         String todayString = "2020-05-02";
         LocalDateTime today = LocalDate.parse(todayString).atStartOfDay();
@@ -516,7 +612,7 @@ public class NewsFactResourceITest {
         final NewsFact initialNewsFact = createDefaultNewsFact();
         initialNewsFact.setCreatedDate(yesterday);
         initialNewsFact.setEventDate(yesterday);
-        initialNewsFact.setOwner("oldOwner");
+        initialNewsFact.setOwner("Mandela");
         newsFactRepository.save(initialNewsFact);
         newsCategoryRepository.save(oldNewsCategory);
         newsCategoryRepository.save(newNewsCategory);
@@ -558,8 +654,6 @@ public class NewsFactResourceITest {
         assertThat(newsFacts).hasSize(1);
         NewsFact updatedNewsFact = newsFacts.get(0);
         assertThat(updatedNewsFact.getLastModifiedDate()).isEqualTo(today);
-        assertThat(updatedNewsFact.getOwner()).isEqualTo("oldOwner"); // Owner should not change
-
-
+        assertThat(updatedNewsFact.getOwner()).isEqualTo("Mandela"); // Owner should not change
     }
 }

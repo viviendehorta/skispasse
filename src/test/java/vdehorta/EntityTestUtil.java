@@ -2,10 +2,8 @@ package vdehorta;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.mapstruct.ap.internal.util.Collections;
-import vdehorta.domain.Authority;
-import vdehorta.domain.NewsCategory;
-import vdehorta.domain.NewsFact;
-import vdehorta.domain.User;
+import vdehorta.domain.*;
+import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.security.RoleEnum;
 
 import java.time.Duration;
@@ -59,6 +57,7 @@ public final class EntityTestUtil {
     public static final String UPDATED_LANGKEY = "fr";
 
     public static final String DEFAULT_ENCODED_PASSWORD = RandomStringUtils.random(60);
+    private static final String DEFAULT_EVENT_DATE_STRING = DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE);
 
     public static User createDefaultUser() {
         User user = new User();
@@ -113,77 +112,94 @@ public final class EntityTestUtil {
 
     public static NewsFact createDefaultNewsFact() {
         return new NewsFact.Builder()
-            .address(DEFAULT_ADDRESS)
-            .city(DEFAULT_CITY)
-            .country(DEFAULT_COUNTRY)
-            .createdDate(DEFAULT_CREATED_DATE)
-            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
-            .eventDate(DEFAULT_EVENT_DATE)
-            .id(DEFAULT_NEWS_FACT_ID)
-            .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
-            .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-            .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
-            .owner(DEFAULT_OWNER)
-            .videoPath(DEFAULT_VIDEO_PATH)
-            .build();
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .createdDate(DEFAULT_CREATED_DATE)
+                .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
+                .eventDate(DEFAULT_EVENT_DATE)
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
+                .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
+                .owner(DEFAULT_OWNER)
+                .videoPath(DEFAULT_VIDEO_PATH)
+                .build();
     }
 
     public static NewsFact createDefaultNewsFact1() {
         return new NewsFact.Builder()
-            .address(DEFAULT_ADDRESS + "1")
-            .city(DEFAULT_CITY + "1")
-            .country(DEFAULT_COUNTRY + "1")
-            .createdDate(DEFAULT_CREATED_DATE)
-            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
-            .eventDate(DEFAULT_EVENT_DATE)
-            .id(DEFAULT_NEWS_FACT_ID + "1")
-            .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
-            .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "1")
-            .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "1")
-            .owner(DEFAULT_OWNER + "1")
-            .videoPath(DEFAULT_VIDEO_PATH + "1")
-            .build();
+                .address(DEFAULT_ADDRESS + "1")
+                .city(DEFAULT_CITY + "1")
+                .country(DEFAULT_COUNTRY + "1")
+                .createdDate(DEFAULT_CREATED_DATE)
+                .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
+                .eventDate(DEFAULT_EVENT_DATE)
+                .id(DEFAULT_NEWS_FACT_ID + "1")
+                .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
+                .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "1")
+                .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "1")
+                .owner(DEFAULT_OWNER + "1")
+                .videoPath(DEFAULT_VIDEO_PATH + "1")
+                .build();
     }
 
     public static NewsFact createDefaultNewsFact2() {
         return new NewsFact.Builder()
-            .address(DEFAULT_ADDRESS + "2")
-            .city(DEFAULT_CITY + "2")
-            .country(DEFAULT_COUNTRY + "2")
-            .createdDate(DEFAULT_CREATED_DATE.plus(Duration.ofDays(1)))
-            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE.plus(Duration.ofDays(1)))
-            .eventDate(DEFAULT_EVENT_DATE.plus(Duration.ofDays(1)))
-            .id(DEFAULT_NEWS_FACT_ID + "2")
-            .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
-            .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
-            .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "2")
-            .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "2")
-            .owner(DEFAULT_OWNER + "2")
-            .videoPath(DEFAULT_VIDEO_PATH + "2")
-            .build();
+                .address(DEFAULT_ADDRESS + "2")
+                .city(DEFAULT_CITY + "2")
+                .country(DEFAULT_COUNTRY + "2")
+                .createdDate(DEFAULT_CREATED_DATE.plus(Duration.ofDays(1)))
+                .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE.plus(Duration.ofDays(1)))
+                .eventDate(DEFAULT_EVENT_DATE.plus(Duration.ofDays(1)))
+                .id(DEFAULT_NEWS_FACT_ID + "2")
+                .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
+                .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "2")
+                .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "2")
+                .owner(DEFAULT_OWNER + "2")
+                .videoPath(DEFAULT_VIDEO_PATH + "2")
+                .build();
     }
 
     public static NewsCategory createDefaultNewsCategory() {
         return new NewsCategory.Builder()
-            .id(DEFAULT_NEWS_CATEGORY_ID)
-            .label(DEFAULT_NEWS_CATEGORY_LABEL)
-            .build();
+                .id(DEFAULT_NEWS_CATEGORY_ID)
+                .label(DEFAULT_NEWS_CATEGORY_LABEL)
+                .build();
     }
 
     public static NewsCategory createDefaultNewsCategory1() {
         return new NewsCategory.Builder()
-            .id(DEFAULT_NEWS_CATEGORY_ID + "1")
-            .label(DEFAULT_NEWS_CATEGORY_LABEL + "1")
-            .build();
+                .id(DEFAULT_NEWS_CATEGORY_ID + "1")
+                .label(DEFAULT_NEWS_CATEGORY_LABEL + "1")
+                .build();
     }
 
     public static NewsCategory createDefaultNewsCategory2() {
         return new NewsCategory.Builder()
-            .id(DEFAULT_NEWS_CATEGORY_ID + "2")
-            .label(DEFAULT_NEWS_CATEGORY_LABEL + "2")
-            .build();
+                .id(DEFAULT_NEWS_CATEGORY_ID + "2")
+                .label(DEFAULT_NEWS_CATEGORY_LABEL + "2")
+                .build();
+    }
+
+    public static NewsFactDetailDto createDefaultNewsFactDetailDto() {
+        return new NewsFactDetailDto.Builder()
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .eventDate(DEFAULT_EVENT_DATE_STRING)
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate.Builder()
+                        .x(DEFAULT_LOCATION_COORDINATE_X)
+                        .y(DEFAULT_LOCATION_COORDINATE_Y)
+                        .build())
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
+                .videoPath(DEFAULT_VIDEO_PATH)
+                .build();
     }
 
 

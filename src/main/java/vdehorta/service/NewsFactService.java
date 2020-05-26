@@ -12,7 +12,6 @@ import vdehorta.dto.NewsCategoryDto;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.repository.NewsFactRepository;
-import vdehorta.security.RoleEnum;
 import vdehorta.service.errors.AuthenticationRequiredException;
 import vdehorta.service.errors.WrongNewsFactIdException;
 import vdehorta.service.mapper.NewsFactMapper;
@@ -22,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static vdehorta.security.RoleEnum.CONTRIBUTOR;
 import static vdehorta.service.util.DateUtil.LOCAL_DATE_FORMATTER;
 
 /**
@@ -71,7 +71,7 @@ public class NewsFactService {
     public Page<NewsFactDetailDto> getMyNewsFacts(Pageable pageable) throws AuthenticationRequiredException {
         log.debug("Getting news facts of connected user");
 
-        authenticationService.assertCurrentUserHasRole(RoleEnum.CONTRIBUTOR);
+        authenticationService.assertCurrentUserHasRole(CONTRIBUTOR);
         String loggedUser = authenticationService.getCurrentUserLoginOrNull();
         return newsFactRepository.findAllByOwner(pageable, loggedUser).map(newsFactMapper::newsFactToNewsFactDetailDto);
     }
@@ -79,12 +79,14 @@ public class NewsFactService {
     public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, MultipartFile videoFile) throws AuthenticationRequiredException {
         log.debug("Creating  news fact...");
 
-        authenticationService.assertCurrentUserHasRole(RoleEnum.CONTRIBUTOR);
+        authenticationService.assertCurrentUserHasRole(CONTRIBUTOR);
+
         String currentUserLogin = authenticationService.getCurrentUserLoginOrNull();
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
 
         String videoFileRef = videoFileService.save(videoFile);
+
         newsFact.setVideoPath(videoFileRef);
         newsFact.setOwner(currentUserLogin);
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
@@ -98,20 +100,23 @@ public class NewsFactService {
         return newsFactMapper.newsFactToNewsFactDetailDto(createdNewsFact);
     }
 
-    public void delete(String newsFactId) throws AuthenticationRequiredException {
-        log.debug("Deleting news fact  with id {}", newsFactId);
-        newsFactRepository.deleteById(newsFactId);
-    }
-
     public NewsFactDetailDto update(NewsFactDetailDto newsFactDetailDto) {
+        log.debug("Updating news fact");
 
-        //Validation
+        authenticationService.assertCurrentUserHasRole(CONTRIBUTOR);
+        String currentUserLogin = authenticationService.getCurrentUserLoginOrNull();
+
         String id = newsFactDetailDto.getId();
         Preconditions.checkNotNull(id, "News fact id is null!");
-        NewsCategoryDto newNewsCategory = newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId());// Validate news category
-        LocalDateTime newEventDate = LocalDate.parse(newsFactDetailDto.getEventDate(), LOCAL_DATE_FORMATTER).atStartOfDay(); //Validate event date format
+
+        NewsCategoryDto newNewsCategory = newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId());
+
+        LocalDateTime newEventDate = LocalDate.parse(newsFactDetailDto.getEventDate(), LOCAL_DATE_FORMATTER).atStartOfDay();
 
         NewsFact toUpdateNewsFact = newsFactRepository.findById(id).orElseThrow(() -> new WrongNewsFactIdException(id));
+        if (!toUpdateNewsFact.getOwner().equals(currentUserLogin)) {
+            throw new WrongNewsFactIdException(id);
+        }
 
         //Update
         toUpdateNewsFact.setAddress(newsFactDetailDto.getAddress());
@@ -124,5 +129,19 @@ public class NewsFactService {
         toUpdateNewsFact.setCountry(newsFactDetailDto.getCountry());
         toUpdateNewsFact.setLastModifiedDate(clockService.now());
         return newsFactMapper.newsFactToNewsFactDetailDto(newsFactRepository.save(toUpdateNewsFact));
-}
+    }
+
+    public void delete(String newsFactId) throws AuthenticationRequiredException {
+        log.debug("Deleting news fact  with id {}", newsFactId);
+
+        authenticationService.assertCurrentUserHasRole(CONTRIBUTOR);
+        String currentUserLogin = authenticationService.getCurrentUserLoginOrNull();
+
+        NewsFact newsFact = newsFactRepository.findById(newsFactId).orElseThrow(() -> new WrongNewsFactIdException(newsFactId));
+        if (!newsFact.getOwner().equals(currentUserLogin)) {
+            throw new WrongNewsFactIdException(newsFactId);
+        }
+
+        newsFactRepository.deleteById(newsFactId);
+    }
 }
