@@ -16,6 +16,7 @@ import org.zalando.problem.spring.web.advice.security.SecurityAdviceTrait;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.service.errors.LoginAlreadyUsedException;
+import vdehorta.service.errors.MissingRoleException;
 import vdehorta.web.rest.util.HeaderUtil;
 
 import javax.annotation.Nonnull;
@@ -147,8 +148,8 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
 
     @ExceptionHandler
-    public ResponseEntity<Problem> handleForbiddenActionException(vdehorta.service.errors.ForbiddenActionException ex, NativeWebRequest request) {
-        ForbiddenActionAlertException problem = new ForbiddenActionAlertException(ex.getRequiredRole());
+    public ResponseEntity<Problem> handleForbiddenActionException(MissingRoleException ex, NativeWebRequest request) {
+        MissingRoleAlertException problem = new MissingRoleAlertException(ex.getRequiredRole());
         return create(ex, problem, request);
     }
 }

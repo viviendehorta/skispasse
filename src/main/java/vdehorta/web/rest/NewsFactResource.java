@@ -130,7 +130,6 @@ public class NewsFactResource {
     public ResponseEntity<NewsFactDetailDto> updateNewsFact(@Valid @RequestBody NewsFactDetailDto newsFact) {
         log.debug("REST request to update a news fact : {}", newsFact);
 
-        //TODO suppriner ce check d'id, à faire dans la couche service; Controller fait uniquement mapping depuis dto et génération de HttpResponse
         if (newsFact.getId() == null) {
             throw new BadRequestAlertException("A news fact to update must have an id!", "news-fact", "idNull");
         }
