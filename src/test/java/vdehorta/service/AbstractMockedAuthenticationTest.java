@@ -1,15 +1,10 @@
 package vdehorta.service;
 
 import org.mockito.Mockito;
-import vdehorta.security.RoleEnum;
 import vdehorta.service.errors.AuthenticationRequiredException;
-import vdehorta.service.errors.MissingRoleException;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractMockedAuthenticationTest {
@@ -22,30 +17,21 @@ public abstract class AbstractMockedAuthenticationTest {
         authenticationServiceMock = Mockito.mock(AuthenticationService.class);
     }
 
-    protected void mockAuthenticated(RoleEnum role) {
-        mockAuthenticated(Collections.singletonList(role));
-    }
-
-    protected void mockAuthenticated(List<RoleEnum> roles) {
-        mockAuthenticated(DEFAULT_AUTHENTICATED_USER_LOGIN, roles);
+    /**
+     * mockAuthenticated with login DEFAULT_AUTHENTICATED_USER_LOGIN
+     */
+    protected void mockAuthenticated() {
+        mockAuthenticated(DEFAULT_AUTHENTICATED_USER_LOGIN);
     }
 
     /**
-     * Mock all public methods of AuthenticationService mock to act like with an authenticated  user matching given login and roles
+     * Mock public methods of AuthenticationService mock to act as if authenticated with given user login
      *
-     * @param login
-     * @param roles the roles of the fictive authenticated user
+     * @param login fictive authenticated user login
      */
-    protected void mockAuthenticated(String login, List<RoleEnum> roles) {
+    protected void mockAuthenticated(String login) {
         when(authenticationServiceMock.getCurrentUserLoginOptional()).thenReturn(Optional.of(login));
-        when(authenticationServiceMock.getCurrentUserLoginOrNull()).thenReturn(login);
-
-        for (RoleEnum roleEnum : RoleEnum.values()) {
-            if (!roles.contains(roleEnum)) {
-                doThrow(new MissingRoleException(roleEnum))
-                        .when(authenticationServiceMock).assertCurrentUserHasRole(roleEnum);
-            }
-        }
+        when(authenticationServiceMock.getCurrentUserLoginOrThrowError()).thenReturn(login);
     }
 
     /**
@@ -53,11 +39,6 @@ public abstract class AbstractMockedAuthenticationTest {
      */
     protected void mockAnonymousUser() {
         when(authenticationServiceMock.getCurrentUserLoginOptional()).thenReturn(Optional.empty());
-        when(authenticationServiceMock.getCurrentUserLoginOrNull()).thenReturn(null);
-
-        for (RoleEnum roleEnum : RoleEnum.values()) {
-            doThrow(new AuthenticationRequiredException())
-                    .when(authenticationServiceMock).assertCurrentUserHasRole(roleEnum);
-        }
+        when(authenticationServiceMock.getCurrentUserLoginOrThrowError()).thenThrow(AuthenticationRequiredException.class);
     }
 }

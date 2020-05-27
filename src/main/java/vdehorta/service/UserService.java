@@ -1,5 +1,7 @@
 package vdehorta.service;
 
+import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -9,12 +11,15 @@ import org.springframework.stereotype.Service;
 import vdehorta.config.Constants;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
-import vdehorta.dto.UserDTO;
+import vdehorta.dto.UserDto;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
-import vdehorta.security.RoleEnum;
+import vdehorta.service.errors.EmailAlreadyUsedException;
 import vdehorta.service.errors.InvalidPasswordException;
+import vdehorta.service.errors.LoginAlreadyUsedException;
+import vdehorta.service.errors.UserNotFoundException;
 import vdehorta.service.util.RandomUtil;
+import vdehorta.web.rest.vm.ManagedUserVM;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,26 +39,33 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthorityRepository authorityRepository;
     private final ClockService clockService;
-    private final AuthenticationService authenticationService;
 
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AuthorityRepository authorityRepository,
-                       ClockService clockService,
-                       AuthenticationService authenticationService) {
+                       ClockService clockService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.clockService = clockService;
-        this.authenticationService = authenticationService;
     }
 
-    public User createUser(UserDTO userDTO) {
+    public UserDto createUser(UserDto userDTO) {
+        log.debug("Creating user {}", userDTO);
+
+        String login = userDTO.getLogin();
+        String email = userDTO.getEmail().toLowerCase();
+        if (userRepository.findOneByLogin(login.toLowerCase()).isPresent()) {
+            throw new LoginAlreadyUsedException(login);
+        } else if (userRepository.findOneByEmailIgnoreCase(email).isPresent()) {
+            throw new EmailAlreadyUsedException(email);
+        }
+
         User user = new User();
-        user.setLogin(userDTO.getLogin().toLowerCase());
+        user.setLogin(login.toLowerCase());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail().toLowerCase());
+        user.setEmail(email.toLowerCase());
         user.setImageUrl(userDTO.getImageUrl());
         if (userDTO.getLangKey() == null) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
@@ -79,33 +91,41 @@ public class UserService {
                     .collect(Collectors.toSet());
             user.setAuthorities(authorities);
         }
-        userRepository.save(user);
-        log.debug("Created Information for User: {}", user);
-        return user;
+        User createdUser = userRepository.save(user);
+        log.debug("Created Information for User: {}", createdUser);
+        return new UserDto(createdUser);
     }
 
     /**
      * Update basic information (first name, last name, email, language) for the current user.
      *
-     * @param firstName first name of user.
-     * @param lastName  last name of user.
-     * @param email     email id of user.
-     * @param langKey   language key.
-     * @param imageUrl  image URL of user.
+     * @param login     login to identify the user
+     * @param firstName to update first name
+     * @param lastName  to update last name
+     * @param email     to update email
+     * @param langKey   to update lang key
+     * @param imageUrl  to update image url
+     * @throws UserNotFoundException     if the user cannot be found in persistence
+     * @throws EmailAlreadyUsedException if the given email is already used
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
-        authenticationService.assertCurrentUserHasRole(RoleEnum.USER);
+    public void updateUser(String login, String firstName, String lastName, String email, String langKey, String imageUrl) throws UserNotFoundException, EmailAlreadyUsedException {
+        log.debug("Updating basic user info of {}", login);
+        String loginLowerCase = login.toLowerCase();
+        User user = userRepository.findOneByLogin(loginLowerCase).orElseThrow(() -> new UserNotFoundException(login));
+        String lowerCaseEmail = email.toLowerCase();
 
-        String currentLogin = authenticationService.getCurrentUserLoginOrNull();
-        userRepository.findOneByLogin(currentLogin).ifPresent(user -> {
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setEmail(email.toLowerCase());
-            user.setLangKey(langKey);
-            user.setImageUrl(imageUrl);
-            userRepository.save(user);
-            log.debug("Changed Information for User: {}", user);
-        });
+        Optional<User> maySameEmailUser = userRepository.findOneByEmailIgnoreCase(lowerCaseEmail);
+        if (maySameEmailUser.isPresent() && !maySameEmailUser.get().getLogin().equals(loginLowerCase)) {
+            throw new EmailAlreadyUsedException(email);
+        }
+
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(lowerCaseEmail);
+        user.setLangKey(langKey);
+        user.setImageUrl(imageUrl);
+        userRepository.save(user);
+        log.debug("Changed basic information for user: {}", user);
     }
 
     /**
@@ -114,31 +134,43 @@ public class UserService {
      * @param userDTO user to update.
      * @return updated user.
      */
-    public Optional<UserDTO> updateUser(UserDTO userDTO) {
-        return Optional.of(userRepository
-                .findById(userDTO.getId()))
+    public UserDto updateUser(UserDto userDTO) throws UserNotFoundException {
+        Preconditions.checkNotNull(userDTO.getId(), "Id of user to update should not be null!");
+        String userId = userDTO.getId();
+
+        User existingUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        String email = userDTO.getEmail().toLowerCase();
+        Optional<User> maySameEmailUser = userRepository.findOneByEmailIgnoreCase(email);
+
+        //Check that new email is not already used by another user
+        if (maySameEmailUser.isPresent() && (!maySameEmailUser.get().getId().equals(userId))) {
+            throw new EmailAlreadyUsedException(email);
+        }
+
+        String login = userDTO.getLogin().toLowerCase();
+        Optional<User> maySameLoginUser = userRepository.findOneByLogin(login);
+        if (maySameLoginUser.isPresent() && (!maySameLoginUser.get().getId().equals(userId))) {
+            throw new LoginAlreadyUsedException(login);
+        }
+
+        existingUser.setLogin(login);
+        existingUser.setFirstName(userDTO.getFirstName());
+        existingUser.setLastName(userDTO.getLastName());
+        existingUser.setEmail(email);
+        existingUser.setImageUrl(userDTO.getImageUrl());
+        existingUser.setActivated(userDTO.isActivated());
+        existingUser.setLangKey(userDTO.getLangKey());
+        Set<Authority> managedAuthorities = existingUser.getAuthorities();
+        managedAuthorities.clear();
+        userDTO.getAuthorities().stream()
+                .map(authorityRepository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(user -> {
-                    user.setLogin(userDTO.getLogin().toLowerCase());
-                    user.setFirstName(userDTO.getFirstName());
-                    user.setLastName(userDTO.getLastName());
-                    user.setEmail(userDTO.getEmail().toLowerCase());
-                    user.setImageUrl(userDTO.getImageUrl());
-                    user.setActivated(userDTO.isActivated());
-                    user.setLangKey(userDTO.getLangKey());
-                    Set<Authority> managedAuthorities = user.getAuthorities();
-                    managedAuthorities.clear();
-                    userDTO.getAuthorities().stream()
-                            .map(authorityRepository::findById)
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .forEach(managedAuthorities::add);
-                    userRepository.save(user);
-                    log.debug("Changed Information for User: {}", user);
-                    return user;
-                })
-                .map(UserDTO::new);
+                .forEach(managedAuthorities::add);
+        User updatedUser = userRepository.save(existingUser);
+        log.debug("Changed Information for User: {}", updatedUser);
+        return new UserDto(updatedUser);
     }
 
     public void deleteUser(String login) {
@@ -148,32 +180,32 @@ public class UserService {
         });
     }
 
-    public void changePassword(String currentClearTextPassword, String newPassword) {
-        authenticationService.assertCurrentUserHasRole(RoleEnum.USER);
+    public void changePassword(String currentClearTextPassword, String newPassword, String updaterLogin) throws InvalidPasswordException, UserNotFoundException {
+        log.debug("Updating password for user: {}", updaterLogin);
 
-        String currentLogin = authenticationService.getCurrentUserLoginOrNull();
-        userRepository.findOneByLogin(currentLogin).ifPresent(user -> {
-            String currentEncryptedPassword = user.getPassword();
-            if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
-                throw new InvalidPasswordException();
-            }
-            String encryptedPassword = passwordEncoder.encode(newPassword);
-            user.setPassword(encryptedPassword);
-            userRepository.save(user);
-            log.debug("Changed password for User: {}", user);
-        });
+        if (!checkPasswordLength(newPassword)) {
+            throw new InvalidPasswordException();
+        }
+
+        User user = userRepository.findOneByLogin(updaterLogin).orElseThrow(() -> new UserNotFoundException(updaterLogin));
+
+        String currentEncryptedPassword = user.getPassword();
+        if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
+            throw new InvalidPasswordException();
+        }
+        String encryptedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encryptedPassword);
+        userRepository.save(user);
+        log.debug("Changed password for User: {}", user);
     }
 
-    public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
-        return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
+    public Page<UserDto> getAllUsers(Pageable pageable) {
+        return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDto::new);
     }
 
-    public Optional<User> getUserWithAuthoritiesByLogin(String login) {
-        return userRepository.findOneByLogin(login);
-    }
-
-    public Optional<User> getUserWithAuthorities() {
-        return authenticationService.getCurrentUserLoginOptional().flatMap(userRepository::findOneByLogin);
+    public UserDto getUser(String login) throws UserNotFoundException {
+        User user = userRepository.findOneByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
+        return new UserDto(user);
     }
 
     /**
@@ -185,4 +217,9 @@ public class UserService {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
+    private static boolean checkPasswordLength(String password) {
+        return !StringUtils.isEmpty(password) &&
+                password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
+                password.length() <= ManagedUserVM.PASSWORD_MAX_LENGTH;
+    }
 }

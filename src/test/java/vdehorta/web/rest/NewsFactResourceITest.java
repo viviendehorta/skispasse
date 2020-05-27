@@ -23,6 +23,7 @@ import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.repository.UserRepository;
+import vdehorta.service.AuthenticationService;
 import vdehorta.service.ClockService;
 import vdehorta.service.NewsFactService;
 import vdehorta.service.UserService;
@@ -61,6 +62,9 @@ public class NewsFactResourceITest {
     private NewsFactService newsFactService;
 
     @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -80,7 +84,7 @@ public class NewsFactResourceITest {
 
     @BeforeEach
     public void setup() {
-        NewsFactResource newsFactResource = new NewsFactResource(applicationProperties, newsFactService);
+        NewsFactResource newsFactResource = new NewsFactResource(applicationProperties, newsFactService, authenticationService);
 
         this.restNewsFactMockMvc = MockMvcBuilders.standaloneSetup(newsFactResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -102,8 +106,7 @@ public class NewsFactResourceITest {
         NewsFact newsFact2 = createDefaultNewsFact2();
         newsFactRepository.saveAll(Arrays.asList(newsFact1, newsFact2));
 
-        // Call /newsFact/all controller GET method
-        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/all").accept(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/all").accept(MediaType.APPLICATION_JSON));
 
         // Assert
         resultActions
@@ -127,8 +130,7 @@ public class NewsFactResourceITest {
         newsFact.setEventDate(LocalDateTime.parse("2020-02-28T22:30:00"));
         newsFactRepository.save(newsFact);
 
-        // Call /newsFact/{newsFactId} controller GET method
-        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/" + newsFact.getId()).accept(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/" + newsFact.getId()).accept(MediaType.APPLICATION_JSON));
 
         // Assert
         resultActions
@@ -146,7 +148,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void getById_shouldThrowExceptionWhenIdDoesNotExist() throws Exception {
+    public void getById_shouldThrowNotFoundIfGivenIdDoesNotExist() throws Exception {
 
         // Initialize the database
         userRepository.save(EntityTestUtil.createDefaultUser1());
@@ -157,12 +159,12 @@ public class NewsFactResourceITest {
         newsFactRepository.save(newsFact);
 
         // Then
-        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/unexistingId").accept(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/unexistingId").accept(MediaType.APPLICATION_JSON));
 
         // Assert
         resultActions
-                .andExpect(status().isBadRequest())
-                .andExpect(header().string("X-skispasseApp-error", "Wrong news fact id!"));
+                .andExpect(status().isNotFound())
+                .andExpect(header().string("X-skispasseApp-error", "Not Found: News fact with id 'unexistingId' was not found!"));
     }
 
     @Test
@@ -182,8 +184,7 @@ public class NewsFactResourceITest {
         newsFact2.setOwner(poloLogin);
         newsFactRepository.saveAll(Arrays.asList(newsFact1, newsFact2));
 
-        // Call /newsFact/contributor/{login} controller GET method
-        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/contributor").accept(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
 
         // Assert
         resultActions
@@ -195,18 +196,29 @@ public class NewsFactResourceITest {
     }
 
     @Test
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsNotAuthenticated() throws Exception {
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
+        resultActions.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = "Skisp", roles = {"ADMIN"})
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyAdmin() throws Exception {
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
+        resultActions.andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "Skisp", roles = {"USER"})
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyUser() throws Exception {
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
+        resultActions.andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(username = "Skisp", roles = {"USER", "ADMIN"})
-    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsNotContributor() throws Exception {
-
-        // Initialize the database
-        User aUser = createDefaultUser();
-        aUser.setLogin("Skisp");
-        userRepository.save(aUser);
-
-        // Call /newsFact/{newsFactId} controller GET method
-        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFact/contributor").accept(MediaType.APPLICATION_JSON));
-
-        // Assert
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsAdminAndUser() throws Exception {
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
         resultActions.andExpect(status().isForbidden());
     }
 
@@ -241,8 +253,7 @@ public class NewsFactResourceITest {
         MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "video/mp4", "video file content".getBytes());
         String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
 
-        // When: Call /newsFact controller POST method
-        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
                 .file(videoMultiPartFile)
                 .param("newsFactJson", newsFactJson));
 
@@ -294,8 +305,7 @@ public class NewsFactResourceITest {
         MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "video/mp4", "video file content".getBytes());
         String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
 
-        // When: Call /newsFact controller POST method
-        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
                 .file(videoMultiPartFile)
                 .param("newsFactJson", newsFactJson));
 
@@ -314,7 +324,7 @@ public class NewsFactResourceITest {
         int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
 
         // Then
-        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFact/{id}", DEFAULT_NEWS_FACT_ID)
+        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", DEFAULT_NEWS_FACT_ID)
                 .accept(APPLICATION_JSON_UTF8));
 
         // Assert
@@ -328,45 +338,42 @@ public class NewsFactResourceITest {
 
     @Test
     @WithMockUser(username = "Titi", roles = {"CONTRIBUTOR"})
-    public void deleteNewsFact_shouldThrowBadRequestWhenIdDoesntExist() throws Exception {
+    public void deleteNewsFact_shouldThrowNotFoundIfGivenIdDoesntExist() throws Exception {
 
-        // Initialize the database
         newsFactRepository.save(createDefaultNewsFact());
         int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
 
-        // Then
-        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFact/{id}", "unexistingId")
+        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", "unexistingId")
                 .accept(APPLICATION_JSON_UTF8));
 
-        // Assert
-        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(status().isNotFound());
 
-        // Validate the database is empty
         assertThat(newsFactRepository.findAll()).hasSize(databaseSizeBeforeDelete);
     }
 
     @Test
-    @WithMockUser(username = "Titi", roles = {"CONTRIBUTOR"})
-    public void deleteNewsFact_shouldThrowBadRequestWhenLoggedUserIsNotOwner() throws Exception {
+    @WithMockUser(username = "Mandela", roles = {"CONTRIBUTOR"})
+    public void deleteNewsFact_shouldThrowNotFoundIfLoggedUserIsNotOwner() throws Exception {
 
         // Initialize the database
         NewsFact newsFact = createDefaultNewsFact();
-        newsFact.setOwner("Toto");
+        newsFact.setOwner("Mélenchon");
         newsFactRepository.save(newsFact);
         int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
 
         // Then
-        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFact/{id}", DEFAULT_NEWS_FACT_ID)
+        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", DEFAULT_NEWS_FACT_ID)
                 .accept(APPLICATION_JSON_UTF8));
 
         // Assert
-        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(status().isNotFound());
 
         // Validate the database is empty
         assertThat(newsFactRepository.findAll()).hasSize(databaseSizeBeforeDelete);
     }
 
     @Test
+    @WithMockUser(roles = {"CONTRIBUTOR"})
     void update_shouldThrowExceptionWhenIdIsNull() throws Exception {
 
         //Given
@@ -381,7 +388,7 @@ public class NewsFactResourceITest {
                 .build();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
@@ -389,7 +396,7 @@ public class NewsFactResourceITest {
         resultActions
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(header().string("X-skispasseApp-error", "A news fact to update must have an id!"));
+                .andExpect(header().string("X-skispasseApp-error", "Bad Request: A news fact to update must have an id!"));
     }
 
     @Test
@@ -407,7 +414,7 @@ public class NewsFactResourceITest {
                 .build();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
@@ -432,7 +439,7 @@ public class NewsFactResourceITest {
                 .build();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
@@ -457,7 +464,7 @@ public class NewsFactResourceITest {
                 .build();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
@@ -482,7 +489,7 @@ public class NewsFactResourceITest {
                 .build();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
@@ -507,7 +514,7 @@ public class NewsFactResourceITest {
                 .build();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
@@ -532,7 +539,7 @@ public class NewsFactResourceITest {
                 .build();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
 
@@ -549,7 +556,7 @@ public class NewsFactResourceITest {
         NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(newsFactDetailDto)));
 
@@ -565,7 +572,7 @@ public class NewsFactResourceITest {
         NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(newsFactDetailDto)));
 
@@ -575,7 +582,7 @@ public class NewsFactResourceITest {
 
     @Test
     @WithMockUser(username = "Mandela", roles = {"CONTRIBUTOR"})
-    void update_shouldThrowBadRequestWhenConnectedUserIsNotOwner() throws Exception {
+    void update_shouldThrowNotFoundIfConnectedUserIsNotOwner() throws Exception {
 
         //Given
         newsCategoryRepository.save(EntityTestUtil.createDefaultNewsCategory());
@@ -586,12 +593,12 @@ public class NewsFactResourceITest {
         lulaNewsFactDto.setId(lulaNewsFact.getId()); //The DTO and the Domain news facts share the same id
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(lulaNewsFactDto)));
 
         // Then
-        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(status().isNotFound());
     }
 
     @Test
@@ -630,7 +637,7 @@ public class NewsFactResourceITest {
                 .build();
 
         // When
-        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFact")
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(toUpdateNewsFact)));
 

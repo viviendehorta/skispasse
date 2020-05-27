@@ -1,7 +1,6 @@
 package vdehorta.service;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -9,9 +8,7 @@ import vdehorta.security.RoleEnum;
 import vdehorta.service.errors.AuthenticationRequiredException;
 import vdehorta.service.errors.MissingRoleException;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Utility Service for Spring Security.
@@ -23,39 +20,32 @@ import java.util.stream.Collectors;
 public class AuthenticationService {
 
     /**
-     * Get the login of the current user or null if nobody is connected.
-     * Should always be called after asserting user is authenticated to avoid unexpected null value
+     * Get the login of the authenticated user.
      *
-     * @return the login of the current user, null  if nobody is connected
+     * @return the login of the authenticated user
+     * @throws AuthenticationRequiredException If nobody is authenticated
      */
-    public String getCurrentUserLoginOrNull() {
+    public String getCurrentUserLoginOrThrowError() throws AuthenticationRequiredException {
         Authentication authentication = getAuthentication();
         if (authentication == null) {
-            return null;
+            throw new AuthenticationRequiredException();
         }
         return getLogin(authentication);
     }
 
     /**
      * Get the login of the current user in an Optional object.
+     *
      * @return an Optional containing the login of the current user or empty if nobody is connected
      */
     public Optional<String> getCurrentUserLoginOptional() {
         return getAuthenticationOptional().map(this::getLogin);
     }
 
-    public void assertCurrentUserHasRole(RoleEnum requiredRole) throws AuthenticationRequiredException, MissingRoleException {
-        Authentication authentication = getAuthentication();
-        if (authentication == null) {
-            throw new AuthenticationRequiredException();
-        }
-        if (!getRoles(authentication).contains(requiredRole.getValue())) {
-            throw new MissingRoleException(requiredRole);
-        }
-    }
-
     /**
+     * /**
      * Get the SpringSecurity authentication
+     *
      * @return The SpringSecurity authentication or null if user is not authenticated
      */
     private Authentication getAuthentication() {
@@ -64,6 +54,7 @@ public class AuthenticationService {
 
     /**
      * Get the SpringSecurity authentication in an Optional
+     *
      * @return TAn Optional containing he SpringSecurity authentication or empty if user is not authenticated
      */
     private Optional<Authentication> getAuthenticationOptional() {
@@ -72,6 +63,7 @@ public class AuthenticationService {
 
     /**
      * Extract the login from the given authentication object
+     *
      * @param authentication
      * @return the login contained in the given authentication object
      */
@@ -85,14 +77,10 @@ public class AuthenticationService {
         return null;
     }
 
-    /**
-     * Get a stream containing all the roles (authorities for SpringSecurity) contained in the given Authentication object
-     * @param authentication
-     * @return a stream containing all the roles (authorities for SpringSecurity) contained in the given Authentication object
-     */
-    private List<String> getRoles(Authentication authentication) {
-        return authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+    public void assertAuthenticationRole(RoleEnum requiredRole) throws AuthenticationRequiredException, MissingRoleException {
+        Authentication authentication = getAuthenticationOptional().orElseThrow(AuthenticationRequiredException::new);
+        if (authentication.getAuthorities().stream().noneMatch(authority -> authority.getAuthority().equals(requiredRole.getValue()))) {
+            throw new MissingRoleException(requiredRole);
+        }
     }
 }

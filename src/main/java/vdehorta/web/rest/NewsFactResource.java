@@ -15,30 +15,35 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
+import vdehorta.service.AuthenticationService;
 import vdehorta.service.NewsFactService;
 import vdehorta.web.rest.errors.BadRequestAlertException;
 import vdehorta.web.rest.util.HeaderUtil;
 import vdehorta.web.rest.util.PaginationUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import static vdehorta.security.RoleEnum.CONTRIBUTOR;
+
 @RestController
-@RequestMapping("/newsFact")
+@RequestMapping("/newsFacts")
 public class NewsFactResource {
 
     private final Logger log = LoggerFactory.getLogger(NewsFactResource.class);
 
     private String applicationName;
-
     private NewsFactService newsFactService;
+    private AuthenticationService authenticationService;
 
-    public NewsFactResource(ApplicationProperties applicationProperties, NewsFactService newsFactService) {
+    public NewsFactResource(ApplicationProperties applicationProperties, NewsFactService newsFactService, AuthenticationService authenticationService) {
         this.applicationName = applicationProperties.getClientAppName();
         this.newsFactService = newsFactService;
+        this.authenticationService = authenticationService;
     }
 
     /**
@@ -62,14 +67,20 @@ public class NewsFactResource {
     }
 
     /**
-     * {@code GET /contributor/{login}} : Get a list containing all news facts of the current user, if contributor.
+     * {@code GET /contributor} : Get a list containing all news facts of the current user, if contributor.
      *
      * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body news facts of the current  user, if contributor.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body news facts of the current  user, if contributor;
+     * If user is not authenticated, the {@link ResponseEntity} has status {@code 401 (UNAUTHORIZED)}
+     * If user is not contributor, the {@link ResponseEntity} has status {@code 403 (FORBIDDEN)}
      */
     @GetMapping(value = "/contributor", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<NewsFactDetailDto>> getMyNewsFacts(Pageable pageable) {
-        Page<NewsFactDetailDto> ownerNewsFactPage = newsFactService.getMyNewsFacts(pageable);
+    public ResponseEntity<List<NewsFactDetailDto>> getMyNewsFacts(HttpServletRequest req, Pageable pageable) {
+        log.debug("REST request to get current user  news facts");
+
+        authenticationService.assertAuthenticationRole(CONTRIBUTOR);
+
+        Page<NewsFactDetailDto> ownerNewsFactPage = newsFactService.getUserNewsFacts(authenticationService.getCurrentUserLoginOrThrowError(), pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), ownerNewsFactPage);
         return new ResponseEntity<>(ownerNewsFactPage.getContent(), headers, HttpStatus.OK);
     }
@@ -85,23 +96,25 @@ public class NewsFactResource {
     public ResponseEntity<NewsFactDetailDto> createNewsFact(@RequestParam("videoFile") MultipartFile videoFile, @RequestParam("newsFactJson") String newsFactJson) throws URISyntaxException {
         log.debug("REST request to create a news fact : {}", newsFactJson);
 
+        authenticationService.assertAuthenticationRole(CONTRIBUTOR);
+
         NewsFactDetailDto newsFact;
         try {
             newsFact = new ObjectMapper().readValue(newsFactJson, NewsFactDetailDto.class);
         } catch (IOException e) {
-            throw new BadRequestAlertException("News fact data is invalid!", "news-fact", "invalidData");
+            throw new BadRequestAlertException("News fact data is invalid!");
         }
         if (newsFact.getId() != null) {
-            throw new BadRequestAlertException("A news fact to create can't have an id!", "news-fact", "idExists");
+            throw new BadRequestAlertException("A news fact to create can't already have an id!");
         }
 
         //Reset the input news fact video path because browser inits with a fake value
         newsFact.setVideoPath(null);
 
-        NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact, videoFile);
+        NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact, videoFile, authenticationService.getCurrentUserLoginOrThrowError());
         return ResponseEntity
-                .created(new URI("/newsFact/" + createdNewsFact.getId()))
-                .headers(HeaderUtil.createAlert(applicationName, "A news fact was created with id " + createdNewsFact.getId(), createdNewsFact.getId()))
+                .created(new URI("/newsFacts/" + createdNewsFact.getId()))
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "A news fact was created with id " + createdNewsFact.getId()))
                 .body(createdNewsFact);
     }
 
@@ -113,9 +126,14 @@ public class NewsFactResource {
      */
     @DeleteMapping("/{newsFactId}")
     public ResponseEntity<Void> deleteNewsFact(@PathVariable String newsFactId) {
-        log.debug("REST request to delete a news fact: {}", newsFactId);
-        newsFactService.delete(newsFactId);
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "A news fact was deleted with id " + newsFactId, newsFactId)).build();
+        log.debug("REST request to delete the news fact with id: {}", newsFactId);
+
+        authenticationService.assertAuthenticationRole(CONTRIBUTOR);
+        newsFactService.delete(newsFactId, authenticationService.getCurrentUserLoginOrThrowError());
+        return ResponseEntity
+                .noContent()
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "A news fact was deleted with id " + newsFactId))
+                .build();
     }
 
     /**
@@ -129,15 +147,17 @@ public class NewsFactResource {
     public ResponseEntity<NewsFactDetailDto> updateNewsFact(@Valid @RequestBody NewsFactDetailDto newsFact) {
         log.debug("REST request to update a news fact : {}", newsFact);
 
+        authenticationService.assertAuthenticationRole(CONTRIBUTOR);
+
         if (newsFact.getId() == null) {
-            throw new BadRequestAlertException("A news fact to update must have an id!", "news-fact", "idNull");
+            throw new BadRequestAlertException("A news fact to update must have an id!");
         }
 
-        NewsFactDetailDto updated = newsFactService.update(newsFact);
+        NewsFactDetailDto updated = newsFactService.update(newsFact, authenticationService.getCurrentUserLoginOrThrowError());
 
         return ResponseEntity
                 .ok()
-                .headers(HeaderUtil.createAlert(applicationName, "A news fact was updated with id " + newsFact.getId(), newsFact.getId()))
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "A news fact was updated with id " + newsFact.getId()))
                 .body(updated);
     }
 }

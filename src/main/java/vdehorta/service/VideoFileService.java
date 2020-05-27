@@ -26,25 +26,21 @@ public class VideoFileService {
 
     private FileRepository fileRepository;
     private ClockService clockService;
-    private AuthenticationService authenticationService;
 
     public VideoFileService(
             FileRepository videoFileRepository,
-            ClockService clockService,
-            AuthenticationService authenticationService) {
+            ClockService clockService) {
         this.fileRepository = videoFileRepository;
         this.clockService = clockService;
-        this.authenticationService = authenticationService;
     }
 
-    //TODO add file owner
-    public String save(MultipartFile file) throws UnreadableFileContentException {
+    public String save(MultipartFile file, String ownerLogin) throws UnreadableFileContentException {
         log.debug("Save file...");
         ContentTypeEnum contentTypeEnum = validateFileContentType(file.getContentType());
         validateFileSize(file.getSize());
 
         try {
-            return fileRepository.saveVideoFile(file.getBytes(), generateUniqueFilename(contentTypeEnum), file.getContentType());
+            return fileRepository.saveVideoFile(file.getBytes(), generateUniqueFilename(contentTypeEnum, ownerLogin), file.getContentType());
         } catch (IOException e) {
             throw new UnreadableFileContentException("Error while trying to read video file content!", e);
         }
@@ -61,10 +57,9 @@ public class VideoFileService {
     }
 
     //TODO pass the file owner login as parameter and don't call authenticationService.getCurrentUserLoginOrNull()
-    private String generateUniqueFilename(ContentTypeEnum contentTypeEnum) {
+    private String generateUniqueFilename(ContentTypeEnum contentTypeEnum, String ownerLogin) {
         String dateString = COMPACT_DATE_TIME_FORMATTER.format(clockService.now());
-        String userLogin = authenticationService.getCurrentUserLoginOrNull();
-        return userLogin + "_" + dateString + "." + contentTypeEnum.getExtension();
+        return ownerLogin + "_" + dateString + "." + contentTypeEnum.getExtension();
     }
 
     protected enum ContentTypeEnum {

@@ -9,7 +9,7 @@ import {environment} from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  private resourceUrl = environment.serverUrl + 'api/account';
+  private resourceUrl = environment.serverUrl + 'account';
   private userIdentity: Account;
   private authenticated = false;
   private authenticationState = new Subject<any>();
@@ -23,8 +23,8 @@ export class AccountService {
     return this.http.get<Account>(this.resourceUrl);
   }
 
-  save(account: Account): Observable<Account> {
-    return this.http.post<Account>(this.resourceUrl, account);
+  update(account: Account): Observable<Account> {
+    return this.http.put<Account>(this.resourceUrl, account);
   }
 
   authenticate(identity) {
