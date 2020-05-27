@@ -5,29 +5,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vdehorta.config.ApplicationProperties;
-import vdehorta.config.Constants;
 import vdehorta.domain.User;
-import vdehorta.dto.UserDTO;
-import vdehorta.repository.UserRepository;
+import vdehorta.dto.UserDto;
+import vdehorta.security.RoleEnum;
+import vdehorta.service.AuthenticationService;
 import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.BadRequestAlertException;
 import vdehorta.web.rest.errors.EmailAlreadyUsedException;
-import vdehorta.web.rest.errors.LoginAlreadyUsedException;
+import vdehorta.web.rest.errors.LoginAlreadyUsedAlertException;
 import vdehorta.web.rest.util.HeaderUtil;
 import vdehorta.web.rest.util.PaginationUtil;
-import vdehorta.web.rest.util.ResponseUtil;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing users.
@@ -54,25 +50,24 @@ import java.util.Optional;
  * Another option would be to have a specific JPA entity graph to handle this case.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/users")
 public class UserResource {
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
-    private String clientAppName;
+    private String applicationName;
 
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
-    private final UserRepository userRepository;
-
-    public UserResource(ApplicationProperties applicationProperties, UserService userService, UserRepository userRepository) {
-        this.clientAppName = applicationProperties.getClientAppName();
+    public UserResource(ApplicationProperties applicationProperties, UserService userService, AuthenticationService authenticationService) {
+        this.applicationName = applicationProperties.getClientAppName();
         this.userService = userService;
-        this.userRepository = userRepository;
+        this.authenticationService = authenticationService;
     }
 
     /**
-     * {@code POST  /users}  : Creates a new user.
+     * {@code POST  /user}  : Creates a new user.
      * <p>
      * Creates a new user if the login and email are not already used, and sends an
      * mail with an activation link.
@@ -80,53 +75,44 @@ public class UserResource {
      *
      * @param userDTO the user to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the login or email is already in use.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @PostMapping("/users")
-    @PreAuthorize("hasRole(T(vdehorta.security.RoleEnum).ADMIN.value)")
-    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException {
-        log.debug("REST request to save User : {}", userDTO);
+    @PostMapping
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDTO) throws URISyntaxException {
+        log.debug("REST request to create a user : {}", userDTO);
+
+        authenticationService.assertAuthenticationRole(RoleEnum.ADMIN);
 
         if (userDTO.getId() != null) {
-            throw new BadRequestAlertException("A new user cannot already have an ID", "userManagement", "idExists");
-            // Lowercase the user login before comparing with database
-        } else if (userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).isPresent()) {
-            throw new LoginAlreadyUsedException();
-        } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
-            throw new EmailAlreadyUsedException();
-        } else {
-            User newUser = userService.createUser(userDTO);
-            return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlert(clientAppName,  "A user was created with id " + newUser.getLogin(), newUser.getLogin()))
-                .body(newUser);
+            throw new BadRequestAlertException("A new user cannot already have an id!");
         }
+
+        UserDto newUser = userService.createUser(userDTO);
+        return ResponseEntity
+                .created(new URI("/users/" + newUser.getLogin()))
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "A user was created with login " + newUser.getLogin()))
+                .body(newUser);
     }
 
     /**
-     * {@code PUT /users} : Updates an existing User.
+     * {@code PUT /user} : Updates an existing User.
      *
      * @param userDTO the user to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated user.
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already in use.
-     * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already in use.
+     * @throws LoginAlreadyUsedAlertException {@code 400 (Bad Request)} if the login is already in use.
      */
-    @PutMapping("/users")
-    @PreAuthorize("hasRole(T(vdehorta.security.RoleEnum).ADMIN.value)")
-    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) {
-        log.debug("REST request to update User : {}", userDTO);
-        Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
-        if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
-            throw new EmailAlreadyUsedException();
-        }
-        existingUser = userRepository.findOneByLogin(userDTO.getLogin().toLowerCase());
-        if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
-            throw new LoginAlreadyUsedException();
-        }
-        Optional<UserDTO> updatedUser = userService.updateUser(userDTO);
+    @PutMapping
+    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDTO) {
+        log.debug("REST request to update a user: {}", userDTO);
 
-        return ResponseUtil.wrapOrNotFound(updatedUser,
-                HeaderUtil.createAlert(clientAppName, "A user was updated with id " + userDTO.getLogin(), userDTO.getLogin()));
+        authenticationService.assertAuthenticationRole(RoleEnum.ADMIN);
+        UserDto updatedUser = userService.updateUser(userDTO);
+        return ResponseEntity
+                .ok()
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "A user with login '" + updatedUser.getLogin() + "' was updated."))
+                .body(updatedUser);
     }
 
     /**
@@ -135,21 +121,29 @@ public class UserResource {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
-    @GetMapping("/users")
-    @PreAuthorize("hasRole(T(vdehorta.security.RoleEnum).ADMIN.value)")
-    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable) {
-        final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
+    @GetMapping("/all")
+    public ResponseEntity<List<UserDto>> getAllUsers(Pageable pageable) {
+        log.debug("REST request to get all users");
+
+        authenticationService.assertAuthenticationRole(RoleEnum.ADMIN);
+        final Page<UserDto> page = userService.getAllUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(page.getContent());
     }
 
     /**
-     * Gets a list of all roles.
+     * {@code GET /users/roles} : get a list of all roles.
+     *
      * @return a string list of all roles.
      */
-    @GetMapping("/users/authorities")
-    @PreAuthorize("hasRole(T(vdehorta.security.RoleEnum).ADMIN.value)")
-    public List<String> getAuthorities() {
+    @GetMapping("/roles")
+    public List<String> getRoles() {
+        log.debug("REST request to get list of all roles");
+
+        authenticationService.assertAuthenticationRole(RoleEnum.ADMIN);
         return userService.getAuthorities();
     }
 
@@ -157,14 +151,14 @@ public class UserResource {
      * {@code GET /users/:login} : get the "login" user.
      *
      * @param login the login of the user to find.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the matching user, or with status {@code 403 (Bad Request)}.
      */
-    @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable String login) {
+    @GetMapping("/{login}")
+    public UserDto getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
-        return ResponseUtil.wrapOrNotFound(
-            userService.getUserWithAuthoritiesByLogin(login)
-                .map(UserDTO::new));
+
+        authenticationService.assertAuthenticationRole(RoleEnum.ADMIN);
+        return userService.getUser(login);
     }
 
     /**
@@ -173,11 +167,15 @@ public class UserResource {
      * @param login the login of the user to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
-    @PreAuthorize("hasRole(T(vdehorta.security.RoleEnum).ADMIN.value)")
+    @DeleteMapping("/{login}")
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
+
+        authenticationService.assertAuthenticationRole(RoleEnum.ADMIN);
         userService.deleteUser(login);
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(clientAppName,  "A user was deleted with id " + login, login)).build();
+        return ResponseEntity
+                .noContent()
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "A user was deleted with id "))
+                .build();
     }
 }

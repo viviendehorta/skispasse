@@ -2,8 +2,8 @@ package vdehorta.service.errors;
 
 public class LoginAlreadyUsedException extends RuntimeException {
 
-    public LoginAlreadyUsedException() {
-        super("User login already used!");
+    public LoginAlreadyUsedException(String login) {
+        super("User login '" + login + "' is already used!");
     }
 
 }

@@ -36,7 +36,7 @@ export class NewsFactService {
   getByUser(userLogin: string, pagingParams?: any): Observable<INewsFactPage> {
     const httpPagingOptions = createHttpPagingOptions(pagingParams);
     return this.http
-      .get<any[]>(this.resourceUrl + 'contributor/' + userLogin, {
+      .get<any[]>(this.resourceUrl + 'contributor', {
         params: httpPagingOptions,
         observe: 'response'
       })

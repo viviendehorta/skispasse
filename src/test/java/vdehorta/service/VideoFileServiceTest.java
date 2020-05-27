@@ -22,15 +22,13 @@ class VideoFileServiceTest {
     private FileRepository fileRepositoryMock;
     private ClockService clockServiceMock;
     private UserService userServiceMock;
-    private AuthenticationService authenticationServiceMock;
 
     @BeforeEach
     public void setup() {
         fileRepositoryMock = mock(FileRepository.class);
         clockServiceMock = mock(ClockService.class);
         userServiceMock = mock(UserService.class);
-        authenticationServiceMock = mock(AuthenticationService.class);
-        videoFileService = new VideoFileService(fileRepositoryMock, clockServiceMock, authenticationServiceMock);
+        videoFileService = new VideoFileService(fileRepositoryMock, clockServiceMock);
     }
 
     @Test
@@ -42,7 +40,7 @@ class VideoFileServiceTest {
         when(tooBigFileMock.getSize()).thenReturn(VideoFileService.MAX_FILE_SIZE_IN_BYTE + 1);
 
         //Assert-Thrown
-        assertThatThrownBy(() -> videoFileService.save(tooBigFileMock))
+        assertThatThrownBy(() -> videoFileService.save(tooBigFileMock, "aUser"))
                 .isInstanceOf(VideoFileTooLargeException.class);
     }
 
@@ -55,7 +53,7 @@ class VideoFileServiceTest {
         when(unsupportedFileMock.getContentType()).thenReturn("image/jpg");
 
         //Assert-Thrown
-        assertThatThrownBy(() -> videoFileService.save(unsupportedFileMock))
+        assertThatThrownBy(() -> videoFileService.save(unsupportedFileMock, "aUser"))
                 .isInstanceOf(UnsupportedFileContentTypeException.class);
     }
 
@@ -69,7 +67,7 @@ class VideoFileServiceTest {
         when(unreadableFileMock.getBytes()).thenThrow(IOException.class);
 
         //Assert-Thrown
-        assertThatThrownBy(() -> videoFileService.save(unreadableFileMock))
+        assertThatThrownBy(() -> videoFileService.save(unreadableFileMock, "aUser"))
                 .isInstanceOf(UnreadableFileContentException.class);
     }
 }

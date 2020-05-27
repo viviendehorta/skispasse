@@ -42,7 +42,7 @@ export class SettingsComponent implements OnInit {
 
   save() {
     const settingsAccount = this.accountFromForm();
-    this.accountService.save(settingsAccount).subscribe(
+    this.accountService.update(settingsAccount).subscribe(
       () => {
         this.error = null;
         this.success = 'Information was saved.';

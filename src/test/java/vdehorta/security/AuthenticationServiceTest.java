@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import vdehorta.service.AuthenticationService;
+import vdehorta.service.errors.AuthenticationRequiredException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,22 +24,21 @@ public class AuthenticationServiceTest {
     }
 
     @Test
-    public void getCurrentUserLoginOrNull_shouldReturnTheAuthenticatedUserLogin() {
+    public void getCurrentUserLoginOrThrowError_shouldReturnTheAuthenticatedUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
         SecurityContextHolder.setContext(securityContext);
 
-        String login = authenticationService.getCurrentUserLoginOrNull();
+        String login = authenticationService.getCurrentUserLoginOrThrowError();
 
         assertThat(login).contains("admin");
     }
 
     @Test
-    public void getCurrentUserLoginOrNull_shouldReturnNullIfNobodyIsAuthenticated() {
+    public void getCurrentUserLoginOrThrowError_shouldRThrowErrorIfNobodyIsAuthenticated() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         SecurityContextHolder.setContext(securityContext);
-
-        assertThat(authenticationService.getCurrentUserLoginOrNull()).isNull();
+        assertThatThrownBy(() -> authenticationService.getCurrentUserLoginOrThrowError()).isInstanceOf(AuthenticationRequiredException.class);
     }
 
 }

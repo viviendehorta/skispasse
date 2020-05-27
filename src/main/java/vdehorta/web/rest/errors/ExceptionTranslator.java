@@ -15,8 +15,7 @@ import org.zalando.problem.spring.web.advice.ProblemHandling;
 import org.zalando.problem.spring.web.advice.security.SecurityAdviceTrait;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import vdehorta.config.ApplicationProperties;
-import vdehorta.service.errors.LoginAlreadyUsedException;
-import vdehorta.service.errors.MissingRoleException;
+import vdehorta.service.errors.*;
 import vdehorta.web.rest.util.HeaderUtil;
 
 import javax.annotation.Nonnull;
@@ -108,13 +107,13 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     @ExceptionHandler
     public ResponseEntity<Problem> handleEmailAlreadyUsedException(vdehorta.service.errors.EmailAlreadyUsedException ex, NativeWebRequest request) {
         EmailAlreadyUsedException problem = new EmailAlreadyUsedException();
-        return create(problem, request, HeaderUtil.createFailureAlert(clientAppName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(clientAppName, problem.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleUsernameAlreadyUsedException(LoginAlreadyUsedException ex, NativeWebRequest request) {
-        vdehorta.web.rest.errors.LoginAlreadyUsedException problem = new vdehorta.web.rest.errors.LoginAlreadyUsedException();
-        return create(problem, request, HeaderUtil.createFailureAlert(clientAppName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
+        LoginAlreadyUsedAlertException problem = new LoginAlreadyUsedAlertException();
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(clientAppName, problem.getMessage()));
     }
 
     @ExceptionHandler
@@ -123,7 +122,7 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
     @ExceptionHandler
     public ResponseEntity<Problem> handleBadRequestAlertException(BadRequestAlertException ex, NativeWebRequest request) {
-        return create(ex, request, HeaderUtil.createFailureAlert(clientAppName, false, ex.getEntityName(), ex.getErrorKey(), ex.getMessage()));
+        return create(ex, request, HeaderUtil.createFailureAlertHeaders(clientAppName, ex.getMessage()));
     }
 
     @ExceptionHandler
@@ -136,9 +135,16 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
 
     @ExceptionHandler
-    public ResponseEntity<Problem> handleWrongNewsFactIdException(vdehorta.service.errors.WrongNewsFactIdException ex, NativeWebRequest request) {
-        WrongNewsFactIdException problem = new WrongNewsFactIdException();
-        return create(problem, request, HeaderUtil.createFailureAlert(clientAppName,  false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage()));
+    public ResponseEntity<Problem> handleNewsFactNotFoundException(NewsFactNotFoundException ex, NativeWebRequest request) {
+        NewsFactNotFoundAlertException problem = new NewsFactNotFoundAlertException(ex.getNewsFactId());
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(clientAppName, problem.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleNewsFactAccessForbiddenException(NewsFactAccessForbiddenException ex, NativeWebRequest request) {
+        //Generate a NOT FOUND http response like "not found in your news facts"
+        NewsFactNotFoundAlertException problem = new NewsFactNotFoundAlertException(ex.getNewsFactId());
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(clientAppName, problem.getMessage()));
     }
 
     @ExceptionHandler
@@ -148,8 +154,14 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
 
     @ExceptionHandler
-    public ResponseEntity<Problem> handleForbiddenActionException(MissingRoleException ex, NativeWebRequest request) {
+    public ResponseEntity<Problem> handleMissingRoleException(MissingRoleException ex, NativeWebRequest request) {
         MissingRoleAlertException problem = new MissingRoleAlertException(ex.getRequiredRole());
+        return create(ex, problem, request);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleUserNotFoundxception(UserNotFoundException ex, NativeWebRequest request) {
+        UserNotFoundAlertException problem = new UserNotFoundAlertException(ex.getLogin());
         return create(ex, problem, request);
     }
 }

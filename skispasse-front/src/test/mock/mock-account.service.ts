@@ -15,7 +15,7 @@ export class MockAccountService extends SpyObject {
     super(AccountService);
 
     this.getSpy = this.spy('get').andReturn(this);
-    this.saveSpy = this.spy('save').andReturn(this);
+    this.saveSpy = this.spy('update').andReturn(this);
     this.authenticateSpy = this.spy('authenticate').andReturn(this);
     this.identitySpy = this.spy('identity').andReturn(of(null));
     this.getAuthenticationStateSpy = this.spy('getAuthenticationState').andReturn(of(null));

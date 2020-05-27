@@ -1,13 +1,13 @@
 package vdehorta.web.rest.vm;
 
-import vdehorta.dto.UserDTO;
+import vdehorta.dto.UserDto;
 
 import javax.validation.constraints.Size;
 
 /**
  * View Model extending the UserDTO, which is meant to be used in the user management UI.
  */
-public class ManagedUserVM extends UserDTO {
+public class ManagedUserVM extends UserDto {
 
     public static final int PASSWORD_MIN_LENGTH = 4;
 

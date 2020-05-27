@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.SkispasseApp;
 import vdehorta.domain.NewsCategory;
@@ -67,8 +68,9 @@ public class NewsCategoryResourceITest {
         NewsCategory newsCategory2 = createBasicNewsCategory("2");
         newsCategoryRepository.saveAll(Arrays.asList(newsCategory1, newsCategory2));
 
-        // Call /newsCategory/all controller methodn
-        restNewsCategoryMockMvc.perform(get("/newsCategory/all").accept(MediaType.APPLICATION_JSON))
+        ResultActions resultActions = restNewsCategoryMockMvc.perform(get("/newsCategories/all").accept(MediaType.APPLICATION_JSON));
+
+        resultActions
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())

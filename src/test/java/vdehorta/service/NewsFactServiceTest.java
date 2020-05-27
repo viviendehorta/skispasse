@@ -4,27 +4,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import vdehorta.EntityTestUtil;
+import vdehorta.domain.NewsFact;
+import vdehorta.dto.NewsCategoryDto;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.repository.NewsFactRepository;
-import vdehorta.service.errors.AuthenticationRequiredException;
-import vdehorta.service.errors.MissingRoleException;
+import vdehorta.service.errors.NewsFactAccessForbiddenException;
 import vdehorta.service.errors.WrongNewsCategoryIdException;
-import vdehorta.service.errors.WrongNewsFactIdException;
+import vdehorta.service.errors.NewsFactNotFoundException;
 import vdehorta.service.mapper.NewsFactMapper;
 
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
-import static vdehorta.security.RoleEnum.*;
 
-class NewsFactServiceTest extends AbstractMockedAuthenticationTest {
+class NewsFactServiceTest {
 
     private NewsFactService newsFactService;
     private NewsFactRepository newsFactRepositoryMock;
-    private UserService userServiceMock;
     private NewsCategoryService newsCategoryServiceMock;
     private NewsFactMapper newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
     private ClockService clockService = new ClockService();
@@ -32,23 +31,19 @@ class NewsFactServiceTest extends AbstractMockedAuthenticationTest {
 
     @BeforeEach
     public void setup() {
-        super.setup();
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
-        userServiceMock = Mockito.mock(UserService.class);
         newsCategoryServiceMock = Mockito.mock(NewsCategoryService.class);
         videoFileServiceMock = Mockito.mock(VideoFileService.class);
         newsFactService = new NewsFactService(
                 newsFactRepositoryMock,
                 newsFactMapper,
-                userServiceMock,
                 newsCategoryServiceMock,
                 clockService,
-                videoFileServiceMock,
-                authenticationServiceMock);
+                videoFileServiceMock);
     }
 
     @Test
-    void getById_shouldThrowWrongNewsFactIdExceptionWhenGivenIdDoesNotExist() {
+    void getById_shouldThrowErrorIfGivenIdDoesNotExist() {
 
         //Given
         final String unexistingId = "unexisting_id";
@@ -56,91 +51,36 @@ class NewsFactServiceTest extends AbstractMockedAuthenticationTest {
 
         //Assert-Thrown
         assertThatThrownBy(() -> newsFactService.getById(unexistingId))
-                .isInstanceOf(WrongNewsFactIdException.class);
+                .isInstanceOf(NewsFactNotFoundException.class);
     }
 
     @Test
-    void getMyNewsFacts_shouldThrowErrorIfUserIsNotLoggedIn() {
-        super.mockAnonymousUser();
-        assertThatThrownBy(() -> newsFactService.getMyNewsFacts(null)).isInstanceOf(AuthenticationRequiredException.class);
-    }
-
-    @Test
-    void getMyNewsFacts_shouldThrowForbiddenActionExceptionForNoneContributorUsers() {
-
-        //USER role
-        super.mockAuthenticated(USER);
-        assertThatThrownBy(() -> newsFactService.getMyNewsFacts(null)).isInstanceOf(MissingRoleException.class);
-
-        Mockito.reset(authenticationServiceMock);
-
-        //ADMIN role
-        super.mockAuthenticated(ADMIN);
-        assertThatThrownBy(() -> newsFactService.getMyNewsFacts(null)).isInstanceOf(MissingRoleException.class);
-
-        Mockito.reset(authenticationServiceMock);
-
-        //Various roles
-        super.mockAuthenticated(Arrays.asList(USER, ADMIN));
-        assertThatThrownBy(() -> newsFactService.getMyNewsFacts(null)).isInstanceOf(MissingRoleException.class);
-    }
-
-    @Test
-    void update_shouldThrowAuthenticationRequiredExceptionIfUserIsNotLoggedIn() {
-        super.mockAnonymousUser();
-        assertThatThrownBy(() -> newsFactService.update(new NewsFactDetailDto())).isInstanceOf(AuthenticationRequiredException.class);
-    }
-
-    @Test
-    void update_shouldThrowForbiddenActionExceptionForNoneContributorUsers() {
-
-        //USER role
-        super.mockAuthenticated(USER);
-        assertThatThrownBy(() -> newsFactService.update(new NewsFactDetailDto())).isInstanceOf(MissingRoleException.class);
-
-        Mockito.reset(authenticationServiceMock);
-
-        //ADMIN role
-        super.mockAuthenticated(ADMIN);
-        assertThatThrownBy(() -> newsFactService.update(new NewsFactDetailDto())).isInstanceOf(MissingRoleException.class);
-
-        Mockito.reset(authenticationServiceMock);
-
-        //Various roles
-        super.mockAuthenticated(Arrays.asList(USER, ADMIN));
-        assertThatThrownBy(() -> newsFactService.update(new NewsFactDetailDto())).isInstanceOf(MissingRoleException.class);
-    }
-
-    @Test
-    void update_shouldThrowExceptionIfNewsFactIdIsNull() {
+    void update_shouldThrowErrorIfNewsFactIdIsNull() {
         NewsFactDetailDto nullIdNewsFact = new NewsFactDetailDto.Builder().id(null).build();
-        assertThatThrownBy(() -> newsFactService.update(nullIdNewsFact)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> newsFactService.update(nullIdNewsFact, "Mandela")).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    void update_shouldThrowExceptionIfEventDateFormatIsWrong() {
+    void update_shouldThrowErrorIfEventDateFormatIsWrong() {
 
         //Given
         NewsFactDetailDto.Builder builder = new NewsFactDetailDto.Builder().id("id");
 
-
-        //Assert-Thrown
-
         //format dd-MM-yyyy
-        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("17-04-1989").build())).isInstanceOf(DateTimeParseException.class);
+        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("17-04-1989").build(), null)).isInstanceOf(DateTimeParseException.class);
 
         //format dd/MM/yyyy
-        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("17/04/1989").build())).isInstanceOf(DateTimeParseException.class);
+        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("17/04/1989").build(), null)).isInstanceOf(DateTimeParseException.class);
 
         //format yyyy/MM/dd
-        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("1989/04/17").build())).isInstanceOf(DateTimeParseException.class);
+        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("1989/04/17").build(), null)).isInstanceOf(DateTimeParseException.class);
 
         //format yyyy/M/dd
-        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("1989/4/17").build())).isInstanceOf(DateTimeParseException.class);
+        assertThatThrownBy(() -> newsFactService.update(builder.eventDate("1989/4/17").build(), null)).isInstanceOf(DateTimeParseException.class);
     }
 
     @Test
-    void update_shouldThrowExceptionWhenNewsCategoryIdDoesntExist() {
+    void update_shouldThrowErrorIfNewsCategoryIdDoesntExist() {
         String unexistingCategoryId = "unexisting";
 
         //Given
@@ -152,77 +92,50 @@ class NewsFactServiceTest extends AbstractMockedAuthenticationTest {
                 .build();
 
         //Assert-Thrown
-        assertThatThrownBy(() -> newsFactService.update(toUpdateNewsFact)).isInstanceOf(WrongNewsCategoryIdException.class);
+        assertThatThrownBy(() -> newsFactService.update(toUpdateNewsFact, null)).isInstanceOf(WrongNewsCategoryIdException.class);
     }
 
     @Test
-    void create_shouldThrowErrorIfUserIsNotLoggedIn() {
-        super.mockAnonymousUser();
-        assertThatThrownBy(() -> newsFactService.create(null, null)).isInstanceOf(AuthenticationRequiredException.class);
-    }
+    void update_shouldThrowErrorIfGivenLoginDoesntMatchOwner() {
 
-    @Test
-    void create_shouldThrowForbiddenActionExceptionForANoneContributorUsers() {
-
-        //USER
-        super.mockAuthenticated(USER);
-        assertThatThrownBy(() -> newsFactService.create(null, null)).isInstanceOf(MissingRoleException.class);
-
-        Mockito.reset(authenticationServiceMock);
-
-        //ADMIN
-        super.mockAuthenticated(Arrays.asList(ADMIN, USER));
-        assertThatThrownBy(() -> newsFactService.create(null, null)).isInstanceOf(MissingRoleException.class);
-
-        Mockito.reset(authenticationServiceMock);
-
-        //MULTI-ROLES
-        super.mockAuthenticated(Arrays.asList(ADMIN, USER));
-        assertThatThrownBy(() -> newsFactService.create(null, null)).isInstanceOf(MissingRoleException.class);
-    }
-
-    @Test
-    void create_shouldThrowExceptionIfNewsFactIdIsNotNull() {
-        super.mockAuthenticated(CONTRIBUTOR);
-        NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder().id("idExistsAtCreationWtf!").build();
-        assertThatThrownBy(() -> newsFactService.create(newsFact, null)).isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    void delete_shouldThrowErrorIfUserIsNotLoggedIn() {
-        super.mockAnonymousUser();
-        assertThatThrownBy(() -> newsFactService.delete(null)).isInstanceOf(AuthenticationRequiredException.class);
-    }
-
-    @Test
-    void delete_shouldThrowForbiddenActionExceptionForANoneContributorUsers() {
-
-        //USER
-        super.mockAuthenticated(USER);
-        assertThatThrownBy(() -> newsFactService.delete(null)).isInstanceOf(MissingRoleException.class);
-
-        Mockito.reset(authenticationServiceMock);
-
-        //ADMIN
-        super.mockAuthenticated(Arrays.asList(ADMIN, USER));
-        assertThatThrownBy(() -> newsFactService.delete(null)).isInstanceOf(MissingRoleException.class);
-
-        Mockito.reset(authenticationServiceMock);
-
-        //MULTI-ROLES
-        super.mockAuthenticated(Arrays.asList(ADMIN, USER));
-        assertThatThrownBy(() -> newsFactService.delete(null)).isInstanceOf(MissingRoleException.class);
-    }
-
-    @Test
-    void delete_shouldThrowWrongNewsFactIdExceptionWhenIdDoesntExist() {
+        String newsFactId = "newsFactId";
+        String categoryId = "categoryId";
 
         //Given
-        super.mockAuthenticated(CONTRIBUTOR);
-        when(newsFactRepositoryMock.findById("unexistingId")).thenReturn(Optional.empty());
+        NewsFactDetailDto toUpdateNewsFactDto = new NewsFactDetailDto.Builder()
+                .eventDate("1989-04-17")
+                .id(newsFactId)
+                .newsCategoryId(categoryId)
+                .build();
+        NewsFact existingNewsFact = EntityTestUtil.createDefaultNewsFact();
+        existingNewsFact.setOwner("Mandela");
+        when(newsCategoryServiceMock.getById(categoryId)).thenReturn(new NewsCategoryDto.Builder().id(categoryId).build());
+        when(newsFactRepositoryMock.findById(newsFactId)).thenReturn(Optional.of(existingNewsFact));
 
-        //Then
-        assertThatThrownBy(() -> newsFactService.delete("unexistingId")).isInstanceOf(WrongNewsFactIdException.class);
+        //Assert-Thrown
+        assertThatThrownBy(() -> newsFactService.update(toUpdateNewsFactDto, "Picasso")).isInstanceOf(NewsFactAccessForbiddenException.class);
+    }
+
+    @Test
+    void create_shouldThrowErrorIfNewsFactIdIsNotNull() {
+        NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder().id("idExistsAtCreationWtf!").build();
+        assertThatThrownBy(() -> newsFactService.create(newsFact, null, null)).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void delete_shouldThrowErrorIfNewsFactIdDoesntExist() {
+        when(newsFactRepositoryMock.findById("unexistingId")).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> newsFactService.delete("unexistingId", null)).isInstanceOf(NewsFactNotFoundException.class);
+    }
+
+    @Test
+    void delete_shouldThrowErrorIfDeleterIsNotOwner() {
+        String newsFactId = "id";
+        NewsFact toDelete = EntityTestUtil.createDefaultNewsFact();
+        toDelete.setOwner("Van Gogh");
+
+        when(newsFactRepositoryMock.findById(newsFactId)).thenReturn(Optional.of(toDelete));
+        assertThatThrownBy(() -> newsFactService.delete(newsFactId, "Deleter Picasso")).isInstanceOf(NewsFactNotFoundException.class);
     }
 
 }

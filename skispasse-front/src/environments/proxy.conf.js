@@ -2,8 +2,9 @@ const PROXY_CONFIG = [
   {
     context: [
       '/api',
-      '/newsFact',
-      '/newsCategory',
+      '/newsFacts',
+      '/newsCategories',
+      '/users',
     ],
     target: "http://localhost:8080",
     secure: false,
