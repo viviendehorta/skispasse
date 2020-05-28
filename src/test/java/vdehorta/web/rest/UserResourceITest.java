@@ -270,7 +270,7 @@ public class UserResourceITest {
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    public void getUser() throws Exception {
+    public void getUser_caseOk() throws Exception {
         // Initialize the database
         userRepository.save(user);
 
@@ -291,17 +291,17 @@ public class UserResourceITest {
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    public void getNonExistingUser() throws Exception {
+    public void getUser_shouldThrowNotFoundIfLoginDoesntExist() throws Exception {
         restUserMockMvc.perform(get("/users/unknown"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    public void updateUser() throws Exception {
+    public void updateUser_adminShouldSucceedUpdatingAllBasicFields() throws Exception {
         // Initialize the database
         userRepository.save(user);
-        int databaseSizeBeforeUpdate = userRepository.findAll().size();
+        int initialCount = userRepository.findAll().size();
 
         // Update the user
         User updatedUser = userRepository.findById(user.getId()).get();
@@ -329,7 +329,7 @@ public class UserResourceITest {
 
         // Validate the User in the database
         List<User> userList = userRepository.findAll();
-        assertThat(userList).hasSize(databaseSizeBeforeUpdate);
+        assertThat(userList).hasSize(initialCount);
         User testUser = userList.get(userList.size() - 1);
         assertThat(testUser.getFirstName()).isEqualTo(UPDATED_FIRSTNAME);
         assertThat(testUser.getLastName()).isEqualTo(UPDATED_LASTNAME);
@@ -340,7 +340,8 @@ public class UserResourceITest {
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    public void updateUserLogin() throws Exception {
+    public void updateUser_adminShouldSucceedUpdatingLogin() throws Exception {
+
         // Initialize the database
         userRepository.save(user);
         int databaseSizeBeforeUpdate = userRepository.findAll().size();
@@ -383,7 +384,7 @@ public class UserResourceITest {
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    public void updateUserExistingEmail() throws Exception {
+    public void updateUser_shouldThrowBadRequestIfEmailIsAlreadyUsed() throws Exception {
         // Initialize the database with 2 users
         userRepository.save(user);
 
@@ -425,9 +426,10 @@ public class UserResourceITest {
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    public void updateUserExistingLogin() throws Exception {
+    public void updateUser_shouldThrowBadRequestIfLoginIsAlreadyUsed() throws Exception {
         // Initialize the database
         userRepository.save(user);
+        final int initialCount = userRepository.findAll().size();
 
         User anotherUser = new User();
         anotherUser.setLogin("another_login");
@@ -463,14 +465,15 @@ public class UserResourceITest {
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(managedUserVM)))
                 .andExpect(status().isBadRequest());
+        assertThat(userRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    public void deleteUser() throws Exception {
+    public void deleteUser_caseOk() throws Exception {
         // Initialize the database
         userRepository.save(user);
-        int databaseSizeBeforeDelete = userRepository.findAll().size();
+        int initialCount = userRepository.findAll().size();
 
         // Delete the user
         restUserMockMvc.perform(delete("/users/{login}", user.getLogin())
@@ -479,12 +482,12 @@ public class UserResourceITest {
 
         // Validate the database is empty
         List<User> userList = userRepository.findAll();
-        assertThat(userList).hasSize(databaseSizeBeforeDelete - 1);
+        assertThat(userList).hasSize(initialCount - 1);
     }
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    public void getAllAuthorities() throws Exception {
+    public void getAllAuthorities_caseOk() throws Exception {
         restUserMockMvc.perform(get("/users/roles")
                 .accept(APPLICATION_JSON_UTF8)
                 .contentType(APPLICATION_JSON_UTF8))

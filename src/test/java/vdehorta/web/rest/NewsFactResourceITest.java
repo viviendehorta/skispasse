@@ -235,6 +235,7 @@ public class NewsFactResourceITest {
         // Initialize database
         NewsCategory newsCategory = createDefaultNewsCategory1();
         newsCategoryRepository.save(newsCategory);
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto toCreateNewsFact = new NewsFactDetailDto.Builder()
@@ -272,6 +273,8 @@ public class NewsFactResourceITest {
                 .andExpect(jsonPath("$.newsCategoryId", is(newsCategory.getId())))
                 .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())))
                 .andExpect(jsonPath("$.videoPath", isA(String.class)));
+
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount + 1);
     }
 
     @Test
@@ -287,6 +290,7 @@ public class NewsFactResourceITest {
         // Initialize database
         NewsCategory newsCategory = createDefaultNewsCategory1();
         newsCategoryRepository.save(newsCategory);
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto toCreateNewsFact = new NewsFactDetailDto.Builder()
@@ -311,6 +315,7 @@ public class NewsFactResourceITest {
 
         // Then
         resultActions.andExpect(status().isForbidden());
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
@@ -321,7 +326,7 @@ public class NewsFactResourceITest {
         NewsFact newsFact = createDefaultNewsFact();
         newsFact.setOwner("Titi");
         newsFactRepository.save(newsFact);
-        int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
+        int initialCount = newsFactRepository.findAll().size();
 
         // Then
         ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", DEFAULT_NEWS_FACT_ID)
@@ -333,7 +338,7 @@ public class NewsFactResourceITest {
 
         // Validate the database is empty
         List<NewsFact> newsFacts = newsFactRepository.findAll();
-        assertThat(newsFacts).hasSize(databaseSizeBeforeDelete - 1);
+        assertThat(newsFacts).hasSize(initialCount - 1);
     }
 
     @Test
@@ -341,14 +346,14 @@ public class NewsFactResourceITest {
     public void deleteNewsFact_shouldThrowNotFoundIfGivenIdDoesntExist() throws Exception {
 
         newsFactRepository.save(createDefaultNewsFact());
-        int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
+        final int initialCount = newsFactRepository.findAll().size();
 
         ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", "unexistingId")
                 .accept(APPLICATION_JSON_UTF8));
 
         resultActions.andExpect(status().isNotFound());
 
-        assertThat(newsFactRepository.findAll()).hasSize(databaseSizeBeforeDelete);
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
@@ -359,7 +364,7 @@ public class NewsFactResourceITest {
         NewsFact newsFact = createDefaultNewsFact();
         newsFact.setOwner("Mélenchon");
         newsFactRepository.save(newsFact);
-        int databaseSizeBeforeDelete = newsFactRepository.findAll().size();
+        final int initialCount = newsFactRepository.findAll().size();
 
         // Then
         ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", DEFAULT_NEWS_FACT_ID)
@@ -369,12 +374,14 @@ public class NewsFactResourceITest {
         resultActions.andExpect(status().isNotFound());
 
         // Validate the database is empty
-        assertThat(newsFactRepository.findAll()).hasSize(databaseSizeBeforeDelete);
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     @WithMockUser(roles = {"CONTRIBUTOR"})
     void update_shouldThrowExceptionWhenIdIsNull() throws Exception {
+
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
@@ -397,10 +404,13 @@ public class NewsFactResourceITest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(header().string("X-skispasseApp-error", "Bad Request: A news fact to update must have an id!"));
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     void update_shouldThrowExceptionWhenNewsCategoryIsMissing() throws Exception {
+
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
@@ -422,10 +432,13 @@ public class NewsFactResourceITest {
         resultActions
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     void update_shouldThrowExceptionWhenEventDateIsMissing() throws Exception {
+
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
@@ -447,10 +460,13 @@ public class NewsFactResourceITest {
         resultActions
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     void update_shouldThrowExceptionWhenAddressIsMissing() throws Exception {
+
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
@@ -472,10 +488,13 @@ public class NewsFactResourceITest {
         resultActions
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     void update_shouldThrowExceptionWhenCityIsMissing() throws Exception {
+
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
@@ -497,10 +516,13 @@ public class NewsFactResourceITest {
         resultActions
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     void update_shouldThrowExceptionWhenCountryIsMissing() throws Exception {
+
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
@@ -522,10 +544,13 @@ public class NewsFactResourceITest {
         resultActions
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     void update_shouldThrowExceptionWhenLocationCoordinateIsMissing() throws Exception {
+
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
@@ -547,10 +572,13 @@ public class NewsFactResourceITest {
         resultActions
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     void update_shouldThrowUnauthorizedWhenUserIsNotConnected() throws Exception {
+
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
@@ -562,11 +590,14 @@ public class NewsFactResourceITest {
 
         // Then
         resultActions.andExpect(status().isUnauthorized());
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     @WithMockUser(roles = {"USER", "ADMIN"})
     void update_shouldThrowForbiddenWhenConnectedUserIsNotContributor() throws Exception {
+
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
@@ -578,17 +609,47 @@ public class NewsFactResourceITest {
 
         // Then
         resultActions.andExpect(status().isForbidden());
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    @WithMockUser(roles = {"CONTRIBUTOR"})
+    void update_shouldThrowNotFoundWhenNewsFactIdDoesntExist() throws Exception {
+
+        //Initialize database
+        newsCategoryRepository.save(EntityTestUtil.createDefaultNewsCategory());
+        NewsFact newsFact = EntityTestUtil.createDefaultNewsFact();
+        newsFact.setId("existingId");
+        newsFactRepository.save(newsFact);
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
+        newsFactDetailDto.setId("unexistingId");
+        newsFactDetailDto.setId(newsFact.getId());
+
+        // When
+        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(newsFactDetailDto)));
+
+        // Then
+        resultActions.andExpect(status().isNotFound());
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
     @WithMockUser(username = "Mandela", roles = {"CONTRIBUTOR"})
     void update_shouldThrowNotFoundIfConnectedUserIsNotOwner() throws Exception {
 
-        //Given
+        //Initialize database
         newsCategoryRepository.save(EntityTestUtil.createDefaultNewsCategory());
         NewsFact lulaNewsFact = EntityTestUtil.createDefaultNewsFact();
         lulaNewsFact.setOwner("Lula");
         newsFactRepository.save(lulaNewsFact);
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
         NewsFactDetailDto lulaNewsFactDto = EntityTestUtil.createDefaultNewsFactDetailDto();
         lulaNewsFactDto.setId(lulaNewsFact.getId()); //The DTO and the Domain news facts share the same id
 
@@ -599,6 +660,7 @@ public class NewsFactResourceITest {
 
         // Then
         resultActions.andExpect(status().isNotFound());
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
@@ -624,6 +686,7 @@ public class NewsFactResourceITest {
         newsCategoryRepository.save(oldNewsCategory);
         newsCategoryRepository.save(newNewsCategory);
         clockService.setClock(Clock.fixed(today.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // to simulate creation today
+        final int initialCount = newsFactRepository.findAll().size();
 
         //Given
         final NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
@@ -658,7 +721,7 @@ public class NewsFactResourceITest {
 
         // Validate the news fact in database
         List<NewsFact> newsFacts = newsFactRepository.findAll();
-        assertThat(newsFacts).hasSize(1);
+        assertThat(newsFacts).hasSize(initialCount);
         NewsFact updatedNewsFact = newsFacts.get(0);
         assertThat(updatedNewsFact.getLastModifiedDate()).isEqualTo(today);
         assertThat(updatedNewsFact.getOwner()).isEqualTo("Mandela"); // Owner should not change
