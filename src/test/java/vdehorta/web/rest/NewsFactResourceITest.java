@@ -1,6 +1,5 @@
 package vdehorta.web.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
 import vdehorta.config.ApplicationProperties;
+import vdehorta.converter.JacksonMapperFactory;
 import vdehorta.domain.LocationCoordinate;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
@@ -763,6 +763,6 @@ public class NewsFactResourceITest {
     }
 
     private NewsFactDetailDto parseNewsFactDetailJson(String json) throws java.io.IOException {
-        return new ObjectMapper().readValue(json, NewsFactDetailDto.class);
+        return JacksonMapperFactory.getObjectMapper().readValue(json, NewsFactDetailDto.class);
     }
 }

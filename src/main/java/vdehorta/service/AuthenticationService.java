@@ -55,7 +55,7 @@ public class AuthenticationService {
     /**
      * Get the SpringSecurity authentication in an Optional
      *
-     * @return TAn Optional containing he SpringSecurity authentication or empty if user is not authenticated
+     * @return An Optional containing the SpringSecurity authentication or empty if user is not authenticated
      */
     private Optional<Authentication> getAuthenticationOptional() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());

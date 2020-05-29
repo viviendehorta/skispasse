@@ -1,6 +1,5 @@
 package vdehorta.web.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vdehorta.config.ApplicationProperties;
+import vdehorta.converter.JacksonMapperFactory;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
 import vdehorta.service.AuthenticationService;
@@ -100,7 +100,7 @@ public class NewsFactResource {
 
         NewsFactDetailDto newsFact;
         try {
-            newsFact = new ObjectMapper().readValue(newsFactJson, NewsFactDetailDto.class);
+            newsFact = JacksonMapperFactory.getObjectMapper().readValue(newsFactJson, NewsFactDetailDto.class);
         } catch (IOException e) {
             throw new BadRequestAlertException("News fact data is invalid!");
         }
