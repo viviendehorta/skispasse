@@ -427,9 +427,9 @@ public class UserResourceITest {
     @Test
     @WithMockUser(roles = {"ADMIN"})
     public void updateUser_shouldThrowBadRequestIfLoginIsAlreadyUsed() throws Exception {
+
         // Initialize the database
         userRepository.save(user);
-        final int initialCount = userRepository.findAll().size();
 
         User anotherUser = new User();
         anotherUser.setLogin("another_login");
@@ -441,6 +441,9 @@ public class UserResourceITest {
         anotherUser.setImageUrl("");
         anotherUser.setLangKey("en");
         userRepository.save(anotherUser);
+
+        final int initialCount = userRepository.findAll().size();
+
 
         // Update the user
         User updatedUser = userRepository.findById(user.getId()).get();
@@ -461,10 +464,11 @@ public class UserResourceITest {
         managedUserVM.setLastModifiedDate(updatedUser.getLastModifiedDate());
         managedUserVM.setAuthorities(Collections.singleton(RoleEnum.USER.getValue()));
 
-        restUserMockMvc.perform(put("/users")
+        ResultActions resultActions = restUserMockMvc.perform(put("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)))
-                .andExpect(status().isBadRequest());
+                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)));
+
+        resultActions.andExpect(status().isBadRequest());
         assertThat(userRepository.findAll()).hasSize(initialCount);
     }
 

@@ -3,7 +3,6 @@ package vdehorta.web.rest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
 import vdehorta.config.Constants;
 import vdehorta.domain.User;
@@ -25,20 +25,16 @@ import vdehorta.security.RoleEnum;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.ClockService;
 import vdehorta.service.UserService;
-import vdehorta.service.errors.UserNotFoundException;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 import vdehorta.web.rest.vm.ManagedUserVM;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vdehorta.EntityTestUtil.*;
 
 /**
  * Integration tests for the {@link AccountResource} REST controller.
@@ -70,9 +66,6 @@ public class AccountResourceITest {
     @Autowired
     private ExceptionTranslator exceptionTranslator;
 
-    @Mock
-    private UserService mockUserService;
-
     private MockMvc restMvc;
 
     private MockMvc restUserMockMvc;
@@ -85,7 +78,7 @@ public class AccountResourceITest {
                 new AccountResource(userRepository, userService, authenticationService);
 
         AccountResource accountUserMockResource =
-                new AccountResource(userRepository, mockUserService, authenticationService);
+                new AccountResource(userRepository, userService, authenticationService);
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource)
                 .setMessageConverters(httpMessageConverters)
                 .setControllerAdvice(exceptionTranslator)
@@ -96,7 +89,7 @@ public class AccountResourceITest {
     }
 
     @Test
-    public void testNonAuthenticatedUser() throws Exception {
+    public void isAuthenticated_shouldReturnEmptyStringContentIfUserIsNotAuthenticated() throws Exception {
         ResultActions resultActions = restUserMockMvc.perform(get("/account/authenticate")
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -106,36 +99,26 @@ public class AccountResourceITest {
     }
 
     @Test
-    public void testAuthenticatedUser() throws Exception {
+    @WithMockUser(username = "zeus")
+    public void isAuthenticated_shouldReturnLoginOfAuthenticatedUser() throws Exception {
         ResultActions resultActions = restUserMockMvc.perform(get("/account/authenticate")
-                .with(request -> {
-                    request.setRemoteUser("test");
-                    return request;
-                })
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(content().string("test"));
+                .andExpect(content().string("zeus"));
     }
 
     @Test
-    @WithMockUser(username = "test")
-    public void testGetExistingAccount() throws Exception {
-        Set<String> authorities = new HashSet<>();
-        authorities.add(RoleEnum.ADMIN.getValue());
+    @WithMockUser(username = "marcopolo")
+    public void getAccount_caseOk() throws Exception {
 
-        String userLogin = "test";
+        String login = "marcopolo";
 
-        UserDto user = new UserDto();
-        user.setLogin(userLogin);
-        user.setFirstName("john");
-        user.setLastName("doe");
-        user.setEmail("john.doe@skispasse.com");
-        user.setImageUrl("http://placehold.it/50x50");
-        user.setLangKey("en");
-        user.setAuthorities(authorities);
-        when(mockUserService.getUser(userLogin)).thenReturn(user);
+        //Initialize database
+        User user = EntityTestUtil.createDefaultUser();
+        user.setLogin(login);
+        userRepository.save(user);
 
         ResultActions resultActions = restUserMockMvc.perform(get("/account")
                 .accept(MediaType.APPLICATION_JSON));
@@ -143,19 +126,17 @@ public class AccountResourceITest {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.login").value(userLogin))
-                .andExpect(jsonPath("$.firstName").value("john"))
-                .andExpect(jsonPath("$.lastName").value("doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@skispasse.com"))
-                .andExpect(jsonPath("$.imageUrl").value("http://placehold.it/50x50"))
-                .andExpect(jsonPath("$.langKey").value("en"))
-                .andExpect(jsonPath("$.authorities").value(RoleEnum.ADMIN.getValue()));
+                .andExpect(jsonPath("$.login").value(login))
+                .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRSTNAME))
+                .andExpect(jsonPath("$.lastName").value(DEFAULT_LASTNAME))
+                .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
+                .andExpect(jsonPath("$.imageUrl").value(DEFAULT_IMAGEURL))
+                .andExpect(jsonPath("$.langKey").value(DEFAULT_LANGKEY))
+                .andExpect(jsonPath("$.authorities").value(RoleEnum.USER.getValue()));
     }
 
     @Test
-    public void testGetUnknownAccount() throws Exception {
-        when(mockUserService.getUser(anyString())).thenThrow(UserNotFoundException.class);
-
+    public void getAccount_shouldReturnUnauthorizedIfNobodyConnected() throws Exception {
         restUserMockMvc.perform(get("/account")
                 .accept(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(status().isUnauthorized());
@@ -163,7 +144,7 @@ public class AccountResourceITest {
 
     @Test
     @WithMockUser("save-account")
-    public void testSaveAccount() throws Exception {
+    public void updateAccount_caseOk() throws Exception {
         User user = new User();
         user.setLogin("save-account");
         user.setEmail("save-account@example.com");
@@ -202,7 +183,7 @@ public class AccountResourceITest {
 
     @Test
     @WithMockUser("save-invalid-email")
-    public void testSaveInvalidEmail() throws Exception {
+    public void updateAccount_shouldThrowBadRequestIfMailIsMalformed() throws Exception {
         User user = new User();
         user.setLogin("save-invalid-email");
         user.setEmail("save-invalid-email@example.com");
@@ -232,13 +213,12 @@ public class AccountResourceITest {
 
     @Test
     @WithMockUser("save-existing-email")
-    public void testSaveExistingEmail() throws Exception {
+    public void updateAccount_shouldThrowBadRequestIfMailIsAlreadyUsed() throws Exception {
         User user = new User();
         user.setLogin("save-existing-email");
         user.setEmail("save-existing-email@example.com");
         user.setPassword(RandomStringUtils.random(60));
         user.setActivated(true);
-
         userRepository.save(user);
 
         User anotherUser = new User();
@@ -246,7 +226,6 @@ public class AccountResourceITest {
         anotherUser.setEmail("save-existing-email2@example.com");
         anotherUser.setPassword(RandomStringUtils.random(60));
         anotherUser.setActivated(true);
-
         userRepository.save(anotherUser);
 
         UserDto userDTO = new UserDto();
@@ -267,42 +246,12 @@ public class AccountResourceITest {
 
         User updatedUser = userRepository.findOneByLogin("save-existing-email").orElse(null);
         assertThat(updatedUser.getEmail()).isEqualTo("save-existing-email@example.com");
-    }
 
-    @Test
-    @WithMockUser("save-existing-email-and-login")
-    public void testSaveExistingEmailAndLogin() throws Exception {
-        User user = new User();
-        user.setLogin("save-existing-email-and-login");
-        user.setEmail("save-existing-email-and-login@example.com");
-        user.setPassword(RandomStringUtils.random(60));
-        user.setActivated(true);
-
-        userRepository.save(user);
-
-        UserDto userDTO = new UserDto();
-        userDTO.setLogin("not-used");
-        userDTO.setFirstName("firstname");
-        userDTO.setLastName("lastname");
-        userDTO.setEmail("save-existing-email-and-login@example.com");
-        userDTO.setActivated(false);
-        userDTO.setImageUrl("http://placehold.it/50x50");
-        userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
-        userDTO.setAuthorities(Collections.singleton(RoleEnum.ADMIN.getValue()));
-
-        ResultActions resultActions = restMvc.perform(put("/account")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(userDTO)));
-
-        resultActions.andExpect(status().isOk());
-
-        User updatedUser = userRepository.findOneByLogin("save-existing-email-and-login").orElse(null);
-        assertThat(updatedUser.getEmail()).isEqualTo("save-existing-email-and-login@example.com");
     }
 
     @Test
     @WithMockUser("change-password-wrong-existing-password")
-    public void testChangePasswordWrongExistingPassword() throws Exception {
+    public void changePassword_shouldThrowBadRequestForWrongExistingPassword() throws Exception {
         User user = new User();
         String currentPassword = RandomStringUtils.random(60);
         user.setPassword(passwordEncoder.encode(currentPassword));
@@ -322,7 +271,7 @@ public class AccountResourceITest {
 
     @Test
     @WithMockUser("change-password")
-    public void testChangePassword() throws Exception {
+    public void changePassword_caseOk() throws Exception {
         User user = new User();
         String currentPassword = RandomStringUtils.random(60);
         user.setPassword(passwordEncoder.encode(currentPassword));
@@ -341,7 +290,7 @@ public class AccountResourceITest {
 
     @Test
     @WithMockUser("change-password-too-small")
-    public void testChangePasswordTooSmall() throws Exception {
+    public void changePassword_shouldThrowBadRequestForTooShortPassword() throws Exception {
         User user = new User();
         String currentPassword = RandomStringUtils.random(60);
         user.setPassword(passwordEncoder.encode(currentPassword));
@@ -362,7 +311,7 @@ public class AccountResourceITest {
 
     @Test
     @WithMockUser("change-password-too-long")
-    public void testChangePasswordTooLong() throws Exception {
+    public void changePassword_shouldThrowBadRequestForTooLongPassword() throws Exception {
         User user = new User();
         String currentPassword = RandomStringUtils.random(60);
         user.setPassword(passwordEncoder.encode(currentPassword));
@@ -383,7 +332,7 @@ public class AccountResourceITest {
 
     @Test
     @WithMockUser("change-password-empty")
-    public void testChangePasswordEmpty() throws Exception {
+    public void changePassword_shouldThrowBadRequestForEmptyPassword() throws Exception {
         User user = new User();
         String currentPassword = RandomStringUtils.random(60);
         user.setPassword(passwordEncoder.encode(currentPassword));

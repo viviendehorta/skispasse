@@ -3,7 +3,7 @@ package vdehorta.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
-import vdehorta.repository.FileRepository;
+import vdehorta.repository.NewsFactVideoDao;
 import vdehorta.service.VideoFileService.ContentTypeEnum;
 import vdehorta.service.errors.UnreadableFileContentException;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
@@ -19,13 +19,13 @@ class VideoFileServiceTest {
 
     private VideoFileService videoFileService;
 
-    private FileRepository fileRepositoryMock;
+    private NewsFactVideoDao fileRepositoryMock;
     private ClockService clockServiceMock;
     private UserService userServiceMock;
 
     @BeforeEach
     public void setup() {
-        fileRepositoryMock = mock(FileRepository.class);
+        fileRepositoryMock = mock(NewsFactVideoDao.class);
         clockServiceMock = mock(ClockService.class);
         userServiceMock = mock(UserService.class);
         videoFileService = new VideoFileService(fileRepositoryMock, clockServiceMock);
