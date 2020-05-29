@@ -200,7 +200,7 @@ public class UserService {
     }
 
     public Page<UserDto> getAllUsers(Pageable pageable) {
-        return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDto::new);
+        return userRepository.findAll(pageable).map(UserDto::new);
     }
 
     public UserDto getUser(String login) throws UserNotFoundException {

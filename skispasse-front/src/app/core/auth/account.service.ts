@@ -20,7 +20,7 @@ export class AccountService {
     private http: HttpClient) {}
 
   fetch(): Observable<Account> {
-    return this.http.get<Account>(this.resourceUrl);
+    return this.http.get<Account>(this.resourceUrl + '/authenticated');
   }
 
   update(account: Account): Observable<Account> {
