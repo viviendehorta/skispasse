@@ -5,7 +5,7 @@ import {environment} from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class NewsCategoryService {
-  resourceUrl = environment.serverUrl + 'newsCategory/';
+  resourceUrl = environment.serverUrl + 'newsCategories/';
 
   constructor(private http: HttpClient) {}
 

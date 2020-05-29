@@ -89,29 +89,19 @@ public class AccountResourceITest {
     }
 
     @Test
-    public void isAuthenticated_shouldReturnEmptyStringContentIfUserIsNotAuthenticated() throws Exception {
-        ResultActions resultActions = restUserMockMvc.perform(get("/account/authenticate")
+    public void getAuthenticated_shouldReturnNotAuthenticatedDtoIfUserIsNotAuthenticated() throws Exception {
+        ResultActions resultActions = restUserMockMvc.perform(get("/account/authenticated")
                 .accept(MediaType.APPLICATION_JSON));
-
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(content().string(""));
-    }
-
-    @Test
-    @WithMockUser(username = "zeus")
-    public void isAuthenticated_shouldReturnLoginOfAuthenticatedUser() throws Exception {
-        ResultActions resultActions = restUserMockMvc.perform(get("/account/authenticate")
-                .accept(MediaType.APPLICATION_JSON));
-
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(content().string("zeus"));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.authenticated").value(false))
+                .andExpect(jsonPath("$.user").isEmpty());
     }
 
     @Test
     @WithMockUser(username = "marcopolo")
-    public void getAccount_caseOk() throws Exception {
+    public void getAuthenticated_caseOk() throws Exception {
 
         String login = "marcopolo";
 
@@ -120,26 +110,20 @@ public class AccountResourceITest {
         user.setLogin(login);
         userRepository.save(user);
 
-        ResultActions resultActions = restUserMockMvc.perform(get("/account")
+        ResultActions resultActions = restUserMockMvc.perform(get("/account/authenticated")
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.login").value(login))
-                .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRSTNAME))
-                .andExpect(jsonPath("$.lastName").value(DEFAULT_LASTNAME))
-                .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
-                .andExpect(jsonPath("$.imageUrl").value(DEFAULT_IMAGEURL))
-                .andExpect(jsonPath("$.langKey").value(DEFAULT_LANGKEY))
-                .andExpect(jsonPath("$.authorities").value(RoleEnum.USER.getValue()));
-    }
-
-    @Test
-    public void getAccount_shouldReturnUnauthorizedIfNobodyConnected() throws Exception {
-        restUserMockMvc.perform(get("/account")
-                .accept(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(jsonPath("$.authenticated").value(true))
+                .andExpect(jsonPath("$.user.login").value(login))
+                .andExpect(jsonPath("$.user.firstName").value(DEFAULT_FIRSTNAME))
+                .andExpect(jsonPath("$.user.lastName").value(DEFAULT_LASTNAME))
+                .andExpect(jsonPath("$.user.email").value(DEFAULT_EMAIL))
+                .andExpect(jsonPath("$.user.imageUrl").value(DEFAULT_IMAGEURL))
+                .andExpect(jsonPath("$.user.langKey").value(DEFAULT_LANGKEY))
+                .andExpect(jsonPath("$.user.authorities").value(RoleEnum.USER.getValue()));
     }
 
     @Test

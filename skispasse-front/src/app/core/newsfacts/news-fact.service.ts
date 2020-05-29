@@ -13,7 +13,7 @@ import {environment} from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class NewsFactService {
-  private resourceUrl = environment.serverUrl + 'newsFact/';
+  private resourceUrl = environment.serverUrl + 'newsFacts/';
 
   constructor(private http: HttpClient, private paginationService: PaginationService) {}
 

@@ -7,7 +7,7 @@ import {environment} from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthServerProvider {
-  private resourceUrl = environment.serverUrl + 'api/';
+  private resourceUrl = environment.serverUrl + 'account/';
 
   constructor(private http: HttpClient) {}
 
@@ -27,7 +27,7 @@ export class AuthServerProvider {
     return this.http.post(this.resourceUrl + 'logout', {}, { observe: 'response' }).pipe(
       map((response: HttpResponse<any>) => {
         // to get a new csrf token call the api
-        this.http.get(this.resourceUrl + 'account').subscribe(() => {}, () => {});
+        this.http.get(this.resourceUrl).subscribe(() => {}, () => {});
         return response;
       })
     );

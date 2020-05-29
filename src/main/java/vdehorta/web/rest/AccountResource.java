@@ -4,6 +4,7 @@ package vdehorta.web.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import vdehorta.dto.AuthenticatedDto;
 import vdehorta.dto.PasswordChangeDTO;
 import vdehorta.dto.UserDto;
 import vdehorta.repository.UserRepository;
@@ -13,6 +14,7 @@ import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.InvalidPasswordException;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * REST controller for managing the current user's account.
@@ -37,28 +39,21 @@ public class AccountResource {
     }
 
     /**
-     * {@code GET  /account/authenticate} : check if the user is authenticated, and return its login.
+     * {@code GET  /authentication} : get the AuthenticatedDto matching the authenticated user.
+     * If user is not authenticated, then AuthenticatedDto.isAuthenticated is false and AuthenticatedDto.user is null.
      *
-     * @return the login if the user is authenticated.
+     * @return the AuthenticatedDto matching the authenticated user.
      */
-    @GetMapping("/authenticate")
-    public String isAuthenticated() {
-        log.debug("REST request to check if the current user is authenticated");
-        return authenticationService.getCurrentUserLoginOptional().orElse("");
-    }
-
-    /**
-     * {@code GET  /account} : get the current user.
-     *
-     * @return the current user.
-     * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
-     */
-    @GetMapping
-    public UserDto getAccount() {
-        log.debug("REST request to get the current account");
-
-        authenticationService.assertAuthenticationRole(RoleEnum.USER);
-        return userService.getUser(authenticationService.getCurrentUserLoginOrThrowError());
+    @GetMapping(path = "/authenticated")
+    public AuthenticatedDto getAuthenticated() {
+        log.debug("REST request to get the current authenticated");
+        AuthenticatedDto.Builder builder = new AuthenticatedDto.Builder();
+        Optional<String> mayAuthenticatedLogin = authenticationService.getCurrentUserLoginOptional();
+        if (mayAuthenticatedLogin.isPresent()) {
+            UserDto authenticatedUser = userService.getUser(mayAuthenticatedLogin.get());
+            builder.isAuthenticated(true).user(authenticatedUser);
+        }
+        return builder.build();
     }
 
     /**
