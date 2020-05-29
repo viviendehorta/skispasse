@@ -1,9 +1,15 @@
 package vdehorta.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -47,6 +53,18 @@ import static vdehorta.EntityTestUtil.*;
 public class NewsFactResourceITest {
 
     @Autowired
+    private NewsFactService newsFactService;
+
+    @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ClockService clockService;
+
+    @Autowired
     private ApplicationProperties applicationProperties;
 
     @Autowired
@@ -59,16 +77,7 @@ public class NewsFactResourceITest {
     private NewsCategoryRepository newsCategoryRepository;
 
     @Autowired
-    private NewsFactService newsFactService;
-
-    @Autowired
-    private AuthenticationService authenticationService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ClockService clockService;
+    private GridFsTemplate newsFactVideoGridFsTemplate;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -202,54 +211,47 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    @WithMockUser(username = "Skisp", roles = {"ADMIN"})
+    @WithMockUser(username = "skisp", roles = {"ADMIN"})
     public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyAdmin() throws Exception {
         ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
         resultActions.andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(username = "Skisp", roles = {"USER"})
+    @WithMockUser(username = "skisp", roles = {"USER"})
     public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyUser() throws Exception {
         ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
         resultActions.andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(username = "Skisp", roles = {"USER", "ADMIN"})
+    @WithMockUser(username = "skisp", roles = {"USER", "ADMIN"})
     public void getMyNewsFacts_shouldThrowExceptionWhenUserIsAdminAndUser() throws Exception {
         ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
         resultActions.andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(username = "Toto", roles = {"USER", "CONTRIBUTOR"})
+    @WithMockUser(username = "zeus", roles = {"USER", "CONTRIBUTOR"})
     void createNewsFact_caseOk() throws Exception {
 
         String videoFilePath = "skispasse.mp4";
 
         // Init ClockService with a fix clock to be able to assert the date values
-        LocalDateTime expectedNow = LocalDateTime.parse("2020-03-24T20:30:23");
-        clockService.setClock(Clock.fixed(expectedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
+        LocalDateTime fixedNow = LocalDateTime.parse("2020-03-24T20:30:23");
+        clockService.setClock(Clock.fixed(fixedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
 
         // Initialize database
         NewsCategory newsCategory = createDefaultNewsCategory1();
         newsCategoryRepository.save(newsCategory);
-        final int initialCount = newsFactRepository.findAll().size();
+        final int newsFactInitialCount = newsFactRepository.findAll().size();
 
         //Given
-        NewsFactDetailDto toCreateNewsFact = new NewsFactDetailDto.Builder()
-                .address(DEFAULT_ADDRESS)
-                .city(DEFAULT_CITY)
-                .country(DEFAULT_COUNTRY)
-                .eventDate(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))
-                .locationCoordinate(new LocationCoordinate.Builder()
-                        .x(DEFAULT_LOCATION_COORDINATE_X)
-                        .y(DEFAULT_LOCATION_COORDINATE_Y)
-                        .build())
-                .newsCategoryId(newsCategory.getId())
-                .videoPath("/browserFakePath/" + videoFilePath)
-                .build();
+        NewsFactDetailDto toCreateNewsFact = EntityTestUtil.createDefaultNewsFactDetailDto();
+        toCreateNewsFact.setId(null);
+        toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
+        toCreateNewsFact.setNewsCategoryLabel(null);
+        toCreateNewsFact.setVideoPath("fakeVideoPath");
 
         MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "video/mp4", "video file content".getBytes());
         String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
@@ -258,7 +260,10 @@ public class NewsFactResourceITest {
                 .file(videoMultiPartFile)
                 .param("newsFactJson", newsFactJson));
 
-        // Then
+
+        // Assertions
+
+        //Check HTTP response
         resultActions
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -274,11 +279,41 @@ public class NewsFactResourceITest {
                 .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())))
                 .andExpect(jsonPath("$.videoPath", isA(String.class)));
 
-        assertThat(newsFactRepository.findAll()).hasSize(initialCount + 1);
+        //Check news fact persistence
+        assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
+        NewsFact persistedNewsFact = newsFactRepository.findById(parseNewsFactDetailJson(resultActions.andReturn().getResponse().getContentAsString()).getId()).orElse(null);
+        assertThat(persistedNewsFact).isNotNull();
+        assertThat(persistedNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(persistedNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
+        assertThat(persistedNewsFact.getCreatedBy()).isEqualTo("zeus");
+        assertThat(persistedNewsFact.getCreatedDate()).isEqualToIgnoringSeconds(fixedNow);
+        assertThat(persistedNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
+        assertThat(persistedNewsFact.getEventDate()).isEqualTo(DEFAULT_EVENT_DATE);
+        assertThat(persistedNewsFact.getLastModifiedBy()).isEqualTo("zeus");
+        assertThat(persistedNewsFact.getLastModifiedDate()).isEqualToIgnoringSeconds(fixedNow);
+        assertThat(persistedNewsFact.getLocationCoordinateX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
+        assertThat(persistedNewsFact.getLocationCoordinateY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+        assertThat(persistedNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
+        assertThat(persistedNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
+        assertThat(persistedNewsFact.getOwner()).isEqualTo("zeus");
+        assertThat(persistedNewsFact.getVideoPath()).isNotEmpty();
+
+        //Check video file persistence
+        MongoCursor<GridFSFile> persistedVideoCursor = newsFactVideoGridFsTemplate.find(new Query().addCriteria(Criteria.where("_id").is(persistedNewsFact.getVideoPath()))).iterator();
+        assertThat(persistedVideoCursor.hasNext()).isTrue();
+
+        GridFSFile persistedVideoFile = persistedVideoCursor.next();
+        assertThat(persistedVideoCursor.hasNext()).isFalse(); //Check there is only 1 matching file
+
+        assertThat(persistedVideoFile.getFilename()).contains("zeus"); //Owner login should be part of the filename
+        assertThat(persistedVideoFile.getUploadDate()).isNotNull(); //TODO : set that using the clockService in code to be able to test it
+        assertThat(persistedVideoFile.getMetadata().getString("owner")).isEqualTo("zeus");
+
+
     }
 
     @Test
-    @WithMockUser(username = "Toto", roles = {"USER", "ADMIN"})
+    @WithMockUser(username = "toto", roles = {"USER", "ADMIN"})
     void createNewsFact_shouldThrowExceptionForNoneContributorUser() throws Exception {
 
         String videoFilePath = "skispasse.mp4";
@@ -319,12 +354,12 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    @WithMockUser(username = "Titi", roles = {"CONTRIBUTOR"})
+    @WithMockUser(username = "titi", roles = {"CONTRIBUTOR"})
     public void deleteNewsFact_caseOk() throws Exception {
 
         // Initialize the database
         NewsFact newsFact = createDefaultNewsFact();
-        newsFact.setOwner("Titi");
+        newsFact.setOwner("titi");
         newsFactRepository.save(newsFact);
         int initialCount = newsFactRepository.findAll().size();
 
@@ -342,7 +377,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    @WithMockUser(username = "Titi", roles = {"CONTRIBUTOR"})
+    @WithMockUser(username = "titi", roles = {"CONTRIBUTOR"})
     public void deleteNewsFact_shouldThrowNotFoundIfGivenIdDoesntExist() throws Exception {
 
         newsFactRepository.save(createDefaultNewsFact());
@@ -357,12 +392,12 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    @WithMockUser(username = "Mandela", roles = {"CONTRIBUTOR"})
+    @WithMockUser(username = "mandela", roles = {"CONTRIBUTOR"})
     public void deleteNewsFact_shouldThrowNotFoundIfLoggedUserIsNotOwner() throws Exception {
 
         // Initialize the database
         NewsFact newsFact = createDefaultNewsFact();
-        newsFact.setOwner("Mélenchon");
+        newsFact.setOwner("melenchon");
         newsFactRepository.save(newsFact);
         final int initialCount = newsFactRepository.findAll().size();
 
@@ -639,7 +674,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    @WithMockUser(username = "Mandela", roles = {"CONTRIBUTOR"})
+    @WithMockUser(username = "mandela", roles = {"CONTRIBUTOR"})
     void update_shouldThrowNotFoundIfConnectedUserIsNotOwner() throws Exception {
 
         //Initialize database
@@ -664,7 +699,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    @WithMockUser(username = "Mandela", roles = {"CONTRIBUTOR"})
+    @WithMockUser(username = "mandela", roles = {"CONTRIBUTOR"})
     void update_caseOk() throws Exception {
         String yesterdayString = "2020-05-01";
         String todayString = "2020-05-02";
@@ -681,7 +716,7 @@ public class NewsFactResourceITest {
         final NewsFact initialNewsFact = createDefaultNewsFact();
         initialNewsFact.setCreatedDate(yesterday);
         initialNewsFact.setEventDate(yesterday);
-        initialNewsFact.setOwner("Mandela");
+        initialNewsFact.setOwner("mandela");
         newsFactRepository.save(initialNewsFact);
         newsCategoryRepository.save(oldNewsCategory);
         newsCategoryRepository.save(newNewsCategory);
@@ -724,6 +759,10 @@ public class NewsFactResourceITest {
         assertThat(newsFacts).hasSize(initialCount);
         NewsFact updatedNewsFact = newsFacts.get(0);
         assertThat(updatedNewsFact.getLastModifiedDate()).isEqualTo(today);
-        assertThat(updatedNewsFact.getOwner()).isEqualTo("Mandela"); // Owner should not change
+        assertThat(updatedNewsFact.getOwner()).isEqualTo("mandela"); // Owner should not change
+    }
+
+    private NewsFactDetailDto parseNewsFactDetailJson(String json) throws java.io.IOException {
+        return new ObjectMapper().readValue(json, NewsFactDetailDto.class);
     }
 }

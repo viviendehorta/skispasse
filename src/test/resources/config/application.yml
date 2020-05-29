@@ -39,3 +39,6 @@ application:
       host: localhost
       port: 5000
       queue-size: 512
+  mongo:
+    grid-fs:
+      newsfact-video-bucket: newsFactVideo

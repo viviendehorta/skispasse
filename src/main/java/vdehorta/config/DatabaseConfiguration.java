@@ -63,7 +63,7 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public GridFsTemplate gridFsTemplate() {
+    public GridFsTemplate newsFactVideoGridFsTemplate() {
         GridFsTemplate gridFsTemplate = new GridFsTemplate(
                 mongoDbFactory,
                 mongoConverter,

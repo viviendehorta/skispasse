@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import vdehorta.repository.FileRepository;
+import vdehorta.repository.NewsFactVideoDao;
 import vdehorta.service.errors.UnreadableFileContentException;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
 import vdehorta.service.errors.VideoFileTooLargeException;
@@ -24,23 +24,23 @@ public class VideoFileService {
     protected static final long MAX_FILE_SIZE_IN_BYTE = 1024L * 1024;
     protected static DateTimeFormatter COMPACT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:MM:ss");
 
-    private FileRepository fileRepository;
+    private NewsFactVideoDao fileRepository;
     private ClockService clockService;
 
     public VideoFileService(
-            FileRepository videoFileRepository,
+            NewsFactVideoDao videoFileRepository,
             ClockService clockService) {
         this.fileRepository = videoFileRepository;
         this.clockService = clockService;
     }
 
-    public String save(MultipartFile file, String ownerLogin) throws UnreadableFileContentException {
+    public String save(MultipartFile file, String owner) throws UnreadableFileContentException {
         log.debug("Save file...");
         ContentTypeEnum contentTypeEnum = validateFileContentType(file.getContentType());
         validateFileSize(file.getSize());
 
         try {
-            return fileRepository.saveVideoFile(file.getBytes(), generateUniqueFilename(contentTypeEnum, ownerLogin), file.getContentType());
+            return fileRepository.saveVideoFile(file.getBytes(), generateUniqueFilename(contentTypeEnum, owner), file.getContentType(), owner);
         } catch (IOException e) {
             throw new UnreadableFileContentException("Error while trying to read video file content!", e);
         }

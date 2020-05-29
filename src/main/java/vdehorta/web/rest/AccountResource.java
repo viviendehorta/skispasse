@@ -10,10 +10,8 @@ import vdehorta.repository.UserRepository;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.UserService;
-import vdehorta.web.rest.errors.EmailAlreadyUsedException;
 import vdehorta.web.rest.errors.InvalidPasswordException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -41,13 +39,12 @@ public class AccountResource {
     /**
      * {@code GET  /account/authenticate} : check if the user is authenticated, and return its login.
      *
-     * @param request the HTTP request.
      * @return the login if the user is authenticated.
      */
     @GetMapping("/authenticate")
-    public String isAuthenticated(HttpServletRequest request) {
+    public String isAuthenticated() {
         log.debug("REST request to check if the current user is authenticated");
-        return request.getRemoteUser();
+        return authenticationService.getCurrentUserLoginOptional().orElse("");
     }
 
     /**

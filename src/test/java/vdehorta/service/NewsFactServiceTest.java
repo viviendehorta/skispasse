@@ -10,8 +10,8 @@ import vdehorta.dto.NewsCategoryDto;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.service.errors.NewsFactAccessForbiddenException;
-import vdehorta.service.errors.WrongNewsCategoryIdException;
 import vdehorta.service.errors.NewsFactNotFoundException;
+import vdehorta.service.errors.WrongNewsCategoryIdException;
 import vdehorta.service.mapper.NewsFactMapper;
 
 import java.time.format.DateTimeParseException;
@@ -25,12 +25,14 @@ class NewsFactServiceTest {
     private NewsFactService newsFactService;
     private NewsFactRepository newsFactRepositoryMock;
     private NewsCategoryService newsCategoryServiceMock;
-    private NewsFactMapper newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
+    private NewsFactMapper newsFactMapper;
     private ClockService clockService = new ClockService();
     private VideoFileService videoFileServiceMock;
 
+
     @BeforeEach
     public void setup() {
+        newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
         newsCategoryServiceMock = Mockito.mock(NewsCategoryService.class);
         videoFileServiceMock = Mockito.mock(VideoFileService.class);
