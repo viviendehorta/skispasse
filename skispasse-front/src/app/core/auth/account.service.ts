@@ -5,6 +5,7 @@ import {Observable, of, Subject} from 'rxjs';
 import {catchError, shareReplay, tap} from 'rxjs/operators';
 import {Account} from '../../shared/model/account.model';
 import {environment} from '../../../environments/environment';
+import {AuthenticatedState} from "../../shared/model/authenticated-state.model";
 
 
 @Injectable({ providedIn: 'root' })
@@ -19,8 +20,8 @@ export class AccountService {
     private sessionStorage: SessionStorageService,
     private http: HttpClient) {}
 
-  fetch(): Observable<Account> {
-    return this.http.get<Account>(this.resourceUrl + '/authenticated');
+  fetchAuthenticatedState(): Observable<AuthenticatedState> {
+    return this.http.get<AuthenticatedState>(this.resourceUrl + '/authenticated');
   }
 
   update(account: Account): Observable<Account> {
@@ -51,18 +52,13 @@ export class AccountService {
     }
 
     if (!this.accountCache$) {
-      this.accountCache$ = this.fetch().pipe(
+      this.accountCache$ = this.fetchAuthenticatedState().pipe(
         catchError(() => {
           return of(null);
         }),
-        tap(account => {
-          if (account) {
-            this.userIdentity = account;
-            this.authenticated = true;
-          } else {
-            this.userIdentity = null;
-            this.authenticated = false;
-          }
+        tap(authenticatedState => {
+          this.authenticated = authenticatedState.authenticated;
+          this.userIdentity = authenticatedState.user;
           this.authenticationState.next(this.userIdentity);
         }),
         shareReplay()
@@ -73,10 +69,6 @@ export class AccountService {
 
   isAuthenticated(): boolean {
     return this.authenticated;
-  }
-
-  isIdentityResolved(): boolean {
-    return this.userIdentity !== undefined;
   }
 
   getAuthenticationState(): Observable<any> {

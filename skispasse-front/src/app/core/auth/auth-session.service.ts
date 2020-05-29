@@ -19,7 +19,7 @@ export class AuthServerProvider {
       '&submit=Login';
     const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
 
-    return this.http.post(this.resourceUrl + 'authentication', data, { headers });
+    return this.http.post(this.resourceUrl + 'login', data, { headers });
   }
 
   logout(): Observable<any> {
