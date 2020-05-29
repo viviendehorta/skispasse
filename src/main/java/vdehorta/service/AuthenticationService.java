@@ -1,5 +1,6 @@
 package vdehorta.service;
 
+import com.google.common.base.Preconditions;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,14 +43,23 @@ public class AuthenticationService {
         return getAuthenticationOptional().map(this::getLogin);
     }
 
+    private boolean isAnonymousAuthentication(Authentication authentication) {
+        Preconditions.checkNotNull(authentication, "Authentication should not be null!");
+        return authentication.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ANONYMOUS"));
+    }
+
     /**
      * /**
-     * Get the SpringSecurity authentication
+     * Return the spring authentication or null in case of spring "anonymous" token used when nobody is authenticated
      *
      * @return The SpringSecurity authentication or null if user is not authenticated
      */
     private Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
+        Authentication springAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        if (springAuthentication == null || isAnonymousAuthentication(springAuthentication)) {
+            return null;
+        }
+        return springAuthentication;
     }
 
     /**
@@ -58,7 +68,7 @@ public class AuthenticationService {
      * @return An Optional containing the SpringSecurity authentication or empty if user is not authenticated
      */
     private Optional<Authentication> getAuthenticationOptional() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());
+        return Optional.ofNullable(getAuthentication());
     }
 
     /**
