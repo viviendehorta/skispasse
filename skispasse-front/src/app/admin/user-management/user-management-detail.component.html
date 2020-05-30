@@ -28,11 +28,11 @@
                 <dd>{{user.lastModifiedBy}}</dd>
                 <dt><span>Last Modified Date</span></dt>
                 <dd>{{user.lastModifiedDate | date:'dd/MM/yy HH:mm'}}</dd>
-                <dt><span>Profiles</span></dt>
+                <dt><span>Roles</span></dt>
                 <dd>
                     <ul class="list-unstyled">
-                        <li *ngFor="let authority of user.authorities">
-                            <span class="badge badge-info">{{authority}}</span>
+                        <li *ngFor="let role of user.authorities">
+                            <span class="badge badge-info">{{role}}</span>
                         </li>
                     </ul>
                 </dd>

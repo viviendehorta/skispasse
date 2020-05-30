@@ -1,4 +1,4 @@
-export class Account {
+export class UserAccount {
   constructor(
     public activated: boolean,
     public authorities: string[],

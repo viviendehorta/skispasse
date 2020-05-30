@@ -90,7 +90,7 @@ public class AccountResourceITest {
 
     @Test
     public void getAuthenticated_shouldReturnNotAuthenticatedDtoIfUserIsNotAuthenticated() throws Exception {
-        ResultActions resultActions = restUserMockMvc.perform(get("/account/authenticated")
+        ResultActions resultActions = restUserMockMvc.perform(get("/account/authentication")
                 .accept(MediaType.APPLICATION_JSON));
         resultActions
                 .andExpect(status().isOk())
@@ -110,7 +110,7 @@ public class AccountResourceITest {
         user.setLogin(login);
         userRepository.save(user);
 
-        ResultActions resultActions = restUserMockMvc.perform(get("/account/authenticated")
+        ResultActions resultActions = restUserMockMvc.perform(get("/account/authentication")
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions

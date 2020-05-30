@@ -5,7 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {INewsFactDetail} from '../../shared/model/news-fact-detail.model';
 import {ITEMS_PER_PAGE} from '../../shared/constants/pagination.constants';
-import {Account} from '../../shared/model/account.model';
+import {UserAccount} from '../../shared/model/account.model';
 import {INewsFactPage, NewsFactPage} from '../../shared/model/news-fact-page.model';
 import {ILocationCoordinate} from '../../shared/model/location-coordinate.model';
 import {DeleteNewsFactDialogComponent} from './delete-news-fact-dialog.component';
@@ -21,7 +21,7 @@ import {AlertService} from '../../core/alert/alert.service';
 })
 export class MyNewsFactsComponent implements OnInit {
   myNewsFacts: INewsFactDetail[];
-  currentAccount: Account;
+  currentAccount: UserAccount;
   routeData: Subscription;
   links: any;
   totalItems: any;
@@ -51,7 +51,7 @@ export class MyNewsFactsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.accountService.identity().subscribe(account => {
+    this.accountService.fetchAuthenticatedAccount().subscribe((account:UserAccount) => {
       this.currentAccount = account;
       this.loadAll();
     });

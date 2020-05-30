@@ -13,6 +13,7 @@ import {ITEMS_PER_PAGE} from '../../shared/constants/pagination.constants';
 import {EventManager} from '../../core/events/event-manager';
 import {PaginationService} from '../../core/pagination/pagination.service';
 import {AlertService} from '../../core/alert/alert.service';
+import {UserAccount} from "../../shared/model/account.model";
 
 @Component({
   selector: 'skis-user-mgmt',
@@ -20,7 +21,7 @@ import {AlertService} from '../../core/alert/alert.service';
   styleUrls: ['./user-management.component.scss']
 })
 export class UserManagementComponent implements OnInit, OnDestroy {
-  currentAccount: any;
+  currentAccount: UserAccount;
   users: User[];
   error: any;
   success: any;
@@ -54,7 +55,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.accountService.identity().subscribe(account => {
+    this.accountService.fetchAuthenticatedAccount().subscribe((account:UserAccount) => {
       this.currentAccount = account;
       this.loadAll();
       this.registerChangeInUsers();
