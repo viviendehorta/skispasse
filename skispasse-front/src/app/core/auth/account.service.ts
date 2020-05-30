@@ -1,77 +1,96 @@
 import {Injectable} from '@angular/core';
 import {SessionStorageService} from 'ngx-webstorage';
 import {HttpClient} from '@angular/common/http';
-import {Observable, of, Subject} from 'rxjs';
-import {catchError, shareReplay, tap} from 'rxjs/operators';
-import {Account} from '../../shared/model/account.model';
+import {Observable, Subject} from 'rxjs';
+import {map, shareReplay, tap} from 'rxjs/operators';
+import {UserAccount} from '../../shared/model/account.model';
 import {environment} from '../../../environments/environment';
-import {AuthenticatedState} from "../../shared/model/authenticated-state.model";
+import {AuthenticationState} from "../../shared/model/authentication-state.model";
 
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class AccountService {
-  private resourceUrl = environment.serverUrl + 'account';
-  private userIdentity: Account;
-  private authenticated = false;
-  private authenticationState = new Subject<any>();
-  private accountCache$: Observable<Account>;
+    private resourceUrl = environment.serverUrl + 'account';
 
-  constructor(
-    private sessionStorage: SessionStorageService,
-    private http: HttpClient) {}
+    private authenticationState: AuthenticationState;
+    private authenticationStateSubject = new Subject<AuthenticationState>(); //Subject used to async request API to get authenticationState when cache is not set
+    private authenticationStateCache: Observable<AuthenticationState>;//Cache to not request API each time (TODO : unvalidate it when authentication ticket has expired)
 
-  fetchAuthenticatedState(): Observable<AuthenticatedState> {
-    return this.http.get<AuthenticatedState>(this.resourceUrl + '/authenticated');
-  }
-
-  update(account: Account): Observable<Account> {
-    return this.http.put<Account>(this.resourceUrl, account);
-  }
-
-  authenticate(identity) {
-    this.userIdentity = identity;
-    this.authenticated = identity !== null;
-    this.authenticationState.next(this.userIdentity);
-  }
-
-  hasAnyAuthority(authorities: string[] | string): boolean {
-    if (!this.authenticated || !this.userIdentity || !this.userIdentity.authorities) {
-      return false;
+    constructor(
+        private sessionStorage: SessionStorageService,
+        private http: HttpClient) {
     }
 
-    if (!Array.isArray(authorities)) {
-      authorities = [authorities];
+    update(account: UserAccount): Observable<UserAccount> {
+        return this.http.put<UserAccount>(this.resourceUrl + '/', account);
     }
 
-    return authorities.some((authority: string) => this.userIdentity.authorities.includes(authority));
-  }
+    /**
+     * Fetch the authentication state from the server if needed.
+     * If called from a none-anonymous accessible context, better to use fetchAuthenticatedAccount() that returns
+     * directly the AuthenticatedState.user
+     */
+    fetchAuthenticationState(): Observable<AuthenticationState> {
+        if (!this.authenticationState.authenticated) {
+            this.authenticationStateCache = null;
+        }
 
-  identity(force?: boolean): Observable<Account> {
-    if (force || !this.authenticated) {
-      this.accountCache$ = null;
+        if (!this.authenticationStateCache) {
+            this.authenticationStateCache = this.http.get<AuthenticationState>(this.resourceUrl + '/authentication').pipe(
+                tap(authenticationState => {
+                    this.authenticationState = authenticationState;
+                    this.authenticationStateSubject.next(this.authenticationState);
+                }),
+                shareReplay()
+            );
+        }
+        return this.authenticationStateCache;
     }
 
-    if (!this.accountCache$) {
-      this.accountCache$ = this.fetchAuthenticatedState().pipe(
-        catchError(() => {
-          return of(null);
-        }),
-        tap(authenticatedState => {
-          this.authenticated = authenticatedState.authenticated;
-          this.userIdentity = authenticatedState.user;
-          this.authenticationState.next(this.userIdentity);
-        }),
-        shareReplay()
-      );
+    /**
+     * Fetch the authentication state account from the server if needed
+     * Returns directly the AuthenticatedState.user.
+     * Should be called when need to get the authenticated user from a none-anonymous accessible context
+     */
+    fetchAuthenticatedAccount(): Observable<UserAccount> {
+        return this.fetchAuthenticationState().pipe(map(authenticationState => authenticationState.user));
     }
-    return this.accountCache$;
-  }
 
-  isAuthenticated(): boolean {
-    return this.authenticated;
-  }
+    /**
+     * Clear authentication and fetch authenticated state to get updated backend authentication state
+     */
+    reloadAuthentication() {
+        this.clearAuthentication();
+        return this.fetchAuthenticationState();
+    }
 
-  getAuthenticationState(): Observable<any> {
-    return this.authenticationState.asObservable();
-  }
+    /**
+     * Clear authentication data so that, for the front, user is disconnected.
+     * Should only be called for logging out, otherwise, frontend auhentication state will be desynchronized with backend
+     */
+    clearAuthentication(): void {
+        this.authenticationStateCache = null;
+        this.authenticationState = null;
+        this.authenticationStateSubject.next(this.authenticationState);
+    }
+
+    hasAnyAuthority(roles: string[] | string): boolean {
+        if (!this.authenticationState.authenticated || !this.authenticationState.user.authorities) {
+            return false;
+        }
+
+        if (!Array.isArray(roles)) {
+            roles = [roles];
+        }
+
+        return roles.some((role: string) => this.authenticationState.user.authorities.includes(role));
+    }
+
+    isAuthenticated(): boolean {
+        return this.authenticationState.authenticated;
+    }
+
+    updatePassword(newPassword: string, currentPassword: string): Observable<any> {
+        return this.http.post(environment.serverUrl + '/change-password', {currentPassword, newPassword});
+    }
 }

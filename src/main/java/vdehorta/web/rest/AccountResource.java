@@ -4,7 +4,7 @@ package vdehorta.web.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import vdehorta.dto.AuthenticatedDto;
+import vdehorta.dto.AuthenticationDto;
 import vdehorta.dto.PasswordChangeDTO;
 import vdehorta.dto.UserDto;
 import vdehorta.repository.UserRepository;
@@ -44,10 +44,10 @@ public class AccountResource {
      *
      * @return the AuthenticatedDto matching the authenticated user.
      */
-    @GetMapping(path = "/authenticated")
-    public AuthenticatedDto getAuthenticated() {
-        log.debug("REST request to get the current authenticated");
-        AuthenticatedDto.Builder builder = new AuthenticatedDto.Builder();
+    @GetMapping(path = "/authentication")
+    public AuthenticationDto getAuthenticationState() {
+        log.debug("REST request to get the current authentication state");
+        AuthenticationDto.Builder builder = new AuthenticationDto.Builder();
         Optional<String> mayAuthenticatedLogin = authenticationService.getCurrentUserLoginOptional();
         if (mayAuthenticatedLogin.isPresent()) {
             UserDto authenticatedUser = userService.getUser(mayAuthenticatedLogin.get());

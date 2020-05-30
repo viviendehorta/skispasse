@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from '@angular/forms';
 import {AccountService} from '../../core/auth/account.service';
-import { Account } from '../../shared/model/account.model';
-import {PasswordService} from '../../core/account/password.service';
+import {UserAccount} from '../../shared/model/account.model';
+import {AuthenticationState} from "../../shared/model/authentication-state.model";
 
 
 @Component({
@@ -32,10 +32,10 @@ export class SettingsComponent implements OnInit {
     confirmPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]]
   });
 
-  constructor(private accountService: AccountService, private fb: FormBuilder, private passwordService: PasswordService) {}
+  constructor(private accountService: AccountService, private fb: FormBuilder) {}
 
   ngOnInit() {
-    this.accountService.identity().subscribe(account => {
+    this.accountService.fetchAuthenticatedAccount().subscribe((account: UserAccount) => {
       this.updateSettingsForm(account);
     });
   }
@@ -46,8 +46,8 @@ export class SettingsComponent implements OnInit {
       () => {
         this.error = null;
         this.success = 'Information was saved.';
-        this.accountService.identity(true).subscribe(account => {
-          this.updateSettingsForm(account);
+        this.accountService.reloadAuthentication().subscribe((authenticationState:AuthenticationState) => {
+          this.updateSettingsForm(authenticationState.user);
         });
       },
       () => {
@@ -72,7 +72,7 @@ export class SettingsComponent implements OnInit {
     };
   }
 
-  updateSettingsForm(account: Account): void {
+  updateSettingsForm(account: UserAccount): void {
     this.settingsForm.patchValue({
       firstName: account.firstName,
       lastName: account.lastName,
@@ -93,10 +93,10 @@ export class SettingsComponent implements OnInit {
       this.doesNotMatchPassword = 'The password and its confirmation do not match!';
     } else {
       this.doesNotMatchPassword = null;
-      this.passwordService.save(newPassword, this.passwordForm.get(['currentPassword']).value).subscribe(
+      this.accountService.updatePassword(newPassword, this.passwordForm.get(['currentPassword']).value).subscribe(
         () => {
           this.error = null;
-          this.success = 'Password updated.';
+          this.success = 'Password was successfully updated.';
         },
         () => {
           this.success = null;

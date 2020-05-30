@@ -26,7 +26,7 @@ export class UserService {
 
   query(pageRequest?: any): Observable<HttpResponse<IUser[]>> {
     const options = createHttpPagingOptions(pageRequest);
-    return this.http.get<IUser[]>(this.resourceUrl, { params: options, observe: 'response' });
+    return this.http.get<IUser[]>(this.resourceUrl + '/all', { params: options, observe: 'response' });
   }
 
   delete(login: string): Observable<any> {
@@ -34,6 +34,6 @@ export class UserService {
   }
 
   authorities(): Observable<string[]> {
-    return this.http.get<string[]>(this.resourceUrl + '/authorities');
+    return this.http.get<string[]>(this.resourceUrl + '/roles');
   }
 }

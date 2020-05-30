@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {ModalService} from '../../../core/modal/modal.service';
 import {LoginModalService} from '../../../core/login/login-modal.service';
 import {ROLE_ADMIN, ROLE_CONTRIBUTOR} from '../../../shared/constants/role.constants';
 import {AccountService} from '../../../core/auth/account.service';
 import {LoginService} from '../../../core/login/login.service';
-import {Account} from '../../../shared/model/account.model';
+import {UserAccount} from '../../../shared/model/account.model';
 import {EventManager} from '../../../core/events/event-manager';
 
 @Component({
@@ -15,8 +14,7 @@ import {EventManager} from '../../../core/events/event-manager';
   styleUrls: ['./account-panel.component.scss']
 })
 export class AccountPanelComponent implements OnInit {
-  account: Account;
-  authSubscription: Subscription;
+  account: UserAccount;
 
   constructor(
     private modalService: ModalService,
@@ -28,10 +26,9 @@ export class AccountPanelComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.accountService.identity().subscribe((account: Account) => {
+    this.accountService.fetchAuthenticatedAccount().subscribe((account: UserAccount) => {
       this.account = account;
     });
-    this.registerAuthenticationSuccess();
   }
 
   login() {
@@ -53,13 +50,5 @@ export class AccountPanelComponent implements OnInit {
 
   isContributor() {
     return this.accountService.hasAnyAuthority(ROLE_CONTRIBUTOR);
-  }
-
-  registerAuthenticationSuccess() {
-    this.authSubscription = this.eventManager.subscribe('authenticationSuccess', () => {
-      this.accountService.identity().subscribe(account => {
-        this.account = account;
-      });
-    });
   }
 }

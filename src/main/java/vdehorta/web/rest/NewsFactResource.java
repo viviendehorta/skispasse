@@ -21,7 +21,6 @@ import vdehorta.web.rest.errors.BadRequestAlertException;
 import vdehorta.web.rest.util.HeaderUtil;
 import vdehorta.web.rest.util.PaginationUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
@@ -75,7 +74,7 @@ public class NewsFactResource {
      * If user is not contributor, the {@link ResponseEntity} has status {@code 403 (FORBIDDEN)}
      */
     @GetMapping(value = "/contributor", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<NewsFactDetailDto>> getMyNewsFacts(HttpServletRequest req, Pageable pageable) {
+    public ResponseEntity<List<NewsFactDetailDto>> getMyNewsFacts(Pageable pageable) {
         log.debug("REST request to get current user  news facts");
 
         authenticationService.assertAuthenticationRole(CONTRIBUTOR);
@@ -114,7 +113,7 @@ public class NewsFactResource {
         NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact, videoFile, authenticationService.getCurrentUserLoginOrThrowError());
         return ResponseEntity
                 .created(new URI("/newsFacts/" + createdNewsFact.getId()))
-                .headers(HeaderUtil.createAlertHeaders(applicationName, "A news fact was created with id " + createdNewsFact.getId()))
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "News fact with id '" + createdNewsFact.getId() + "' was created."))
                 .body(createdNewsFact);
     }
 
@@ -132,7 +131,7 @@ public class NewsFactResource {
         newsFactService.delete(newsFactId, authenticationService.getCurrentUserLoginOrThrowError());
         return ResponseEntity
                 .noContent()
-                .headers(HeaderUtil.createAlertHeaders(applicationName, "A news fact was deleted with id " + newsFactId))
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "News fact with id '" + newsFactId + "' was deleted."))
                 .build();
     }
 
@@ -157,7 +156,7 @@ public class NewsFactResource {
 
         return ResponseEntity
                 .ok()
-                .headers(HeaderUtil.createAlertHeaders(applicationName, "A news fact was updated with id " + newsFact.getId()))
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "News fact with id '" + newsFact.getId() + "' was updated."))
                 .body(updated);
     }
 }

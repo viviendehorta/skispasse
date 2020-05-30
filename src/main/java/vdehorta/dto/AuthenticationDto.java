@@ -1,11 +1,11 @@
 package vdehorta.dto;
 
-public class AuthenticatedDto {
+public class AuthenticationDto {
 
     private boolean authenticated;
     private UserDto user;
 
-    private AuthenticatedDto(Builder builder) {
+    private AuthenticationDto(Builder builder) {
         authenticated = builder.authenticated;
         user = builder.user;
     }
@@ -36,8 +36,8 @@ public class AuthenticatedDto {
             return this;
         }
 
-        public AuthenticatedDto build() {
-            return new AuthenticatedDto(this);
+        public AuthenticationDto build() {
+            return new AuthenticationDto(this);
         }
     }
 }

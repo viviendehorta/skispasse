@@ -6,6 +6,7 @@ import {map} from 'rxjs/operators';
 import {StateStorageService} from './state-storage.service';
 import {LoginModalService} from '../login/login-modal.service';
 import {AccountService} from './account.service';
+import {AuthenticationState} from "../../shared/model/authentication-state.model";
 
 @Injectable({ providedIn: 'root' })
 export class UserRouteAccessService implements CanActivate {
@@ -25,15 +26,13 @@ export class UserRouteAccessService implements CanActivate {
   }
 
   checkLogin(authorities: string[], url: string): Observable<boolean> {
-    return this.accountService.identity().pipe(
-      map(account => {
+    return this.accountService.fetchAuthenticationState().pipe(
+      map((authenticationState: AuthenticationState) => {
         if (!authorities || authorities.length === 0) {
           return true;
         }
-
-        if (account) {
-          const hasAnyAuthority = this.accountService.hasAnyAuthority(authorities);
-          if (hasAnyAuthority) {
+        if (authenticationState.authenticated) {
+          if (this.accountService.hasAnyAuthority(authorities)) {
             return true;
           }
           if (isDevMode()) {

@@ -91,7 +91,7 @@ public class UserResource {
         UserDto newUser = userService.createUser(userDTO);
         return ResponseEntity
                 .created(new URI("/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlertHeaders(applicationName, "A user was created with login " + newUser.getLogin()))
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "User '" + newUser.getLogin() + "' was created."))
                 .body(newUser);
     }
 
@@ -100,7 +100,7 @@ public class UserResource {
      *
      * @param userDTO the user to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated user.
-     * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already in use.
+     * @throws EmailAlreadyUsedException      {@code 400 (Bad Request)} if the email is already in use.
      * @throws LoginAlreadyUsedAlertException {@code 400 (Bad Request)} if the login is already in use.
      */
     @PutMapping
@@ -111,7 +111,7 @@ public class UserResource {
         UserDto updatedUser = userService.updateUser(userDTO);
         return ResponseEntity
                 .ok()
-                .headers(HeaderUtil.createAlertHeaders(applicationName, "A user with login '" + updatedUser.getLogin() + "' was updated."))
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "User '" + updatedUser.getLogin() + "' was updated."))
                 .body(updatedUser);
     }
 
@@ -175,7 +175,7 @@ public class UserResource {
         userService.deleteUser(login);
         return ResponseEntity
                 .noContent()
-                .headers(HeaderUtil.createAlertHeaders(applicationName, "A user was deleted with id "))
+                .headers(HeaderUtil.createAlertHeaders(applicationName, "User '" + login + "' was deleted."))
                 .build();
     }
 }
