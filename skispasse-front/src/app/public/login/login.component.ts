@@ -44,7 +44,7 @@ export class LoginModalComponent implements AfterViewInit {
     this.activeModal.dismiss('cancel');
   }
 
-  login() {
+  login(): void {
     this.loginService
       .login({
         username: this.loginForm.get('username').value,
@@ -53,6 +53,7 @@ export class LoginModalComponent implements AfterViewInit {
       })
       .subscribe(
         () => {
+            console.log("LoginModalComponent : login subscription success notification");
           this.authenticationError = false;
           this.activeModal.dismiss('login success');
 
@@ -77,7 +78,10 @@ export class LoginModalComponent implements AfterViewInit {
             this.router.navigateByUrl(redirect);
           }
         },
-        () => (this.authenticationError = true)
+        () => {
+            console.log("LoginModalComponent : login subscription error notification");
+            return (this.authenticationError = true);
+        }
       );
   }
 

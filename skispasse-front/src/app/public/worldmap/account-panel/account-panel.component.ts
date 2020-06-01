@@ -7,6 +7,7 @@ import {AccountService} from '../../../core/auth/account.service';
 import {LoginService} from '../../../core/login/login.service';
 import {UserAccount} from '../../../shared/model/account.model';
 import {EventManager} from '../../../core/events/event-manager';
+import {AuthenticationState} from "../../../shared/model/authentication-state.model";
 
 @Component({
   selector: 'skis-account-panel',
@@ -26,9 +27,11 @@ export class AccountPanelComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.accountService.fetchAuthenticatedAccount().subscribe((account: UserAccount) => {
-      this.account = account;
+    this.accountService.getAuthenticationState().subscribe((authenticationState: AuthenticationState) => {
+      console.log("AccountPanelComponent : account subscription notification : account=" + JSON.stringify(authenticationState));
+      this.account = authenticationState.user;
     });
+    console.log("AccountPanelComponent : accountService.getAuthenticationState() DONE !");
   }
 
   login() {

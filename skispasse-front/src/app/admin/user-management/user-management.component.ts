@@ -14,6 +14,7 @@ import {EventManager} from '../../core/events/event-manager';
 import {PaginationService} from '../../core/pagination/pagination.service';
 import {AlertService} from '../../core/alert/alert.service';
 import {UserAccount} from "../../shared/model/account.model";
+import {AuthenticationState} from "../../shared/model/authentication-state.model";
 
 @Component({
   selector: 'skis-user-mgmt',
@@ -55,8 +56,8 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.accountService.fetchAuthenticatedAccount().subscribe((account:UserAccount) => {
-      this.currentAccount = account;
+    this.accountService.getAuthenticationState().subscribe((authenticationState:AuthenticationState) => {
+      this.currentAccount = authenticationState.user;
       this.loadAll();
       this.registerChangeInUsers();
     });
