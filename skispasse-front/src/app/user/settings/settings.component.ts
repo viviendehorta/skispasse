@@ -1,16 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {AccountService} from '../../core/auth/account.service';
 import {UserAccount} from '../../shared/model/account.model';
 import {AuthenticationState} from "../../shared/model/authentication-state.model";
-
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'skis-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
+
+  authSubscription: Subscription;
+
   error: string;
   success: string;
   settingsForm = this.fb.group({
@@ -35,20 +38,18 @@ export class SettingsComponent implements OnInit {
   constructor(private accountService: AccountService, private fb: FormBuilder) {}
 
   ngOnInit() {
-    this.accountService.fetchAuthenticatedAccount().subscribe((account: UserAccount) => {
-      this.updateSettingsForm(account);
+    this.authSubscription = this.accountService.getAuthenticationState().subscribe((authenticationState: AuthenticationState) => {
+      this.updateSettingsForm(authenticationState.user);
     });
   }
 
   save() {
     const settingsAccount = this.accountFromForm();
-    this.accountService.update(settingsAccount).subscribe(
+    this.accountService.updateAccount(settingsAccount).subscribe(
       () => {
         this.error = null;
         this.success = 'Information was saved.';
-        this.accountService.reloadAuthentication().subscribe((authenticationState:AuthenticationState) => {
-          this.updateSettingsForm(authenticationState.user);
-        });
+        this.accountService.getAuthenticationState();
       },
       () => {
         this.success = null;
@@ -57,19 +58,10 @@ export class SettingsComponent implements OnInit {
     );
   }
 
-  private accountFromForm(): any {
-    const account = {};
-    return {
-      ...account,
-      firstName: this.settingsForm.get('firstName').value,
-      lastName: this.settingsForm.get('lastName').value,
-      email: this.settingsForm.get('email').value,
-      activated: this.settingsForm.get('activated').value,
-      authorities: this.settingsForm.get('authorities').value,
-      langKey: this.settingsForm.get('langKey').value,
-      login: this.settingsForm.get('login').value,
-      imageUrl: this.settingsForm.get('imageUrl').value
-    };
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
   updateSettingsForm(account: UserAccount): void {
@@ -94,15 +86,30 @@ export class SettingsComponent implements OnInit {
     } else {
       this.doesNotMatchPassword = null;
       this.accountService.updatePassword(newPassword, this.passwordForm.get(['currentPassword']).value).subscribe(
-        () => {
-          this.error = null;
-          this.success = 'Password was successfully updated.';
-        },
-        () => {
-          this.success = null;
-          this.error = 'Error while updating password!';
-        }
+          () => {
+            this.error = null;
+            this.success = 'Password was successfully updated.';
+          },
+          () => {
+            this.success = null;
+            this.error = 'Error while updating password!';
+          }
       );
     }
+  }
+
+  private accountFromForm(): any {
+    const account = {};
+    return {
+      ...account,
+      firstName: this.settingsForm.get('firstName').value,
+      lastName: this.settingsForm.get('lastName').value,
+      email: this.settingsForm.get('email').value,
+      activated: this.settingsForm.get('activated').value,
+      authorities: this.settingsForm.get('authorities').value,
+      langKey: this.settingsForm.get('langKey').value,
+      login: this.settingsForm.get('login').value,
+      imageUrl: this.settingsForm.get('imageUrl').value
+    };
   }
 }

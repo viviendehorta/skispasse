@@ -1,20 +1,24 @@
 import {Injectable} from '@angular/core';
-import {flatMap} from 'rxjs/operators';
+import {tap} from 'rxjs/operators';
 import {AccountService} from '../auth/account.service';
 import {AuthServerProvider} from '../auth/auth-session.service';
 import {Observable} from "rxjs";
-import {AuthenticationState} from "../../shared/model/authentication-state.model";
 
 @Injectable({providedIn: 'root'})
 export class LoginService {
     constructor(private accountService: AccountService, private authServerProvider: AuthServerProvider) {
     }
 
-    login(credentials): Observable<AuthenticationState> {
-        return this.authServerProvider.login(credentials).pipe(flatMap(() => {
-                return this.accountService.reloadAuthentication();
-            }
-        ));
+    login(credentials): Observable<any> {
+        console.log("LoginService : enter login");
+        this.accountService.clearAuthentication();
+        return this.authServerProvider.login(credentials).pipe(
+            tap((loginResult: any) => {
+                console.log("LoginService : received login result= " + JSON.stringify(loginResult));
+                console.log("LoginService : calling accountService.fetchAuthenticationState()");
+                this.accountService.getAuthenticationState();
+            })
+        );
     }
 
     logout(): void {
