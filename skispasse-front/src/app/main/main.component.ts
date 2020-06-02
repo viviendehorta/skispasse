@@ -12,7 +12,9 @@ import {Subscription} from "rxjs";
 })
 export class SkisMainComponent implements OnInit, OnDestroy {
 
-  authSubscription: Subscription; //Own the app authentication subscription (no need to manipulate it in other components)
+  private defaultTitle = 'Skispasse';
+
+  private authSubscription: Subscription; //Own the app authentication subscription (no need to manipulate it in other components)
 
   constructor(private accountService: AccountService, private titleService: Title, private router: Router) {}
 
@@ -39,13 +41,13 @@ export class SkisMainComponent implements OnInit, OnDestroy {
   private updateTitle(): void {
     let pageTitle = this.getPageTitle(this.router.routerState.snapshot.root);
     if (!pageTitle) {
-      pageTitle = 'Skispasse';
+      pageTitle = this.defaultTitle;
     }
     this.titleService.setTitle(pageTitle);
   }
 
   private getPageTitle(routeSnapshot: ActivatedRouteSnapshot) {
-    let title: string = routeSnapshot.data && routeSnapshot.data.pageTitle ? routeSnapshot.data.pageTitle : 'skispasseApp';
+    let title: string = routeSnapshot.data && routeSnapshot.data.pageTitle ? this.defaultTitle + ' - ' + routeSnapshot.data.pageTitle : this.defaultTitle;
     if (routeSnapshot.firstChild) {
       title = this.getPageTitle(routeSnapshot.firstChild) || title;
     }

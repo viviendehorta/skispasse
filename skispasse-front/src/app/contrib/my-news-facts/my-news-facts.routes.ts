@@ -27,7 +27,7 @@ export const myNewsFactsRoutes: Routes = [
       pagingParams: ResolvePaginationParamService
     },
     data: {
-      pageTitle: 'myNewsFacts.list.title',
+      pageTitle: 'My publications',
       defaultSort: 'id,asc'
     }
   },
@@ -35,7 +35,7 @@ export const myNewsFactsRoutes: Routes = [
     path: 'new',
     component: MyNewsFactEditionComponent,
     data: {
-      pageTitle: 'myNewsFacts.creation.title'
+      pageTitle: 'New publication'
     },
     resolve: {
       newsFact: NewsFactResolve
@@ -45,7 +45,7 @@ export const myNewsFactsRoutes: Routes = [
     path: ':id/edit',
     component: MyNewsFactEditionComponent,
     data: {
-      pageTitle: 'myNewsFacts.edition.title'
+      pageTitle: 'Publication edition'
     },
     resolve: {
       newsFact: NewsFactResolve

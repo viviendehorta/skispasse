@@ -6,7 +6,7 @@ export const settingsRoute: Routes = [
     path: '',
     component: SettingsComponent,
     data: {
-      pageTitle: 'account.settings.title'
+      pageTitle: 'Settings'
     }
   }
 ];

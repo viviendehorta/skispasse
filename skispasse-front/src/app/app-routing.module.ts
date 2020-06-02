@@ -18,7 +18,7 @@ const LAYOUT_ROUTES = [...errorRoute];
           component: WorldmapComponent,
           data: {
             authorities: [],
-            pageTitle: 'worldmap.title'
+            pageTitle: 'World Map'
           }
         },
         {
