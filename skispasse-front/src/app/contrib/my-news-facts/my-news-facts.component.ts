@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {HttpResponse} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -13,16 +13,13 @@ import {AccountService} from '../../core/auth/account.service';
 import {NewsFactService} from '../../core/newsfacts/news-fact.service';
 import {EventManager} from '../../core/events/event-manager';
 import {AlertService} from '../../core/alert/alert.service';
-import {AuthenticationState} from "../../shared/model/authentication-state.model";
 
 @Component({
     selector: 'skis-news-fact-management',
     templateUrl: './my-news-facts.component.html',
     styleUrls: ['./my-news-facts.component.scss']
 })
-export class MyNewsFactsComponent implements OnInit, OnDestroy {
-
-    authSubscription: Subscription;
+export class MyNewsFactsComponent implements OnInit {
 
     myNewsFacts: INewsFactDetail[];
     currentAccount: UserAccount;
@@ -55,8 +52,8 @@ export class MyNewsFactsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.authSubscription = this.accountService.getAuthenticationState().subscribe((authenticationState: AuthenticationState) => {
-            this.currentAccount = authenticationState.user;
+        this.accountService.getAccount().subscribe((account) => {
+            this.currentAccount = account;
             this.loadAll();
         });
         this.subscribeToChangesInMyNewsFactList();
@@ -103,12 +100,6 @@ export class MyNewsFactsComponent implements OnInit, OnDestroy {
         if (page !== this.previousPage) {
             this.previousPage = page;
             this.transition();
-        }
-    }
-
-    ngOnDestroy(): void {
-        if (this.authSubscription) {
-            this.authSubscription.unsubscribe();
         }
     }
 

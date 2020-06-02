@@ -6,7 +6,6 @@ import {map} from 'rxjs/operators';
 import {StateStorageService} from './state-storage.service';
 import {LoginModalService} from '../login/login-modal.service';
 import {AccountService} from './account.service';
-import {AuthenticationState} from "../../shared/model/authentication-state.model";
 
 @Injectable({providedIn: 'root'})
 export class UserRouteAccessService implements CanActivate {
@@ -27,20 +26,21 @@ export class UserRouteAccessService implements CanActivate {
     }
 
     checkLogin(authorities: string[], url: string): Observable<boolean> {
-        this.accountService.getAuthenticationState();
-        return this.accountService.getAuthenticationState().pipe(
-            map((authenticationState: AuthenticationState) => {
+        return this.accountService.getAccount().pipe(
+            map(account => {
                 if (!authorities || authorities.length === 0) {
                     return true;
                 }
-                if (authenticationState.authenticated) {
-                    if (this.accountService.hasAnyAuthority(authorities)) {
+
+                if (account) {
+                    const hasAnyAuthority = this.accountService.hasAnyAuthority(authorities);
+                    if (hasAnyAuthority) {
                         return true;
                     }
                     if (isDevMode()) {
                         console.error('User has not any of required authorities: ', authorities);
                     }
-                    this.router.navigate(['access-denied']);
+                    this.router.navigate(['accessdenied']);
                     return false;
                 }
 

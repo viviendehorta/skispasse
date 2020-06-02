@@ -5,9 +5,8 @@ import {LoginModalService} from '../../../core/login/login-modal.service';
 import {ROLE_ADMIN, ROLE_CONTRIBUTOR} from '../../../shared/constants/role.constants';
 import {AccountService} from '../../../core/auth/account.service';
 import {LoginService} from '../../../core/login/login.service';
-import {UserAccount} from '../../../shared/model/account.model';
 import {EventManager} from '../../../core/events/event-manager';
-import {AuthenticationState} from "../../../shared/model/authentication-state.model";
+import {UserAccount} from "../../../shared/model/account.model";
 
 @Component({
   selector: 'skis-account-panel',
@@ -15,7 +14,8 @@ import {AuthenticationState} from "../../../shared/model/authentication-state.mo
   styleUrls: ['./account-panel.component.scss']
 })
 export class AccountPanelComponent implements OnInit {
-  account: UserAccount;
+
+  account: UserAccount | null = null;
 
   constructor(
     private modalService: ModalService,
@@ -27,11 +27,7 @@ export class AccountPanelComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.accountService.getAuthenticationState().subscribe((authenticationState: AuthenticationState) => {
-      console.log("AccountPanelComponent : account subscription notification : account=" + JSON.stringify(authenticationState));
-      this.account = authenticationState.user;
-    });
-    console.log("AccountPanelComponent : accountService.getAuthenticationState() DONE !");
+    this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
   }
 
   login() {

@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import Map from 'ol/Map';
-import { Vector as VectorLayer } from 'ol/layer';
-import { Feature } from 'ol';
-import { Subscription } from 'rxjs';
+import {Vector as VectorLayer} from 'ol/layer';
+import {Feature} from 'ol';
+import {Subscription} from 'rxjs';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {AccountService} from '../../core/auth/account.service';
 import {NewsFactService} from '../../core/newsfacts/news-fact.service';

@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { HttpResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {HttpResponse} from '@angular/common/http';
+import {Subscription} from 'rxjs';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
-import { UserManagementDeleteDialogComponent } from './user-management-delete-dialog.component';
+import {UserManagementDeleteDialogComponent} from './user-management-delete-dialog.component';
 import {UserService} from '../../core/user/user.service';
 import {AccountService} from '../../core/auth/account.service';
 import {User} from '../../shared/model/user.model';
@@ -14,7 +14,6 @@ import {EventManager} from '../../core/events/event-manager';
 import {PaginationService} from '../../core/pagination/pagination.service';
 import {AlertService} from '../../core/alert/alert.service';
 import {UserAccount} from "../../shared/model/account.model";
-import {AuthenticationState} from "../../shared/model/authentication-state.model";
 
 @Component({
   selector: 'skis-user-mgmt',
@@ -56,8 +55,8 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.accountService.getAuthenticationState().subscribe((authenticationState:AuthenticationState) => {
-      this.currentAccount = authenticationState.user;
+    this.accountService.getAccount().subscribe(account => {
+      this.currentAccount = account;
       this.loadAll();
       this.registerChangeInUsers();
     });
