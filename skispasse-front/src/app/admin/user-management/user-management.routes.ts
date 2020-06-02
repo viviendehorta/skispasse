@@ -29,7 +29,7 @@ export const userManagementRoutes: Routes = [
       pagingParams: ResolvePaginationParamService
     },
     data: {
-      pageTitle: 'userManagement.list.title',
+      pageTitle: 'Users',
       defaultSort: 'id,asc'
     }
   },
@@ -40,14 +40,14 @@ export const userManagementRoutes: Routes = [
       user: UserManagementResolve
     },
     data: {
-      pageTitle: 'userManagement.detail.title'
+      pageTitle: 'User detail'
     }
   },
   {
     path: 'new',
     component: UserManagementUpdateComponent,
     data: {
-      pageTitle: 'userManagement.creation.title'
+      pageTitle: 'New User'
     },
     resolve: {
       user: UserManagementResolve
@@ -57,7 +57,7 @@ export const userManagementRoutes: Routes = [
     path: ':login/edit',
     component: UserManagementUpdateComponent,
     data: {
-      pageTitle: 'userManagement.edition.title'
+      pageTitle: 'User edition'
     },
     resolve: {
       user: UserManagementResolve
