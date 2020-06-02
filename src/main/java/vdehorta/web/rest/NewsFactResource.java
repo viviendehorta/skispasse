@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -15,12 +16,14 @@ import vdehorta.config.ApplicationProperties;
 import vdehorta.converter.JacksonMapperFactory;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
+import vdehorta.dto.NewsFactVideo;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.NewsFactService;
 import vdehorta.web.rest.errors.BadRequestAlertException;
 import vdehorta.web.rest.util.HeaderUtil;
 import vdehorta.web.rest.util.PaginationUtil;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
@@ -158,5 +161,11 @@ public class NewsFactResource {
                 .ok()
                 .headers(HeaderUtil.createAlertHeaders(applicationName, "News fact with id '" + newsFact.getId() + "' was updated."))
                 .body(updated);
+    }
+
+    @GetMapping("/video/{newsFactId}")
+    public void streamVideo(@PathVariable String newsFactId, HttpServletResponse response) throws Exception {
+        NewsFactVideo video = newsFactService.getVideo(newsFactId);
+        FileCopyUtils.copy(video.getStream(), response.getOutputStream());
     }
 }

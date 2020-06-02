@@ -11,6 +11,7 @@ import vdehorta.domain.NewsFact;
 import vdehorta.dto.NewsCategoryDto;
 import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.dto.NewsFactNoDetailDto;
+import vdehorta.dto.NewsFactVideo;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.service.errors.AuthenticationRequiredException;
 import vdehorta.service.errors.NewsFactNotFoundException;
@@ -35,13 +36,13 @@ public class NewsFactService {
     private final NewsFactMapper newsFactMapper;
     private final NewsCategoryService newsCategoryService;
     private final ClockService clockService;
-    private final VideoFileService videoFileService;
+    private final NewsFactVideoFileService videoFileService;
 
     public NewsFactService(NewsFactRepository newsFactRepository,
                            NewsFactMapper newsFactMapper,
                            NewsCategoryService newsCategoryService,
                            ClockService clockService,
-                           VideoFileService videoFileService) {
+                           NewsFactVideoFileService videoFileService) {
         this.newsFactRepository = newsFactRepository;
         this.newsFactMapper = newsFactMapper;
         this.newsCategoryService = newsCategoryService;
@@ -71,9 +72,9 @@ public class NewsFactService {
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
 
-        String videoFileRef = videoFileService.save(videoFile, creatorLogin);
+        String videoFileId = videoFileService.save(videoFile, creatorLogin);
 
-        newsFact.setVideoPath(videoFileRef);
+        newsFact.setVideoPath(videoFileId);
         newsFact.setOwner(creatorLogin);
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
 
@@ -126,5 +127,15 @@ public class NewsFactService {
         }
 
         newsFactRepository.deleteById(newsFactId);
+    }
+
+    /**
+     * Get the NewsFactVideo associated to the news fact with the given id
+     * @param newsFactId id of the news fact associated with the video to retrieve
+     * @return The NewsFactVideo associated with the
+     */
+    public NewsFactVideo getVideo(String newsFactId) {
+        NewsFact newsFact = newsFactRepository.findById(newsFactId).orElseThrow(() -> new NewsFactNotFoundException(newsFactId));
+        return this.videoFileService.getNewsFactVideo(newsFact.getVideoPath());
     }
 }
