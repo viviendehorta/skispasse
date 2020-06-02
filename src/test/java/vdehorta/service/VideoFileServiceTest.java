@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
 import vdehorta.repository.NewsFactVideoDao;
-import vdehorta.service.VideoFileService.ContentTypeEnum;
+import vdehorta.service.NewsFactVideoFileService.ContentTypeEnum;
 import vdehorta.service.errors.UnreadableFileContentException;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
 import vdehorta.service.errors.VideoFileTooLargeException;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 class VideoFileServiceTest {
 
-    private VideoFileService videoFileService;
+    private NewsFactVideoFileService videoFileService;
 
     private NewsFactVideoDao fileRepositoryMock;
     private ClockService clockServiceMock;
@@ -28,7 +28,7 @@ class VideoFileServiceTest {
         fileRepositoryMock = mock(NewsFactVideoDao.class);
         clockServiceMock = mock(ClockService.class);
         userServiceMock = mock(UserService.class);
-        videoFileService = new VideoFileService(fileRepositoryMock, clockServiceMock);
+        videoFileService = new NewsFactVideoFileService(fileRepositoryMock, clockServiceMock);
     }
 
     @Test
@@ -37,7 +37,7 @@ class VideoFileServiceTest {
         //Given
         MultipartFile tooBigFileMock = mock(MultipartFile.class);
         when(tooBigFileMock.getContentType()).thenReturn(ContentTypeEnum.MP4.getContentType());
-        when(tooBigFileMock.getSize()).thenReturn(VideoFileService.MAX_FILE_SIZE_IN_BYTE + 1);
+        when(tooBigFileMock.getSize()).thenReturn(NewsFactVideoFileService.MAX_FILE_SIZE_IN_BYTE + 1);
 
         //Assert-Thrown
         assertThatThrownBy(() -> videoFileService.save(tooBigFileMock, "aUser"))
