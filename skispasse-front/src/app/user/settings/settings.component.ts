@@ -1,18 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {AccountService} from '../../core/auth/account.service';
 import {UserAccount} from '../../shared/model/account.model';
-import {AuthenticationState} from "../../shared/model/authentication-state.model";
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'skis-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit, OnDestroy {
-
-  authSubscription: Subscription;
+export class SettingsComponent implements OnInit {
 
   error: string;
   success: string;
@@ -38,30 +34,24 @@ export class SettingsComponent implements OnInit, OnDestroy {
   constructor(private accountService: AccountService, private fb: FormBuilder) {}
 
   ngOnInit() {
-    this.authSubscription = this.accountService.getAuthenticationState().subscribe((authenticationState: AuthenticationState) => {
-      this.updateSettingsForm(authenticationState.user);
+    this.accountService.getAccount().subscribe((account) => {
+      this.updateSettingsForm(account);
     });
   }
 
   save() {
-    const settingsAccount = this.accountFromForm();
-    this.accountService.updateAccount(settingsAccount).subscribe(
+    const updatedAccount = this.accountFromForm();
+    this.accountService.updateAccount(updatedAccount).subscribe(
       () => {
         this.error = null;
         this.success = 'Information was saved.';
-        this.accountService.getAuthenticationState();
+        this.accountService.authenticate(updatedAccount);
       },
       () => {
         this.success = null;
-        this.error = 'Error while updating information!';
+        this.error = 'Error while updating account information!';
       }
     );
-  }
-
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 
   updateSettingsForm(account: UserAccount): void {

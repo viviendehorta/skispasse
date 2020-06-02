@@ -1,81 +1,91 @@
 import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {UserAccount} from '../../shared/model/account.model';
-import {environment} from '../../../environments/environment';
+import {Observable, of, ReplaySubject} from 'rxjs';
+import {catchError, map, shareReplay, tap} from 'rxjs/operators';
+import {environment} from "../../../environments/environment";
+import {StateStorageService} from "./state-storage.service";
+import {UserAccount} from "../../shared/model/account.model";
 import {AuthenticationState} from "../../shared/model/authentication-state.model";
 
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class AccountService {
-
-    private UNAUTHENTICATED_STATE: AuthenticationState = {authenticated: false, user: null};
 
     private resourceUrl = environment.serverUrl + 'account';
 
-    private hasExpiredAuthentication: boolean;
-    private authenticationStateSubject: BehaviorSubject<AuthenticationState>;
+    private userAccount: UserAccount | null = null;
+    private authenticationState = new ReplaySubject<UserAccount | null>(1);
+    private accountCache$?: Observable<UserAccount | null>;
 
-    constructor(private http: HttpClient) {
-        this.hasExpiredAuthentication = true;
-        this.authenticationStateSubject = new BehaviorSubject<AuthenticationState>(this.UNAUTHENTICATED_STATE);
-        this.logHere("End Constructor");
-    }
+    constructor(private http: HttpClient, private stateStorageService: StateStorageService, private router: Router) {}
 
-    updateAccount(account: UserAccount): Observable<UserAccount> {
-        return this.http.put<UserAccount>(this.resourceUrl + '/', account);
+    updateAccount(account: UserAccount): Observable<{}> {
+        return this.http.post(this.resourceUrl, account);
     }
 
     updatePassword(newPassword: string, currentPassword: string): Observable<any> {
-        return this.http.post(this.resourceUrl + '/change-password', {currentPassword, newPassword});
+        return this.http.post(environment.serverUrl + '/change-password', { currentPassword, newPassword });
     }
 
-    /**
-     * Fetch the authentication state from the server and notify the subscribers with the received value.
-     * If called from a none-anonymous accessible context, better to use fetchAuthenticatedAccount() that returns
-     * directly the AuthenticatedState.user
-     */
-    getAuthenticationState(): Observable<AuthenticationState> {
-        this.logHere("enter getAuthenticationState");
-        if (this.hasExpiredAuthentication) {
-            this.logHere("going to fetch authenticationState");
-            this.http.get<AuthenticationState>(this.resourceUrl + '/authentication').subscribe(authenticationState => {
-                this.logHere("Receive server autthentication state : " + JSON.stringify(authenticationState));
-                this.logHere("Calling next on authentication subject");
-                this.authenticationStateSubject.next(authenticationState);
-                this.hasExpiredAuthentication = false;
-            });
+    getAccount(force?: boolean): Observable<UserAccount | null> {
+        if (!this.accountCache$ || force || !this.isAuthenticated()) {
+            this.accountCache$ = this.fetchAccount().pipe(
+                catchError(() => {
+                    return of(null);
+                }),
+                tap((userAccount: UserAccount | null) => {
+                    this.authenticate(userAccount);
+
+                    if (userAccount) {
+                        this.navigateToStoredUrl();
+                    }
+                }),
+                shareReplay()
+            );
         }
-        return this.authenticationStateSubject.asObservable();
+        return this.accountCache$;
     }
 
-    /**
-     * Clear authentication data so that, for the front, user is disconnected.
-     * Should only be called for logging out, otherwise, frontend auhentication state will be desynchronized with backend
-     */
-    clearAuthentication(): void {
-        this.logHere("enter clearAuthentication");
-        this.hasExpiredAuthentication = true;
-        this.authenticationStateSubject.next(this.UNAUTHENTICATED_STATE);
+    fetchAccount(): Observable<UserAccount> {
+        return this.http.get<AuthenticationState>(this.resourceUrl + '/authentication').pipe(
+            map(authenticationState => authenticationState.user)
+        );
+    }
+
+    authenticate(identity: UserAccount | null): void {
+        this.userAccount = identity;
+        this.authenticationState.next(this.userAccount);
+    }
+
+    hasAnyAuthority(authorities: string[] | string): boolean {
+        if (!this.userAccount || !this.userAccount.authorities) {
+            return false;
+        }
+        if (!Array.isArray(authorities)) {
+            authorities = [authorities];
+        }
+        return this.userAccount.authorities.some((authority: string) => authorities.includes(authority));
     }
 
     isAuthenticated(): boolean {
-        return !this.hasExpiredAuthentication && this.authenticationStateSubject.getValue().authenticated;
+        return this.userAccount !== null;
     }
 
-    hasAnyAuthority(roles: string[] | string): boolean {
-        if (this.hasExpiredAuthentication || !this.authenticationStateSubject.getValue().authenticated || !this.authenticationStateSubject.getValue().user.authorities) {
-            return false;
-        }
-
-        if (!Array.isArray(roles)) {
-            roles = [roles];
-        }
-
-        return roles.some((role: string) => this.authenticationStateSubject.getValue().user.authorities.includes(role));
+    /**
+     * Only used once from account panel component and else use getAccount() method because don't understand this part of JHipster code, doing same
+     */
+    getAuthenticationState(): Observable<UserAccount | null> {
+        return this.authenticationState.asObservable();
     }
 
-    private logHere(msg: string) {
-        console.log("AccountService : " + msg);
+    private navigateToStoredUrl(): void {
+        // previousState can be set in the authExpiredInterceptor and in the userRouteAccessService
+        // if login is successful, go to stored previousState and clear previousState
+        const previousUrl = this.stateStorageService.getUrl();
+        if (previousUrl) {
+            this.stateStorageService.clearUrl();
+            this.router.navigateByUrl(previousUrl);
+        }
     }
 }
