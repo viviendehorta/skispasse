@@ -1,4 +1,6 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {INewsFactDetail} from "../../../shared/model/news-fact-detail.model";
+import {NewsFactService} from "../../../core/newsfacts/news-fact.service";
 
 @Component({
   templateUrl: './news-fact-detail-modal-content.component.html',
@@ -7,13 +9,13 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class NewsFactDetailModalContentComponent implements OnInit {
 
-  @Input() newsFactDetail: { address: string; city: string; country: string; videoPath: string };
+  @Input() newsFactDetail: INewsFactDetail;
 
-  constructor() {}
+  constructor(private newsFactService: NewsFactService) {}
 
   ngOnInit() {}
 
-  setNewsFactDetail(newsFactDetail: { address: string; city: string; country: string; videoPath: string }) {
+  setNewsFactDetail(newsFactDetail: INewsFactDetail) {
     this.newsFactDetail = newsFactDetail;
   }
 }
