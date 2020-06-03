@@ -74,10 +74,8 @@ export class NewsFactService {
     );
   }
 
-  streamNewsFactVideo(newsFactId: string): Observable<ArrayBuffer> {
-    return this.http.get(this.resourceUrl + '/video/' + newsFactId, {
-      responseType: 'arraybuffer'
-    });
+  getNewsFactVideoUrl(newsFactId: string): string {
+    return this.resourceUrl + 'stream/' + newsFactId;
   }
 
   filterByCategoryIds(newsFacts: NewsFactNoDetail[], categoryIds: string[]) {

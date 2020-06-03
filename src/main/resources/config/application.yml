@@ -29,7 +29,7 @@ spring:
     active: #spring.profiles.active#
   servlet:
     multipart:
-      max-file-size: 1MB
+      max-file-size: 2MB
   thymeleaf:
     enabled: false
     check-template-location: false

@@ -1,6 +1,6 @@
 import {Component, Input, ViewEncapsulation} from '@angular/core';
-import {NewsCategorySelection} from '../model/news-category-selection.model';
-import {EventManager} from '../../core/events/event-manager';
+import {NewsCategorySelection} from '../../../../shared/model/news-category-selection.model';
+import {EventManager} from '../../../../core/events/event-manager';
 
 @Component({
   selector: 'skis-news-category-checkbox',

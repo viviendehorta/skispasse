@@ -1,9 +1,6 @@
 <div class="modal-body">
 
-    <video class="video-player" controls>
-        <source src="{{this.newsFactDetail.videoPath}}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <skis-video-player videoUrl="{{newsFactVideoUrl}}"></skis-video-player>
 
     <div class="form" *ngIf="newsFactDetail">
 
