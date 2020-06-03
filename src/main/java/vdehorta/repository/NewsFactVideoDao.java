@@ -38,7 +38,7 @@ public class NewsFactVideoDao {
     public NewsFactVideo get(String videoId) throws NewsFactVideoStreamException {
         GridFSFile file = newsFactVideoGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)));
         NewsFactVideo video = new NewsFactVideo();
-        video.setNewsFactId(videoId);
+//        video.setNewsFactId(videoId);
         try {
             video.setStream(newsFactVideoGridFsTemplate.getResource(file).getInputStream());
         } catch (IOException e) {

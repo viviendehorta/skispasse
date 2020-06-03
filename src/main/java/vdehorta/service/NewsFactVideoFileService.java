@@ -22,7 +22,7 @@ public class NewsFactVideoFileService {
 
     private final Logger log = LoggerFactory.getLogger(NewsFactVideoFileService.class);
 
-    protected static final long MAX_FILE_SIZE_IN_BYTE = 1024L * 1024;
+    protected static final long MAX_FILE_SIZE_IN_BYTE = 2 * 1024L * 1024;
     protected static DateTimeFormatter COMPACT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:MM:ss");
 
     private NewsFactVideoDao newsFactVideoDao;
@@ -51,8 +51,8 @@ public class NewsFactVideoFileService {
         }
     }
 
-    public NewsFactVideo getNewsFactVideo(String id) {
-        return newsFactVideoDao.get(id);
+    public NewsFactVideo getNewsFactVideo(String videoId) {
+        return newsFactVideoDao.get(videoId);
     }
 
     private ContentTypeEnum validateFileContentType(String contentType) throws UnsupportedFileContentTypeException {

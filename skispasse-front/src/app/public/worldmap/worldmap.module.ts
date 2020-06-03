@@ -6,7 +6,7 @@ import {AccountPanelComponent} from './account-panel/account-panel.component';
 import {AdminPanelComponent} from './admin-panel/admin-panel.component';
 import {ContributorPanelComponent} from './contributor-panel/contributor-panel.component';
 import {NewsCategoryPanelComponent} from './news-category-panel/news-category-panel.component';
-import {NewsCategoryCheckboxComponent} from '../../shared/news-category-checkbox/news-category-checkbox.component';
+import {NewsCategoryCheckboxComponent} from './news-category-panel/news-category-checkbox/news-category-checkbox.component';
 import {NewsFactDetailModalContentComponent} from './news-fact-detail-modal/news-fact-detail-modal.content.component';
 import {SkispasseSharedModule} from '../../shared/shared.module';
 
