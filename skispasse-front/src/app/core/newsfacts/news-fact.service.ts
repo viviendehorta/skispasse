@@ -75,7 +75,7 @@ export class NewsFactService {
   }
 
   getNewsFactVideoUrl(newsFactId: string): string {
-    return this.resourceUrl + 'stream/' + newsFactId;
+    return this.resourceUrl + 'video/' + newsFactId;
   }
 
   filterByCategoryIds(newsFacts: NewsFactNoDetail[], categoryIds: string[]) {

@@ -762,6 +762,28 @@ public class NewsFactResourceITest {
         assertThat(updatedNewsFact.getOwner()).isEqualTo("mandela"); // Owner should not change
     }
 
+    @Test
+    public void streamNewsFactVideo_shouldThrowNotFoundIfNewsFactIdDoesntExist() throws Exception {
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/video/unexistingId"));
+        resultActions
+                .andExpect(status().isNotFound())
+                .andExpect(header().string("X-skispasseApp-error", "Not Found: News fact with id 'unexistingId' was not found!"));
+    }
+
+//    @Test
+//    public void streamNewsFactVideo_shouldThrowInternalServerErrorIfVideoFileDoesntExist() throws Exception {
+//
+//        //Init Database with a news fact wihout associated video file
+//        final NewsFact newsFact = createDefaultNewsFact();
+//        newsFact
+//
+//        //Given
+//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/video/unexistingId"));
+//
+//        //Then
+//        resultActions.andExpect(status().isInternalServerError());
+//    }
+
     private NewsFactDetailDto parseNewsFactDetailJson(String json) throws java.io.IOException {
         return JacksonMapperFactory.getObjectMapper().readValue(json, NewsFactDetailDto.class);
     }
