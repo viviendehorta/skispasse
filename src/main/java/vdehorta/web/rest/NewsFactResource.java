@@ -163,8 +163,8 @@ public class NewsFactResource {
                 .body(updated);
     }
 
-    @GetMapping("/stream/{newsFactId}")
-    public void streamVideo(@PathVariable String newsFactId, HttpServletResponse response) throws Exception {
+    @GetMapping("/video/{newsFactId}")
+    public void streamNewsFactVideo(@PathVariable String newsFactId, HttpServletResponse response) throws Exception {
         NewsFactVideo video = newsFactService.getVideo(newsFactId);
         FileCopyUtils.copy(video.getStream(), response.getOutputStream());
     }
