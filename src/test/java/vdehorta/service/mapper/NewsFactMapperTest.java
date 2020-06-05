@@ -3,10 +3,9 @@ package vdehorta.service.mapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import vdehorta.domain.NewsFact;
-import vdehorta.dto.NewsFactDetailDto;
+import vdehorta.bean.dto.NewsFactDetailDto;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -37,10 +37,10 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     private static final String PATH_KEY = "path";
     private static final String VIOLATIONS_KEY = "violations";
 
-    private String clientAppName;
+    private String applicationName;
 
     public ExceptionTranslator(ApplicationProperties applicationProperties) {
-        this.clientAppName = applicationProperties.getClientAppName();
+        this.applicationName = applicationProperties.getApplicationName();
     }
 
     /**
@@ -105,15 +105,24 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
 
     @ExceptionHandler
+    public ResponseEntity<Problem> handleConcurrencyFailure(ConcurrencyFailureException ex, NativeWebRequest request) {
+        Problem problem = Problem.builder()
+                .withStatus(Status.CONFLICT)
+                .with(MESSAGE_KEY, ErrorConstants.ERR_CONCURRENCY_FAILURE)
+                .build();
+        return create(ex, problem, request);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<Problem> handleEmailAlreadyUsedException(vdehorta.service.errors.EmailAlreadyUsedException ex, NativeWebRequest request) {
         EmailAlreadyUsedException problem = new EmailAlreadyUsedException();
-        return create(problem, request, HeaderUtil.createFailureAlertHeaders(clientAppName, problem.getMessage()));
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(applicationName, problem.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleUsernameAlreadyUsedException(LoginAlreadyUsedException ex, NativeWebRequest request) {
         LoginAlreadyUsedAlertException problem = new LoginAlreadyUsedAlertException();
-        return create(problem, request, HeaderUtil.createFailureAlertHeaders(clientAppName, problem.getMessage()));
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(applicationName, problem.getMessage()));
     }
 
     @ExceptionHandler
@@ -122,46 +131,43 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
     @ExceptionHandler
     public ResponseEntity<Problem> handleBadRequestAlertException(BadRequestAlertException ex, NativeWebRequest request) {
-        return create(ex, request, HeaderUtil.createFailureAlertHeaders(clientAppName, ex.getMessage()));
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<Problem> handleConcurrencyFailure(ConcurrencyFailureException ex, NativeWebRequest request) {
-        Problem problem = Problem.builder()
-            .withStatus(Status.CONFLICT)
-            .with(MESSAGE_KEY, ErrorConstants.ERR_CONCURRENCY_FAILURE)
-            .build();
-        return create(ex, problem, request);
+        return create(ex, request, HeaderUtil.createFailureAlertHeaders(applicationName, ex.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleNewsFactNotFoundException(NewsFactNotFoundException ex, NativeWebRequest request) {
         NewsFactNotFoundAlertException problem = new NewsFactNotFoundAlertException(ex.getNewsFactId());
-        return create(problem, request, HeaderUtil.createFailureAlertHeaders(clientAppName, problem.getMessage()));
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(applicationName, problem.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleNewsFactAccessForbiddenException(NewsFactAccessForbiddenException ex, NativeWebRequest request) {
         //Generate a NOT FOUND http response like "not found in your news facts"
         NewsFactNotFoundAlertException problem = new NewsFactNotFoundAlertException(ex.getNewsFactId());
-        return create(problem, request, HeaderUtil.createFailureAlertHeaders(clientAppName, problem.getMessage()));
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(applicationName, problem.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleAuthenticationRequiredException(vdehorta.service.errors.AuthenticationRequiredException ex, NativeWebRequest request) {
         AuthenticationRequiredAlertException problem = new AuthenticationRequiredAlertException();
-        return create(ex, problem, request);
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(applicationName, problem.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleMissingRoleException(MissingRoleException ex, NativeWebRequest request) {
         MissingRoleAlertException problem = new MissingRoleAlertException(ex.getRequiredRole());
-        return create(ex, problem, request);
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(applicationName, problem.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<Problem> handleUserNotFoundxception(UserNotFoundException ex, NativeWebRequest request) {
+    public ResponseEntity<Problem> handleUserNotFoundException(UserNotFoundException ex, NativeWebRequest request) {
         UserNotFoundAlertException problem = new UserNotFoundAlertException(ex.getLogin());
-        return create(ex, problem, request);
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(applicationName, problem.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleNewsFactVideoNotFoundException(NewsFactVideoNotFoundException ex, NativeWebRequest request) {
+        InternalServerErrorAlertException problem = new InternalServerErrorAlertException("Error while accessing video of news fact with id '" + ex.getNewsFactId() + "'!");
+        return create(problem, request, HeaderUtil.createFailureAlertHeaders(applicationName, problem.getMessage()));
     }
 }

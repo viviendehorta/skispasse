@@ -46,7 +46,7 @@ server:
 # ===================================================================
 
 application:
-  client-app-name: skispasseApp
+  application-name: skispasseApp
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration

@@ -6,15 +6,14 @@ import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 import vdehorta.domain.NewsFact;
-import vdehorta.dto.NewsFactDetailDto;
-import vdehorta.dto.NewsFactNoDetailDto;
+import vdehorta.bean.dto.NewsFactDetailDto;
+import vdehorta.bean.dto.NewsFactNoDetailDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static vdehorta.service.util.DateUtil.LOCAL_DATE_FORMATTER;
+import static vdehorta.service.util.DateUtil.DATE_FORMATTER;
 
 @Mapper(componentModel = "spring")
 @Service
@@ -25,7 +24,7 @@ public interface NewsFactMapper {
         if (localDateTime == null) {
             return null;
         }
-        return LOCAL_DATE_FORMATTER.format(localDateTime);
+        return DATE_FORMATTER.format(localDateTime);
     }
 
     @Named("stringToLocalDateTime")
@@ -33,7 +32,7 @@ public interface NewsFactMapper {
         if (stringDate == null || stringDate.isEmpty()) {
             return null;
         }
-        return LOCAL_DATE_FORMATTER.parse(stringDate, LocalDate::from).atStartOfDay();
+        return DATE_FORMATTER.parse(stringDate, LocalDate::from).atStartOfDay();
     }
 
     @Mappings({

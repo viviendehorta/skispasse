@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import vdehorta.config.Constants;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
-import vdehorta.dto.UserDto;
+import vdehorta.bean.dto.UserDto;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.service.errors.EmailAlreadyUsedException;

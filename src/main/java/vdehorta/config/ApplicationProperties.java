@@ -10,18 +10,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
 
-    private String clientAppName;
+    private String applicationName;
 
     private Mongo mongo = new Mongo();
 
     private Logging logging = new Logging();
 
-    public String getClientAppName() {
-        return clientAppName;
+    public String getApplicationName() {
+        return applicationName;
     }
 
-    public void setClientAppName(String clientAppName) {
-        this.clientAppName = clientAppName;
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
     }
 
     public Mongo getMongo() {

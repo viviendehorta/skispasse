@@ -4,7 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vdehorta.dto.NewsCategoryDto;
+import vdehorta.bean.dto.NewsCategoryDto;
 import vdehorta.service.NewsCategoryService;
 
 import java.util.List;

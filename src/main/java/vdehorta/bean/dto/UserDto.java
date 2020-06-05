@@ -1,4 +1,4 @@
-package vdehorta.dto;
+package vdehorta.bean.dto;
 
 import vdehorta.config.Constants;
 import vdehorta.domain.Authority;

@@ -44,8 +44,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Field("address")
     private String address;
 
-    @Field("video_path")
-    private String videoPath;
+    @Field("media_id")
+    private String mediaId;
 
     @Indexed
     @Field("owner")
@@ -69,7 +69,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         setCountry(builder.country);
         setCity(builder.city);
         setAddress(builder.address);
-        setVideoPath(builder.videoPath);
+        setMediaId(builder.mediaId);
         setOwner(builder.owner);
     }
 
@@ -145,12 +145,12 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         this.address = address;
     }
 
-    public String getVideoPath() {
-        return videoPath;
+    public String getMediaId() {
+        return mediaId;
     }
 
-    public void setVideoPath(String videoPath) {
-        this.videoPath = videoPath;
+    public void setMediaId(String mediaId) {
+        this.mediaId = mediaId;
     }
 
     public String getOwner() {
@@ -186,7 +186,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             ", country='" + country + '\'' +
             ", city='" + city + '\'' +
             ", address='" + address + '\'' +
-            ", videoPath='" + videoPath + '\'' +
+            ", mediaId='" + mediaId + '\'' +
             ", owner='" + owner + '\'' +
             '}';
     }
@@ -206,7 +206,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private String country;
         private String city;
         private String address;
-        private String videoPath;
+        private String mediaId;
         private String owner;
 
         public Builder() {
@@ -277,8 +277,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder videoPath(String val) {
-            videoPath = val;
+        public Builder mediaId(String val) {
+            mediaId = val;
             return this;
         }
 

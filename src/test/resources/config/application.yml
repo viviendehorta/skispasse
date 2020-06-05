@@ -30,7 +30,7 @@ server:
 # ===================================================================
 
 application:
-  client-app-name: skispasseApp
+  application-name: skispasseApp
   logging:
     # To test json console appender
     use-json-format: true # By default, logs are in Json format

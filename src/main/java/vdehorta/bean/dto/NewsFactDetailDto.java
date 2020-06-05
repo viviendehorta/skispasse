@@ -1,4 +1,4 @@
-package vdehorta.dto;
+package vdehorta.bean.dto;
 
 import vdehorta.domain.LocationCoordinate;
 
@@ -32,7 +32,7 @@ public class NewsFactDetailDto {
 
     private String newsCategoryLabel;
 
-    private String videoPath;
+    private String mediaId;
 
     public NewsFactDetailDto() {
     }
@@ -46,7 +46,7 @@ public class NewsFactDetailDto {
         country = builder.country;
         city = builder.city;
         address = builder.address;
-        videoPath = builder.videoPath;
+        mediaId = builder.mediaId;
         createdDate = builder.createdDate;
     }
 
@@ -122,12 +122,12 @@ public class NewsFactDetailDto {
         this.newsCategoryLabel = newsCategoryLabel;
     }
 
-    public String getVideoPath() {
-        return videoPath;
+    public String getMediaId() {
+        return mediaId;
     }
 
-    public void setVideoPath(String videoPath) {
-        this.videoPath = videoPath;
+    public void setMediaId(String mediaId) {
+        this.mediaId = mediaId;
     }
 
     @Override
@@ -152,7 +152,7 @@ public class NewsFactDetailDto {
         private String country;
         private String city;
         private String address;
-        private String videoPath;
+        private String mediaId;
         private String createdDate;
 
         public Builder() {
@@ -198,8 +198,8 @@ public class NewsFactDetailDto {
             return this;
         }
 
-        public Builder videoPath(String val) {
-            videoPath = val;
+        public Builder mediaId(String val) {
+            mediaId = val;
             return this;
         }
 

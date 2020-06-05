@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.domain.User;
-import vdehorta.dto.UserDto;
+import vdehorta.bean.dto.UserDto;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.UserService;
@@ -61,7 +61,7 @@ public class UserResource {
     private final AuthenticationService authenticationService;
 
     public UserResource(ApplicationProperties applicationProperties, UserService userService, AuthenticationService authenticationService) {
-        this.applicationName = applicationProperties.getClientAppName();
+        this.applicationName = applicationProperties.getApplicationName();
         this.userService = userService;
         this.authenticationService = authenticationService;
     }

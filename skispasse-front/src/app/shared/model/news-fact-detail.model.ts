@@ -10,7 +10,7 @@ export interface INewsFactDetail {
   locationCoordinate: ILocationCoordinate;
   newsCategoryId: string;
   newsCategoryLabel: string;
-  videoPath: string;
+  mediaId: string;
 }
 
 export class NewsFactDetail implements INewsFactDetail {
@@ -23,7 +23,7 @@ export class NewsFactDetail implements INewsFactDetail {
   locationCoordinate: ILocationCoordinate;
   newsCategoryId: string;
   newsCategoryLabel: string;
-  videoPath: string;
+  mediaId: string;
 
   constructor(
     address?: string,
@@ -35,7 +35,7 @@ export class NewsFactDetail implements INewsFactDetail {
     locationCoordinate?: ILocationCoordinate,
     newsCategoryId?: string,
     newsCategoryLabel?: string,
-    videoPath?: string
+    mediaId?: string
   ) {
     this.address = address ? address : null;
     this.city = city ? city : null;
@@ -46,6 +46,6 @@ export class NewsFactDetail implements INewsFactDetail {
     this.locationCoordinate = locationCoordinate ? locationCoordinate : new LocationCoordinate();
     this.newsCategoryId = newsCategoryId ? newsCategoryId : null;
     this.newsCategoryLabel = newsCategoryLabel ? newsCategoryLabel : null;
-    this.videoPath = videoPath ? videoPath : null;
+    this.mediaId = mediaId ? mediaId : null;
   }
 }

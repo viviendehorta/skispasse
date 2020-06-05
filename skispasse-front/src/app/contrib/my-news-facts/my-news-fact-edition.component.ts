@@ -28,7 +28,7 @@ export class MyNewsFactEditionComponent implements OnInit {
         country: [null, Validators.required],
         locationCoordinateX: [null, Validators.required],
         locationCoordinateY: [null, Validators.required],
-        newsFactVideoPath: ['']
+        newsFactMediaId: ['']
     });
 
     constructor(
@@ -88,7 +88,7 @@ export class MyNewsFactEditionComponent implements OnInit {
             country: newsFact.country,
             locationCoordinateX: newsFact.locationCoordinate.x,
             locationCoordinateY: newsFact.locationCoordinate.y,
-            newsFactVideoPath: null
+            newsFactMediaId: null
         });
     }
 
@@ -102,8 +102,8 @@ export class MyNewsFactEditionComponent implements OnInit {
         this.newsFact.locationCoordinate.y = this.editionForm.get(['locationCoordinateY']).value;
         this.newsFact.newsCategoryId = this.editionForm.get(['newsCategoryId']).value;
 
-        // Upload input value is fake, we use form and multipart to upload => set newsFact.videoPath to null
-        this.newsFact.videoPath = null;
+        // Upload input value is fake, we use form and multipart to upload => set newsFact.mediaId to null
+        this.newsFact.mediaId = null;
     }
 
     private onPublishSuccess(newsFact: INewsFactDetail) {
