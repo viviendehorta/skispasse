@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,14 +31,15 @@ public class DatabaseConfiguration {
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
 
     private final ApplicationProperties applicationProperties;
-
     private MongoDbFactory mongoDbFactory;
     private MongoConverter mongoConverter;
+    private Environment environment;
 
-    public DatabaseConfiguration(MongoDbFactory mongoDbFactory, MongoConverter mongoConverter, ApplicationProperties applicationProperties) {
+    public DatabaseConfiguration(MongoDbFactory mongoDbFactory, MongoConverter mongoConverter, ApplicationProperties applicationProperties, Environment environment) {
         this.mongoDbFactory = mongoDbFactory;
         this.mongoConverter = mongoConverter;
         this.applicationProperties = applicationProperties;
+        this.environment = environment;
     }
 
     @Bean
@@ -59,11 +61,12 @@ public class DatabaseConfiguration {
         // package to scan for migrations
         mongobee.setChangeLogsScanPackage("vdehorta.config.dbmigrations");
         mongobee.setEnabled(true);
+        mongobee.setSpringEnvironment(environment);
         return mongobee;
     }
 
     @Bean
-    public GridFsTemplate newsFactVideoGridFsTemplate() {
+    public GridFsTemplate videoGridFsTemplate() {
         GridFsTemplate gridFsTemplate = new GridFsTemplate(
                 mongoDbFactory,
                 mongoConverter,

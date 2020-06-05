@@ -35,8 +35,6 @@ public class HeaderUtil {
      * @return a {@link org.springframework.http.HttpHeaders} object.
      */
     public static HttpHeaders createFailureAlertHeaders(String applicationName, String message) {
-        log.error("Entity processing failed, {}", message);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-" + applicationName + "-error", message);
         return headers;

@@ -3,7 +3,7 @@ package vdehorta;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.mapstruct.ap.internal.util.Collections;
 import vdehorta.domain.*;
-import vdehorta.dto.NewsFactDetailDto;
+import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.security.RoleEnum;
 
 import java.time.Duration;
@@ -29,7 +29,7 @@ public final class EntityTestUtil {
     public static final String DEFAULT_NEWS_CATEGORY_ID = "newsCategoryId";
     public static final String DEFAULT_NEWS_CATEGORY_LABEL = "newsCategoryLabel";
     public static final String DEFAULT_OWNER = "owner";
-    public static final String DEFAULT_VIDEO_PATH = "videoPath";
+    public static final String DEFAULT_MEDIA_ID = "mediaId";
     public static final String DEFAULT_AUTHORITY_VALUE = RoleEnum.USER.getValue();
 
 
@@ -124,7 +124,7 @@ public final class EntityTestUtil {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
                 .owner(DEFAULT_OWNER)
-                .videoPath(DEFAULT_VIDEO_PATH)
+                .mediaId(DEFAULT_MEDIA_ID)
                 .build();
     }
 
@@ -142,7 +142,7 @@ public final class EntityTestUtil {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "1")
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "1")
                 .owner(DEFAULT_OWNER + "1")
-                .videoPath(DEFAULT_VIDEO_PATH + "1")
+                .mediaId(DEFAULT_MEDIA_ID + "1")
                 .build();
     }
 
@@ -160,7 +160,7 @@ public final class EntityTestUtil {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "2")
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "2")
                 .owner(DEFAULT_OWNER + "2")
-                .videoPath(DEFAULT_VIDEO_PATH + "2")
+                .mediaId(DEFAULT_MEDIA_ID + "2")
                 .build();
     }
 
@@ -198,7 +198,7 @@ public final class EntityTestUtil {
                         .build())
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
-                .videoPath(DEFAULT_VIDEO_PATH)
+                .mediaId(DEFAULT_MEDIA_ID)
                 .build();
     }
 

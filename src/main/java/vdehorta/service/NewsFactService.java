@@ -6,23 +6,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import vdehorta.bean.InMemoryFile;
+import vdehorta.bean.dto.NewsCategoryDto;
+import vdehorta.bean.dto.NewsFactDetailDto;
+import vdehorta.bean.dto.NewsFactNoDetailDto;
 import vdehorta.domain.NewsFact;
-import vdehorta.dto.NewsCategoryDto;
-import vdehorta.dto.NewsFactDetailDto;
-import vdehorta.dto.NewsFactNoDetailDto;
-import vdehorta.dto.NewsFactVideo;
 import vdehorta.repository.NewsFactRepository;
-import vdehorta.service.errors.AuthenticationRequiredException;
-import vdehorta.service.errors.NewsFactNotFoundException;
-import vdehorta.service.errors.NewsFactAccessForbiddenException;
+import vdehorta.service.errors.*;
 import vdehorta.service.mapper.NewsFactMapper;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static vdehorta.service.util.DateUtil.LOCAL_DATE_FORMATTER;
+import static vdehorta.service.util.DateUtil.DATE_FORMATTER;
 
 /**
  * Service class for managing news facts.
@@ -36,18 +34,18 @@ public class NewsFactService {
     private final NewsFactMapper newsFactMapper;
     private final NewsCategoryService newsCategoryService;
     private final ClockService clockService;
-    private final NewsFactVideoFileService videoFileService;
+    private final VideoService fileService;
 
     public NewsFactService(NewsFactRepository newsFactRepository,
                            NewsFactMapper newsFactMapper,
                            NewsCategoryService newsCategoryService,
                            ClockService clockService,
-                           NewsFactVideoFileService videoFileService) {
+                           VideoService fileService) {
         this.newsFactRepository = newsFactRepository;
         this.newsFactMapper = newsFactMapper;
         this.newsCategoryService = newsCategoryService;
         this.clockService = clockService;
-        this.videoFileService = videoFileService;
+        this.fileService = fileService;
     }
 
     public List<NewsFactNoDetailDto> getAll() {
@@ -67,14 +65,14 @@ public class NewsFactService {
     }
 
     //TODO besoin d'implémenter une transaction pour la sauvegarde de news fact + fichier
-    public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, MultipartFile videoFile, String creatorLogin) {
+    public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, InMemoryFile inMemoryVideoFile, String creatorLogin) {
         log.debug("Creating  news fact...");
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
 
-        String videoFileId = videoFileService.save(videoFile, creatorLogin);
+        String videoFileId = fileService.save(inMemoryVideoFile, creatorLogin);
 
-        newsFact.setVideoPath(videoFileId);
+        newsFact.setMediaId(videoFileId);
         newsFact.setOwner(creatorLogin);
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
 
@@ -95,7 +93,7 @@ public class NewsFactService {
 
         NewsCategoryDto newNewsCategory = newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId());
 
-        LocalDateTime newEventDate = LocalDate.parse(newsFactDetailDto.getEventDate(), LOCAL_DATE_FORMATTER).atStartOfDay();
+        LocalDateTime newEventDate = LocalDate.parse(newsFactDetailDto.getEventDate(), DATE_FORMATTER).atStartOfDay();
 
         NewsFact toUpdate = newsFactRepository.findById(id).orElseThrow(() -> new NewsFactNotFoundException(id));
         if (!toUpdate.getOwner().equals(updaterLogin)) {
@@ -134,8 +132,12 @@ public class NewsFactService {
      * @param newsFactId id of the news fact associated with the video to retrieve
      * @return The NewsFactVideo associated with the
      */
-    public NewsFactVideo getVideo(String newsFactId) {
+    public InputStream getNewsFactVideo(String newsFactId) throws NewsFactNotFoundException, NewsFactVideoNotFoundException {
         NewsFact newsFact = newsFactRepository.findById(newsFactId).orElseThrow(() -> new NewsFactNotFoundException(newsFactId));
-        return this.videoFileService.getNewsFactVideo(newsFact.getVideoPath());
+        try {
+            return this.fileService.getVideoStream(newsFact.getMediaId());
+        } catch (VideoNotFoundException e) {
+            throw new NewsFactVideoNotFoundException(newsFactId);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package vdehorta.dto;
+package vdehorta.bean.dto;
 
 /**
  * A DTO representing a password change required data - current and new password.

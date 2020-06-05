@@ -12,20 +12,22 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import vdehorta.bean.InMemoryFile;
+import vdehorta.bean.dto.NewsFactDetailDto;
+import vdehorta.bean.dto.NewsFactNoDetailDto;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.converter.JacksonMapperFactory;
-import vdehorta.dto.NewsFactDetailDto;
-import vdehorta.dto.NewsFactNoDetailDto;
-import vdehorta.dto.NewsFactVideo;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.NewsFactService;
 import vdehorta.web.rest.errors.BadRequestAlertException;
+import vdehorta.web.rest.errors.InternalServerErrorAlertException;
 import vdehorta.web.rest.util.HeaderUtil;
 import vdehorta.web.rest.util.PaginationUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -43,7 +45,7 @@ public class NewsFactResource {
     private AuthenticationService authenticationService;
 
     public NewsFactResource(ApplicationProperties applicationProperties, NewsFactService newsFactService, AuthenticationService authenticationService) {
-        this.applicationName = applicationProperties.getClientAppName();
+        this.applicationName = applicationProperties.getApplicationName();
         this.newsFactService = newsFactService;
         this.authenticationService = authenticationService;
     }
@@ -110,10 +112,21 @@ public class NewsFactResource {
             throw new BadRequestAlertException("A news fact to create can't already have an id!");
         }
 
-        //Reset the input news fact video path because browser inits with a fake value
-        newsFact.setVideoPath(null);
+        InMemoryFile inMemoryVideoFile = null;
+        try {
+            inMemoryVideoFile = new InMemoryFile.Builder()
+                    .contentType(videoFile.getContentType())
+                    .inputStream(videoFile.getInputStream())
+                    .sizeInBytes(videoFile.getSize())
+                    .build();
+        } catch (IOException e) {
+            throw new InternalServerErrorAlertException("Error trying to access to uploaded video file!");
+        }
 
-        NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact, videoFile, authenticationService.getCurrentUserLoginOrThrowError());
+        //Reset the input news fact video path because browser inits with a fake value
+        newsFact.setMediaId(null);
+
+        NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact, inMemoryVideoFile, authenticationService.getCurrentUserLoginOrThrowError());
         return ResponseEntity
                 .created(new URI("/newsFacts/" + createdNewsFact.getId()))
                 .headers(HeaderUtil.createAlertHeaders(applicationName, "News fact with id '" + createdNewsFact.getId() + "' was created."))
@@ -123,7 +136,7 @@ public class NewsFactResource {
     /**
      * {@code DELETE /newssFact/:newsFactId} : delete the news fact with id {newsFactId}.
      *
-     * @param newsFactId the news fact id to delete.videoPath = "C:\fakepath\olmap.txt"
+     * @param newsFactId the news fact id to delete.mediaId = "C:\fakepath\olmap.txt"
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{newsFactId}")
@@ -164,8 +177,8 @@ public class NewsFactResource {
     }
 
     @GetMapping("/video/{newsFactId}")
-    public void streamNewsFactVideo(@PathVariable String newsFactId, HttpServletResponse response) throws Exception {
-        NewsFactVideo video = newsFactService.getVideo(newsFactId);
-        FileCopyUtils.copy(video.getStream(), response.getOutputStream());
+    public void streamNewsFactVideo(@PathVariable String newsFactId, HttpServletResponse response) throws IOException {
+        InputStream videoStream = newsFactService.getNewsFactVideo(newsFactId);
+        FileCopyUtils.copy(videoStream, response.getOutputStream());
     }
 }

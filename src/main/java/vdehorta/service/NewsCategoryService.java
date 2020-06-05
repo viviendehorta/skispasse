@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import vdehorta.domain.NewsCategory;
-import vdehorta.dto.NewsCategoryDto;
+import vdehorta.bean.dto.NewsCategoryDto;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.service.errors.WrongNewsCategoryIdException;
 import vdehorta.service.mapper.NewsCategoryMapper;

@@ -19,13 +19,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
+import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.converter.JacksonMapperFactory;
 import vdehorta.domain.LocationCoordinate;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.domain.User;
-import vdehorta.dto.NewsFactDetailDto;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.repository.UserRepository;
@@ -77,7 +77,7 @@ public class NewsFactResourceITest {
     private NewsCategoryRepository newsCategoryRepository;
 
     @Autowired
-    private GridFsTemplate newsFactVideoGridFsTemplate;
+    private GridFsTemplate videoGridFsTemplate;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -153,7 +153,7 @@ public class NewsFactResourceITest {
                 .andExpect(jsonPath("$.eventDate", is("2020-02-28")))
                 .andExpect(jsonPath("$.newsCategoryId", is(newsFact.getNewsCategoryId())))
                 .andExpect(jsonPath("$.newsCategoryLabel", is(newsFact.getNewsCategoryLabel())))
-                .andExpect(jsonPath("$.videoPath", is(newsFact.getVideoPath())));
+                .andExpect(jsonPath("$.mediaId", is(newsFact.getMediaId())));
     }
 
     @Test
@@ -251,7 +251,7 @@ public class NewsFactResourceITest {
         toCreateNewsFact.setId(null);
         toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
         toCreateNewsFact.setNewsCategoryLabel(null);
-        toCreateNewsFact.setVideoPath("fakeVideoPath");
+        toCreateNewsFact.setMediaId("fakeMediaId");
 
         MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "video/mp4", "video file content".getBytes());
         String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
@@ -277,7 +277,7 @@ public class NewsFactResourceITest {
                 .andExpect(jsonPath("$.locationCoordinate.y", is(DEFAULT_LOCATION_COORDINATE_Y.intValue())))
                 .andExpect(jsonPath("$.newsCategoryId", is(newsCategory.getId())))
                 .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())))
-                .andExpect(jsonPath("$.videoPath", isA(String.class)));
+                .andExpect(jsonPath("$.mediaId", isA(String.class)));
 
         //Check news fact persistence
         assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
@@ -296,10 +296,10 @@ public class NewsFactResourceITest {
         assertThat(persistedNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
         assertThat(persistedNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
         assertThat(persistedNewsFact.getOwner()).isEqualTo("zeus");
-        assertThat(persistedNewsFact.getVideoPath()).isNotEmpty();
+        assertThat(persistedNewsFact.getMediaId()).isNotEmpty();
 
         //Check video file persistence
-        MongoCursor<GridFSFile> persistedVideoCursor = newsFactVideoGridFsTemplate.find(new Query().addCriteria(Criteria.where("_id").is(persistedNewsFact.getVideoPath()))).iterator();
+        MongoCursor<GridFSFile> persistedVideoCursor = videoGridFsTemplate.find(new Query().addCriteria(Criteria.where("_id").is(persistedNewsFact.getMediaId()))).iterator();
         assertThat(persistedVideoCursor.hasNext()).isTrue();
 
         GridFSFile persistedVideoFile = persistedVideoCursor.next();
@@ -308,41 +308,20 @@ public class NewsFactResourceITest {
         assertThat(persistedVideoFile.getFilename()).contains("zeus"); //Owner login should be part of the filename
         assertThat(persistedVideoFile.getUploadDate()).isNotNull(); //TODO : set that using the clockService in code to be able to test it
         assertThat(persistedVideoFile.getMetadata().getString("owner")).isEqualTo("zeus");
-
-
     }
 
     @Test
     @WithMockUser(username = "toto", roles = {"USER", "ADMIN"})
     void createNewsFact_shouldThrowExceptionForNoneContributorUser() throws Exception {
 
-        String videoFilePath = "skispasse.mp4";
-
-        // Init ClockService with a fix clock to be able to assert the date values
-        LocalDateTime expectedNow = LocalDateTime.parse("2020-03-24T20:30:23");
-        clockService.setClock(Clock.fixed(expectedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
-
         // Initialize database
-        NewsCategory newsCategory = createDefaultNewsCategory1();
-        newsCategoryRepository.save(newsCategory);
         final int initialCount = newsFactRepository.findAll().size();
 
         //Given
-        NewsFactDetailDto toCreateNewsFact = new NewsFactDetailDto.Builder()
-                .address(DEFAULT_ADDRESS)
-                .city(DEFAULT_CITY)
-                .country(DEFAULT_COUNTRY)
-                .eventDate(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))
-                .locationCoordinate(new LocationCoordinate.Builder()
-                        .x(DEFAULT_LOCATION_COORDINATE_X)
-                        .y(DEFAULT_LOCATION_COORDINATE_Y)
-                        .build())
-                .newsCategoryId(newsCategory.getId())
-                .videoPath("/browserFakePath/" + videoFilePath)
-                .build();
+        NewsFactDetailDto newsFactDetailDto = new NewsFactDetailDto.Builder().build();
 
-        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "video/mp4", "video file content".getBytes());
-        String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
+        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", "skispasse.mp4", "video/mp4", "video file content".getBytes());
+        String newsFactJson = TestUtil.convertObjectToJsonString(newsFactDetailDto);
 
         ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
                 .file(videoMultiPartFile)
@@ -770,19 +749,24 @@ public class NewsFactResourceITest {
                 .andExpect(header().string("X-skispasseApp-error", "Not Found: News fact with id 'unexistingId' was not found!"));
     }
 
-//    @Test
-//    public void streamNewsFactVideo_shouldThrowInternalServerErrorIfVideoFileDoesntExist() throws Exception {
-//
-//        //Init Database with a news fact wihout associated video file
-//        final NewsFact newsFact = createDefaultNewsFact();
-//        newsFact
-//
-//        //Given
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/video/unexistingId"));
-//
-//        //Then
-//        resultActions.andExpect(status().isInternalServerError());
-//    }
+    @Test
+    public void streamNewsFactVideo_shouldThrowInternalServerErrorIfVideoFileDoesntExist() throws Exception {
+
+        //Init Database with a news fact wihout associated video file
+        final NewsCategory newsCategory = createDefaultNewsCategory();
+        newsCategoryRepository.save(newsCategory);
+        final NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setMediaId("unexistingMediaId");
+        newsFactRepository.save(newsFact);
+
+        //Given
+        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/video/" + newsFact.getId()));
+
+        //Then
+        resultActions
+                .andExpect(status().isInternalServerError())
+                .andExpect(header().string("X-skispasseApp-error", "Internal Server Error: Error while accessing video of news fact with id '" + newsFact.getId() + "'!"));
+    }
 
     private NewsFactDetailDto parseNewsFactDetailJson(String json) throws java.io.IOException {
         return JacksonMapperFactory.getObjectMapper().readValue(json, NewsFactDetailDto.class);

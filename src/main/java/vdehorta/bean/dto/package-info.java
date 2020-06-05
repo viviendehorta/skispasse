@@ -1,4 +1,4 @@
 /**
  * Data Transfer Objects.
  */
-package vdehorta.dto;
+package vdehorta.bean.dto;

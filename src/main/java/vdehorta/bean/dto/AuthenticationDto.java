@@ -1,4 +1,4 @@
-package vdehorta.dto;
+package vdehorta.bean.dto;
 
 public class AuthenticationDto {
 

@@ -17,7 +17,7 @@ import vdehorta.SkispasseApp;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
-import vdehorta.dto.UserDto;
+import vdehorta.bean.dto.UserDto;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.AuthenticationService;

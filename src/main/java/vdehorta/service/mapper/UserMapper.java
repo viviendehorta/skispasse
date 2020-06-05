@@ -3,7 +3,7 @@ package vdehorta.service.mapper;
 import org.springframework.stereotype.Service;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
-import vdehorta.dto.UserDto;
+import vdehorta.bean.dto.UserDto;
 
 import java.util.HashSet;
 import java.util.List;

@@ -6,8 +6,8 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
 import vdehorta.EntityTestUtil;
 import vdehorta.domain.NewsFact;
-import vdehorta.dto.NewsCategoryDto;
-import vdehorta.dto.NewsFactDetailDto;
+import vdehorta.bean.dto.NewsCategoryDto;
+import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.service.errors.NewsFactAccessForbiddenException;
 import vdehorta.service.errors.NewsFactNotFoundException;
@@ -27,7 +27,7 @@ class NewsFactServiceTest {
     private NewsCategoryService newsCategoryServiceMock;
     private NewsFactMapper newsFactMapper;
     private ClockService clockService = new ClockService();
-    private NewsFactVideoFileService videoFileServiceMock;
+    private VideoService videoFileServiceMock;
 
 
     @BeforeEach
@@ -35,7 +35,7 @@ class NewsFactServiceTest {
         newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
         newsCategoryServiceMock = Mockito.mock(NewsCategoryService.class);
-        videoFileServiceMock = Mockito.mock(NewsFactVideoFileService.class);
+        videoFileServiceMock = Mockito.mock(VideoService.class);
         newsFactService = new NewsFactService(
                 newsFactRepositoryMock,
                 newsFactMapper,
