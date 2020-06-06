@@ -198,7 +198,6 @@ public final class EntityTestUtil {
                         .build())
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
-                .mediaId(DEFAULT_MEDIA_ID)
                 .build();
     }
 

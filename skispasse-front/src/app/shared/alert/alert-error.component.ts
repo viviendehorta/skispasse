@@ -28,45 +28,16 @@ export class AlertErrorComponent implements OnDestroy {
       switch (httpErrorResponse.status) {
         // connection refused, server not reachable
         case 0:
-          this.addErrorAlert('Server not reachable');
+          this.addErrorAlert('Server not reachable :(');
           break;
-
-        case 400: {
-          const arr = httpErrorResponse.headers.keys();
-          let errorHeader = null;
-          arr.forEach(entry => {
-            if (entry.toLowerCase().endsWith('app-error')) {
-              errorHeader = httpErrorResponse.headers.get(entry);
-            }
-          });
-          if (errorHeader) {
-            this.addErrorAlert(errorHeader);
-          } else if (httpErrorResponse.error !== '' && httpErrorResponse.error.fieldErrors) {
-            const fieldErrors = httpErrorResponse.error.fieldErrors;
-            for (const fieldError of fieldErrors) {
-              if (['Min', 'Max', 'DecimalMin', 'DecimalMax'].includes(fieldError.message)) {
-                fieldError.message = 'Size';
-              }
-              // convert 'something[14].other[4].id' to 'something[].other[].id' so translations can be written to it
-              const convertedField = fieldError.field.replace(/\[\d*\]/g, '[]');
-              const fieldName = convertedField.charAt(0).toUpperCase() + convertedField.slice(1);
-              this.addErrorAlert('Error on field "' + fieldName + '"');
-            }
-          } else if (httpErrorResponse.error !== '' && httpErrorResponse.error.message) {
-            this.addErrorAlert(httpErrorResponse.error.message);
-          } else {
-            this.addErrorAlert(httpErrorResponse.error);
+        case 404:
+          if (!httpErrorResponse.error || httpErrorResponse.error === '' || httpErrorResponse.error.detail === '') {
+            this.addErrorAlert('Not found :O');
           }
           break;
-        }
-
-        case 404:
-          this.addErrorAlert('Not found');
-          break;
-
         default:
-          if (httpErrorResponse.error !== '' && httpErrorResponse.error.message) {
-            this.addErrorAlert(httpErrorResponse.error.message);
+          if (httpErrorResponse.error !== '' && httpErrorResponse.error.detail) {
+            this.addErrorAlert(httpErrorResponse.error.detail);
           } else {
             this.addErrorAlert(httpErrorResponse.error);
           }

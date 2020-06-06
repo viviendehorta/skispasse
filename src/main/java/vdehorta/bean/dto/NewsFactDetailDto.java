@@ -32,7 +32,6 @@ public class NewsFactDetailDto {
 
     private String newsCategoryLabel;
 
-    private String mediaId;
 
     public NewsFactDetailDto() {
     }
@@ -46,7 +45,6 @@ public class NewsFactDetailDto {
         country = builder.country;
         city = builder.city;
         address = builder.address;
-        mediaId = builder.mediaId;
         createdDate = builder.createdDate;
     }
 
@@ -122,14 +120,6 @@ public class NewsFactDetailDto {
         this.newsCategoryLabel = newsCategoryLabel;
     }
 
-    public String getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(String mediaId) {
-        this.mediaId = mediaId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -152,7 +142,6 @@ public class NewsFactDetailDto {
         private String country;
         private String city;
         private String address;
-        private String mediaId;
         private String createdDate;
 
         public Builder() {
@@ -195,11 +184,6 @@ public class NewsFactDetailDto {
 
         public Builder address(String val) {
             address = val;
-            return this;
-        }
-
-        public Builder mediaId(String val) {
-            mediaId = val;
             return this;
         }
 

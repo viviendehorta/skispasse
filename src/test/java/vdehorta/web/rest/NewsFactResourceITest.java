@@ -152,8 +152,7 @@ public class NewsFactResourceITest {
                 .andExpect(jsonPath("$.createdDate", is("2020-05-01")))
                 .andExpect(jsonPath("$.eventDate", is("2020-02-28")))
                 .andExpect(jsonPath("$.newsCategoryId", is(newsFact.getNewsCategoryId())))
-                .andExpect(jsonPath("$.newsCategoryLabel", is(newsFact.getNewsCategoryLabel())))
-                .andExpect(jsonPath("$.mediaId", is(newsFact.getMediaId())));
+                .andExpect(jsonPath("$.newsCategoryLabel", is(newsFact.getNewsCategoryLabel())));
     }
 
     @Test
@@ -173,7 +172,7 @@ public class NewsFactResourceITest {
         // Assert
         resultActions
                 .andExpect(status().isNotFound())
-                .andExpect(header().string("X-skispasseApp-error", "Not Found: News fact with id 'unexistingId' was not found!"));
+                .andExpect(jsonPath("$.detail", is("News fact with id 'unexistingId' was not found!")));
     }
 
     @Test
@@ -251,7 +250,6 @@ public class NewsFactResourceITest {
         toCreateNewsFact.setId(null);
         toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
         toCreateNewsFact.setNewsCategoryLabel(null);
-        toCreateNewsFact.setMediaId("fakeMediaId");
 
         MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "video/mp4", "video file content".getBytes());
         String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
@@ -276,8 +274,7 @@ public class NewsFactResourceITest {
                 .andExpect(jsonPath("$.locationCoordinate.x", is(DEFAULT_LOCATION_COORDINATE_X.intValue())))
                 .andExpect(jsonPath("$.locationCoordinate.y", is(DEFAULT_LOCATION_COORDINATE_Y.intValue())))
                 .andExpect(jsonPath("$.newsCategoryId", is(newsCategory.getId())))
-                .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())))
-                .andExpect(jsonPath("$.mediaId", isA(String.class)));
+                .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())));
 
         //Check news fact persistence
         assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
@@ -415,9 +412,9 @@ public class NewsFactResourceITest {
 
         // Then
         resultActions
-                .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(header().string("X-skispasseApp-error", "Bad Request: A news fact to update must have an id!"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail", is("A news fact to update must have an id!")));
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
@@ -746,7 +743,7 @@ public class NewsFactResourceITest {
         ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/video/unexistingId"));
         resultActions
                 .andExpect(status().isNotFound())
-                .andExpect(header().string("X-skispasseApp-error", "Not Found: News fact with id 'unexistingId' was not found!"));
+                .andExpect(jsonPath("$.detail", is("News fact with id 'unexistingId' was not found!")));
     }
 
     @Test
@@ -765,7 +762,7 @@ public class NewsFactResourceITest {
         //Then
         resultActions
                 .andExpect(status().isInternalServerError())
-                .andExpect(header().string("X-skispasseApp-error", "Internal Server Error: Error while accessing video of news fact with id '" + newsFact.getId() + "'!"));
+                .andExpect(jsonPath("$.detail", is("Error while accessing video of news fact with id '" + newsFact.getId() + "'!")));
     }
 
     private NewsFactDetailDto parseNewsFactDetailJson(String json) throws java.io.IOException {
