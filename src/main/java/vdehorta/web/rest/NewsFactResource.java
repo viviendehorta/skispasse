@@ -112,7 +112,7 @@ public class NewsFactResource {
             throw new BadRequestAlertException("A news fact to create can't already have an id!");
         }
 
-        InMemoryFile inMemoryVideoFile = null;
+        InMemoryFile inMemoryVideoFile;
         try {
             inMemoryVideoFile = new InMemoryFile.Builder()
                     .contentType(videoFile.getContentType())
@@ -122,9 +122,6 @@ public class NewsFactResource {
         } catch (IOException e) {
             throw new InternalServerErrorAlertException("Error trying to access to uploaded video file!");
         }
-
-        //Reset the input news fact video path because browser inits with a fake value
-        newsFact.setMediaId(null);
 
         NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact, inMemoryVideoFile, authenticationService.getCurrentUserLoginOrThrowError());
         return ResponseEntity

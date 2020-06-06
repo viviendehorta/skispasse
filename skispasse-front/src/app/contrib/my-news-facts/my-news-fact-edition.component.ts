@@ -24,7 +24,7 @@ export class MyNewsFactEditionComponent implements OnInit {
         newsCategoryId: [null, Validators.required],
         eventDate: [null, Validators.required],
         address: [null, Validators.required],
-        city: [null, Validators.required],
+        city: [null],
         country: [null, Validators.required],
         locationCoordinateX: [null, Validators.required],
         locationCoordinateY: [null, Validators.required],
@@ -82,7 +82,7 @@ export class MyNewsFactEditionComponent implements OnInit {
         this.editionForm.patchValue({
             id: newsFact.id,
             newsCategoryId: newsFact.newsCategoryId,
-            eventDate: this.parseDate(newsFact.eventDate),
+            eventDate: MyNewsFactEditionComponent.parseDate(newsFact.eventDate),
             address: newsFact.address,
             city: newsFact.city,
             country: newsFact.country,
@@ -96,14 +96,11 @@ export class MyNewsFactEditionComponent implements OnInit {
         this.newsFact.address = this.editionForm.get(['address']).value;
         this.newsFact.city = this.editionForm.get(['city']).value;
         this.newsFact.country = this.editionForm.get(['country']).value;
-        this.newsFact.eventDate = this.formatNgbDate(this.editionForm.get(['eventDate']).value);
+        this.newsFact.eventDate = MyNewsFactEditionComponent.formatNgbDate(this.editionForm.get(['eventDate']).value);
         this.newsFact.id = this.editionForm.get(['id']).value;
         this.newsFact.locationCoordinate.x = this.editionForm.get(['locationCoordinateX']).value;
         this.newsFact.locationCoordinate.y = this.editionForm.get(['locationCoordinateY']).value;
         this.newsFact.newsCategoryId = this.editionForm.get(['newsCategoryId']).value;
-
-        // Upload input value is fake, we use form and multipart to upload => set newsFact.mediaId to null
-        this.newsFact.mediaId = null;
     }
 
     private onPublishSuccess(newsFact: INewsFactDetail) {
@@ -114,11 +111,11 @@ export class MyNewsFactEditionComponent implements OnInit {
         this.isPublishing = false;
     }
 
-    private formatNgbDate(ngbDate: Date): string {
+    private static formatNgbDate(ngbDate: Date): string {
         return dayjs(ngbDate).format('YYYY-MM-DD');
     }
 
-    private parseDate(dateString: string): Date {
+    private static parseDate(dateString: string): Date {
         return dayjs(dateString).toDate();
     }
 }

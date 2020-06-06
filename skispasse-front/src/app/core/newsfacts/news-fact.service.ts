@@ -95,8 +95,7 @@ export class NewsFactService {
       json.id,
       json.locationCoordinate ? new LocationCoordinate(json.locationCoordinate.x, json.locationCoordinate.y) : null,
       json.newsCategoryId,
-      json.newsCategoryLabel,
-      json.mediaId
+      json.newsCategoryLabel
     );
   }
 

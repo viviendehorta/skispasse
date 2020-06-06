@@ -53,7 +53,7 @@ public class NewsFactService {
         return newsFactMapper.newsFactsToNewsFactNoDetailDtos(newsFactRepository.findAll());
     }
 
-    public NewsFactDetailDto getById(String id) {
+    public NewsFactDetailDto getById(String id) throws NewsFactNotFoundException {
         log.debug("Getting news fact  by id");
         NewsFact newsFact = newsFactRepository.findById(id).orElseThrow(() -> new NewsFactNotFoundException(id));
         return newsFactMapper.newsFactToNewsFactDetailDto(newsFact);
