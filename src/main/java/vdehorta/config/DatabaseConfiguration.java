@@ -73,4 +73,22 @@ public class DatabaseConfiguration {
                 applicationProperties.getMongo().getGridFs().getNewsFactVideoBucket());
         return gridFsTemplate;
     }
+
+//    /**
+//     * Allow use of transactions with mongo
+//     */
+//    @Bean
+//    public MongoTransactionManager transactionManager() {
+//        return new MongoTransactionManager(mongoDbFactory);
+//    }
+//
+//    /**
+//     * Allow use of transactions with mongo
+//     */
+//    @Bean
+//    public MongoTemplate mongoTemplate() {
+//        MongoTemplate mongoTemplate = new MongoTemplate(this.mongoDbFactory);
+//        mongoTemplate.setSessionSynchronization(SessionSynchronization.ALWAYS);
+//        return mongoTemplate;
+//    }
 }
