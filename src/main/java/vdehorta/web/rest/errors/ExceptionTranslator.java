@@ -120,4 +120,10 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
         UnsupportedMediaTypeAlertException problem = new UnsupportedMediaTypeAlertException("Unsuppported media type '" + ex.getContentType() + "'!");
         return create(problem, request);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleUnexistingNewsCategoryException(UnexistingNewsCategoryException ex, NativeWebRequest request) {
+        NewsCategoryNotFoundAlertException problem = new NewsCategoryNotFoundAlertException(ex.getId());
+        return create(problem, request);
+    }
 }

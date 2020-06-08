@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vdehorta.bean.InMemoryFile;
 import vdehorta.bean.dto.NewsCategoryDto;
 import vdehorta.bean.dto.NewsFactDetailDto;
@@ -36,6 +37,7 @@ public class NewsFactService {
     private final ClockService clockService;
     private final VideoService fileService;
 
+
     public NewsFactService(NewsFactRepository newsFactRepository,
                            NewsFactMapper newsFactMapper,
                            NewsCategoryService newsCategoryService,
@@ -64,16 +66,18 @@ public class NewsFactService {
         return newsFactRepository.findAllByOwner(pageable, userLogin).map(newsFactMapper::newsFactToNewsFactDetailDto);
     }
 
-    //TODO besoin d'implémenter une transaction pour la sauvegarde de news fact + fichier
+    @Transactional
     public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, InMemoryFile inMemoryVideoFile, String creatorLogin) {
         log.debug("Creating  news fact...");
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
 
+
         String videoFileId = fileService.save(inMemoryVideoFile, creatorLogin);
 
         newsFact.setMediaId(videoFileId);
         newsFact.setOwner(creatorLogin);
+
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
 
         LocalDateTime now = clockService.now();
@@ -129,6 +133,7 @@ public class NewsFactService {
 
     /**
      * Get the NewsFactVideo associated to the news fact with the given id
+     *
      * @param newsFactId id of the news fact associated with the video to retrieve
      * @return The NewsFactVideo associated with the
      */

@@ -1,5 +1,7 @@
 package vdehorta.web.rest;
 
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
+import vdehorta.bean.ContentTypeEnum;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.converter.JacksonMapperFactory;
@@ -29,10 +32,7 @@ import vdehorta.domain.User;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.repository.UserRepository;
-import vdehorta.service.AuthenticationService;
-import vdehorta.service.ClockService;
-import vdehorta.service.NewsFactService;
-import vdehorta.service.UserService;
+import vdehorta.service.*;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 
 import java.time.*;
@@ -90,6 +90,9 @@ public class NewsFactResourceITest {
 
     private MockMvc restNewsFactMockMvc;
 
+    @Autowired
+    private MongoClient mongoClient;
+
 
     @BeforeEach
     public void setup() {
@@ -104,7 +107,13 @@ public class NewsFactResourceITest {
 
     @BeforeEach
     public void initTest() {
-        newsFactRepository.deleteAll();
+        userRepository.deleteAll();
+        newsCategoryRepository.deleteAll();
+        List<NewsFact> newsFacts = newsFactRepository.findAll();
+        for (NewsFact newsFact : newsFacts) {
+            videoGridFsTemplate.delete(Query.query(Criteria.where("_id").is(newsFact.getMediaId())));
+            newsFactRepository.deleteById(newsFact.getId());
+        }
     }
 
     @Test
@@ -327,6 +336,37 @@ public class NewsFactResourceITest {
         // Then
         resultActions.andExpect(status().isForbidden());
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+
+    }
+
+    @Test
+    @WithMockUser(username = "ares", roles = {"USER", "CONTRIBUTOR"})
+    void createNewsFact_shouldNotCreateNewsFactNorVideoIfErrorOccurs() throws Exception {
+
+        String videoFilePath = "skispasse.mp4";
+
+        // Initialize database
+        final int newsFactInitialCount = newsFactRepository.findAll().size();
+        final int videoInitialCount = countGridFsVideos();
+
+        //Given
+        NewsFactDetailDto toCreateNewsFact = EntityTestUtil.createDefaultNewsFactDetailDto();
+        toCreateNewsFact.setId(null);
+        toCreateNewsFact.setNewsCategoryId("unexistingCategory");
+        toCreateNewsFact.setNewsCategoryLabel(null);
+
+        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, ContentTypeEnum.MP4.getContentType(), "video file content".getBytes());
+        String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
+
+        //When
+        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
+                .file(videoMultiPartFile)
+                .param("newsFactJson", newsFactJson));
+
+        //Then
+        resultActions.andExpect(status().isNotFound());
+        assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount);
+        assertThat(countGridFsVideos()).isEqualTo(videoInitialCount);
     }
 
     @Test
@@ -767,5 +807,11 @@ public class NewsFactResourceITest {
 
     private NewsFactDetailDto parseNewsFactDetailJson(String json) throws java.io.IOException {
         return JacksonMapperFactory.getObjectMapper().readValue(json, NewsFactDetailDto.class);
+    }
+
+    private int countGridFsVideos() {
+        String newsFactVideoBucket = applicationProperties.getMongo().getGridFs().getNewsFactVideoBucket();
+        DBCollection videoFilesCollection = mongoClient.getUsedDatabases().iterator().next().getCollection(newsFactVideoBucket + ".files");
+        return (int) videoFilesCollection.getCount();
     }
 }
