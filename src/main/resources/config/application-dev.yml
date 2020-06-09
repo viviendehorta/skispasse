@@ -1,11 +1,5 @@
-# ===================================================================
+
 # Spring Boot configuration for the "dev" profile.
-# This configuration overrides the application.yml file.
-# ===================================================================
-# Standard Spring Boot properties.
-# Full reference is available at:
-# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
-# ===================================================================
 
 logging:
   level:
@@ -13,11 +7,8 @@ logging:
     vdehorta: DEBUG
 
 spring:
-  profiles:
-    active: dev
   data:
     mongodb:
-      uri: mongodb://localhost:27017
       database: skispasse-dev
   devtools:
     restart:
@@ -32,9 +23,7 @@ server:
   port: 8080
 
 
-# ===================================================================
 # Skispasse Application specific properties
-# ===================================================================
 
 application:
   logging:
@@ -44,6 +33,3 @@ application:
       host: localhost
       port: 5000
       queue-size: 512
-  mongo:
-    grid-fs:
-      newsfact-video-bucket: newsFactVideo

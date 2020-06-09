@@ -1,17 +1,8 @@
-# ===================================================================
-# Spring Boot configuration.
-# This configuration is used for unit/integration tests.
-# ===================================================================
-# Standard Spring Boot properties.
-# Full reference is available at:
-# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
-# ===================================================================
+# Spring Boot unit/integration test configuration.
 
 spring:
   application:
     name: skispasse
-  profiles:
-    active: test
   data:
     mongodb:
       uri: mongodb://localhost:27017
@@ -21,10 +12,11 @@ spring:
   mvc:
     favicon:
       enabled: false
+  profiles:
+    active: test
 server:
   port: 10344
   address: localhost
-
 
 # ===================================================================
 # Skispasse Application specific properties
