@@ -1,16 +1,12 @@
-# ===================================================================
-# Spring Boot configuration.
-# This configuration will be overridden by the Spring profile you use,
-# for example application-dev.yml if you use the "dev" profile.
-# ===================================================================
-# Standard Spring Boot properties.
-# Full reference is available at:
-# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
-# ===================================================================
+
+# Spring Boot root configuration file.
 
 spring:
   application:
     name: skispasse
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
   jmx:
     enabled: false
   main:
@@ -21,12 +17,6 @@ spring:
   output:
     ansi:
       console-available: true
-
-  profiles:
-    # The commented value for `active` can be replaced with valid Spring profiles to load.
-    # Otherwise, it will be filled in by maven when building the JAR file
-    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
-    active: #spring.profiles.active#
   servlet:
     multipart:
       max-file-size: 2MB
@@ -41,9 +31,7 @@ server:
         http-only: true
 
 
-# ===================================================================
 # Skispasse Application specific properties
-# ===================================================================
 
 application:
   application-name: skispasseApp
@@ -54,4 +42,7 @@ application:
       host: localhost
       port: 5000
       queue-size: 512
+  mongo:
+    grid-fs:
+      newsfact-video-bucket: newsFactVideo
 

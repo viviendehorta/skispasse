@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
 import vdehorta.config.ApplicationProperties;
-import vdehorta.config.DefaultProfileUtil;
 import vdehorta.config.ProfileConstants;
 
 import java.net.InetAddress;
@@ -38,9 +37,10 @@ public class SkispasseApp implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
-        if (activeProfiles.contains(ProfileConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(ProfileConstants.SPRING_PROFILE_PRODUCTION)) {
+        //Check profiles coherence
+        if (activeProfiles.contains(ProfileConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(ProfileConstants.SPRING_PROFILE_TEST)) {
             log.error("You have misconfigured your application! It should not run " +
-                "with both the 'dev' and 'prod' profiles at the same time.");
+                "with both the 'dev' and 'test' profiles at the same time.");
         }
     }
 
@@ -51,7 +51,7 @@ public class SkispasseApp implements InitializingBean {
      */
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(SkispasseApp.class);
-        DefaultProfileUtil.addDefaultProfile(app);
+//        DefaultProfileUtil.addDefaultProfile(app);
         Environment env = app.run(args).getEnvironment();
         logApplicationStartup(env);
     }

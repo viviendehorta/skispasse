@@ -270,6 +270,7 @@
     </dependencies>
 
     <build>
+
         <plugins>
 
             <!--clean custom filesets during maven clean phase-->
@@ -607,7 +608,9 @@
         </plugins>
     </build>
 
+
     <profiles>
+        <!-- To run app in local -->
         <profile>
             <id>dev</id>
             <dependencies>
@@ -623,10 +626,7 @@
                     <version>${spring-boot.version}</version>
                 </dependency>
             </dependencies>
-            <properties>
-                <!-- default Spring profiles -->
-                <spring.profiles.active>dev</spring.profiles.active>
-            </properties>
         </profile>
+
     </profiles>
 </project>
