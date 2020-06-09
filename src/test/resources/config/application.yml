@@ -10,11 +10,12 @@
 spring:
   application:
     name: skispasse
+  profiles:
+    active: test
   data:
     mongodb:
-      host: localhost
-      port: 0
-      database: skispasse
+      uri: mongodb://localhost:27017
+      database: skispasse-test
   main:
     allow-bean-definition-overriding: true
   mvc:

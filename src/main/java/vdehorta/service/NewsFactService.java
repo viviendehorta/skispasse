@@ -72,18 +72,22 @@ public class NewsFactService {
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
 
-
-        String videoFileId = fileService.save(inMemoryVideoFile, creatorLogin);
-
-        newsFact.setMediaId(videoFileId);
         newsFact.setOwner(creatorLogin);
-
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
 
         LocalDateTime now = clockService.now();
         newsFact.setCreatedDate(now);
         newsFact.setLastModifiedDate(now);
         NewsFact createdNewsFact = this.newsFactRepository.save(newsFact);
+
+        /* Save video file in the end because Mongo transaction doesnt apply to GridFs so file will not be deleted
+         if error occurs */
+        String videoFileId = fileService.save(inMemoryVideoFile, creatorLogin);
+
+        //Update reference to video file in news fact
+        createdNewsFact.setMediaId(videoFileId);
+        this.newsFactRepository.save(newsFact);
+
         log.debug("Created Information for News Fact: {}", createdNewsFact);
 
         return newsFactMapper.newsFactToNewsFactDetailDto(createdNewsFact);

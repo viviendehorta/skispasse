@@ -19,7 +19,7 @@ node {
     }
 
     stage('compile with tests') {
-        try {
+         try {
             sh "./mvnw -ntp verify"
         } catch(err) {
             throw err

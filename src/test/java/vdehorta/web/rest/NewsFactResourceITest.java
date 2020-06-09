@@ -1,13 +1,14 @@
 package vdehorta.web.rest;
 
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
@@ -32,7 +33,10 @@ import vdehorta.domain.User;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.repository.UserRepository;
-import vdehorta.service.*;
+import vdehorta.service.AuthenticationService;
+import vdehorta.service.ClockService;
+import vdehorta.service.NewsFactService;
+import vdehorta.service.UserService;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 
 import java.time.*;
@@ -91,7 +95,7 @@ public class NewsFactResourceITest {
     private MockMvc restNewsFactMockMvc;
 
     @Autowired
-    private MongoClient mongoClient;
+    private MongoTemplate mongoTemplate;
 
 
     @BeforeEach
@@ -107,13 +111,7 @@ public class NewsFactResourceITest {
 
     @BeforeEach
     public void initTest() {
-        userRepository.deleteAll();
-        newsCategoryRepository.deleteAll();
-        List<NewsFact> newsFacts = newsFactRepository.findAll();
-        for (NewsFact newsFact : newsFacts) {
-            videoGridFsTemplate.delete(Query.query(Criteria.where("_id").is(newsFact.getMediaId())));
-            newsFactRepository.deleteById(newsFact.getId());
-        }
+        TestUtil.resetDatabase(mongoTemplate);
     }
 
     @Test
@@ -260,15 +258,12 @@ public class NewsFactResourceITest {
         toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
         toCreateNewsFact.setNewsCategoryLabel(null);
 
-        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, "video/mp4", "video file content".getBytes());
+        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, ContentTypeEnum.MP4.getContentType(), "video file content".getBytes());
         String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
 
         ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
                 .file(videoMultiPartFile)
                 .param("newsFactJson", newsFactJson));
-
-
-        // Assertions
 
         //Check HTTP response
         resultActions
@@ -341,30 +336,32 @@ public class NewsFactResourceITest {
 
     @Test
     @WithMockUser(username = "ares", roles = {"USER", "CONTRIBUTOR"})
-    void createNewsFact_shouldNotCreateNewsFactNorVideoIfErrorOccurs() throws Exception {
+    void createNewsFact_shouldNotPersistNewsFactIfErrorOccursPersistingVideo() throws Exception {
 
-        String videoFilePath = "skispasse.mp4";
+        String textFilePath = "skispasse.txt"; //Text file to throw error when persisting file
 
         // Initialize database
+        NewsCategory newsCategory = createDefaultNewsCategory1();
+        newsCategoryRepository.save(newsCategory);
         final int newsFactInitialCount = newsFactRepository.findAll().size();
         final int videoInitialCount = countGridFsVideos();
 
         //Given
         NewsFactDetailDto toCreateNewsFact = EntityTestUtil.createDefaultNewsFactDetailDto();
         toCreateNewsFact.setId(null);
-        toCreateNewsFact.setNewsCategoryId("unexistingCategory");
+        toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
         toCreateNewsFact.setNewsCategoryLabel(null);
 
-        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, ContentTypeEnum.MP4.getContentType(), "video file content".getBytes());
+        MockMultipartFile textMultiPartFile = new MockMultipartFile("videoFile", textFilePath, "text/plain", "text content".getBytes());
         String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
 
         //When
         ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
-                .file(videoMultiPartFile)
+                .file(textMultiPartFile)
                 .param("newsFactJson", newsFactJson));
 
         //Then
-        resultActions.andExpect(status().isNotFound());
+        resultActions.andExpect(status().isUnsupportedMediaType());
         assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount);
         assertThat(countGridFsVideos()).isEqualTo(videoInitialCount);
     }
@@ -811,7 +808,7 @@ public class NewsFactResourceITest {
 
     private int countGridFsVideos() {
         String newsFactVideoBucket = applicationProperties.getMongo().getGridFs().getNewsFactVideoBucket();
-        DBCollection videoFilesCollection = mongoClient.getUsedDatabases().iterator().next().getCollection(newsFactVideoBucket + ".files");
-        return (int) videoFilesCollection.getCount();
+        MongoCollection<Document> videoFilesCollection = mongoTemplate.getCollection(newsFactVideoBucket + ".files");
+        return (int) videoFilesCollection.countDocuments();
     }
 }

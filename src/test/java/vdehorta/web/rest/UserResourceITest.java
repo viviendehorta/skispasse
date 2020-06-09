@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -18,6 +19,7 @@ import vdehorta.config.ApplicationProperties;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.bean.dto.UserDto;
+import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.AuthenticationService;
@@ -27,10 +29,7 @@ import vdehorta.service.mapper.UserMapper;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 import vdehorta.web.rest.vm.ManagedUserVM;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -51,6 +50,10 @@ public class UserResourceITest {
 
     @Autowired
     private UserRepository userRepository;
+
+
+    @Autowired
+    private AuthorityRepository authorityRepository;
 
     @Autowired
     private UserService userService;
@@ -73,6 +76,9 @@ public class UserResourceITest {
     @Autowired
     private ExceptionTranslator exceptionTranslator;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     private MockMvc restUserMockMvc;
 
     private User user;
@@ -91,7 +97,7 @@ public class UserResourceITest {
 
     @BeforeEach
     public void initTest() {
-        userRepository.deleteAll();
+        TestUtil.resetDatabase(mongoTemplate);
         user = EntityTestUtil.createDefaultUser();
     }
 
@@ -491,7 +497,16 @@ public class UserResourceITest {
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    public void getAllAuthorities_caseOk() throws Exception {
+    public void getAllRoles_caseOk() throws Exception {
+
+        //Init database
+        Authority adminAuthority = new Authority();
+        adminAuthority.setName(RoleEnum.ADMIN.getValue());
+        Authority userAuthority = new Authority();
+        userAuthority.setName(RoleEnum.USER.getValue());
+        authorityRepository.saveAll(Arrays.asList(adminAuthority, userAuthority));
+
+
         restUserMockMvc.perform(get("/users/roles")
                 .accept(APPLICATION_JSON_UTF8)
                 .contentType(APPLICATION_JSON_UTF8))
