@@ -18,7 +18,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017
-      database: skispasse
+      database: skispasse-dev
   devtools:
     restart:
       enabled: true

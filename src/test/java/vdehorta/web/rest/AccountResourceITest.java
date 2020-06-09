@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -66,13 +67,16 @@ public class AccountResourceITest {
     @Autowired
     private ExceptionTranslator exceptionTranslator;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     private MockMvc restMvc;
 
     private MockMvc restUserMockMvc;
 
     @BeforeEach
     public void setup() {
-        userRepository.deleteAll();
+        TestUtil.resetDatabase(mongoTemplate);
         MockitoAnnotations.initMocks(this);
         AccountResource accountResource =
                 new AccountResource(userRepository, userService, authenticationService);

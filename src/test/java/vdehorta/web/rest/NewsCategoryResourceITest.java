@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -12,15 +13,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.SkispasseApp;
 import vdehorta.domain.NewsCategory;
-import vdehorta.domain.NewsFact;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.service.NewsCategoryService;
 
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -44,6 +44,9 @@ public class NewsCategoryResourceITest {
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     private MockMvc restNewsCategoryMockMvc;
 
 
@@ -57,7 +60,7 @@ public class NewsCategoryResourceITest {
 
     @BeforeEach
     public void initTest() {
-        newsCategoryRepository.deleteAll();
+        TestUtil.resetDatabase(mongoTemplate);
     }
 
     @Test
