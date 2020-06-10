@@ -6,11 +6,8 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -100,18 +97,9 @@ public class NewsFactResourceITest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @Autowired
-    private Environment environment;
-
-    private final Logger log = LoggerFactory.getLogger(NewsFactResourceITest.class);
-
 
     @BeforeEach
     public void setup() {
-
-        log.info("USED DATABASE FOR TEST : " + mongoTemplate.getDb().getName());
-        log.info("USED PROFILES DURING TEST EXECUTION : " + Arrays.toString(environment.getActiveProfiles()));
-
 
         NewsFactResource newsFactResource = new NewsFactResource(applicationProperties, newsFactService, authenticationService);
 

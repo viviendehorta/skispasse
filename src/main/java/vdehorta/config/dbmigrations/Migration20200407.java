@@ -2,8 +2,6 @@ package vdehorta.config.dbmigrations;
 
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
@@ -18,13 +16,8 @@ public class Migration20200407 {
 
     private ClockService clockService = new ClockService();
 
-    private final Logger log = LoggerFactory.getLogger(Migration20200407.class);
-
     @ChangeSet(order = "01", author = "initiator", id = "01-addAuthorities")
     public void addAuthorities(MongoTemplate mongoTemplate) {
-
-        log.info("Executing mongobee MIGRATION !!!!!");
-        log.info("In database " + mongoTemplate.getDb().getName());
 
         Authority adminAuthority = new Authority();
         adminAuthority.setName(RoleEnum.ADMIN.getValue());
