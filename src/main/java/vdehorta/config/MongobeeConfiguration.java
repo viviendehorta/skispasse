@@ -22,7 +22,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
-@Profile("!test")
+@Profile("dev")
 public class MongobeeConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(MongobeeConfiguration.class);

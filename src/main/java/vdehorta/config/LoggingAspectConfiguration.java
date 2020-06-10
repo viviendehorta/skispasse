@@ -12,7 +12,7 @@ import vdehorta.logging.LoggingAspect;
 public class LoggingAspectConfiguration {
 
     @Bean
-    @Profile(ProfileConstants.SPRING_PROFILE_DEVELOPMENT)
+    @Profile(ProfileConstants.SPRING_PROFILE_DEV)
     public LoggingAspect loggingAspect(Environment env) {
         return new LoggingAspect(env);
     }
