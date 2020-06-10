@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import vdehorta.bean.ContentTypeEnum;
 import vdehorta.bean.InMemoryFile;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
-import vdehorta.service.errors.VideoFileTooLargeException;
 import vdehorta.service.errors.VideoNotFoundException;
 import vdehorta.service.errors.VideoStreamException;
 import vdehorta.service.util.DateUtil;
@@ -28,7 +27,6 @@ public class VideoService {
     private final Logger log = LoggerFactory.getLogger(VideoService.class);
 
     public static final String OWNER_METADATA_KEY = "owner";
-    protected static final long MAX_FILE_SIZE_IN_BYTE = 2 * 1024L * 1024;
 
     private ClockService clockService;
 
@@ -45,7 +43,6 @@ public class VideoService {
         log.debug("Trying to save file '{}' with content type '{}'", inMemoryVideoFile.getOriginalFilename(), inMemoryVideoFile.getContentType());
 
         ContentTypeEnum contentTypeEnum = validateFileContentType(inMemoryVideoFile.getContentType());
-        validateFileSize(inMemoryVideoFile.getSizeInBytes());
         String videoId = videoGridFsTemplate.store(
                 inMemoryVideoFile.getInputStream(),
                 generateUniqueFilename(contentTypeEnum, owner),
@@ -73,12 +70,6 @@ public class VideoService {
 
     private ContentTypeEnum validateFileContentType(String contentType) throws UnsupportedFileContentTypeException {
         return ContentTypeEnum.getByContentType(contentType).orElseThrow(() -> new UnsupportedFileContentTypeException(contentType));
-    }
-
-    private void validateFileSize(long fileSize) throws VideoFileTooLargeException {
-        if (fileSize > MAX_FILE_SIZE_IN_BYTE) {
-            throw new VideoFileTooLargeException(MAX_FILE_SIZE_IN_BYTE);
-        }
     }
 
     private String generateUniqueFilename(ContentTypeEnum contentTypeEnum, String ownerLogin) {
