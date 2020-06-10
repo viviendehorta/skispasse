@@ -3,16 +3,14 @@ package vdehorta.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import vdehorta.bean.ContentTypeEnum;
 import vdehorta.bean.InMemoryFile;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
-import vdehorta.service.errors.VideoFileTooLargeException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class VideoFileServiceTest {
+class VideoServiceTest {
 
     private VideoService videoFileService;
 
@@ -26,19 +24,6 @@ class VideoFileServiceTest {
         clockServiceMock = mock(ClockService.class);
         userServiceMock = mock(UserService.class);
         videoFileService = new VideoService(gridFsTemplateMock, clockServiceMock);
-    }
-
-    @Test
-    void save_shouldThrowErrorWhenFileIsTooBig() {
-
-        //Given
-        InMemoryFile tooBigFileMock = mock(InMemoryFile.class);
-        when(tooBigFileMock.getContentType()).thenReturn(ContentTypeEnum.MP4.getContentType());
-        when(tooBigFileMock.getSizeInBytes()).thenReturn(VideoService.MAX_FILE_SIZE_IN_BYTE + 1);
-
-        //Assert-Thrown
-        assertThatThrownBy(() -> videoFileService.save(tooBigFileMock, "aUser"))
-                .isInstanceOf(VideoFileTooLargeException.class);
     }
 
     @Test

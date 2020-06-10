@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
-import vdehorta.bean.ContentTypeEnum;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.converter.JacksonMapperFactory;
@@ -49,6 +48,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static vdehorta.EntityTestUtil.*;
+import static vdehorta.bean.ContentTypeEnum.MP4;
 
 /**
  * Integration tests for the {@link NewsFactResource} REST controller.
@@ -259,7 +259,7 @@ public class NewsFactResourceITest {
         toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
         toCreateNewsFact.setNewsCategoryLabel(null);
 
-        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, ContentTypeEnum.MP4.getContentType(), "video file content".getBytes());
+        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, MP4.getContentType(), "video file content".getBytes());
         String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
 
         ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
@@ -332,8 +332,38 @@ public class NewsFactResourceITest {
         // Then
         resultActions.andExpect(status().isForbidden());
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-
     }
+
+    //TODO à terminer dans SKIS-141
+//    @Test
+//    @WithMockUser(username = "ares", roles = {"USER", "CONTRIBUTOR"})
+//    void createNewsFact_shouldThrowErrorIfVideoFileIsTooBig() throws Exception {
+//
+//        String tooBigFilename = "tooBigVideo.mp4";
+//
+//        //Given
+//        NewsFactDetailDto toCreateNewsFact = EntityTestUtil.createDefaultNewsFactDetailDto();
+//        toCreateNewsFact.setId(null);
+//
+//        byte[] tooBigFileBytes = new byte[50 * 1024]; //100KB file content
+//        Arrays.fill(tooBigFileBytes, (byte) 1);
+//        MockMultipartFile tooBigFile = new MockMultipartFile("videoFile", tooBigFilename, MP4.getContentType(), tooBigFileBytes);
+//        String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
+//
+//        // Initialize database
+//        final int newsFactInitialCount = newsFactRepository.findAll().size();
+//        final int videoInitialCount = countGridFsVideos();
+//
+//        //When
+//        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
+//                .file(tooBigFile)
+//                .param("newsFactJson", newsFactJson));
+//
+//        //Then
+//        resultActions.andExpect(status().isUnsupportedMediaType());
+//        assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount);
+//        assertThat(countGridFsVideos()).isEqualTo(videoInitialCount);
+//    }
 
     @Test
     @WithMockUser(username = "ares", roles = {"USER", "CONTRIBUTOR"})
