@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * Properties specific to Skispasse.
  * <p>
- * Properties are configured in the {@code application.yml} file.
+ * Properties are configured in the {@code application.properties} file.
  */
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {

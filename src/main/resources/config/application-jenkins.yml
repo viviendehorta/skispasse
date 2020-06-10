@@ -1,6 +1,0 @@
-# Spring Boot configuration for the "jenkins" profile.
-
-spring:
-  data:
-    mongodb:
-      database: skispasse-jenkins

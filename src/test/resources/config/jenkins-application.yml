@@ -1,6 +1,0 @@
-# Spring Boot unit/integration test configuration for profile 'jenkins'.
-
-spring:
-  data:
-    mongodb:
-      database: skispasse-jenkins

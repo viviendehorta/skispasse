@@ -377,38 +377,6 @@
                 </configuration>
             </plugin>
 
-            <!--Execute back-end integration tests-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven-failsafe-plugin.version}</version>
-                <configuration>
-                    <!-- Due to spring-boot repackage, without adding this property test classes are not found
-                         See https://github.com/spring-projects/spring-boot/issues/6254 -->
-                    <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-                    <!-- Force alphabetical order to have a reproducible build -->
-                    <runOrder>alphabetical</runOrder>
-                    <reportsDirectory>${junit.itReportFolder}</reportsDirectory>
-                    <includes>
-                        <include>**/*ITest*</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>integration-test</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!--Copy resources (config files, frontend built app, etc.) from a source to a destination directory-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -432,14 +400,14 @@
                                     <directory>src/main/resources/</directory>
                                     <filtering>true</filtering>
                                     <includes>
-                                        <include>config/*.yml</include>
+                                        <include>config/*.properties</include>
                                     </includes>
                                 </resource>
                                 <resource>
                                     <directory>src/main/resources/</directory>
                                     <filtering>false</filtering>
                                     <excludes>
-                                        <exclude>config/*.yml</exclude>
+                                        <exclude>config/*.properties</exclude>
                                     </excludes>
                                 </resource>
                             </resources>
@@ -475,6 +443,38 @@
                         <exclude>**/*ITest*</exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+
+            <!--Execute back-end integration tests-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
+                <configuration>
+                    <!-- Due to spring-boot repackage, without adding this property test classes are not found
+                         See https://github.com/spring-projects/spring-boot/issues/6254 -->
+                    <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+                    <!-- Force alphabetical order to have a reproducible build -->
+                    <runOrder>alphabetical</runOrder>
+                    <reportsDirectory>${junit.itReportFolder}</reportsDirectory>
+                    <includes>
+                        <include>**/*ITest*</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!--Generate code coverage reports-->
@@ -607,7 +607,6 @@
             </plugin>
         </plugins>
     </build>
-
 
     <profiles>
         <!-- To run app in local -->
