@@ -32,12 +32,10 @@ import vdehorta.domain.User;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.repository.UserRepository;
-import vdehorta.service.AuthenticationService;
-import vdehorta.service.ClockService;
-import vdehorta.service.NewsFactService;
-import vdehorta.service.UserService;
+import vdehorta.service.*;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 
+import java.io.ByteArrayInputStream;
 import java.time.*;
 import java.util.Arrays;
 import java.util.List;
@@ -399,25 +397,67 @@ public class NewsFactResourceITest {
 
     @Test
     @WithMockUser(username = "titi", roles = {"CONTRIBUTOR"})
-    public void deleteNewsFact_caseOk() throws Exception {
+    public void deleteNewsFact_shouldDeleteTheNewsFactAndHisVideo() throws Exception {
+        String owner = "titi";
 
-        // Initialize the database
+        //Init NewsFact video
+        String videoId = this.videoGridFsTemplate.store(
+                new ByteArrayInputStream("video-content".getBytes()),
+                "ma-video",
+                new Document().append(VideoService.OWNER_METADATA_KEY, owner)).toString();
+        //Init NewsFact
         NewsFact newsFact = createDefaultNewsFact();
-        newsFact.setOwner("titi");
+        newsFact.setOwner(owner);
+        newsFact.setMediaId(videoId);
         newsFactRepository.save(newsFact);
-        int initialCount = newsFactRepository.findAll().size();
+
+        int initialNewsFactCount = newsFactRepository.findAll().size();
+        int initialVideoFilesCount = countGridFsVideos();
 
         // Then
         ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", DEFAULT_NEWS_FACT_ID)
                 .accept(APPLICATION_JSON_UTF8));
 
         // Assert
-        resultActions
-                .andExpect(status().isNoContent());
+        resultActions.andExpect(status().isNoContent());
 
-        // Validate the database is empty
-        List<NewsFact> newsFacts = newsFactRepository.findAll();
-        assertThat(newsFacts).hasSize(initialCount - 1);
+        // Check persistence
+        assertThat(newsFactRepository.findAll()).hasSize(initialNewsFactCount - 1);
+        assertThat(countGridFsVideos()).isEqualTo(initialVideoFilesCount - 1);
+        assertThat(newsFactRepository.findById(newsFact.getId())).isEmpty();
+        assertThat(videoGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNull();
+    }
+
+    @Test
+    @WithMockUser(username = "bandido", roles = {"CONTRIBUTOR"})
+    public void deleteNewsFact_shouldNotDeleteVideoIfNewsFactDeletionFailed() throws Exception {
+
+        //Init NewsFact video
+        String videoId = this.videoGridFsTemplate.store(
+                new ByteArrayInputStream("video-content".getBytes()),
+                "ma-video",
+                new Document().append(VideoService.OWNER_METADATA_KEY, "owner")).toString();
+        //Init NewsFact
+        NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setOwner("owner");
+        newsFact.setMediaId(videoId);
+        newsFactRepository.save(newsFact);
+
+        int initialNewsFactCount = newsFactRepository.findAll().size();
+        int initialVideoFilesCount = countGridFsVideos();
+
+        // Then
+        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", DEFAULT_NEWS_FACT_ID)
+                .accept(APPLICATION_JSON_UTF8));
+
+        // Assert
+        resultActions.andExpect(status().isNotFound());
+
+        // Check persistence
+        assertThat(newsFactRepository.findAll()).hasSize(initialNewsFactCount);
+        assertThat(countGridFsVideos()).isEqualTo(initialVideoFilesCount);
+        assertThat(newsFactRepository.findById(newsFact.getId())).isPresent();
+        assertThat(videoGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNotNull();
     }
 
     @Test

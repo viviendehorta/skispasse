@@ -27,6 +27,7 @@ public class VideoService {
     private final Logger log = LoggerFactory.getLogger(VideoService.class);
 
     public static final String OWNER_METADATA_KEY = "owner";
+    public static final Criteria ID_CRITERIA = Criteria.where("_id");
 
     private ClockService clockService;
 
@@ -75,5 +76,9 @@ public class VideoService {
     private String generateUniqueFilename(ContentTypeEnum contentTypeEnum, String ownerLogin) {
         String dateString = DateUtil.DATE_TIME_FORMATTER.format(clockService.now());
         return ownerLogin + "_" + dateString + "." + contentTypeEnum.getExtension();
+    }
+
+    public void delete(String videoId) {
+        videoGridFsTemplate.delete(new Query(ID_CRITERIA.is(videoId)));
     }
 }

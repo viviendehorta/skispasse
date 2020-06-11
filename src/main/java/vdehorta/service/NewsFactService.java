@@ -35,19 +35,19 @@ public class NewsFactService {
     private final NewsFactMapper newsFactMapper;
     private final NewsCategoryService newsCategoryService;
     private final ClockService clockService;
-    private final VideoService fileService;
+    private final VideoService videoService;
 
 
     public NewsFactService(NewsFactRepository newsFactRepository,
                            NewsFactMapper newsFactMapper,
                            NewsCategoryService newsCategoryService,
                            ClockService clockService,
-                           VideoService fileService) {
+                           VideoService videoService) {
         this.newsFactRepository = newsFactRepository;
         this.newsFactMapper = newsFactMapper;
         this.newsCategoryService = newsCategoryService;
         this.clockService = clockService;
-        this.fileService = fileService;
+        this.videoService = videoService;
     }
 
     public List<NewsFactNoDetailDto> getAll() {
@@ -82,7 +82,7 @@ public class NewsFactService {
 
         /* Save video file in the end because Mongo transaction doesnt apply to GridFs so file will not be deleted
          if error occurs */
-        String videoFileId = fileService.save(inMemoryVideoFile, creatorLogin);
+        String videoFileId = videoService.save(inMemoryVideoFile, creatorLogin);
 
         //Update reference to video file in news fact
         createdNewsFact.setMediaId(videoFileId);
@@ -124,6 +124,7 @@ public class NewsFactService {
         return newsFactMapper.newsFactToNewsFactDetailDto(updated);
     }
 
+    @Transactional
     public void delete(String newsFactId, String deleterLogin) throws NewsFactNotFoundException {
         log.debug("Deleting news fact  with id {}", newsFactId);
 
@@ -133,6 +134,7 @@ public class NewsFactService {
         }
 
         newsFactRepository.deleteById(newsFactId);
+        videoService.delete(newsFact.getMediaId());
     }
 
     /**
@@ -144,7 +146,7 @@ public class NewsFactService {
     public InputStream getNewsFactVideo(String newsFactId) throws NewsFactNotFoundException, NewsFactVideoNotFoundException {
         NewsFact newsFact = newsFactRepository.findById(newsFactId).orElseThrow(() -> new NewsFactNotFoundException(newsFactId));
         try {
-            return this.fileService.getVideoStream(newsFact.getMediaId());
+            return this.videoService.getVideoStream(newsFact.getMediaId());
         } catch (VideoNotFoundException e) {
             throw new NewsFactVideoNotFoundException(newsFactId);
         }
