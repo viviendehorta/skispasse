@@ -10,6 +10,7 @@ import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {createHttpPagingOptions} from '../../shared/util/request-util';
 import {PaginationService} from '../pagination/pagination.service';
 import {environment} from '../../../environments/environment';
+import {INewsFactWithFile} from "../../contrib/my-news-facts/news-fact-form/news-fact-with-file.model";
 
 @Injectable({ providedIn: 'root' })
 export class NewsFactService {
@@ -50,10 +51,10 @@ export class NewsFactService {
       );
   }
 
-  create(newsFactDetail: INewsFactDetail, newsFactVideoFile: File): Observable<INewsFactDetail> {
+  create(newsFactWithFile: INewsFactWithFile): Observable<INewsFactDetail> {
     const formData = new FormData();
-    formData.append("newsFactJson", JSON.stringify(newsFactDetail));
-    formData.append("videoFile", newsFactVideoFile);
+    formData.append("newsFactJson", JSON.stringify(newsFactWithFile.newsFact));
+    formData.append("videoFile", newsFactWithFile.file);
 
     return this.http.post<INewsFactDetail>(this.resourceUrl, formData).pipe(
       map((unparsedNewsFactDetail: any) => {

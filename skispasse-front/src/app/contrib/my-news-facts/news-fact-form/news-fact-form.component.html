@@ -1,0 +1,171 @@
+<form class="form" name="editForm" role="form" novalidate (ngSubmit)="submit()" [formGroup]="newsFactForm">
+
+    <skis-alert-error></skis-alert-error>
+
+    <!-- Id (hidden and not null when updating existing news fact) -->
+    <div class="form-group" [hidden]="!newsFact">
+        <label>Id</label>
+        <input type="text" class="form-control" readonly
+               name="id"
+               formControlName="id">
+    </div>
+
+    <!-- News category -->
+    <div class="form-group">
+        <label for="newsCategorySelect">News category</label>
+        <select class="form-control" id="newsCategorySelect"
+                name="newsCategoryId"
+                formControlName="newsCategoryId">
+            <option *ngFor="let newsCategory of this.newsCategories" ngValue="{{newsCategory.id}}">
+                {{newsCategory.label}}
+            </option>
+        </select>
+
+        <div *ngIf="newsFactForm.get('newsCategoryId').invalid && (newsFactForm.get('newsCategoryId').touched)">
+            <small class="form-text text-danger"
+                   *ngIf="newsFactForm.get('newsCategoryId').errors.required">
+                News category is required.
+            </small>
+        </div>
+    </div>
+
+    <!-- Event date -->
+    <div class="form-group">
+        <label for="eventDateInput">Event date</label>
+        <div class="input-group">
+            <input class="form-control" id="eventDateInput"
+                   placeholder="Event date (yyyy-mm-dd)"
+                   ngbDatepicker
+                   #d="ngbDatepicker"
+                   name="eventDate"
+                   formControlName="eventDate">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button" title="Select in calendar">
+                    <fa-icon [icon]="'calendar-alt'"></fa-icon>
+                </button>
+            </div>
+
+            <div *ngIf="newsFactForm.get('eventDate').invalid && (newsFactForm.get('eventDate').dirty || newsFactForm.get('eventDate').touched)">
+                <small class="form-text text-danger"
+                       *ngIf="newsFactForm.get('eventDate').errors.required">
+                    Event date is required.
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        <!-- Address -->
+        <div class="form-group col-md-6">
+            <label for="addressInput">Address</label>
+            <input type="text" class="form-control" id="addressInput"
+                   placeholder="Enter address"
+                   name="address"
+                   formControlName="address">
+
+            <div
+                    *ngIf="newsFactForm.get('address').invalid && (newsFactForm.get('address').dirty || newsFactForm.get('address').touched)">
+                <small class="form-text text-danger"
+                       *ngIf="newsFactForm.get('address').errors.required">
+                    Address is required.
+                </small>
+            </div>
+        </div>
+
+        <!-- City -->
+        <div class="form-group col-md-3">
+            <label for="cityInput">City</label>
+            <input type="text" class="form-control" id="cityInput"
+                   placeholder="Enter city"
+                   name="city"
+                   formControlName="city">
+
+            <div
+                    *ngIf="newsFactForm.get('city').invalid && (newsFactForm.get('city').dirty || newsFactForm.get('city').touched)">
+                <small class="form-text text-danger"
+                       *ngIf="newsFactForm.get('city').errors.required">
+                    City is required.
+                </small>
+            </div>
+        </div>
+
+        <!-- Country -->
+        <div class="form-group col-md-3">
+            <label for="countryInput">Country</label>
+            <input type="text" class="form-control" id="countryInput"
+                   placeholder="Enter country"
+                   name="country"
+                   formControlName="country">
+
+            <div
+                    *ngIf="newsFactForm.get('country').invalid && (newsFactForm.get('country').dirty || newsFactForm.get('country').touched)">
+                <small class="form-text text-danger"
+                       *ngIf="newsFactForm.get('country').errors.required">
+                    Country is required.
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        <!-- Location Coordinate X -->
+        <div class="form-group col-md-6">
+            <label for="locationCoordinateXInput">Location coordinate X</label>
+            <input type="number" class="form-control" id="locationCoordinateXInput"
+                   placeholder="Enter location coordinate X"
+                   name="locationCoordinateX"
+                   formControlName="locationCoordinateX">
+
+            <div
+                    *ngIf="newsFactForm.get('locationCoordinateX').invalid && (newsFactForm.get('locationCoordinateX').dirty || newsFactForm.get('locationCoordinateX').touched)">
+                <small class="form-text text-danger"
+                       *ngIf="newsFactForm.get('locationCoordinateX').errors.required">
+                    Location coordinate X is required.
+                </small>
+            </div>
+        </div>
+
+        <!-- Location Coordinate Y -->
+        <div class="form-group col-md-6">
+            <label for="locationCoordinateYInput">Location Coordinate Y</label>
+            <input type="number" class="form-control" id="locationCoordinateYInput"
+                   placeholder="Enter location coordinate Y"
+                   name="locationCoordinateY"
+                   formControlName="locationCoordinateY">
+            <div
+                    *ngIf="newsFactForm.get('locationCoordinateY').invalid && (newsFactForm.get('locationCoordinateY').dirty || newsFactForm.get('locationCoordinateY').touched)">
+                <small class="form-text text-danger"
+                       *ngIf="newsFactForm.get('locationCoordinateY').errors.required">
+                    Location coordinate Y is required.
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- News fact video upload -->
+    <div *ngIf="withFileUpload" class="form-group">
+        <label for="videoFileInput">Video file</label>
+        <input type="file" class="form-control-file" id="videoFileInput"
+               name="newsFactMediaId"
+               formControlName="newsFactMediaFile"
+               (change)="onFileChange($event)">
+
+        <div *ngIf="newsFactForm.get('newsFactMediaFile').invalid
+                && (newsFactForm.get('newsFactMediaFile').dirty || newsFactForm.get('newsFactMediaFile').touched)">
+            <small class="form-text text-danger" *ngIf="newsFactForm.get('newsFactMediaFile').errors.required">
+                Video file is required.
+            </small>
+        </div>
+    </div>
+
+    <div>
+
+        <button type="button" class="btn btn-primary" (click)="previousState()">
+            <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button type="submit" [disabled]="newsFactForm.invalid" class="btn btn-primary">Save</button>
+    </div>
+</form>
