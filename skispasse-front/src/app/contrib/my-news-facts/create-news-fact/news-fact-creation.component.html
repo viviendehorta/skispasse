@@ -1,0 +1,17 @@
+<div class="news-fact-creation card">
+
+  <div class="card-header">
+    <h2>
+      <span>New Publication</span>
+    </h2>
+    <div class="btn-group float-right">
+      <button class="btn btn-primary" type="submit" routerLink="/">
+        <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span>Back to map</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <skis-news-fact-form [withFileUpload]="true"></skis-news-fact-form>
+  </div>
+</div>

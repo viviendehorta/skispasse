@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Routes } from '@angular/router';
-import { MyNewsFactsComponent } from './my-news-facts.component';
-import { MyNewsFactEditionComponent } from './my-news-fact-edition.component';
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, Resolve, Routes} from '@angular/router';
+import {MyNewsFactsComponent} from './my-news-facts.component';
 import {NewsFactService} from '../../core/newsfacts/news-fact.service';
 import {NewsFactDetail} from '../../shared/model/news-fact-detail.model';
 import {ResolvePaginationParamService} from '../../core/pagination/resolve-pagination-param-service';
+import {NewsFactCreationComponent} from "./create-news-fact/news-fact-creation.component";
+import {NewsFactEditionComponent} from "./update-news-fact/news-fact-edition.component";
 
 @Injectable({ providedIn: 'root' })
 export class NewsFactResolve implements Resolve<any> {
@@ -33,17 +34,14 @@ export const myNewsFactsRoutes: Routes = [
   },
   {
     path: 'new',
-    component: MyNewsFactEditionComponent,
+    component: NewsFactCreationComponent,
     data: {
-      pageTitle: 'New publication'
-    },
-    resolve: {
-      newsFact: NewsFactResolve
+      pageTitle: 'New publication',
     }
   },
   {
     path: ':id/edit',
-    component: MyNewsFactEditionComponent,
+    component: NewsFactEditionComponent,
     data: {
       pageTitle: 'Publication edition'
     },

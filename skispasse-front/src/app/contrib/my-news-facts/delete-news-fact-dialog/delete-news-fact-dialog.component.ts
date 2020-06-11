@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import {INewsFactDetail} from '../../shared/model/news-fact-detail.model';
-import {NewsFactService} from '../../core/newsfacts/news-fact.service';
-import {EventManager} from '../../core/events/event-manager';
+import {INewsFactDetail} from '../../../shared/model/news-fact-detail.model';
+import {NewsFactService} from '../../../core/newsfacts/news-fact.service';
+import {EventManager} from '../../../core/events/event-manager';
 
 @Component({
   selector: 'skis-delete-news-fact-dialog',
