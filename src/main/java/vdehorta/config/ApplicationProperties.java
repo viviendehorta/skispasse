@@ -12,9 +12,11 @@ public class ApplicationProperties {
 
     private String applicationName;
 
+    private Logging logging = new Logging();
+
     private Mongo mongo = new Mongo();
 
-    private Logging logging = new Logging();
+    private Security security = new Security();
 
     public String getApplicationName() {
         return applicationName;
@@ -24,34 +26,28 @@ public class ApplicationProperties {
         this.applicationName = applicationName;
     }
 
-    public Mongo getMongo() {
-        return mongo;
-    }
-
     public Logging getLogging() {
         return logging;
     }
 
-    public static class Mongo {
+    public void setLogging(Logging logging) {
+        this.logging = logging;
+    }
 
-        private GridFs gridFs = new GridFs();
+    public Mongo getMongo() {
+        return mongo;
+    }
 
-        public GridFs getGridFs() {
-            return gridFs;
-        }
+    public void setMongo(Mongo mongo) {
+        this.mongo = mongo;
+    }
 
-        public static class GridFs {
+    public Security getSecurity() {
+        return security;
+    }
 
-            private String newsFactVideoBucket;
-
-            public String getNewsFactVideoBucket() {
-                return newsFactVideoBucket;
-            }
-
-            public void setNewsFactVideoBucket(String newsFactVideoBucket) {
-                this.newsFactVideoBucket = newsFactVideoBucket;
-            }
-        }
+    public void setSecurity(Security security) {
+        this.security = security;
     }
 
     public static class Logging {
@@ -110,6 +106,54 @@ public class ApplicationProperties {
 
             public void setQueueSize(int queueSize) {
                 this.queueSize = queueSize;
+            }
+        }
+    }
+
+    public static class Mongo {
+
+        private GridFs gridFs = new GridFs();
+
+        public GridFs getGridFs() {
+            return gridFs;
+        }
+
+        public static class GridFs {
+
+            private String newsFactVideoBucket;
+
+            public String getNewsFactVideoBucket() {
+                return newsFactVideoBucket;
+            }
+
+            public void setNewsFactVideoBucket(String newsFactVideoBucket) {
+                this.newsFactVideoBucket = newsFactVideoBucket;
+            }
+        }
+    }
+
+    public static class Security {
+
+        private Csrf csrf = new Csrf();
+
+        public Csrf getCsrf() {
+            return csrf;
+        }
+
+        public void setCsrf(Csrf csrf) {
+            this.csrf = csrf;
+        }
+
+        public static class Csrf {
+
+            private boolean disabled = false;
+
+            public boolean isDisabled() {
+                return disabled;
+            }
+
+            public void setDisabled(boolean disabled) {
+                this.disabled = disabled;
             }
         }
     }

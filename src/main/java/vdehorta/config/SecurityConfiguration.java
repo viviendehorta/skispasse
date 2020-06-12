@@ -59,11 +59,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        //CSRF security (token sent to client initially, and then provided in each client request)
+        if (applicationProperties.getSecurity().getCsrf().isDisabled()) {
+            http.csrf().disable();
+        } else {
+            http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        }
+
         // @formatter:off
         http
-            .csrf()
-            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-        .and()
             .exceptionHandling()
             .authenticationEntryPoint(problemSupport)
             .accessDeniedHandler(problemSupport)

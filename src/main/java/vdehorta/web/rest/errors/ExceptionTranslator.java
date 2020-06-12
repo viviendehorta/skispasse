@@ -22,6 +22,8 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait {
 
+
+
     @ExceptionHandler
     public ResponseEntity<Problem> handleDefaultRuntimeException(RuntimeException ex, NativeWebRequest request) {
         //Default method for all none-catched server exception : generate Server error problem

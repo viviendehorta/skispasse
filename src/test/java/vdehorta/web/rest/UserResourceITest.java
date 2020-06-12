@@ -13,12 +13,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
+import vdehorta.bean.dto.UserDto;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
-import vdehorta.bean.dto.UserDto;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.RoleEnum;
@@ -26,6 +25,9 @@ import vdehorta.service.AuthenticationService;
 import vdehorta.service.ClockService;
 import vdehorta.service.UserService;
 import vdehorta.service.mapper.UserMapper;
+import vdehorta.utils.BeanTestUtils;
+import vdehorta.utils.JsonTestUtils;
+import vdehorta.utils.PersistenceTestUtils;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 import vdehorta.web.rest.vm.ManagedUserVM;
 
@@ -37,7 +39,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static vdehorta.EntityTestUtil.*;
+import static vdehorta.utils.BeanTestUtils.*;
 
 /**
  * Integration tests for the {@link UserResource} REST controller.
@@ -97,8 +99,8 @@ public class UserResourceITest {
 
     @BeforeEach
     public void initTest() {
-        TestUtil.resetDatabase(mongoTemplate);
-        user = EntityTestUtil.createDefaultUser();
+        PersistenceTestUtils.resetDatabase(mongoTemplate);
+        user = BeanTestUtils.createDefaultUser();
     }
 
     @Test
@@ -121,7 +123,7 @@ public class UserResourceITest {
         //Then
         ResultActions resultActions = restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)));
+                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)));
 
         // Assert
         resultActions
@@ -158,7 +160,7 @@ public class UserResourceITest {
         //When
         ResultActions resultActions = restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)));
+                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)));
 
         //Then
         resultActions.andExpect(status().isBadRequest());
@@ -188,7 +190,7 @@ public class UserResourceITest {
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
                 .andExpect(status().isBadRequest());
 
         // Validate the User in the database
@@ -217,7 +219,7 @@ public class UserResourceITest {
         // Create the User
         restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
                 .andExpect(status().isBadRequest());
 
         // Validate the User in the database
@@ -246,7 +248,7 @@ public class UserResourceITest {
         // Create the User
         ResultActions resultActions = restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)));
+                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)));
 
         // Assert
         resultActions
@@ -330,7 +332,7 @@ public class UserResourceITest {
 
         restUserMockMvc.perform(put("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
                 .andExpect(status().isOk());
 
         // Validate the User in the database
@@ -373,7 +375,7 @@ public class UserResourceITest {
 
         restUserMockMvc.perform(put("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
                 .andExpect(status().isOk());
 
         // Validate the User in the database
@@ -426,7 +428,7 @@ public class UserResourceITest {
 
         restUserMockMvc.perform(put("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -472,7 +474,7 @@ public class UserResourceITest {
 
         ResultActions resultActions = restUserMockMvc.perform(put("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(managedUserVM)));
+                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)));
 
         resultActions.andExpect(status().isBadRequest());
         assertThat(userRepository.findAll()).hasSize(initialCount);
@@ -518,7 +520,7 @@ public class UserResourceITest {
 
     @Test
     public void testUserEquals() throws Exception {
-        TestUtil.equalsVerifier(User.class);
+        BeanTestUtils.equalsVerifier(User.class);
         User user1 = new User();
         user1.setId("id1");
         User user2 = new User();
