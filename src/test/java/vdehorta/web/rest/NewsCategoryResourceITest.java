@@ -50,6 +50,6 @@ public class NewsCategoryResourceITest {
         assertThat(response.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON_UTF8);
         assertThat(response.getBody())
                 .hasSize(2)
-                .extracting("id", "label").contains(tuple("newsCategoryId1", "newsCategoryLabel1"), tuple("newsCategoryId2", "newsCategoryLabel2"));
+                .extracting("id", "label").containsOnly(tuple("newsCategoryId1", "newsCategoryLabel1"), tuple("newsCategoryId2", "newsCategoryLabel2"));
     }
 }
