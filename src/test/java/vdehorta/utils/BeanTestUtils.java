@@ -1,4 +1,4 @@
-package vdehorta;
+package vdehorta.utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.mapstruct.ap.internal.util.Collections;
@@ -10,10 +10,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Utility Class containing methods that create entities used in controller tests.
  */
-public final class EntityTestUtil {
+public final class BeanTestUtils {
 
     public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -201,7 +203,24 @@ public final class EntityTestUtil {
                 .build();
     }
 
+    /**
+     * Verifies the equals/hashcode contract on the domain object.
+     */
+    public static <T> void equalsVerifier(Class<T> clazz) throws Exception {
+        T domainObject1 = clazz.getConstructor().newInstance();
+        assertThat(domainObject1.toString()).isNotNull();
+        assertThat(domainObject1).isEqualTo(domainObject1);
+        assertThat(domainObject1.hashCode()).isEqualTo(domainObject1.hashCode());
+        // Test with an instance of another class
+        Object testOtherObject = new Object();
+        assertThat(domainObject1).isNotEqualTo(testOtherObject);
+        assertThat(domainObject1).isNotEqualTo(null);
+        // Test with an instance of the same class
+        T domainObject2 = clazz.getConstructor().newInstance();
+        assertThat(domainObject1).isNotEqualTo(domainObject2);
+    }
 
-    private EntityTestUtil() {
+
+    private BeanTestUtils() {
     }
 }

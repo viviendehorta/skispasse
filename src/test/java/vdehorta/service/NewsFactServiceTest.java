@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
-import vdehorta.EntityTestUtil;
+import vdehorta.utils.BeanTestUtils;
 import vdehorta.domain.NewsFact;
 import vdehorta.bean.dto.NewsCategoryDto;
 import vdehorta.bean.dto.NewsFactDetailDto;
@@ -109,7 +109,7 @@ class NewsFactServiceTest {
                 .id(newsFactId)
                 .newsCategoryId(categoryId)
                 .build();
-        NewsFact existingNewsFact = EntityTestUtil.createDefaultNewsFact();
+        NewsFact existingNewsFact = BeanTestUtils.createDefaultNewsFact();
         existingNewsFact.setOwner("Mandela");
         when(newsCategoryServiceMock.getById(categoryId)).thenReturn(new NewsCategoryDto.Builder().id(categoryId).build());
         when(newsFactRepositoryMock.findById(newsFactId)).thenReturn(Optional.of(existingNewsFact));
@@ -133,7 +133,7 @@ class NewsFactServiceTest {
     @Test
     void delete_shouldThrowErrorIfDeleterIsNotOwner() {
         String newsFactId = "id";
-        NewsFact toDelete = EntityTestUtil.createDefaultNewsFact();
+        NewsFact toDelete = BeanTestUtils.createDefaultNewsFact();
         toDelete.setOwner("Van Gogh");
 
         when(newsFactRepositoryMock.findById(newsFactId)).thenReturn(Optional.of(toDelete));

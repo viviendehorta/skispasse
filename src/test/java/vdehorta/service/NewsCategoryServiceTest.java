@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
-import vdehorta.EntityTestUtil;
+import vdehorta.utils.BeanTestUtils;
 import vdehorta.domain.NewsCategory;
 import vdehorta.bean.dto.NewsCategoryDto;
 import vdehorta.repository.NewsCategoryRepository;
@@ -67,9 +67,9 @@ class NewsCategoryServiceTest {
         String id2 = "Id2";
 
         //Given
-        NewsCategory newsCategory1 = EntityTestUtil.createDefaultNewsCategory1();
+        NewsCategory newsCategory1 = BeanTestUtils.createDefaultNewsCategory1();
         newsCategory1.setId(id1);
-        NewsCategory newsCategory2 = EntityTestUtil.createDefaultNewsCategory2();
+        NewsCategory newsCategory2 = BeanTestUtils.createDefaultNewsCategory2();
         newsCategory2.setId(id2);
 
         when(newsCategoryRepositoryMock.findById(id1)).thenReturn(Optional.of(newsCategory1));

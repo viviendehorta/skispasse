@@ -14,18 +14,20 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import vdehorta.EntityTestUtil;
 import vdehorta.SkispasseApp;
-import vdehorta.config.Constants;
-import vdehorta.domain.User;
 import vdehorta.bean.dto.PasswordChangeDTO;
 import vdehorta.bean.dto.UserDto;
+import vdehorta.config.Constants;
+import vdehorta.domain.User;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.ClockService;
 import vdehorta.service.UserService;
+import vdehorta.utils.BeanTestUtils;
+import vdehorta.utils.JsonTestUtils;
+import vdehorta.utils.PersistenceTestUtils;
 import vdehorta.web.rest.errors.ExceptionTranslator;
 import vdehorta.web.rest.vm.ManagedUserVM;
 
@@ -35,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static vdehorta.EntityTestUtil.*;
+import static vdehorta.utils.BeanTestUtils.*;
 
 /**
  * Integration tests for the {@link AccountResource} REST controller.
@@ -76,7 +78,7 @@ public class AccountResourceITest {
 
     @BeforeEach
     public void setup() {
-        TestUtil.resetDatabase(mongoTemplate);
+        PersistenceTestUtils.resetDatabase(mongoTemplate);
         MockitoAnnotations.initMocks(this);
         AccountResource accountResource =
                 new AccountResource(userRepository, userService, authenticationService);
@@ -110,7 +112,7 @@ public class AccountResourceITest {
         String login = "marcopolo";
 
         //Initialize database
-        User user = EntityTestUtil.createDefaultUser();
+        User user = BeanTestUtils.createDefaultUser();
         user.setLogin(login);
         userRepository.save(user);
 
@@ -153,7 +155,7 @@ public class AccountResourceITest {
 
         ResultActions resultActions = restMvc.perform(put("/account")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(userDTO)));
+                .content(JsonTestUtils.convertObjectToJsonBytes(userDTO)));
 
         resultActions.andExpect(status().isOk());
 
@@ -192,7 +194,7 @@ public class AccountResourceITest {
 
         ResultActions resultActions = restMvc.perform(put("/account")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(userDTO)));
+                .content(JsonTestUtils.convertObjectToJsonBytes(userDTO)));
 
         resultActions.andExpect(status().isBadRequest());
 
@@ -228,7 +230,7 @@ public class AccountResourceITest {
 
         ResultActions resultActions = restMvc.perform(put("/account")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(userDTO)));
+                .content(JsonTestUtils.convertObjectToJsonBytes(userDTO)));
 
         resultActions.andExpect(status().isBadRequest());
 
@@ -249,7 +251,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO("1" + currentPassword, "new password"))))
+                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO("1" + currentPassword, "new password"))))
                 .andExpect(status().isBadRequest());
 
         User updatedUser = userRepository.findOneByLogin("change-password-wrong-existing-password").orElse(null);
@@ -269,7 +271,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, "new password"))))
+                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, "new password"))))
                 .andExpect(status().isOk());
 
         User updatedUser = userRepository.findOneByLogin("change-password").orElse(null);
@@ -290,7 +292,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
+                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
                 .andExpect(status().isBadRequest());
 
         User updatedUser = userRepository.findOneByLogin("change-password-too-small").orElse(null);
@@ -311,7 +313,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
+                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
                 .andExpect(status().isBadRequest());
 
         User updatedUser = userRepository.findOneByLogin("change-password-too-long").orElse(null);
@@ -330,7 +332,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, ""))))
+                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, ""))))
                 .andExpect(status().isBadRequest());
 
         User updatedUser = userRepository.findOneByLogin("change-password-empty").orElse(null);
