@@ -13,12 +13,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.zalando.problem.Problem;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.bean.dto.NewsFactNoDetailDto;
 import vdehorta.config.ApplicationProperties;
+import vdehorta.domain.LocationCoordinate;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.domain.User;
@@ -27,18 +28,22 @@ import vdehorta.repository.NewsFactRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.ClockService;
+import vdehorta.service.VideoService;
 import vdehorta.utils.BeanTestUtils;
 import vdehorta.utils.PersistenceTestUtils;
+import vdehorta.utils.RestTestUtils;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.io.ByteArrayInputStream;
+import java.time.*;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpStatus.*;
 import static vdehorta.bean.ContentTypeEnum.MP4;
 import static vdehorta.security.RoleEnum.*;
 import static vdehorta.utils.BeanTestUtils.*;
@@ -96,7 +101,7 @@ public class NewsFactResourceITest {
         ResponseEntity<NewsFactNoDetailDto[]> response = testRestTemplate.getForEntity("/newsFacts/all", NewsFactNoDetailDto[].class);
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody())
                 .hasSize(2)
                 .extracting("id", "newsCategoryId", "locationCoordinate.x", "locationCoordinate.y")
@@ -115,7 +120,7 @@ public class NewsFactResourceITest {
         ResponseEntity<NewsFactDetailDto> response = testRestTemplate.getForEntity("/newsFacts/" + newsFact.getId(), NewsFactDetailDto.class);
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(OK);
         NewsFactDetailDto resultNewsFact = response.getBody();
         assertThat(resultNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(resultNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
@@ -141,7 +146,7 @@ public class NewsFactResourceITest {
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/unexistingId", Problem.class);
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
         assertThat(response.getBody().getDetail()).isEqualTo("News fact with id 'unexistingId' was not found!");
     }
 
@@ -167,7 +172,7 @@ public class NewsFactResourceITest {
         ResponseEntity<NewsFactDetailDto[]> response = testRestTemplate.getForEntity("/newsFacts/contributor", NewsFactDetailDto[].class);
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody())
                 .hasSize(1)
                 .extracting("id", "newsCategoryId").containsOnly(tuple("news_fact_id2", "newsCategoryId2"));
@@ -176,7 +181,7 @@ public class NewsFactResourceITest {
     @Test
     public void getMyNewsFacts_shouldThrowExceptionWhenUserIsNotAuthenticated() throws Exception {
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
         assertThat(response.getBody().getDetail()).isEqualTo("Authentication is required!");
     }
 
@@ -184,7 +189,7 @@ public class NewsFactResourceITest {
     public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyAdmin() throws Exception {
         mockAuthentication(authenticationService, "skisp", ADMIN);
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
         assertThat(response.getBody().getDetail()).isEqualTo("Role 'contributor' is required!");
     }
 
@@ -192,7 +197,7 @@ public class NewsFactResourceITest {
     public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyUser() throws Exception {
         mockAuthentication(authenticationService, "skisp", USER);
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
         assertThat(response.getBody().getDetail()).isEqualTo("Role 'contributor' is required!");
     }
 
@@ -200,7 +205,7 @@ public class NewsFactResourceITest {
     public void getMyNewsFacts_shouldThrowExceptionWhenUserIsAdminAndUser() throws Exception {
         mockAuthentication(authenticationService, "skisp", asList(ADMIN, USER));
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
         assertThat(response.getBody().getDetail()).isEqualTo("Role 'contributor' is required!");
     }
 
@@ -226,11 +231,11 @@ public class NewsFactResourceITest {
         ResponseEntity<NewsFactDetailDto> response = testRestTemplate.postForEntity(
                 "/newsFacts",
                 createFileAndJsonMultipartEntity(
-                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4, "newsFactJson", toJsonString(toCreateNewsFact)),
+                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4.getContentType(), "newsFactJson", toJsonString(toCreateNewsFact)),
                 NewsFactDetailDto.class);
 
         //Check HTTP response
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getStatusCode()).isEqualTo(CREATED);
         NewsFactDetailDto resultNewsFact = response.getBody();
         assertThat(resultNewsFact).isNotNull();
         assertThat(resultNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
@@ -287,18 +292,34 @@ public class NewsFactResourceITest {
 
         ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
                 createFileAndJsonMultipartEntity(
-                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4, "newsFactJson", toJsonString(newsFactDto)), Problem.class);
+                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4.getContentType(), "newsFactJson", toJsonString(newsFactDto)), Problem.class);
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
         assertThat(response.getBody().getDetail()).isEqualTo("Role 'contributor' is required!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
     @Test
-    void createNewsFact_shouldThrowErrorIfVideoFileIsTooBig() throws Exception {
+    void createNewsFact_shouldThrowExceptionForAnonymousUser() throws Exception {
+        mockAnonymous(authenticationService);
 
-        String filename = "tooBigVideo.mp4";
+        final int initialCount = newsFactRepository.findAll().size();
+        NewsFactDetailDto newsFactDto = new NewsFactDetailDto.Builder().build();
+
+        ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
+                createFileAndJsonMultipartEntity(
+                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4.getContentType(), "newsFactJson", toJsonString(newsFactDto)), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
+        assertThat(response.getBody().getDetail()).isEqualTo("Authentication is required!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void createNewsFact_shouldThrowErrorIfVideoFileIsTooBig() throws Exception {
+        mockAuthentication(authenticationService, "pequi", CONTRIBUTOR);
 
         // Initialize database
         final int newsFactInitialCount = newsFactRepository.findAll().size();
@@ -317,524 +338,486 @@ public class NewsFactResourceITest {
         //When
         ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
                 createFileAndJsonMultipartEntity(
-                        "videoFile", filename, fileBytes, MP4, "newsFactJson", toJsonString(newsFact)), Problem.class);
+                        "videoFile", "tooBigVideo.mp4", fileBytes, MP4.getContentType(), "newsFactJson", toJsonString(newsFact)), Problem.class);
 
         //Then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getBody().getDetail()).contains("Maximum upload size exceeded");
         assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount);
         assertThat(countGridFsVideos()).isEqualTo(videoInitialCount);
     }
 
-//    @Test
-//    @WithMockUser(username = "ares", roles = {"USER", "CONTRIBUTOR"})
-//    void createNewsFact_shouldNotPersistNewsFactIfErrorOccursPersistingVideo() throws Exception {
-//
-//        String textFilePath = "skispasse.txt"; //Text file to throw error when persisting file
-//
-//        // Initialize database
-//        NewsCategory newsCategory = createDefaultNewsCategory1();
-//        newsCategoryRepository.save(newsCategory);
-//        final int newsFactInitialCount = newsFactRepository.findAll().size();
-//        final int videoInitialCount = countGridFsVideos();
-//
-//        //Given
-//        NewsFactDetailDto toCreateNewsFact = EntityTestUtil.createDefaultNewsFactDetailDto();
-//        toCreateNewsFact.setId(null);
-//        toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
-//        toCreateNewsFact.setNewsCategoryLabel(null);
-//
-//        MockMultipartFile textMultiPartFile = new MockMultipartFile("videoFile", textFilePath, "text/plain", "text content".getBytes());
-//        String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
-//
-//        //When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
-//                .file(textMultiPartFile)
-//                .param("newsFactJson", newsFactJson));
-//
-//        //Then
-//        resultActions.andExpect(status().isUnsupportedMediaType());
-//        assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount);
-//        assertThat(countGridFsVideos()).isEqualTo(videoInitialCount);
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "titi", roles = {"CONTRIBUTOR"})
-//    public void deleteNewsFact_shouldDeleteTheNewsFactAndHisVideo() throws Exception {
-//        String owner = "titi";
-//
-//        //Init NewsFact video
-//        String videoId = this.videoGridFsTemplate.store(
-//                new ByteArrayInputStream("video-content".getBytes()),
-//                "ma-video",
-//                new Document().append(VideoService.OWNER_METADATA_KEY, owner)).toString();
-//        //Init NewsFact
-//        NewsFact newsFact = createDefaultNewsFact();
-//        newsFact.setOwner(owner);
-//        newsFact.setMediaId(videoId);
-//        newsFactRepository.save(newsFact);
-//
-//        int initialNewsFactCount = newsFactRepository.findAll().size();
-//        int initialVideoFilesCount = countGridFsVideos();
-//
-//        // Then
-//        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", DEFAULT_NEWS_FACT_ID)
-//                .accept(APPLICATION_JSON_UTF8));
-//
-//        // Assert
-//        resultActions.andExpect(status().isNoContent());
-//
-//        // Check persistence
-//        assertThat(newsFactRepository.findAll()).hasSize(initialNewsFactCount - 1);
-//        assertThat(countGridFsVideos()).isEqualTo(initialVideoFilesCount - 1);
-//        assertThat(newsFactRepository.findById(newsFact.getId())).isEmpty();
-//        assertThat(videoGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNull();
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "bandido", roles = {"CONTRIBUTOR"})
-//    public void deleteNewsFact_shouldNotDeleteVideoIfNewsFactDeletionFailed() throws Exception {
-//
-//        //Init NewsFact video
-//        String videoId = this.videoGridFsTemplate.store(
-//                new ByteArrayInputStream("video-content".getBytes()),
-//                "ma-video",
-//                new Document().append(VideoService.OWNER_METADATA_KEY, "owner")).toString();
-//        //Init NewsFact
-//        NewsFact newsFact = createDefaultNewsFact();
-//        newsFact.setOwner("owner");
-//        newsFact.setMediaId(videoId);
-//        newsFactRepository.save(newsFact);
-//
-//        int initialNewsFactCount = newsFactRepository.findAll().size();
-//        int initialVideoFilesCount = countGridFsVideos();
-//
-//        // Then
-//        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", DEFAULT_NEWS_FACT_ID)
-//                .accept(APPLICATION_JSON_UTF8));
-//
-//        // Assert
-//        resultActions.andExpect(status().isNotFound());
-//
-//        // Check persistence
-//        assertThat(newsFactRepository.findAll()).hasSize(initialNewsFactCount);
-//        assertThat(countGridFsVideos()).isEqualTo(initialVideoFilesCount);
-//        assertThat(newsFactRepository.findById(newsFact.getId())).isPresent();
-//        assertThat(videoGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNotNull();
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "titi", roles = {"CONTRIBUTOR"})
-//    public void deleteNewsFact_shouldThrowNotFoundIfGivenIdDoesntExist() throws Exception {
-//
-//        newsFactRepository.save(createDefaultNewsFact());
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", "unexistingId")
-//                .accept(APPLICATION_JSON_UTF8));
-//
-//        resultActions.andExpect(status().isNotFound());
-//
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "mandela", roles = {"CONTRIBUTOR"})
-//    public void deleteNewsFact_shouldThrowNotFoundIfLoggedUserIsNotOwner() throws Exception {
-//
-//        // Initialize the database
-//        NewsFact newsFact = createDefaultNewsFact();
-//        newsFact.setOwner("melenchon");
-//        newsFactRepository.save(newsFact);
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        // Then
-//        ResultActions resultActions = restNewsFactMockMvc.perform(delete("/newsFacts/{id}", DEFAULT_NEWS_FACT_ID)
-//                .accept(APPLICATION_JSON_UTF8));
-//
-//        // Assert
-//        resultActions.andExpect(status().isNotFound());
-//
-//        // Validate the database is empty
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    @WithMockUser(roles = {"CONTRIBUTOR"})
-//    void update_shouldThrowExceptionWhenIdIsNull() throws Exception {
-//
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-//                .id(null)
-//                .address(DEFAULT_ADDRESS)
-//                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-//                .eventDate("eventDate")
-//                .city(DEFAULT_CITY)
-//                .country(DEFAULT_COUNTRY)
-//                .locationCoordinate(new LocationCoordinate(1L, 1L))
-//                .build();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
-//
-//        // Then
-//        resultActions
-//                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("$.detail", is("A news fact to update must have an id!")));
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    void update_shouldThrowExceptionWhenNewsCategoryIsMissing() throws Exception {
-//
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-//                .newsCategoryId(null)
-//                .address(DEFAULT_ADDRESS)
-//                .city(DEFAULT_CITY)
-//                .country(DEFAULT_COUNTRY)
-//                .eventDate("eventDate")
-//                .id(DEFAULT_NEWS_FACT_ID)
-//                .locationCoordinate(new LocationCoordinate(1L, 1L))
-//                .build();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
-//
-//        // Then
-//        resultActions
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    void update_shouldThrowExceptionWhenEventDateIsMissing() throws Exception {
-//
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-//                .eventDate(null)
-//                .address(DEFAULT_ADDRESS)
-//                .city(DEFAULT_CITY)
-//                .country(DEFAULT_COUNTRY)
-//                .id(DEFAULT_NEWS_FACT_ID)
-//                .locationCoordinate(new LocationCoordinate(1L, 1L))
-//                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-//                .build();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
-//
-//        // Then
-//        resultActions
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    void update_shouldThrowExceptionWhenAddressIsMissing() throws Exception {
-//
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-//                .address(null)
-//                .city(DEFAULT_CITY)
-//                .country(DEFAULT_COUNTRY)
-//                .eventDate("eventDate")
-//                .id(DEFAULT_NEWS_FACT_ID)
-//                .locationCoordinate(new LocationCoordinate(1L, 1L))
-//                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-//                .build();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
-//
-//        // Then
-//        resultActions
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    void update_shouldThrowExceptionWhenCityIsMissing() throws Exception {
-//
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-//                .city(null)
-//                .address(DEFAULT_ADDRESS)
-//                .country(DEFAULT_COUNTRY)
-//                .eventDate("eventDate")
-//                .id(DEFAULT_NEWS_FACT_ID)
-//                .locationCoordinate(new LocationCoordinate(1L, 1L))
-//                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-//                .build();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
-//
-//        // Then
-//        resultActions
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    void update_shouldThrowExceptionWhenCountryIsMissing() throws Exception {
-//
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-//                .country(null)
-//                .address(DEFAULT_ADDRESS)
-//                .city(DEFAULT_CITY)
-//                .eventDate("eventDate")
-//                .id(DEFAULT_NEWS_FACT_ID)
-//                .locationCoordinate(new LocationCoordinate(1L, 1L))
-//                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-//                .build();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
-//
-//        // Then
-//        resultActions
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    void update_shouldThrowExceptionWhenLocationCoordinateIsMissing() throws Exception {
-//
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
-//                .locationCoordinate(null)
-//                .address(DEFAULT_ADDRESS)
-//                .city(DEFAULT_CITY)
-//                .country(DEFAULT_COUNTRY)
-//                .eventDate("eventDate")
-//                .id(DEFAULT_NEWS_FACT_ID)
-//                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
-//                .build();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(noNewsCategoryNewsFact)));
-//
-//        // Then
-//        resultActions
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    void update_shouldThrowUnauthorizedWhenUserIsNotConnected() throws Exception {
-//
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(newsFactDetailDto)));
-//
-//        // Then
-//        resultActions.andExpect(status().isUnauthorized());
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    @WithMockUser(roles = {"USER", "ADMIN"})
-//    void update_shouldThrowForbiddenWhenConnectedUserIsNotContributor() throws Exception {
-//
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(newsFactDetailDto)));
-//
-//        // Then
-//        resultActions.andExpect(status().isForbidden());
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    @WithMockUser(roles = {"CONTRIBUTOR"})
-//    void update_shouldThrowNotFoundWhenNewsFactIdDoesntExist() throws Exception {
-//
-//        //Initialize database
-//        newsCategoryRepository.save(EntityTestUtil.createDefaultNewsCategory());
-//        NewsFact newsFact = EntityTestUtil.createDefaultNewsFact();
-//        newsFact.setId("existingId");
-//        newsFactRepository.save(newsFact);
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto newsFactDetailDto = EntityTestUtil.createDefaultNewsFactDetailDto();
-//        newsFactDetailDto.setId("unexistingId");
-//        newsFactDetailDto.setId(newsFact.getId());
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(newsFactDetailDto)));
-//
-//        // Then
-//        resultActions.andExpect(status().isNotFound());
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "mandela", roles = {"CONTRIBUTOR"})
-//    void update_shouldThrowNotFoundIfConnectedUserIsNotOwner() throws Exception {
-//
-//        //Initialize database
-//        newsCategoryRepository.save(EntityTestUtil.createDefaultNewsCategory());
-//        NewsFact lulaNewsFact = EntityTestUtil.createDefaultNewsFact();
-//        lulaNewsFact.setOwner("Lula");
-//        newsFactRepository.save(lulaNewsFact);
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto lulaNewsFactDto = EntityTestUtil.createDefaultNewsFactDetailDto();
-//        lulaNewsFactDto.setId(lulaNewsFact.getId()); //The DTO and the Domain news facts share the same id
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(lulaNewsFactDto)));
-//
-//        // Then
-//        resultActions.andExpect(status().isNotFound());
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "mandela", roles = {"CONTRIBUTOR"})
-//    void update_caseOk() throws Exception {
-//        String yesterdayString = "2020-05-01";
-//        String todayString = "2020-05-02";
-//        LocalDateTime today = LocalDate.parse(todayString).atStartOfDay();
-//        LocalDateTime yesterday = LocalDate.parse(yesterdayString).atStartOfDay();
-//        String newAddress = DEFAULT_ADDRESS + "-updated";
-//        String newCity = DEFAULT_CITY + "-updated";
-//        String newCountry = DEFAULT_COUNTRY + "-updated";
-//        LocationCoordinate newLocationCoordinate = new LocationCoordinate.Builder().x(2000L).y(700L).build();
-//        NewsCategory oldNewsCategory = createDefaultNewsCategory1();
-//        NewsCategory newNewsCategory = createDefaultNewsCategory2();
-//
-//        // Initialize the database
-//        final NewsFact initialNewsFact = createDefaultNewsFact();
-//        initialNewsFact.setCreatedDate(yesterday);
-//        initialNewsFact.setEventDate(yesterday);
-//        initialNewsFact.setOwner("mandela");
-//        newsFactRepository.save(initialNewsFact);
-//        newsCategoryRepository.save(oldNewsCategory);
-//        newsCategoryRepository.save(newNewsCategory);
-//        clockService.setClock(Clock.fixed(today.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // to simulate creation today
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        final NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
-//                .address(newAddress)
-//                .city(newCity)
-//                .country(newCountry)
-//                .eventDate(todayString)
-//                .id(DEFAULT_NEWS_FACT_ID)
-//                .locationCoordinate(newLocationCoordinate)
-//                .newsCategoryId(newNewsCategory.getId())
-//                .build();
-//
-//        // When
-//        ResultActions resultActions = restNewsFactMockMvc.perform(put("/newsFacts")
-//                .contentType(APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(toUpdateNewsFact)));
-//
-//        // Then
-//        resultActions
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-//                .andExpect(jsonPath("$.address", is(newAddress)))
-//                .andExpect(jsonPath("$.city", is(newCity)))
-//                .andExpect(jsonPath("$.country", is(newCountry)))
-//                .andExpect(jsonPath("$.createdDate", is(yesterdayString)))
-//                .andExpect(jsonPath("$.eventDate", is(todayString)))
-//                .andExpect(jsonPath("$.id", is(DEFAULT_NEWS_FACT_ID)))
-//                .andExpect(jsonPath("$.locationCoordinate.x", is(newLocationCoordinate.getX().intValue())))
-//                .andExpect(jsonPath("$.locationCoordinate.y", is(newLocationCoordinate.getY().intValue())))
-//                .andExpect(jsonPath("$.newsCategoryId", is(newNewsCategory.getId())))
-//                .andExpect(jsonPath("$.newsCategoryLabel", is(newNewsCategory.getLabel())));
-//
-//        // Validate the news fact in database
-//        List<NewsFact> newsFacts = newsFactRepository.findAll();
-//        assertThat(newsFacts).hasSize(initialCount);
-//        NewsFact updatedNewsFact = newsFacts.get(0);
-//        assertThat(updatedNewsFact.getLastModifiedDate()).isEqualTo(today);
-//        assertThat(updatedNewsFact.getOwner()).isEqualTo("mandela"); // Owner should not change
-//    }
-//
-//    @Test
-//    public void streamNewsFactVideo_shouldThrowNotFoundIfNewsFactIdDoesntExist() throws Exception {
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/video/unexistingId"));
-//        resultActions
-//                .andExpect(status().isNotFound())
-//                .andExpect(jsonPath("$.detail", is("News fact with id 'unexistingId' was not found!")));
-//    }
-//
-//    @Test
-//    public void streamNewsFactVideo_shouldThrowInternalServerErrorIfVideoFileDoesntExist() throws Exception {
-//
-//        //Init Database with a news fact wihout associated video file
-//        final NewsCategory newsCategory = createDefaultNewsCategory();
-//        newsCategoryRepository.save(newsCategory);
-//        final NewsFact newsFact = createDefaultNewsFact();
-//        newsFact.setMediaId("unexistingMediaId");
-//        newsFactRepository.save(newsFact);
-//
-//        //Given
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/video/" + newsFact.getId()));
-//
-//        //Then
-//        resultActions
-//                .andExpect(status().isInternalServerError())
-//                .andExpect(jsonPath("$.detail", is("Error while accessing video of news fact with id '" + newsFact.getId() + "'!")));
-//    }
+    @Test
+    void createNewsFact_shouldNotPersistNewsFactIfErrorOccursPersistingVideo() throws Exception {
+        RestTestUtils.mockAuthentication(authenticationService, "ares", asList(USER, CONTRIBUTOR));
+
+        // Initialize database
+        NewsCategory newsCategory = createDefaultNewsCategory1();
+        newsCategoryRepository.save(newsCategory);
+        final int newsFactInitialCount = newsFactRepository.findAll().size();
+        final int videoInitialCount = countGridFsVideos();
+
+        //Given
+        NewsFactDetailDto toCreateNewsFact = createDefaultNewsFactDetailDto();
+        toCreateNewsFact.setId(null);
+        toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
+        toCreateNewsFact.setNewsCategoryLabel(null);
+
+        ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
+                createFileAndJsonMultipartEntity(
+                        "videoFile", "skispasse.txt", "text content".getBytes(), "text/plain", "newsFactJson", toJsonString(toCreateNewsFact)), Problem.class);
+
+        //Then
+        assertThat(response.getStatusCode()).isEqualTo(UNSUPPORTED_MEDIA_TYPE);
+        assertThat(response.getBody().getDetail()).isEqualTo("Unsuppported media type 'text/plain'!");
+        assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount);
+        assertThat(countGridFsVideos()).isEqualTo(videoInitialCount);
+    }
+
+    @Test
+    public void deleteNewsFact_shouldDeleteTheNewsFactAndHisVideo() {
+        mockAuthentication(authenticationService, "titi", CONTRIBUTOR);
+
+        String owner = "titi";
+
+        //Init NewsFact video
+        String videoId = this.videoGridFsTemplate.store(
+                new ByteArrayInputStream("video-content".getBytes()),
+                "ma-video",
+                new Document().append(VideoService.OWNER_METADATA_KEY, owner)).toString();
+        //Init NewsFact
+        NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setOwner(owner);
+        newsFact.setMediaId(videoId);
+        newsFactRepository.save(newsFact);
+
+        int initialNewsFactCount = newsFactRepository.findAll().size();
+        int initialVideoFilesCount = countGridFsVideos();
+
+        // Then
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts/" + DEFAULT_NEWS_FACT_ID, DELETE, HttpEntity.EMPTY, Problem.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
+        assertThat(newsFactRepository.findAll()).hasSize(initialNewsFactCount - 1);
+        assertThat(countGridFsVideos()).isEqualTo(initialVideoFilesCount - 1);
+        assertThat(newsFactRepository.findById(newsFact.getId())).isEmpty();
+        assertThat(videoGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNull();
+    }
+
+    @Test
+    public void deleteNewsFact_shouldNotDeleteVideoIfNewsFactDeletionFailed() {
+        mockAuthentication(authenticationService, "bandido", CONTRIBUTOR);
+
+        //Init NewsFact video
+        String videoId = this.videoGridFsTemplate.store(
+                new ByteArrayInputStream("video-content".getBytes()),
+                "ma-video",
+                new Document().append(VideoService.OWNER_METADATA_KEY, "owner")).toString();
+        //Init NewsFact
+        NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setOwner("owner");
+        newsFact.setMediaId(videoId);
+        newsFactRepository.save(newsFact);
+
+        int initialNewsFactCount = newsFactRepository.findAll().size();
+        int initialVideoFilesCount = countGridFsVideos();
+
+        // Then
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts/" + DEFAULT_NEWS_FACT_ID, DELETE, HttpEntity.EMPTY, Problem.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+        assertThat(newsFactRepository.findAll()).hasSize(initialNewsFactCount);
+        assertThat(countGridFsVideos()).isEqualTo(initialVideoFilesCount);
+        assertThat(newsFactRepository.findById(newsFact.getId())).isPresent();
+        assertThat(videoGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNotNull();
+    }
+
+    @Test
+    public void deleteNewsFact_shouldThrowNotFoundIfGivenIdDoesntExist() throws Exception {
+        mockAuthentication(authenticationService, "titi", CONTRIBUTOR);
+
+        newsFactRepository.save(createDefaultNewsFact());
+        final int initialCount = newsFactRepository.findAll().size();
+
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts/unexistingId", DELETE, HttpEntity.EMPTY, Problem.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    public void deleteNewsFact_shouldThrowNotFoundIfLoggedUserIsNotOwner() {
+        mockAuthentication(authenticationService, "mandela", CONTRIBUTOR);
+
+        // Initialize the database
+        NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setOwner("melenchon");
+        newsFactRepository.save(newsFact);
+        final int initialCount = newsFactRepository.findAll().size();
+
+        // Then
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts/" + DEFAULT_NEWS_FACT_ID, DELETE, HttpEntity.EMPTY, Problem.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+
+        // Validate the database is empty
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenIdIsNull() {
+        mockAuthentication(authenticationService, "user", CONTRIBUTOR);
+
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
+                .id(null)
+                .address(DEFAULT_ADDRESS)
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .eventDate("eventDate")
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .build();
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(noNewsCategoryNewsFact), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(response.getBody().getDetail()).isEqualTo("A news fact to update must have an id!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenNewsCategoryIsMissing() {
+        mockAuthentication(authenticationService, "user", CONTRIBUTOR);
+
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
+                .newsCategoryId(null)
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .build();
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenEventDateIsMissing() {
+        mockAuthentication(authenticationService, "user", CONTRIBUTOR);
+
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
+                .eventDate(null)
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'eventDate'!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenAddressIsMissing() {
+        mockAuthentication(authenticationService, "user", CONTRIBUTOR);
+
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
+                .address(null)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
+
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'address'!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenCityIsMissing() {
+        mockAuthentication(authenticationService, "user", CONTRIBUTOR);
+
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
+                .city(null)
+                .address(DEFAULT_ADDRESS)
+                .country(DEFAULT_COUNTRY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'city'!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenCountryIsMissing() {
+        mockAuthentication(authenticationService, "user", CONTRIBUTOR);
+
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
+                .country(null)
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'country'!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenLocationCoordinateIsMissing() {
+        mockAuthentication(authenticationService, "user", CONTRIBUTOR);
+
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
+                .locationCoordinate(null)
+                .address(DEFAULT_ADDRESS)
+                .city(DEFAULT_CITY)
+                .country(DEFAULT_COUNTRY)
+                .eventDate("eventDate")
+                .id(DEFAULT_NEWS_FACT_ID)
+                .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
+                .build();
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'locationCoordinate'!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowUnauthorizedWhenUserIsNotConnected() {
+        mockAnonymous(authenticationService);
+
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFactDto = createDefaultNewsFactDetailDto();
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDto), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowForbiddenWhenConnectedUserIsNotContributor() {
+        mockAuthentication(authenticationService, "admin", ADMIN);
+
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFactDetailDto = createDefaultNewsFactDetailDto();
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDetailDto), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowNotFoundWhenNewsFactIdDoesntExist() {
+        mockAuthentication(authenticationService, "coco", CONTRIBUTOR);
+
+        //Initialize database
+        newsCategoryRepository.save(createDefaultNewsCategory());
+        NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setId("existingId");
+        newsFactRepository.save(newsFact);
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFactDetailDto = createDefaultNewsFactDetailDto();
+        newsFactDetailDto.setId("unexistingId");
+        newsFactDetailDto.setId(newsFact.getId());
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDetailDto), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+        assertThat(response.getBody().getDetail()).isEqualTo("News fact with id 'existingId' was not found!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_shouldThrowNotFoundIfConnectedUserIsNotOwner() {
+        mockAuthentication(authenticationService, "mandela", CONTRIBUTOR);
+
+        //Initialize database
+        newsCategoryRepository.save(createDefaultNewsCategory());
+        NewsFact lulaNewsFact = createDefaultNewsFact();
+        lulaNewsFact.setOwner("Lula");
+        newsFactRepository.save(lulaNewsFact);
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto lulaNewsFactDto = createDefaultNewsFactDetailDto();
+        lulaNewsFactDto.setId(lulaNewsFact.getId()); //The DTO and the Domain news facts share the same id
+
+        // When
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(lulaNewsFactDto), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+        assertThat(response.getBody().getDetail()).isEqualTo("News fact with id 'news_fact_id' was not found!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
+
+    @Test
+    void update_caseOk() {
+        mockAuthentication(authenticationService, "mandela", CONTRIBUTOR);
+
+        String yesterdayString = "2020-05-01";
+        String todayString = "2020-05-02";
+        LocalDateTime today = LocalDate.parse(todayString).atStartOfDay();
+        LocalDateTime yesterday = LocalDate.parse(yesterdayString).atStartOfDay();
+        String newAddress = DEFAULT_ADDRESS + "-updated";
+        String newCity = DEFAULT_CITY + "-updated";
+        String newCountry = DEFAULT_COUNTRY + "-updated";
+        LocationCoordinate newLocationCoordinate = new LocationCoordinate.Builder().x(2000L).y(700L).build();
+        NewsCategory oldNewsCategory = createDefaultNewsCategory1();
+        NewsCategory newNewsCategory = createDefaultNewsCategory2();
+
+        // Initialize the database
+        final NewsFact initialNewsFact = createDefaultNewsFact();
+        initialNewsFact.setCreatedDate(yesterday);
+        initialNewsFact.setEventDate(yesterday);
+        initialNewsFact.setOwner("mandela");
+        newsFactRepository.save(initialNewsFact);
+        newsCategoryRepository.save(oldNewsCategory);
+        newsCategoryRepository.save(newNewsCategory);
+        clockService.setClock(Clock.fixed(today.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // to simulate creation today
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        final NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
+                .address(newAddress)
+                .city(newCity)
+                .country(newCountry)
+                .eventDate(todayString)
+                .id(DEFAULT_NEWS_FACT_ID)
+                .locationCoordinate(newLocationCoordinate)
+                .newsCategoryId(newNewsCategory.getId())
+                .build();
+
+        // When
+        ResponseEntity<NewsFactDetailDto> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(toUpdateNewsFact), NewsFactDetailDto.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+        NewsFactDetailDto resultNewsFact = response.getBody();
+        assertThat(resultNewsFact.getAddress()).isEqualTo(newAddress);
+        assertThat(resultNewsFact.getCity()).isEqualTo(newCity);
+        assertThat(resultNewsFact.getCountry()).isEqualTo(newCountry);
+        assertThat(resultNewsFact.getCreatedDate()).isEqualTo(yesterdayString);
+        assertThat(resultNewsFact.getEventDate()).isEqualTo(todayString);
+        assertThat(resultNewsFact.getId()).isEqualTo(DEFAULT_NEWS_FACT_ID);
+        assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(newLocationCoordinate.getX());
+        assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(newLocationCoordinate.getY());
+        assertThat(resultNewsFact.getNewsCategoryId()).isEqualTo(newNewsCategory.getId());
+        assertThat(resultNewsFact.getNewsCategoryLabel()).isEqualTo(newNewsCategory.getLabel());
+
+        // Validate the news fact in database
+        List<NewsFact> newsFacts = newsFactRepository.findAll();
+        assertThat(newsFacts).hasSize(initialCount);
+        NewsFact updatedNewsFact = newsFacts.get(0);
+        assertThat(updatedNewsFact.getLastModifiedDate()).isEqualTo(today);
+        assertThat(updatedNewsFact.getOwner()).isEqualTo("mandela"); // Owner should not change
+    }
+
+    @Test
+    public void streamNewsFactVideo_shouldThrowNotFoundIfNewsFactIdDoesntExist() {
+        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/video/unexistingId", Problem.class);
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+        assertThat(response.getBody().getDetail()).isEqualTo("News fact with id 'unexistingId' was not found!");
+    }
+
+    @Test
+    public void streamNewsFactVideo_shouldThrowInternalServerErrorIfVideoFileDoesntExist() {
+
+        //Init Database with a news fact wihout associated video file
+        final NewsCategory newsCategory = createDefaultNewsCategory();
+        newsCategoryRepository.save(newsCategory);
+        final NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setMediaId("unexistingMediaId");
+        newsFactRepository.save(newsFact);
+
+        //Given
+        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/video/" + newsFact.getId(), Problem.class);
+
+        //Then
+        assertThat(response.getStatusCode()).isEqualTo(INTERNAL_SERVER_ERROR);
+        assertThat(response.getBody().getDetail()).isEqualTo("Error while accessing video of news fact with id '" + newsFact.getId() + "'!");
+    }
 
     private int countGridFsVideos() {
         String newsFactVideoBucket = applicationProperties.getMongo().getGridFs().getNewsFactVideoBucket();
