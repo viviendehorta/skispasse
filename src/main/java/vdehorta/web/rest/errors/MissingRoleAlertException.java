@@ -16,7 +16,7 @@ public class MissingRoleAlertException extends ForbiddenAlertException {
     private RoleEnum requiredRole;
 
     public MissingRoleAlertException(RoleEnum requiredRole) {
-        super(" Role '" + getReadableRole(requiredRole) + "' is required!");
+        super("Role '" + getReadableRole(requiredRole) + "' is required!");
         this.requiredRole = requiredRole;
     }
 

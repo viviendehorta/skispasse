@@ -155,7 +155,7 @@ public class AccountResourceITest {
 
         ResultActions resultActions = restMvc.perform(put("/account")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(userDTO)));
+                .content(JsonTestUtils.toJsonBytes(userDTO)));
 
         resultActions.andExpect(status().isOk());
 
@@ -194,7 +194,7 @@ public class AccountResourceITest {
 
         ResultActions resultActions = restMvc.perform(put("/account")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(userDTO)));
+                .content(JsonTestUtils.toJsonBytes(userDTO)));
 
         resultActions.andExpect(status().isBadRequest());
 
@@ -230,7 +230,7 @@ public class AccountResourceITest {
 
         ResultActions resultActions = restMvc.perform(put("/account")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(userDTO)));
+                .content(JsonTestUtils.toJsonBytes(userDTO)));
 
         resultActions.andExpect(status().isBadRequest());
 
@@ -251,7 +251,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO("1" + currentPassword, "new password"))))
+                .content(JsonTestUtils.toJsonBytes(new PasswordChangeDTO("1" + currentPassword, "new password"))))
                 .andExpect(status().isBadRequest());
 
         User updatedUser = userRepository.findOneByLogin("change-password-wrong-existing-password").orElse(null);
@@ -271,7 +271,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, "new password"))))
+                .content(JsonTestUtils.toJsonBytes(new PasswordChangeDTO(currentPassword, "new password"))))
                 .andExpect(status().isOk());
 
         User updatedUser = userRepository.findOneByLogin("change-password").orElse(null);
@@ -292,7 +292,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
+                .content(JsonTestUtils.toJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
                 .andExpect(status().isBadRequest());
 
         User updatedUser = userRepository.findOneByLogin("change-password-too-small").orElse(null);
@@ -313,7 +313,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
+                .content(JsonTestUtils.toJsonBytes(new PasswordChangeDTO(currentPassword, newPassword))))
                 .andExpect(status().isBadRequest());
 
         User updatedUser = userRepository.findOneByLogin("change-password-too-long").orElse(null);
@@ -332,7 +332,7 @@ public class AccountResourceITest {
 
         restMvc.perform(post("/account/change-password")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(new PasswordChangeDTO(currentPassword, ""))))
+                .content(JsonTestUtils.toJsonBytes(new PasswordChangeDTO(currentPassword, ""))))
                 .andExpect(status().isBadRequest());
 
         User updatedUser = userRepository.findOneByLogin("change-password-empty").orElse(null);

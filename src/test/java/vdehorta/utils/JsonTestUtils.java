@@ -2,13 +2,8 @@ package vdehorta.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.bson.BsonDocument;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.IOException;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Utility class for testing REST controllers.
@@ -30,7 +25,7 @@ public final class JsonTestUtils {
      * @return the JSON byte array.
      * @throws IOException
      */
-    public static byte[] convertObjectToJsonBytes(Object object) throws IOException {
+    public static byte[] toJsonBytes(Object object) throws IOException {
         return mapper.writeValueAsBytes(object);
     }
 
@@ -41,7 +36,7 @@ public final class JsonTestUtils {
      * @return the JSON String value.
      * @throws IOException
      */
-    public static String convertObjectToJsonString(Object object) throws IOException {
+    public static String toJsonString(Object object) throws IOException {
         return mapper.writeValueAsString(object);
     }
 
