@@ -1,6 +1,8 @@
 package vdehorta.web.rest;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,31 +10,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import org.springframework.http.*;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.zalando.problem.Problem;
-import vdehorta.utils.BeanTestUtils;
 import vdehorta.bean.dto.NewsFactDetailDto;
+import vdehorta.bean.dto.NewsFactNoDetailDto;
 import vdehorta.config.ApplicationProperties;
-import vdehorta.converter.JacksonMapperFactory;
+import vdehorta.domain.NewsCategory;
+import vdehorta.domain.NewsFact;
+import vdehorta.domain.User;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.repository.UserRepository;
+import vdehorta.service.AuthenticationService;
 import vdehorta.service.ClockService;
-import vdehorta.utils.JsonTestUtils;
+import vdehorta.utils.BeanTestUtils;
 import vdehorta.utils.PersistenceTestUtils;
-import vdehorta.utils.RestTestUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
+import static java.util.Arrays.asList;
+import static java.util.Arrays.fill;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+import static vdehorta.bean.ContentTypeEnum.MP4;
+import static vdehorta.security.RoleEnum.*;
+import static vdehorta.utils.BeanTestUtils.*;
+import static vdehorta.utils.JsonTestUtils.toJsonString;
+import static vdehorta.utils.RestTestUtils.*;
 
 /**
  * Integration tests for the {@link NewsFactResource} REST controller.
@@ -53,6 +64,9 @@ public class NewsFactResourceITest {
     private UserRepository userRepository;
 
     @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
     private NewsCategoryRepository newsCategoryRepository;
 
     @Autowired
@@ -61,238 +75,230 @@ public class NewsFactResourceITest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
     private TestRestTemplate testRestTemplate;
 
 
     @BeforeEach
-    public void setup(@Autowired TestRestTemplate testRestTemplate) {
+    public void setup() {
         PersistenceTestUtils.resetDatabase(mongoTemplate);
-        this.testRestTemplate = testRestTemplate;
+        mockAnonymous(authenticationService); //By default, mock anonymous authentication
     }
 
-//    @Test
-//    public void getAll_caseOk() throws Exception {
-//
-//        // Initialize the database
-//        NewsFact newsFact1 = createDefaultNewsFact1();
-//        NewsFact newsFact2 = createDefaultNewsFact2();
-//        newsFactRepository.saveAll(Arrays.asList(newsFact1, newsFact2));
-//
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/all").accept(MediaType.APPLICATION_JSON));
-//
-//        // Assert
-//        resultActions
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-//                .andExpect(jsonPath("$").isArray())
-//                .andExpect(jsonPath("$").value(hasSize(2)))
-//                .andExpect(jsonPath("$[*].id").value(hasItems("news_fact_id1", "news_fact_id2")))
-//                .andExpect(jsonPath("$[*].newsCategoryId").value(hasItems("newsCategoryId1", "newsCategoryId2")))
-//                .andExpect(jsonPath("$[*].locationCoordinate").value(hasSize(2)))
-//                .andExpect(jsonPath("$[*].locationCoordinate.x").value(hasItems(DEFAULT_LOCATION_COORDINATE_X.intValue(), DEFAULT_LOCATION_COORDINATE_X.intValue())))
-//                .andExpect(jsonPath("$[*].locationCoordinate.y").value(hasItems(DEFAULT_LOCATION_COORDINATE_Y.intValue(), DEFAULT_LOCATION_COORDINATE_Y.intValue())));
-//    }
-//
-//    @Test
-//    public void getById_caseOk() throws Exception {
-//
-//        // Initialize the database
-//        NewsFact newsFact = createDefaultNewsFact1();
-//        newsFact.setCreatedDate(LocalDateTime.parse("2020-05-01T23:30:00"));
-//        newsFact.setEventDate(LocalDateTime.parse("2020-02-28T22:30:00"));
-//        newsFactRepository.save(newsFact);
-//
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/" + newsFact.getId()).accept(MediaType.APPLICATION_JSON));
-//
-//        // Assert
-//        resultActions
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-//                .andExpect(jsonPath("$.id", is(newsFact.getId())))
-//                .andExpect(jsonPath("$.address", is(newsFact.getAddress())))
-//                .andExpect(jsonPath("$.city", is(newsFact.getCity())))
-//                .andExpect(jsonPath("$.country", is(newsFact.getCountry())))
-//                .andExpect(jsonPath("$.createdDate", is("2020-05-01")))
-//                .andExpect(jsonPath("$.eventDate", is("2020-02-28")))
-//                .andExpect(jsonPath("$.newsCategoryId", is(newsFact.getNewsCategoryId())))
-//                .andExpect(jsonPath("$.newsCategoryLabel", is(newsFact.getNewsCategoryLabel())));
-//    }
-//
-//    @Test
-//    public void getById_shouldThrowNotFoundIfGivenIdDoesNotExist() throws Exception {
-//
-//        // Initialize the database
-//        userRepository.save(EntityTestUtil.createDefaultUser1());
-//
-//        //User is useless for this test but better to have a persisted user
-//        NewsFact newsFact = createDefaultNewsFact1();
-//        newsFact.setId("existingId");
-//        newsFactRepository.save(newsFact);
-//
-//        // Then
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/unexistingId").accept(MediaType.APPLICATION_JSON));
-//
-//        // Assert
-//        resultActions
-//                .andExpect(status().isNotFound())
-//                .andExpect(jsonPath("$.detail", is("News fact with id 'unexistingId' was not found!")));
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "Polo", roles = {"CONTRIBUTOR"})
-//    public void getMyNewsFacts_caseOk() throws Exception {
-//
-//        String poloLogin = "Polo";
-//
-//        // Initialize the database
-//        User poloUser = createDefaultUser1();
-//        poloUser.setLogin(poloLogin);
-//        userRepository.save(poloUser);
-//
-//        NewsFact newsFact1 = createDefaultNewsFact1();
-//        newsFact1.setOwner("marco");
-//        NewsFact newsFact2 = createDefaultNewsFact2();
-//        newsFact2.setOwner(poloLogin);
-//        newsFactRepository.saveAll(Arrays.asList(newsFact1, newsFact2));
-//
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
-//
-//        // Assert
-//        resultActions
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andExpect(jsonPath("$[0].id", is("news_fact_id2")))
-//                .andExpect(jsonPath("$[0].newsCategoryId", is(DEFAULT_NEWS_CATEGORY_ID + 2)));
-//    }
-//
-//    @Test
-//    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsNotAuthenticated() throws Exception {
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
-//        resultActions.andExpect(status().isUnauthorized());
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "skisp", roles = {"ADMIN"})
-//    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyAdmin() throws Exception {
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
-//        resultActions.andExpect(status().isForbidden());
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "skisp", roles = {"USER"})
-//    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyUser() throws Exception {
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
-//        resultActions.andExpect(status().isForbidden());
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "skisp", roles = {"USER", "ADMIN"})
-//    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsAdminAndUser() throws Exception {
-//        ResultActions resultActions = restNewsFactMockMvc.perform(get("/newsFacts/contributor").accept(MediaType.APPLICATION_JSON));
-//        resultActions.andExpect(status().isForbidden());
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "zeus", roles = {"USER", "CONTRIBUTOR"})
-//    void createNewsFact_caseOk() throws Exception {
-//
-//        String videoFilePath = "skispasse.mp4";
-//
-//        // Init ClockService with a fix clock to be able to assert the date values
-//        LocalDateTime fixedNow = LocalDateTime.parse("2020-03-24T20:30:23");
-//        clockService.setClock(Clock.fixed(fixedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
-//
-//        // Initialize database
-//        NewsCategory newsCategory = createDefaultNewsCategory1();
-//        newsCategoryRepository.save(newsCategory);
-//        final int newsFactInitialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto toCreateNewsFact = EntityTestUtil.createDefaultNewsFactDetailDto();
-//        toCreateNewsFact.setId(null);
-//        toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
-//        toCreateNewsFact.setNewsCategoryLabel(null);
-//
-//        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", videoFilePath, MP4.getContentType(), "video file content".getBytes());
-//        String newsFactJson = TestUtil.convertObjectToJsonString(toCreateNewsFact);
-//
-//        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
-//                .file(videoMultiPartFile)
-//                .param("newsFactJson", newsFactJson));
-//
-//        //Check HTTP response
-//        resultActions
-//                .andExpect(status().isCreated())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-//                .andExpect(jsonPath("$.address", is(DEFAULT_ADDRESS)))
-//                .andExpect(jsonPath("$.city", is(DEFAULT_CITY)))
-//                .andExpect(jsonPath("$.country", is(DEFAULT_COUNTRY)))
-//                .andExpect(jsonPath("$.createdDate", is("2020-03-24")))
-//                .andExpect(jsonPath("$.eventDate", is(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE))))
-//                .andExpect(jsonPath("$.id", isA(String.class)))
-//                .andExpect(jsonPath("$.locationCoordinate.x", is(DEFAULT_LOCATION_COORDINATE_X.intValue())))
-//                .andExpect(jsonPath("$.locationCoordinate.y", is(DEFAULT_LOCATION_COORDINATE_Y.intValue())))
-//                .andExpect(jsonPath("$.newsCategoryId", is(newsCategory.getId())))
-//                .andExpect(jsonPath("$.newsCategoryLabel", is(newsCategory.getLabel())));
-//
-//        //Check news fact persistence
-//        assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
-//        NewsFact persistedNewsFact = newsFactRepository.findById(parseNewsFactDetailJson(resultActions.andReturn().getResponse().getContentAsString()).getId()).orElse(null);
-//        assertThat(persistedNewsFact).isNotNull();
-//        assertThat(persistedNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
-//        assertThat(persistedNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
-//        assertThat(persistedNewsFact.getCreatedBy()).isEqualTo("zeus");
-//        assertThat(persistedNewsFact.getCreatedDate()).isEqualToIgnoringSeconds(fixedNow);
-//        assertThat(persistedNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
-//        assertThat(persistedNewsFact.getEventDate()).isEqualTo(DEFAULT_EVENT_DATE);
-//        assertThat(persistedNewsFact.getLastModifiedBy()).isEqualTo("zeus");
-//        assertThat(persistedNewsFact.getLastModifiedDate()).isEqualToIgnoringSeconds(fixedNow);
-//        assertThat(persistedNewsFact.getLocationCoordinateX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
-//        assertThat(persistedNewsFact.getLocationCoordinateY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
-//        assertThat(persistedNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
-//        assertThat(persistedNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
-//        assertThat(persistedNewsFact.getOwner()).isEqualTo("zeus");
-//        assertThat(persistedNewsFact.getMediaId()).isNotEmpty();
-//
-//        //Check video file persistence
-//        MongoCursor<GridFSFile> persistedVideoCursor = videoGridFsTemplate.find(new Query().addCriteria(Criteria.where("_id").is(persistedNewsFact.getMediaId()))).iterator();
-//        assertThat(persistedVideoCursor.hasNext()).isTrue();
-//
-//        GridFSFile persistedVideoFile = persistedVideoCursor.next();
-//        assertThat(persistedVideoCursor.hasNext()).isFalse(); //Check there is only 1 matching file
-//
-//        assertThat(persistedVideoFile.getFilename()).contains("zeus"); //Owner login should be part of the filename
-//        assertThat(persistedVideoFile.getUploadDate()).isNotNull(); //TODO : set that using the clockService in code to be able to test it
-//        assertThat(persistedVideoFile.getMetadata().getString("owner")).isEqualTo("zeus");
-//    }
-//
-//    @Test
-//    @WithMockUser(username = "toto", roles = {"USER", "ADMIN"})
-//    void createNewsFact_shouldThrowExceptionForNoneContributorUser() throws Exception {
-//
-//        // Initialize database
-//        final int initialCount = newsFactRepository.findAll().size();
-//
-//        //Given
-//        NewsFactDetailDto newsFactDetailDto = new NewsFactDetailDto.Builder().build();
-//
-//        MockMultipartFile videoMultiPartFile = new MockMultipartFile("videoFile", "skispasse.mp4", "video/mp4", "video file content".getBytes());
-//        String newsFactJson = TestUtil.convertObjectToJsonString(newsFactDetailDto);
-//
-//        ResultActions resultActions = restNewsFactMockMvc.perform(multipart("/newsFacts")
-//                .file(videoMultiPartFile)
-//                .param("newsFactJson", newsFactJson));
-//
-//        // Then
-//        resultActions.andExpect(status().isForbidden());
-//        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
-//    }
+    @Test
+    public void getAll_caseOk() {
+
+        // Initialize the database
+        NewsFact newsFact1 = createDefaultNewsFact1();
+        NewsFact newsFact2 = createDefaultNewsFact2();
+        newsFactRepository.saveAll(asList(newsFact1, newsFact2));
+
+        ResponseEntity<NewsFactNoDetailDto[]> response = testRestTemplate.getForEntity("/newsFacts/all", NewsFactNoDetailDto[].class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody())
+                .hasSize(2)
+                .extracting("id", "newsCategoryId", "locationCoordinate.x", "locationCoordinate.y")
+                .containsOnly(
+                        tuple("news_fact_id1", "newsCategoryId1", DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y),
+                        tuple("news_fact_id2", "newsCategoryId2", DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y));
+    }
+
+    @Test
+    public void getById_caseOk() {
+
+        // Initialize the database
+        NewsFact newsFact = createDefaultNewsFact();
+        newsFactRepository.save(newsFact);
+
+        ResponseEntity<NewsFactDetailDto> response = testRestTemplate.getForEntity("/newsFacts/" + newsFact.getId(), NewsFactDetailDto.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        NewsFactDetailDto resultNewsFact = response.getBody();
+        assertThat(resultNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(resultNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
+        assertThat(resultNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
+        assertThat(resultNewsFact.getCreatedDate()).isEqualTo(DEFAULT_DATE_FORMATTER.format(DEFAULT_CREATED_DATE));
+        assertThat(resultNewsFact.getEventDate()).isEqualTo(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE));
+        assertThat(resultNewsFact.getNewsCategoryId()).isEqualTo(DEFAULT_NEWS_CATEGORY_ID);
+        assertThat(resultNewsFact.getNewsCategoryLabel()).isEqualTo(DEFAULT_NEWS_CATEGORY_LABEL);
+    }
+
+    @Test
+    public void getById_shouldThrowNotFoundIfGivenIdDoesNotExist() throws Exception {
+
+        // Initialize the database
+        userRepository.save(createDefaultUser());
+
+        //User is useless for this test but better to have a persisted user
+        NewsFact newsFact = createDefaultNewsFact1();
+        newsFact.setId("existingId");
+        newsFactRepository.save(newsFact);
+
+        // Then
+        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/unexistingId", Problem.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getDetail()).isEqualTo("News fact with id 'unexistingId' was not found!");
+    }
+
+    @Test
+    public void getMyNewsFacts_caseOk() {
+
+        String login = "polo";
+
+        mockAuthentication(authenticationService, login, CONTRIBUTOR);
+
+        // Initialize the database
+        User poloUser = createDefaultUser1();
+        poloUser.setLogin(login);
+        userRepository.save(poloUser);
+
+        NewsFact newsFact1 = createDefaultNewsFact1();
+        newsFact1.setOwner("marco");
+        NewsFact newsFact2 = createDefaultNewsFact2();
+        newsFact2.setOwner(login);
+        newsFactRepository.saveAll(asList(newsFact1, newsFact2));
+
+        //Then
+        ResponseEntity<NewsFactDetailDto[]> response = testRestTemplate.getForEntity("/newsFacts/contributor", NewsFactDetailDto[].class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody())
+                .hasSize(1)
+                .extracting("id", "newsCategoryId").containsOnly(tuple("news_fact_id2", "newsCategoryId2"));
+    }
+
+    @Test
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsNotAuthenticated() throws Exception {
+        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getBody().getDetail()).isEqualTo("Authentication is required!");
+    }
+
+    @Test
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyAdmin() throws Exception {
+        mockAuthentication(authenticationService, "skisp", ADMIN);
+        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getDetail()).isEqualTo("Role 'contributor' is required!");
+    }
+
+    @Test
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyUser() throws Exception {
+        mockAuthentication(authenticationService, "skisp", USER);
+        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getDetail()).isEqualTo("Role 'contributor' is required!");
+    }
+
+    @Test
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsAdminAndUser() throws Exception {
+        mockAuthentication(authenticationService, "skisp", asList(ADMIN, USER));
+        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getDetail()).isEqualTo("Role 'contributor' is required!");
+    }
+
+    @Test
+    void createNewsFact_caseOk() throws Exception {
+        mockAuthentication(authenticationService, "zeus", asList(USER, CONTRIBUTOR));
+
+        // Init ClockService with a fix clock to be able to assert the date values
+        LocalDateTime fixedNow = LocalDateTime.parse("2020-03-24T20:30:23");
+        clockService.setClock(Clock.fixed(fixedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
+
+        // Initialize database
+        NewsCategory newsCategory = createDefaultNewsCategory1();
+        newsCategoryRepository.save(newsCategory);
+        final int newsFactInitialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto toCreateNewsFact = createDefaultNewsFactDetailDto();
+        toCreateNewsFact.setId(null);
+        toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
+        toCreateNewsFact.setNewsCategoryLabel(null);
+
+        ResponseEntity<NewsFactDetailDto> response = testRestTemplate.postForEntity(
+                "/newsFacts",
+                createFileAndJsonMultipartEntity(
+                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4, "newsFactJson", toJsonString(toCreateNewsFact)),
+                NewsFactDetailDto.class);
+
+        //Check HTTP response
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        NewsFactDetailDto resultNewsFact = response.getBody();
+        assertThat(resultNewsFact).isNotNull();
+        assertThat(resultNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
+        assertThat(resultNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
+        assertThat(resultNewsFact.getEventDate()).isEqualTo(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE));
+        assertThat(resultNewsFact.getCreatedDate()).isEqualTo("2020-03-24");
+        assertThat(resultNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
+        assertThat(resultNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
+        assertThat(resultNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(resultNewsFact.getId()).isNotEmpty();
+        assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
+        assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+
+        //Check news fact persistence
+        assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
+        NewsFact persistedNewsFact = newsFactRepository.findById(resultNewsFact.getId()).orElse(null);
+        assertThat(persistedNewsFact).isNotNull();
+        assertThat(persistedNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(persistedNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
+        assertThat(persistedNewsFact.getCreatedBy()).isEqualTo("zeus");
+        assertThat(persistedNewsFact.getCreatedDate()).isEqualToIgnoringSeconds(fixedNow);
+        assertThat(persistedNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
+        assertThat(persistedNewsFact.getEventDate()).isEqualTo(DEFAULT_EVENT_DATE);
+        assertThat(persistedNewsFact.getLastModifiedBy()).isEqualTo("zeus");
+        assertThat(persistedNewsFact.getLastModifiedDate()).isEqualToIgnoringSeconds(fixedNow);
+        assertThat(persistedNewsFact.getLocationCoordinateX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
+        assertThat(persistedNewsFact.getLocationCoordinateY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+        assertThat(persistedNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
+        assertThat(persistedNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
+        assertThat(persistedNewsFact.getOwner()).isEqualTo("zeus");
+        assertThat(persistedNewsFact.getMediaId()).isNotEmpty();
+
+        //Check video file persistence
+        MongoCursor<GridFSFile> persistedVideoCursor = videoGridFsTemplate.find(new Query().addCriteria(Criteria.where("_id").is(persistedNewsFact.getMediaId()))).iterator();
+        assertThat(persistedVideoCursor.hasNext()).isTrue();
+
+        GridFSFile persistedVideoFile = persistedVideoCursor.next();
+        assertThat(persistedVideoCursor.hasNext()).isFalse(); //Check there is only 1 matching file
+
+        assertThat(persistedVideoFile.getFilename()).contains("zeus"); //Owner login should be part of the filename
+        assertThat(persistedVideoFile.getUploadDate()).isNotNull(); //TODO : set that using the clockService in code to be able to test it
+        assertThat(persistedVideoFile.getMetadata().getString("owner")).isEqualTo("zeus");
+    }
+
+    @Test
+    void createNewsFact_shouldThrowExceptionForNoneContributorUser() throws Exception {
+        mockAuthentication(authenticationService, "toto", asList(USER, ADMIN));
+
+        // Initialize database
+        final int initialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto newsFactDto = new NewsFactDetailDto.Builder().build();
+
+        ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
+                createFileAndJsonMultipartEntity(
+                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4, "newsFactJson", toJsonString(newsFactDto)), Problem.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody().getDetail()).isEqualTo("Role 'contributor' is required!");
+        assertThat(newsFactRepository.findAll()).hasSize(initialCount);
+    }
 
     @Test
     void createNewsFact_shouldThrowErrorIfVideoFileIsTooBig() throws Exception {
 
-        String bigFilename = "tooBigVideo.mp4";
+        String filename = "tooBigVideo.mp4";
 
         // Initialize database
         final int newsFactInitialCount = newsFactRepository.findAll().size();
@@ -304,20 +310,14 @@ public class NewsFactResourceITest {
         NewsFactDetailDto newsFact = BeanTestUtils.createDefaultNewsFactDetailDto();
         newsFact.setId(null);
 
-        //Json request part
-        String newsFactJson = JsonTestUtils.convertObjectToJsonString(newsFact);
-
-        //File request part
-        byte[] bigFileBytes = new byte[50 * 1024]; //100KB file content
-        Arrays.fill(bigFileBytes, (byte) 1);
-
-        HashMap<String, Object> partsByName = new HashMap<>();
-        partsByName.put("newsFactJson", newsFactJson);
-        partsByName.put("videoFile", bigFileBytes);
+        //File content preparation
+        byte[] fileBytes = new byte[50 * 1024]; //100KB file content
+        fill(fileBytes, (byte) 1);
 
         //When
         ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
-                RestTestUtils.createSingleFileMultipartHttpEntity("videoFile", bigFilename, partsByName), Problem.class);
+                createFileAndJsonMultipartEntity(
+                        "videoFile", filename, fileBytes, MP4, "newsFactJson", toJsonString(newsFact)), Problem.class);
 
         //Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -835,10 +835,6 @@ public class NewsFactResourceITest {
 //                .andExpect(status().isInternalServerError())
 //                .andExpect(jsonPath("$.detail", is("Error while accessing video of news fact with id '" + newsFact.getId() + "'!")));
 //    }
-
-    private NewsFactDetailDto parseNewsFactDetailJson(String json) throws java.io.IOException {
-        return JacksonMapperFactory.getObjectMapper().readValue(json, NewsFactDetailDto.class);
-    }
 
     private int countGridFsVideos() {
         String newsFactVideoBucket = applicationProperties.getMongo().getGridFs().getNewsFactVideoBucket();

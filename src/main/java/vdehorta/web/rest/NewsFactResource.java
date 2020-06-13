@@ -80,7 +80,7 @@ public class NewsFactResource {
      */
     @GetMapping(value = "/contributor", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<NewsFactDetailDto>> getMyNewsFacts(Pageable pageable) {
-        log.debug("REST request to get current user  news facts");
+        log.debug("REST request to get current user news facts");
 
         authenticationService.assertAuthenticationRole(CONTRIBUTOR);
 

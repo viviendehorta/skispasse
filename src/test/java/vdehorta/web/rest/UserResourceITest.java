@@ -123,7 +123,7 @@ public class UserResourceITest {
         //Then
         ResultActions resultActions = restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)));
+                .content(JsonTestUtils.toJsonBytes(managedUserVM)));
 
         // Assert
         resultActions
@@ -160,7 +160,7 @@ public class UserResourceITest {
         //When
         ResultActions resultActions = restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)));
+                .content(JsonTestUtils.toJsonBytes(managedUserVM)));
 
         //Then
         resultActions.andExpect(status().isBadRequest());
@@ -190,7 +190,7 @@ public class UserResourceITest {
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.toJsonBytes(managedUserVM)))
                 .andExpect(status().isBadRequest());
 
         // Validate the User in the database
@@ -219,7 +219,7 @@ public class UserResourceITest {
         // Create the User
         restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.toJsonBytes(managedUserVM)))
                 .andExpect(status().isBadRequest());
 
         // Validate the User in the database
@@ -248,7 +248,7 @@ public class UserResourceITest {
         // Create the User
         ResultActions resultActions = restUserMockMvc.perform(post("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)));
+                .content(JsonTestUtils.toJsonBytes(managedUserVM)));
 
         // Assert
         resultActions
@@ -332,7 +332,7 @@ public class UserResourceITest {
 
         restUserMockMvc.perform(put("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.toJsonBytes(managedUserVM)))
                 .andExpect(status().isOk());
 
         // Validate the User in the database
@@ -375,7 +375,7 @@ public class UserResourceITest {
 
         restUserMockMvc.perform(put("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.toJsonBytes(managedUserVM)))
                 .andExpect(status().isOk());
 
         // Validate the User in the database
@@ -428,7 +428,7 @@ public class UserResourceITest {
 
         restUserMockMvc.perform(put("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)))
+                .content(JsonTestUtils.toJsonBytes(managedUserVM)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -474,7 +474,7 @@ public class UserResourceITest {
 
         ResultActions resultActions = restUserMockMvc.perform(put("/users")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(JsonTestUtils.convertObjectToJsonBytes(managedUserVM)));
+                .content(JsonTestUtils.toJsonBytes(managedUserVM)));
 
         resultActions.andExpect(status().isBadRequest());
         assertThat(userRepository.findAll()).hasSize(initialCount);
