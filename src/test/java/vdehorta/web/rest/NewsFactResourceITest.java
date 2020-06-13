@@ -69,13 +69,13 @@ public class NewsFactResourceITest {
     private UserRepository userRepository;
 
     @Autowired
-    private AuthenticationService authenticationService;
-
-    @Autowired
     private NewsCategoryRepository newsCategoryRepository;
 
     @Autowired
     private GridFsTemplate videoGridFsTemplate;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -474,7 +474,7 @@ public class NewsFactResourceITest {
         final int initialCount = newsFactRepository.findAll().size();
 
         //Given
-        NewsFactDetailDto noNewsCategoryNewsFact = new NewsFactDetailDto.Builder()
+        NewsFactDetailDto newsFactDto = new NewsFactDetailDto.Builder()
                 .id(null)
                 .address(DEFAULT_ADDRESS)
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
@@ -485,7 +485,7 @@ public class NewsFactResourceITest {
                 .build();
 
         // When
-        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(noNewsCategoryNewsFact), Problem.class);
+        ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDto), Problem.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);

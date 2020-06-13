@@ -10,6 +10,9 @@ public class AuthenticationDto {
         user = builder.user;
     }
 
+    public AuthenticationDto() {
+    }
+
     public Boolean getAuthenticated() {
         return authenticated;
     }
