@@ -47,7 +47,6 @@ public class NewsCategoryResourceITest {
         ResponseEntity<NewsCategoryDto[]> response = testRestTemplate.getForEntity("/newsCategories/all", NewsCategoryDto[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON_UTF8);
         assertThat(response.getBody())
                 .hasSize(2)
                 .extracting("id", "label").containsOnly(tuple("newsCategoryId1", "newsCategoryLabel1"), tuple("newsCategoryId2", "newsCategoryLabel2"));
