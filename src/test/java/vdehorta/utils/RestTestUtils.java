@@ -24,7 +24,7 @@ import java.util.Optional;
 public final class RestTestUtils {
 
     public static HttpEntity<MultiValueMap<String, Object>> createFileAndJsonMultipartEntity(
-            String filePartName, String filename, byte[] fileBytes, ContentTypeEnum contentType, String jsonPartName, String json) {
+            String filePartName, String filename, byte[] fileBytes, String contentType, String jsonPartName, String json) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setContentDispositionFormData(filePartName, filename);
@@ -38,7 +38,7 @@ public final class RestTestUtils {
             }
         };
         HttpHeaders filePartHeaders = new HttpHeaders();
-        filePartHeaders.set(HttpHeaders.CONTENT_TYPE, contentType.getContentType());
+        filePartHeaders.set(HttpHeaders.CONTENT_TYPE, contentType);
         body.add(filePartName, new HttpEntity<>(fileResource, filePartHeaders));
         body.add(jsonPartName, json);
         return new HttpEntity<>(body, headers);
@@ -47,12 +47,12 @@ public final class RestTestUtils {
     public static void mockAnonymous(AuthenticationService authenticationServiceMock) {
         Mockito.reset(authenticationServiceMock);
 
-        Mockito.when(authenticationServiceMock.getCurrentUserLoginOrThrowError()).thenThrow(new AuthenticationRequiredException());
+        Mockito.when(authenticationServiceMock.getCurrentUserLoginOrThrowError()).thenThrow(AuthenticationRequiredException.class);
         Mockito.when(authenticationServiceMock.getCurrentUserLoginOptional()).thenReturn(Optional.empty());
 
         RoleEnum[] allRoles = RoleEnum.values();
         for (RoleEnum role : allRoles) {
-            Mockito.doThrow(new AuthenticationRequiredException()).when(authenticationServiceMock).assertAuthenticationRole(role);
+            Mockito.doThrow(AuthenticationRequiredException.class).when(authenticationServiceMock).assertAuthenticationRole(role);
         }
     }
 
