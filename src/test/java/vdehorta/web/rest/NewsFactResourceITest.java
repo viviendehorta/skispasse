@@ -34,6 +34,7 @@ import vdehorta.utils.PersistenceTestUtils;
 import vdehorta.utils.RestTestUtils;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.*;
 import java.util.List;
 
@@ -93,14 +94,12 @@ public class NewsFactResourceITest {
     @Test
     public void getAll_caseOk() {
 
-        // Initialize the database
         NewsFact newsFact1 = createDefaultNewsFact1();
         NewsFact newsFact2 = createDefaultNewsFact2();
         newsFactRepository.saveAll(asList(newsFact1, newsFact2));
 
         ResponseEntity<NewsFactNoDetailDto[]> response = testRestTemplate.getForEntity("/newsFacts/all", NewsFactNoDetailDto[].class);
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody())
                 .hasSize(2)
@@ -113,13 +112,11 @@ public class NewsFactResourceITest {
     @Test
     public void getById_caseOk() {
 
-        // Initialize the database
         NewsFact newsFact = createDefaultNewsFact();
         newsFactRepository.save(newsFact);
 
         ResponseEntity<NewsFactDetailDto> response = testRestTemplate.getForEntity("/newsFacts/" + newsFact.getId(), NewsFactDetailDto.class);
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(OK);
         NewsFactDetailDto resultNewsFact = response.getBody();
         assertThat(resultNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
@@ -132,9 +129,8 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void getById_shouldThrowNotFoundIfGivenIdDoesNotExist() throws Exception {
+    public void getById_shouldThrowNotFoundIfGivenIdDoesNotExist() {
 
-        // Initialize the database
         userRepository.save(createDefaultUser());
 
         //User is useless for this test but better to have a persisted user
@@ -142,10 +138,8 @@ public class NewsFactResourceITest {
         newsFact.setId("existingId");
         newsFactRepository.save(newsFact);
 
-        // Then
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/unexistingId", Problem.class);
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
         assertThat(response.getBody().getDetail()).isEqualTo("News fact with id 'unexistingId' was not found!");
     }
@@ -154,10 +148,8 @@ public class NewsFactResourceITest {
     public void getMyNewsFacts_caseOk() {
 
         String login = "polo";
-
         mockAuthentication(authenticationService, login, CONTRIBUTOR);
 
-        // Initialize the database
         User poloUser = createDefaultUser1();
         poloUser.setLogin(login);
         userRepository.save(poloUser);
@@ -179,14 +171,14 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsNotAuthenticated() throws Exception {
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsNotAuthenticated() {
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
         assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
         assertThat(response.getBody().getDetail()).isEqualTo("Authentication is required!");
     }
 
     @Test
-    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyAdmin() throws Exception {
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyAdmin() {
         mockAuthentication(authenticationService, "skisp", ADMIN);
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
         assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -194,7 +186,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyUser() throws Exception {
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsOnlyUser() {
         mockAuthentication(authenticationService, "skisp", USER);
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
         assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -202,7 +194,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsAdminAndUser() throws Exception {
+    public void getMyNewsFacts_shouldThrowExceptionWhenUserIsAdminAndUser() {
         mockAuthentication(authenticationService, "skisp", asList(ADMIN, USER));
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/contributor", Problem.class);
         assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -210,7 +202,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    void createNewsFact_caseOk() throws Exception {
+    void createNewsFact_caseOk() throws IOException {
         mockAuthentication(authenticationService, "zeus", asList(USER, CONTRIBUTOR));
 
         // Init ClockService with a fix clock to be able to assert the date values
@@ -281,7 +273,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    void createNewsFact_shouldThrowExceptionForNoneContributorUser() throws Exception {
+    void createNewsFact_shouldThrowExceptionForNoneContributorUser() throws IOException {
         mockAuthentication(authenticationService, "toto", asList(USER, ADMIN));
 
         // Initialize database
@@ -301,7 +293,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    void createNewsFact_shouldThrowExceptionForAnonymousUser() throws Exception {
+    void createNewsFact_shouldThrowExceptionForAnonymousUser() throws IOException {
         mockAnonymous(authenticationService);
 
         final int initialCount = newsFactRepository.findAll().size();
@@ -318,7 +310,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    void createNewsFact_shouldThrowErrorIfVideoFileIsTooBig() throws Exception {
+    void createNewsFact_shouldThrowErrorIfVideoFileIsTooBig() throws IOException {
         mockAuthentication(authenticationService, "pequi", CONTRIBUTOR);
 
         // Initialize database
@@ -348,7 +340,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    void createNewsFact_shouldNotPersistNewsFactIfErrorOccursPersistingVideo() throws Exception {
+    void createNewsFact_shouldNotPersistNewsFactIfErrorOccursPersistingVideo() throws IOException {
         RestTestUtils.mockAuthentication(authenticationService, "ares", asList(USER, CONTRIBUTOR));
 
         // Initialize database
@@ -435,7 +427,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void deleteNewsFact_shouldThrowNotFoundIfGivenIdDoesntExist() throws Exception {
+    public void deleteNewsFact_shouldThrowNotFoundIfGivenIdDoesntExist() {
         mockAuthentication(authenticationService, "titi", CONTRIBUTOR);
 
         newsFactRepository.save(createDefaultNewsFact());
@@ -451,19 +443,14 @@ public class NewsFactResourceITest {
     public void deleteNewsFact_shouldThrowNotFoundIfLoggedUserIsNotOwner() {
         mockAuthentication(authenticationService, "mandela", CONTRIBUTOR);
 
-        // Initialize the database
         NewsFact newsFact = createDefaultNewsFact();
         newsFact.setOwner("melenchon");
         newsFactRepository.save(newsFact);
         final int initialCount = newsFactRepository.findAll().size();
 
-        // Then
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts/" + DEFAULT_NEWS_FACT_ID, DELETE, HttpEntity.EMPTY, Problem.class);
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
-
-        // Validate the database is empty
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
@@ -473,7 +460,6 @@ public class NewsFactResourceITest {
 
         final int initialCount = newsFactRepository.findAll().size();
 
-        //Given
         NewsFactDetailDto newsFactDto = new NewsFactDetailDto.Builder()
                 .id(null)
                 .address(DEFAULT_ADDRESS)
@@ -484,10 +470,8 @@ public class NewsFactResourceITest {
                 .locationCoordinate(new LocationCoordinate(1L, 1L))
                 .build();
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDto), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getBody().getDetail()).isEqualTo("A news fact to update must have an id!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
@@ -498,8 +482,6 @@ public class NewsFactResourceITest {
         mockAuthentication(authenticationService, "user", CONTRIBUTOR);
 
         final int initialCount = newsFactRepository.findAll().size();
-
-        //Given
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .newsCategoryId(null)
                 .address(DEFAULT_ADDRESS)
@@ -510,10 +492,8 @@ public class NewsFactResourceITest {
                 .locationCoordinate(new LocationCoordinate(1L, 1L))
                 .build();
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
@@ -524,7 +504,6 @@ public class NewsFactResourceITest {
 
         final int initialCount = newsFactRepository.findAll().size();
 
-        //Given
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .eventDate(null)
                 .address(DEFAULT_ADDRESS)
@@ -535,10 +514,8 @@ public class NewsFactResourceITest {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'eventDate'!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
@@ -549,8 +526,6 @@ public class NewsFactResourceITest {
         mockAuthentication(authenticationService, "user", CONTRIBUTOR);
 
         final int initialCount = newsFactRepository.findAll().size();
-
-        //Given
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .address(null)
                 .city(DEFAULT_CITY)
@@ -561,11 +536,8 @@ public class NewsFactResourceITest {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
 
-
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'address'!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
@@ -576,8 +548,6 @@ public class NewsFactResourceITest {
         mockAuthentication(authenticationService, "user", CONTRIBUTOR);
 
         final int initialCount = newsFactRepository.findAll().size();
-
-        //Given
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .city(null)
                 .address(DEFAULT_ADDRESS)
@@ -588,10 +558,8 @@ public class NewsFactResourceITest {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'city'!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
@@ -602,8 +570,6 @@ public class NewsFactResourceITest {
         mockAuthentication(authenticationService, "user", CONTRIBUTOR);
 
         final int initialCount = newsFactRepository.findAll().size();
-
-        //Given
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .country(null)
                 .address(DEFAULT_ADDRESS)
@@ -614,10 +580,8 @@ public class NewsFactResourceITest {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'country'!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
@@ -628,8 +592,6 @@ public class NewsFactResourceITest {
         mockAuthentication(authenticationService, "user", CONTRIBUTOR);
 
         final int initialCount = newsFactRepository.findAll().size();
-
-        //Given
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .locationCoordinate(null)
                 .address(DEFAULT_ADDRESS)
@@ -640,10 +602,8 @@ public class NewsFactResourceITest {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'locationCoordinate'!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
@@ -654,14 +614,10 @@ public class NewsFactResourceITest {
         mockAnonymous(authenticationService);
 
         final int initialCount = newsFactRepository.findAll().size();
-
-        //Given
         NewsFactDetailDto newsFactDto = createDefaultNewsFactDetailDto();
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDto), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
@@ -671,14 +627,10 @@ public class NewsFactResourceITest {
         mockAuthentication(authenticationService, "admin", ADMIN);
 
         final int initialCount = newsFactRepository.findAll().size();
-
-        //Given
         NewsFactDetailDto newsFactDetailDto = createDefaultNewsFactDetailDto();
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDetailDto), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
@@ -687,22 +639,18 @@ public class NewsFactResourceITest {
     void update_shouldThrowNotFoundWhenNewsFactIdDoesntExist() {
         mockAuthentication(authenticationService, "coco", CONTRIBUTOR);
 
-        //Initialize database
         newsCategoryRepository.save(createDefaultNewsCategory());
         NewsFact newsFact = createDefaultNewsFact();
         newsFact.setId("existingId");
         newsFactRepository.save(newsFact);
         final int initialCount = newsFactRepository.findAll().size();
 
-        //Given
         NewsFactDetailDto newsFactDetailDto = createDefaultNewsFactDetailDto();
         newsFactDetailDto.setId("unexistingId");
         newsFactDetailDto.setId(newsFact.getId());
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDetailDto), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
         assertThat(response.getBody().getDetail()).isEqualTo("News fact with id 'existingId' was not found!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
@@ -712,21 +660,17 @@ public class NewsFactResourceITest {
     void update_shouldThrowNotFoundIfConnectedUserIsNotOwner() {
         mockAuthentication(authenticationService, "mandela", CONTRIBUTOR);
 
-        //Initialize database
         newsCategoryRepository.save(createDefaultNewsCategory());
         NewsFact lulaNewsFact = createDefaultNewsFact();
         lulaNewsFact.setOwner("Lula");
         newsFactRepository.save(lulaNewsFact);
         final int initialCount = newsFactRepository.findAll().size();
 
-        //Given
         NewsFactDetailDto lulaNewsFactDto = createDefaultNewsFactDetailDto();
         lulaNewsFactDto.setId(lulaNewsFact.getId()); //The DTO and the Domain news facts share the same id
 
-        // When
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(lulaNewsFactDto), Problem.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
         assertThat(response.getBody().getDetail()).isEqualTo("News fact with id 'news_fact_id' was not found!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
@@ -811,10 +755,8 @@ public class NewsFactResourceITest {
         newsFact.setMediaId("unexistingMediaId");
         newsFactRepository.save(newsFact);
 
-        //Given
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/video/" + newsFact.getId(), Problem.class);
 
-        //Then
         assertThat(response.getStatusCode()).isEqualTo(INTERNAL_SERVER_ERROR);
         assertThat(response.getBody().getDetail()).isEqualTo("Error while accessing video of news fact with id '" + newsFact.getId() + "'!");
     }
