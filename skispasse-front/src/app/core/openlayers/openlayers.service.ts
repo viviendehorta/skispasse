@@ -6,7 +6,7 @@ import View from 'ol/View';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {MappingService} from '../mapping/mapping.service';
 import Map from "ol/Map";
-import apply from 'ol-mapbox-style';
+import olms from 'ol-mapbox-style';
 
 @Injectable({providedIn: 'root'})
 export class OpenLayersService {
@@ -41,21 +41,21 @@ export class OpenLayersService {
      */
     buildRasterMapLayer(jsonUrl: string): Tile {
         return new Tile({
-          source: new TileJSON({
-            url: jsonUrl,
-            tileSize: 512,
-            crossOrigin: 'anonymous'
-          })
+            source: new TileJSON({
+                url: jsonUrl,
+                tileSize: 512,
+                crossOrigin: 'anonymous'
+            })
         });
     }
 
     /**
      * Apply the Mapbox json style available at the given url to the given Map
      * @param styleJsonUrl the url of the Mapbox json style to apply
-     * @param map the ol Map that will receive the Mapbox style
-     * @return the resulting map
+     * @param mapId the HTML id of the ol Map that will receive the Mapbox style
+     * @return a promise resolving the resulting ol Map
      */
-    applyMapboxStyleToMap(styleJsonUrl: string, map: Map): Map {
-        return apply(map, styleJsonUrl);
+    applyMapboxStyleToMap(styleJsonUrl: string, mapId: string): Promise<Map> {
+        return olms(mapId, styleJsonUrl);
     }
 }
