@@ -33,11 +33,8 @@ export class WorldmapComponent implements AfterViewInit, OnDestroy {
     }
 
     buildNewsFactsMap() {
+
         this.newsFactMap = new Map({
-            layers: [
-                this.openLayersService.buildRasterLayer('https://api.maptiler.com/maps/basic/tiles.json?key=vRGImi4p2hajjVUCsIAE'),
-                this.openLayersService.buildMarkerVectorLayer(this.newsFacts)
-            ],
             target: this.MAP_ID,
             view: new View({
                 constrainResolution: true,
@@ -45,5 +42,7 @@ export class WorldmapComponent implements AfterViewInit, OnDestroy {
                 zoom: 2
             })
         });
+
+        this.newsFactMap = this.openLayersService.applyMapboxStyleToMap('https://api.maptiler.com/maps/18feedc0-4957-4eab-ad52-0629bc0e5f3e/style.json?key=vRGImi4p2hajjVUCsIAE', this.newsFactMap)
     }
 }

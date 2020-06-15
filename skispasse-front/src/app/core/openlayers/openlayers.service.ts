@@ -1,13 +1,12 @@
 import {Injectable} from '@angular/core';
-import TileLayer from 'ol/layer/Tile';
 import Feature from 'ol/Feature';
-import {TileJSON, Vector as VectorSource, XYZ} from 'ol/source';
+import {TileJSON, Vector as VectorSource} from 'ol/source';
 import {Tile, Vector as VectorLayer} from 'ol/layer';
 import View from 'ol/View';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {MappingService} from '../mapping/mapping.service';
 import Map from "ol/Map";
-import {fromLonLat} from "ol/proj";
+import apply from 'ol-mapbox-style';
 
 @Injectable({providedIn: 'root'})
 export class OpenLayersService {
@@ -36,7 +35,11 @@ export class OpenLayersService {
         vectorLayer.getSource().addFeatures(features);
     }
 
-    buildRasterLayer(jsonUrl: string): Tile {
+    /**
+     * Build a raster (fixed-sized tiles, old-fashion) map layer using the given json url
+     * @param jsonUrl
+     */
+    buildRasterMapLayer(jsonUrl: string): Tile {
         return new Tile({
           source: new TileJSON({
             url: jsonUrl,
@@ -44,5 +47,15 @@ export class OpenLayersService {
             crossOrigin: 'anonymous'
           })
         });
+    }
+
+    /**
+     * Apply the Mapbox json style available at the given url to the given Map
+     * @param styleJsonUrl the url of the Mapbox json style to apply
+     * @param map the ol Map that will receive the Mapbox style
+     * @return the resulting map
+     */
+    applyMapboxStyleToMap(styleJsonUrl: string, map: Map): Map {
+        return apply(map, styleJsonUrl);
     }
 }
