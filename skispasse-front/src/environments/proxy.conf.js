@@ -5,6 +5,7 @@ const PROXY_CONFIG = [
       '/newsFacts',
       '/newsCategories',
       '/users',
+      '/maps'
     ],
     target: "http://localhost:8080",
     secure: false,
