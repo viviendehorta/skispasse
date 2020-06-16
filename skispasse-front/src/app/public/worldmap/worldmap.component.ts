@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import Map from 'ol/Map';
 import {Vector as VectorLayer} from 'ol/layer';
 import {Feature} from 'ol';
@@ -17,7 +17,8 @@ import {EventManager} from '../../core/events/event-manager';
 @Component({
     selector: 'skis-worldmap',
     templateUrl: './worldmap.component.html',
-    styleUrls: ['./worldmap.scss']
+    styleUrls: ['./worldmap.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
