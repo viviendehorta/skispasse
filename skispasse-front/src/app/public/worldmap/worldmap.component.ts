@@ -6,13 +6,14 @@ import {Subscription} from 'rxjs';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {AccountService} from '../../core/auth/account.service';
 import {NewsFactService} from '../../core/newsfacts/news-fact.service';
-import {OpenLayersService} from '../../core/openlayers/openlayers.service';
+import {OpenLayersService} from '../../core/map/openlayers.service';
 import {NewsFactDetailModalContentComponent} from './news-fact-detail-modal/news-fact-detail-modal.content.component';
 import {NewsCategorySelectionService} from '../../core/newscategory/news-category-selection.service';
 import {MappingService} from '../../core/mapping/mapping.service';
 import {ModalService} from '../../core/modal/modal.service';
 import {ROLE_ADMIN, ROLE_CONTRIBUTOR} from '../../shared/constants/role.constants';
 import {EventManager} from '../../core/events/event-manager';
+import {MapStyleService} from "../../core/map/map-style.service";
 
 @Component({
     selector: 'skis-worldmap',
@@ -41,7 +42,8 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         private mappingService: MappingService,
         private modalService: ModalService,
         private newsCategorySelectionService: NewsCategorySelectionService,
-        private eventManager: EventManager
+        private eventManager: EventManager,
+        private mapboxStyleService: MapStyleService
     ) {
         this.newsFactsMap = null;
         this.newsFactMarkerLayer = null;
@@ -75,10 +77,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     buildNewsFactsMap(newsFacts: NewsFactNoDetail[]) {
         this.newsFactMarkerLayer = this.openLayersService.buildMarkerVectorLayer(newsFacts);
-        this.openLayersService.applyMapboxStyleToMap(
-            'https://api.maptiler.com/maps/18feedc0-4957-4eab-ad52-0629bc0e5f3e/style.json?key=vRGImi4p2hajjVUCsIAE',
-            this.MAP_ID
-        ).then((map) => {
+        this.mapboxStyleService.applyAppMapboxStyle(this.MAP_ID).subscribe((map) => {
             this.newsFactsMap = map;
             this.newsFactsMap.addLayer(this.newsFactMarkerLayer);
             this.newsFactsMap.setView(this.openLayersService.buildView([270000, 6250000], 1));

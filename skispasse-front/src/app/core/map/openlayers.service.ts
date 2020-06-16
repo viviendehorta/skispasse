@@ -5,8 +5,6 @@ import {Tile, Vector as VectorLayer} from 'ol/layer';
 import View from 'ol/View';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {MappingService} from '../mapping/mapping.service';
-import Map from "ol/Map";
-import olms from 'ol-mapbox-style';
 
 @Injectable({providedIn: 'root'})
 export class OpenLayersService {
@@ -47,15 +45,5 @@ export class OpenLayersService {
                 crossOrigin: 'anonymous'
             })
         });
-    }
-
-    /**
-     * Apply the Mapbox json style available at the given url to the given Map
-     * @param styleJsonUrl the url of the Mapbox json style to apply
-     * @param mapId the HTML id of the ol Map that will receive the Mapbox style
-     * @return a promise resolving the resulting ol Map
-     */
-    applyMapboxStyleToMap(styleJsonUrl: string, mapId: string): Promise<Map> {
-        return olms(mapId, styleJsonUrl);
     }
 }

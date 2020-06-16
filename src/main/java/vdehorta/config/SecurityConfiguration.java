@@ -94,12 +94,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .deny()
         .and()
             .authorizeRequests()
-                //Deny all request by default and allow only application ones
-//                .anyRequest().denyAll()
                 .antMatchers("/account/**").permitAll()
                 .antMatchers("/users/**").permitAll()
                 .antMatchers("/newsCategories/**").permitAll()
-                .antMatchers("/newsFacts/**").permitAll();
+                .antMatchers("/newsFacts/**").permitAll()
+                .antMatchers("/maps/**").permitAll();
         // @formatter:on
     }
 }
