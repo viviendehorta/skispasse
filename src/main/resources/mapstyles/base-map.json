@@ -562,7 +562,7 @@
       }
     },
     {
-      "id": "admin_sub",
+      "id": "sub_boundary",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "boundary",
@@ -571,7 +571,7 @@
       "paint": {"line-color": "hsla(0, 0%, 60%, 0.5)", "line-dasharray": [2, 1]}
     },
     {
-      "id": "admin_country_z0-4",
+      "id": "country_boundary_z0-4",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "boundary",
@@ -594,7 +594,7 @@
       }
     },
     {
-      "id": "admin_country_z5-",
+      "id": "country_boundary_z5-",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "boundary",
@@ -620,46 +620,19 @@
       "source": "openmaptiles",
       "source-layer": "aerodrome_label",
       "minzoom": 10,
-      "filter": ["all", ["has", "iata"], ["!has", "name:en"]],
+      "filter": ["all", ["has", "iata"]],
       "layout": {
         "icon-size": 1,
         "text-anchor": "top",
         "text-field": "{name:latin}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
+        "text-font": ["Open Sans Regular"],
         "text-max-width": 8,
         "text-offset": [0, 0.5],
         "text-size": 11,
         "visibility": "visible"
       },
       "paint": {
-        "text-color": "#666",
-        "text-halo-blur": 1,
-        "text-halo-color": "rgba(255,255,255,0.75)",
-        "text-halo-width": 1
-      }
-    },
-    {
-      "id": "airport_label-en",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "aerodrome_label",
-      "minzoom": 10,
-      "filter": ["all", ["has", "iata"], ["has", "name:en"]],
-      "layout": {
-        "icon-size": 1,
-        "text-anchor": "top",
-        "text-field": "{name:en}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
-        "text-max-width": 8,
-        "text-offset": [0, 0.5],
-        "text-size": 11,
-        "visibility": "visible"
-      },
-      "paint": {
-        "text-color": "#666",
-        "text-halo-blur": 1,
-        "text-halo-color": "rgba(255,255,255,0.75)",
-        "text-halo-width": 1
+        "text-color": "#444"
       }
     },
     {
@@ -668,11 +641,11 @@
       "source": "openmaptiles",
       "source-layer": "transportation_name",
       "minzoom": 13,
-      "filter": ["all", ["==", "$type", "LineString"], ["!has", "name:en"]],
+      "filter": ["all", ["==", "$type", "LineString"]],
       "layout": {
         "symbol-placement": "line",
         "text-field": "{name:latin}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
+        "text-font": ["Open Sans Regular"],
         "text-letter-spacing": 0.1,
         "text-rotation-alignment": "map",
         "text-size": {"base": 1.4, "stops": [[10, 8], [20, 14]]},
@@ -680,32 +653,7 @@
         "visibility": "visible"
       },
       "paint": {
-        "text-color": "#000",
-        "text-halo-color": "hsl(0, 0%, 100%)",
-        "text-halo-width": 2
-      }
-    },
-    {
-      "id": "road_major_label-en",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "transportation_name",
-      "minzoom": 13,
-      "filter": ["all", ["==", "$type", "LineString"], ["has", "name:en"]],
-      "layout": {
-        "symbol-placement": "line",
-        "text-field": "{name:en}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
-        "text-letter-spacing": 0.1,
-        "text-rotation-alignment": "map",
-        "text-size": {"base": 1.4, "stops": [[10, 8], [20, 14]]},
-        "text-transform": "uppercase",
-        "visibility": "visible"
-      },
-      "paint": {
-        "text-color": "#000",
-        "text-halo-color": "hsl(0, 0%, 100%)",
-        "text-halo-width": 2
+        "text-color": "#000"
       }
     },
     {
@@ -717,49 +665,40 @@
       "filter": [
         "all",
         ["==", "$type", "Point"],
-        ["!in", "class", "city", "state", "country", "continent"],
-        ["!has", "name:en"]
+        ["!in", "class", "city", "state", "country", "continent"]
       ],
       "layout": {
         "text-anchor": "center",
         "text-field": "{name:latin}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
+        "text-font": ["Open Sans Regular"],
         "text-max-width": 6,
         "text-size": {"stops": [[6, 10], [12, 14]]},
         "visibility": "visible"
       },
       "paint": {
-        "text-color": "hsl(0, 0%, 25%)",
-        "text-halo-blur": 0,
-        "text-halo-color": "hsl(0, 0%, 100%)",
-        "text-halo-width": 2
+        "text-color": "#444"
       }
     },
     {
-      "id": "place_label_other-en",
+      "id": "place_label_capital",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "place",
-      "minzoom": 8,
+      "maxzoom": 16,
       "filter": [
         "all",
         ["==", "$type", "Point"],
-        ["!in", "class", "city", "state", "country", "continent"],
-        ["has", "name:en"]
+        ["==", "class", "city"],
+        ["has", "capital"]
       ],
       "layout": {
-        "text-anchor": "center",
         "text-field": "{name:en}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
-        "text-max-width": 6,
-        "text-size": {"stops": [[6, 10], [12, 14]]},
-        "visibility": "visible"
+        "text-font": ["Open Sans Bold"],
+        "text-max-width": 10,
+        "text-size": {"stops": [[3, 11], [8, 16]]}
       },
       "paint": {
-        "text-color": "hsl(0, 0%, 25%)",
-        "text-halo-blur": 0,
-        "text-halo-color": "hsl(0, 0%, 100%)",
-        "text-halo-width": 2
+        "text-color": "#888"
       }
     },
     {
@@ -772,44 +711,16 @@
         "all",
         ["==", "$type", "Point"],
         ["==", "class", "city"],
-        ["!has", "name:en"]
-      ],
-      "layout": {
-        "text-field": "{name:latin}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
-        "text-max-width": 10,
-        "text-size": {"stops": [[3, 11], [8, 16]]}
-      },
-      "paint": {
-        "text-color": "hsl(0, 0%, 0%)",
-        "text-halo-blur": 0,
-        "text-halo-color": "hsla(0, 0%, 100%, 0.75)",
-        "text-halo-width": 2
-      }
-    },
-    {
-      "id": "place_label_city-en",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "maxzoom": 16,
-      "filter": [
-        "all",
-        ["==", "$type", "Point"],
-        ["==", "class", "city"],
-        ["has", "name:en"]
+        ["!has", "capital"]
       ],
       "layout": {
         "text-field": "{name:en}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
+        "text-font": ["Open Sans Regular"],
         "text-max-width": 10,
         "text-size": {"stops": [[3, 11], [8, 16]]}
       },
       "paint": {
-        "text-color": "hsl(0, 0%, 0%)",
-        "text-halo-blur": 0,
-        "text-halo-color": "hsla(0, 0%, 100%, 0.75)",
-        "text-halo-width": 2
+        "text-color": "#444"
       }
     },
     {
@@ -822,48 +733,17 @@
         "all",
         ["==", "$type", "Point"],
         ["==", "class", "country"],
-        ["!has", "iso_a2"],
-        ["!has", "name:en"]
-      ],
-      "layout": {
-        "text-field": "{name:latin}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
-        "text-max-width": 10,
-        "text-size": {"stops": [[3, 12], [8, 22]]},
-        "visibility": "visible"
-      },
-      "paint": {
-        "text-color": "hsl(0, 0%, 13%)",
-        "text-halo-blur": 0,
-        "text-halo-color": "rgba(255,255,255,0.75)",
-        "text-halo-width": 2
-      }
-    },
-    {
-      "id": "country_label-other-en",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "maxzoom": 12,
-      "filter": [
-        "all",
-        ["==", "$type", "Point"],
-        ["==", "class", "country"],
-        ["!has", "iso_a2"],
-        ["has", "name:en"]
+        ["!has", "iso_a2"]
       ],
       "layout": {
         "text-field": "{name:en}",
-        "text-font": ["Open Sans Regular", "Noto Serif Regular"],
+        "text-font": ["Open Sans Bold"],
         "text-max-width": 10,
         "text-size": {"stops": [[3, 12], [8, 22]]},
         "visibility": "visible"
       },
       "paint": {
-        "text-color": "hsl(0, 0%, 13%)",
-        "text-halo-blur": 0,
-        "text-halo-color": "rgba(255,255,255,0.75)",
-        "text-halo-width": 2
+        "text-color": "#444"
       }
     },
     {
@@ -876,48 +756,17 @@
         "all",
         ["==", "$type", "Point"],
         ["==", "class", "country"],
-        ["has", "iso_a2"],
-        ["!has", "name:en"]
-      ],
-      "layout": {
-        "text-field": "{name:latin}",
-        "text-font": ["Open Sans Regular", "Noto Serif Bold"],
-        "text-max-width": 10,
-        "text-size": {"stops": [[3, 12], [8, 22]]},
-        "visibility": "visible"
-      },
-      "paint": {
-        "text-color": "hsl(0, 0%, 13%)",
-        "text-halo-blur": 0,
-        "text-halo-color": "rgba(255,255,255,0.75)",
-        "text-halo-width": 2
-      }
-    },
-    {
-      "id": "country_label-en",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "maxzoom": 12,
-      "filter": [
-        "all",
-        ["==", "$type", "Point"],
-        ["==", "class", "country"],
-        ["has", "iso_a2"],
-        ["has", "name:en"]
+        ["has", "iso_a2"]
       ],
       "layout": {
         "text-field": "{name:en}",
-        "text-font": ["Open Sans Regular", "Noto Serif Bold"],
+        "text-font": ["Open Sans Bold"],
         "text-max-width": 10,
         "text-size": {"stops": [[3, 12], [8, 22]]},
         "visibility": "visible"
       },
       "paint": {
-        "text-color": "hsl(0, 0%, 13%)",
-        "text-halo-blur": 0,
-        "text-halo-color": "rgba(255,255,255,0.75)",
-        "text-halo-width": 2
+        "text-color": "#444"
       }
     }
   ],
