@@ -38,6 +38,6 @@ export class MapStyleService {
      * Request server to get the application Mapbox style json
      */
     fetchMapboxStyle(): Observable<any> {
-        return this.http.get('/maps/mapbox-style');
+        return this.http.get('/maps/map-style');
     }
 }
