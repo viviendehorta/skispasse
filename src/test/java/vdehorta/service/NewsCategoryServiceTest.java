@@ -8,7 +8,7 @@ import vdehorta.utils.BeanTestUtils;
 import vdehorta.domain.NewsCategory;
 import vdehorta.bean.dto.NewsCategoryDto;
 import vdehorta.repository.NewsCategoryRepository;
-import vdehorta.service.errors.UnexistingNewsCategoryException;
+import vdehorta.service.errors.NewsCategoryNotFoundException;
 import vdehorta.service.mapper.NewsCategoryMapper;
 
 import java.util.Arrays;
@@ -92,6 +92,6 @@ class NewsCategoryServiceTest {
 
         //Assert-Thrown
         assertThatThrownBy(() -> newsCategoryService.getById(unexistingId))
-            .isInstanceOf(UnexistingNewsCategoryException.class);
+            .isInstanceOf(NewsCategoryNotFoundException.class);
     }
 }

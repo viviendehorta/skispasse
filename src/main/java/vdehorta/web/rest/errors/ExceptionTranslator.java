@@ -81,7 +81,7 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleNewsFactNotFoundException(NewsFactNotFoundException ex, NativeWebRequest request) {
-        NewsFactNotFoundAlertException problem = new NewsFactNotFoundAlertException(ex.getNewsFactId());
+        NewsFactNotFoundAlertException problem = new NewsFactNotFoundAlertException(ex.getId());
         return create(problem, request);
     }
 
@@ -124,8 +124,14 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
 
     @ExceptionHandler
-    public ResponseEntity<Problem> handleUnexistingNewsCategoryException(UnexistingNewsCategoryException ex, NativeWebRequest request) {
+    public ResponseEntity<Problem> handleNewsCategoryNotFoundException(NewsCategoryNotFoundException ex, NativeWebRequest request) {
         NewsCategoryNotFoundAlertException problem = new NewsCategoryNotFoundAlertException(ex.getId());
+        return create(problem, request);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleMapStyleNotFoundException(MapStyleNotFoundException ex, NativeWebRequest request) {
+        InternalServerErrorAlertException problem = new InternalServerErrorAlertException("Error getting application map style!");
         return create(problem, request);
     }
 }

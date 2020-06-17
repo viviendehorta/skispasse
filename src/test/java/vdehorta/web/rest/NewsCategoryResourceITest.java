@@ -32,12 +32,12 @@ public class NewsCategoryResourceITest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
     private TestRestTemplate testRestTemplate;
 
     @BeforeEach
-    public void setup(@Autowired TestRestTemplate testRestTemplate) {
+    public void setup() {
         PersistenceTestUtils.resetDatabase(mongoTemplate);
-        this.testRestTemplate = testRestTemplate;
     }
 
     @Test

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import vdehorta.domain.NewsCategory;
 import vdehorta.bean.dto.NewsCategoryDto;
 import vdehorta.repository.NewsCategoryRepository;
-import vdehorta.service.errors.UnexistingNewsCategoryException;
+import vdehorta.service.errors.NewsCategoryNotFoundException;
 import vdehorta.service.mapper.NewsCategoryMapper;
 
 import java.util.List;
@@ -34,10 +34,10 @@ public class NewsCategoryService {
         return newsCategoryMapper.newsCategoriesToNewsCategoryDtos(newsCategoryRepository.findAll());
     }
 
-    public NewsCategoryDto getById(String id) throws UnexistingNewsCategoryException {
+    public NewsCategoryDto getById(String id) throws NewsCategoryNotFoundException {
         log.debug("Getting news category  with id {}", id);
         Optional<NewsCategory> newsCategoryOptional = newsCategoryRepository.findById(id);
-        NewsCategory newsCategory = newsCategoryOptional.orElseThrow(() -> new UnexistingNewsCategoryException(id));
+        NewsCategory newsCategory = newsCategoryOptional.orElseThrow(() -> new NewsCategoryNotFoundException(id));
         return newsCategoryMapper.newsCategoryToNewsCategoryDto(newsCategory);
     }
 }

@@ -5,7 +5,7 @@ public class NewsFactVideoNotFoundException extends RuntimeException {
     private String newsFactId;
 
     public NewsFactVideoNotFoundException(String newsFactId) {
-        super("Video with id '" + newsFactId + "' was not found!");
+        super("Video of news fact with id '" + newsFactId + "' was not found!");
         this.newsFactId = newsFactId;
     }
 
