@@ -11,7 +11,7 @@ import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.service.errors.NewsFactAccessForbiddenException;
 import vdehorta.service.errors.NewsFactNotFoundException;
-import vdehorta.service.errors.UnexistingNewsCategoryException;
+import vdehorta.service.errors.NewsCategoryNotFoundException;
 import vdehorta.service.mapper.NewsFactMapper;
 
 import java.time.format.DateTimeParseException;
@@ -86,7 +86,7 @@ class NewsFactServiceTest {
         String unexistingCategoryId = "unexisting";
 
         //Given
-        when(newsCategoryServiceMock.getById(unexistingCategoryId)).thenThrow(new UnexistingNewsCategoryException(unexistingCategoryId));
+        when(newsCategoryServiceMock.getById(unexistingCategoryId)).thenThrow(new NewsCategoryNotFoundException(unexistingCategoryId));
         NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
                 .newsCategoryId(unexistingCategoryId)
                 .id("id")
@@ -94,7 +94,7 @@ class NewsFactServiceTest {
                 .build();
 
         //Assert-Thrown
-        assertThatThrownBy(() -> newsFactService.update(toUpdateNewsFact, null)).isInstanceOf(UnexistingNewsCategoryException.class);
+        assertThatThrownBy(() -> newsFactService.update(toUpdateNewsFact, null)).isInstanceOf(NewsCategoryNotFoundException.class);
     }
 
     @Test

@@ -11,6 +11,4 @@ import java.util.List;
  */
 @Repository
 public interface NewsCategoryRepository extends MongoRepository<NewsCategory, String> {
-
-    List<NewsCategory> findAll();
 }

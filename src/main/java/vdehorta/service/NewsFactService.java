@@ -148,7 +148,7 @@ public class NewsFactService {
         try {
             return this.videoService.getVideoStream(newsFact.getMediaId());
         } catch (VideoNotFoundException e) {
-            throw new NewsFactVideoNotFoundException(newsFactId);
+            throw new NewsFactVideoNotFoundException(newsFact.getId());
         }
     }
 }
