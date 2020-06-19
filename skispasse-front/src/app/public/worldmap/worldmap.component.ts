@@ -74,7 +74,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     buildNewsFactsMap(newsFacts: NewsFactNoDetail[]) {
-        this.newsFactMarkerLayer = this.openLayersService.buildMarkerVectorLayer(newsFacts);
+        this.newsFactMarkerLayer = this.openLayersService.buildNewsFactMarkerLayer(newsFacts);
         this.mapboxStyleService.applyAppMapboxStyle(this.MAP_ID).subscribe((map) => {
             this.newsFactsMap = map;
             this.newsFactsMap.addLayer(this.newsFactMarkerLayer);
@@ -84,13 +84,16 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
             this.newsFactsMap.on('click', evt => {
                     this.newsFactsMap.forEachFeatureAtPixel(
                         evt.pixel,
-                        (feature: Feature) => {
+                        (clusterFeature: Feature) => {
                             function showNewsFactDetail(worldmapInstance: WorldmapComponent, newsFactId: number): void {
                                 worldmapInstance.showNewsFactDetail(newsFactId);
                             }
 
-                            showNewsFactDetail(this.instance, feature.get('newsFactId'));
-                            return true; // Returns true to stop feature iteration if there was several on the same pixel
+                            const newsFactFeatures = clusterFeature.get('features') as Feature[];
+                            if (newsFactFeatures.length === 1) { // Single news fact (other case can be multiple when news fact are close)
+                                showNewsFactDetail(this.instance, newsFactFeatures[0].get('newsFactId'));
+                            }
+                            return true; // Returns true to stop clusterFeature iteration if there was several on the same pixel
                         },
                         {
                             layerFilter: layerCandidate => {
