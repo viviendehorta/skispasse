@@ -1,24 +1,14 @@
 import {Injectable} from '@angular/core';
 import Feature from 'ol/Feature';
-import {Vector as VectorSource} from 'ol/source';
+import {Cluster, Vector as VectorSource} from 'ol/source';
 import {Vector as VectorLayer} from 'ol/layer';
 import View from 'ol/View';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import Point from "ol/geom/Point";
-import {Icon, Style} from "ol/style";
+import {getNewsCategoryStyle, MARKER_ICON_SIZE_IN_PIXEL, MULTIPLE_NEWS_FACTS_STYLE} from "./marker-style.constants";
 
 @Injectable({providedIn: 'root'})
 export class OpenLayersService {
-
-    private PNG_ICON_NAME_BY_NEWS_CATEGORY = {
-        '1': 'red-32', //Manifestation
-        '2': 'blue-32', //Sport
-        '3': 'pink-32', //Culture
-        '4': 'yellow-32', //Spectacle
-        '5': 'green-32', //Nature
-        '6': 'grey-32' //Autre
-    };
-
 
     buildView(center: number[], zoom: number): View {
         return new View({
@@ -28,43 +18,48 @@ export class OpenLayersService {
         });
     }
 
-    buildMarkerVectorLayer(allNewsFacts: NewsFactNoDetail[]): VectorLayer {
-        const vectorSource = new VectorSource({
-            features: this.toFeatures(allNewsFacts)
+    buildNewsFactMarkerLayer(newsFacts: NewsFactNoDetail[]): VectorLayer {
+        const features = this.toFeatures(newsFacts);
+
+        const featureSource = new VectorSource({
+            features: features
         });
+
+        const clusterSource = new Cluster({
+            distance: MARKER_ICON_SIZE_IN_PIXEL + 4, // Add 4 pixels to MARKER_ICON_SIZE_IN_PIXEL to never have icon collision
+            source: featureSource
+        });
+
         return new VectorLayer({
-            source: vectorSource
+            source: clusterSource,
+            style: (feature) => {
+                const clusterFeatures = feature.get('features') as Feature[];
+                if (clusterFeatures.length > 1) { // Several news facts in the cluster, use group icon
+                    return MULTIPLE_NEWS_FACTS_STYLE;
+                }
+                // One news fact in the cluster, use normal icon
+                return getNewsCategoryStyle(clusterFeatures[0].get('newsCategoryId'));
+            }
         });
     }
 
-    refreshNewsFactMarkerLayer(newsFacts: NewsFactNoDetail[], newsFactMarkerLayer: VectorLayer) {
-        newsFactMarkerLayer.getSource().clear();
-        newsFactMarkerLayer.getSource().addFeatures(this.toFeatures(newsFacts));
+    refreshNewsFactMarkerLayer(newsFacts: NewsFactNoDetail[], newsFactMarkerLayer: VectorLayer): void {
+        const cluster = newsFactMarkerLayer.getSource() as Cluster;
+        cluster.getSource().clear();
+        cluster.getSource().addFeatures(this.toFeatures(newsFacts));
     }
 
     private toFeature(newsFactNoDetail: NewsFactNoDetail): Feature {
-        const style = this.getMarkerStyle(newsFactNoDetail.newsCategoryId);
-        const markerFeature = new Feature({
+        return new Feature({
             geometry: new Point([newsFactNoDetail.locationCoordinate.x, newsFactNoDetail.locationCoordinate.y]),
-            newsFactId: newsFactNoDetail.id
+            newsFactId: newsFactNoDetail.id,
+            newsCategoryId: newsFactNoDetail.newsCategoryId
         });
-        markerFeature.setStyle(style);
-        return markerFeature;
     }
 
     private toFeatures(newsFactNoDetails: NewsFactNoDetail[]): Feature[] {
         return newsFactNoDetails.map(newsFact => {
             return this.toFeature(newsFact);
-        });
-    }
-
-    private getMarkerStyle(categoryId: string): Style {
-        return new Style({
-            image: new Icon({
-                src: `/assets/images/markers/32/${this.PNG_ICON_NAME_BY_NEWS_CATEGORY[categoryId]}.png`,
-                anchor: [0.5, 1],
-                opacity: 1
-            })
         });
     }
 }
