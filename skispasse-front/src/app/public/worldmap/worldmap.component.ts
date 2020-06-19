@@ -9,7 +9,6 @@ import {NewsFactService} from '../../core/newsfacts/news-fact.service';
 import {OpenLayersService} from '../../core/map/openlayers.service';
 import {NewsFactDetailModalContentComponent} from './news-fact-detail-modal/news-fact-detail-modal.content.component';
 import {NewsCategorySelectionService} from '../../core/newscategory/news-category-selection.service';
-import {MappingService} from '../../core/mapping/mapping.service';
 import {ModalService} from '../../core/modal/modal.service';
 import {ROLE_ADMIN, ROLE_CONTRIBUTOR} from '../../shared/constants/role.constants';
 import {EventManager} from '../../core/events/event-manager';
@@ -39,7 +38,6 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         private accountService: AccountService,
         private newsFactService: NewsFactService,
         private openLayersService: OpenLayersService,
-        private mappingService: MappingService,
         private modalService: ModalService,
         private newsCategorySelectionService: NewsCategorySelectionService,
         private eventManager: EventManager,
@@ -118,7 +116,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.newsCategorySelectionService.setNewsCategorySelection(event.content.categoryId, event.content.isSelected);
         const selectedCategoryIds = this.newsCategorySelectionService.getSelectedNewsCategoryIds();
         const toShowNewsFacts = this.newsFactService.filterByCategoryIds(this.newsFacts, selectedCategoryIds);
-        this.openLayersService.refreshLayerFeatures(this.mappingService.newsFactNoDetailsToFeatures(toShowNewsFacts), this.newsFactMarkerLayer);
+        this.openLayersService.refreshNewsFactMarkerLayer(toShowNewsFacts, this.newsFactMarkerLayer);
     }
 
     isAdmin() {
