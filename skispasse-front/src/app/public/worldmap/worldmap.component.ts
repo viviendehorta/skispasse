@@ -21,11 +21,9 @@ import {MapStyleService} from "../../core/map/map-style.service";
     encapsulation: ViewEncapsulation.None
 })
 export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    private instance = this; // hack to be able to reach worldmapComponent instance in callback without word 'this'
 
     MAP_ID = 'worldmapPageNewsFactsMap';
-    ICON_PIXEL_CLICK_TOLERANCE = 3;
+    NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL = 3;
 
     private newsFactsMap: Map;
     private newsFactMarkerLayer: VectorLayer;
@@ -68,46 +66,27 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     subscribeToNewsCategorySelectionEvents() {
-        this.categorySelectionSubscription = this.eventManager.subscribe('newsCategorySelectionChanged', event =>
-            this.onNewsCategorySelectionChanged(event)
-        );
+        this.categorySelectionSubscription = this.eventManager.subscribe('newsCategorySelectionChanged', (event: { name: string, content: { categoryId: string, isSelected: boolean } }) => {
+            this.newsCategorySelectionService.setNewsCategorySelection(event.content.categoryId, event.content.isSelected);
+            const selectedCategoryIds = this.newsCategorySelectionService.getSelectedNewsCategoryIds();
+            const toShowNewsFacts = this.newsFactService.filterByCategoryIds(this.newsFacts, selectedCategoryIds);
+            this.openLayersService.refreshNewsFactMarkerLayer(toShowNewsFacts, this.newsFactMarkerLayer);
+        });
     }
 
-    buildNewsFactsMap(newsFacts: NewsFactNoDetail[]) {
+    private buildNewsFactsMap(newsFacts: NewsFactNoDetail[]) {
         this.newsFactMarkerLayer = this.openLayersService.buildNewsFactMarkerLayer(newsFacts);
         this.mapboxStyleService.applyAppMapboxStyle(this.MAP_ID).subscribe((map) => {
             this.newsFactsMap = map;
             this.newsFactsMap.addLayer(this.newsFactMarkerLayer);
             this.newsFactsMap.setView(this.openLayersService.buildView([270000, 6250000], 1));
 
-            // Behaviour when new fact markers are clicked : displaying detail modal
-            this.newsFactsMap.on('click', evt => {
-                    this.newsFactsMap.forEachFeatureAtPixel(
-                        evt.pixel,
-                        (clusterFeature: Feature) => {
-                            function showNewsFactDetail(worldmapInstance: WorldmapComponent, newsFactId: number): void {
-                                worldmapInstance.showNewsFactDetail(newsFactId);
-                            }
-
-                            const newsFactFeatures = clusterFeature.get('features') as Feature[];
-                            if (newsFactFeatures.length === 1) { // Single news fact (other case can be multiple when news fact are close)
-                                showNewsFactDetail(this.instance, newsFactFeatures[0].get('newsFactId'));
-                            }
-                            return true; // Returns true to stop clusterFeature iteration if there was several on the same pixel
-                        },
-                        {
-                            layerFilter: layerCandidate => {
-                                return layerCandidate === this.newsFactMarkerLayer;
-                            },
-                            hitTolerance: this.ICON_PIXEL_CLICK_TOLERANCE
-                        }
-                    );
-                }
-            );
+            // Display news fact detail on new fact markers' click
+            this.subscribeToNewsFactMarkerClick();
         });
     }
 
-    showNewsFactDetail(newsFactId: number) {
+    private showNewsFactDetail(newsFactId: number) {
         this.newsFactService.getNewsFactDetail(newsFactId).subscribe(newsFactDetail => {
             const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
             const detailComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
@@ -115,11 +94,24 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    onNewsCategorySelectionChanged(event: { name: string; content: { categoryId: string; isSelected: boolean } }): void {
-        this.newsCategorySelectionService.setNewsCategorySelection(event.content.categoryId, event.content.isSelected);
-        const selectedCategoryIds = this.newsCategorySelectionService.getSelectedNewsCategoryIds();
-        const toShowNewsFacts = this.newsFactService.filterByCategoryIds(this.newsFacts, selectedCategoryIds);
-        this.openLayersService.refreshNewsFactMarkerLayer(toShowNewsFacts, this.newsFactMarkerLayer);
+    private subscribeToNewsFactMarkerClick() {
+        this.newsFactsMap.on('click', evt => {
+                this.newsFactsMap.forEachFeatureAtPixel(
+                    evt.pixel,
+                    (clusterFeature: Feature) => {
+                        const newsFactFeatures = clusterFeature.get('features') as Feature[];
+                        if (newsFactFeatures.length === 1) { // Single news fact (other case can be multiple when news fact are close)
+                            this.showNewsFactDetail(newsFactFeatures[0].get('newsFactId'));
+                        }
+                        return true; // Returns true to stop clusterFeature iteration if there was several on the same pixel
+                    },
+                    {
+                        layerFilter: candidate => candidate === this.newsFactMarkerLayer,
+                        hitTolerance: this.NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL
+                    }
+                );
+            }
+        );
     }
 
     isAdmin() {
