@@ -5,7 +5,7 @@ import {Vector as VectorLayer} from 'ol/layer';
 import View from 'ol/View';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import Point from "ol/geom/Point";
-import {getNewsCategoryStyle, MARKER_ICON_SIZE_IN_PIXEL, MULTIPLE_NEWS_FACTS_STYLE} from "./marker-style.constants";
+import {MARKER_ICON_SIZE_IN_PIXEL, MULTIPLE_NEWS_FACTS_STYLE, STYLE_BY_NEWS_CATEGORY} from "./marker-style.constants";
 
 @Injectable({providedIn: 'root'})
 export class OpenLayersService {
@@ -38,7 +38,7 @@ export class OpenLayersService {
                     return MULTIPLE_NEWS_FACTS_STYLE;
                 }
                 // One news fact in the cluster, use normal icon
-                return getNewsCategoryStyle(clusterFeatures[0].get('newsCategoryId'));
+                return STYLE_BY_NEWS_CATEGORY[(clusterFeatures[0].get('newsCategoryId'))];
             }
         });
     }
