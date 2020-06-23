@@ -8,7 +8,7 @@ import {Location} from "@angular/common";
 })
 export class PageHeaderComponent implements OnInit {
 
-  @Input() title: string;
+  @Input() headerLabel: string;
 
   constructor(private location: Location) { }
 
