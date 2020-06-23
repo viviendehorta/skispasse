@@ -1,19 +1,10 @@
 <div class="my-news-facts card">
 
-    <div class="card-header">
-        <h2>
-            <span id="my-news-facts-page-heading">My publications</span>
-        </h2>
-        <div class="btn-group float-right">
-            <button class="btn btn-primary" type="submit" routerLink="/">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span>Back to map</span>
-            </button>
-            <button class="btn btn-primary float-right jh-create-entity ml-2" [routerLink]="['./new']">
-                <fa-icon [icon]="'plus'"></fa-icon>
-                <span>New publication</span>
-            </button>
-        </div>
-    </div>
+    <skis-page-header title="My publications">
+        <button class="btn btn-primary" [routerLink]="['./new']">
+            <span>New publication</span>
+        </button>
+    </skis-page-header>
 
     <div class="card-body">
         <skis-alert></skis-alert>

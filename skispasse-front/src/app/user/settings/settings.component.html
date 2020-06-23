@@ -1,19 +1,8 @@
 <div class="card settings-cmp">
 
-    <div class="card-header">
-        <h2>
-            <span>Settings</span>
-
-            <div class="btn-group float-right">
-                <button class="btn btn-primary" type="submit" routerLink="/">
-                    <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span>Back to map</span>
-                </button>
-            </div>
-        </h2>
-    </div>
+    <skis-page-header title="Settings"></skis-page-header>
 
     <div class="card-body">
-
 
         <div class="alert alert-success" *ngIf="success">
             <strong>{{success}}</strong>

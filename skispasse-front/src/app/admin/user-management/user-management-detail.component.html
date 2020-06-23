@@ -1,47 +1,66 @@
-<div class="row justify-content-center">
-    <div class="col-8">
-        <div *ngIf="user">
-            <h2>
-                <span>User</span> [<b>{{user.login}}</b>]
-            </h2>
-            <dl class="row-md jh-entity-details">
-                <dt><span>Login</span></dt>
-                <dd>
-                    <span>{{user.login}}</span>
-                    <skis-boolean-field
-                        [value]="user.activated"
-                        textTrue="Activated"
-                        textFalse="Deactivated">
-                    </skis-boolean-field>
-                </dd>
-                <dt><span>First Name</span></dt>
-                <dd>{{user.firstName}}</dd>
-                <dt><span>Last Name</span></dt>
-                <dd>{{user.lastName}}</dd>
-                <dt><span>Email</span></dt>
-                <dd>{{user.email}}</dd>
-                <dt><span>Created By</span></dt>
-                <dd>{{user.createdBy}}</dd>
-                <dt><span>Created Date</span></dt>
-                <dd>{{user.createdDate | date:'dd/MM/yy HH:mm' }}</dd>
-                <dt><span>Last Modified By</span></dt>
-                <dd>{{user.lastModifiedBy}}</dd>
-                <dt><span>Last Modified Date</span></dt>
-                <dd>{{user.lastModifiedDate | date:'dd/MM/yy HH:mm'}}</dd>
-                <dt><span>Roles</span></dt>
-                <dd>
-                    <ul class="list-unstyled">
-                        <li *ngFor="let role of user.authorities">
-                            <span class="badge badge-info">{{role}}</span>
-                        </li>
-                    </ul>
-                </dd>
-            </dl>
-            <button type="submit"
-                    routerLink="../../"
-                    class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
-            </button>
-        </div>
+<div class="user-management-detail card">
+    <skis-page-header [title]="'User ' + user.login"></skis-page-header>
+
+    <div class="card-body">
+
+        <form *ngIf="user" class="form" novalidate>
+
+            <!-- Activation -->
+            <div class="form-group">
+                <skis-boolean-field [value]="user.activated" textTrue="Activated"
+                                    textFalse="Deactivated"></skis-boolean-field>
+            </div>
+
+            <!-- Roles -->
+            <div class="form-group">
+                <label>Roles</label>
+                <div>
+                    <span *ngFor="let role of user.authorities" class="badge badge-info ml-1">{{role}}</span>
+                </div>
+            </div>
+
+            <!-- Login -->
+            <div class="form-group">
+                <label for="loginInput">Login</label>
+                <input id="loginInput" class="form-control" type="text" value="{{user.login}}" readonly>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="emailInput">Email</label>
+                <input id="emailInput" class="form-control" type="text" value="{{user.email}}" readonly>
+            </div>
+
+            <div class="form-row">
+
+                <!-- First Name -->
+                <div class="form-group col-md-6">
+                    <label for="firstNameInput">First Name</label>
+                    <input id="firstNameInput" class="form-control" type="text" value="{{user.firstName}}" readonly>
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-group col-md-6">
+                    <label for="lastNameInput">Last Name</label>
+                    <input id="lastNameInput" class="form-control" type="text" value="{{user.lastName}}" readonly>
+                </div>
+            </div>
+
+            <div class="form-row">
+
+                <!-- Created by -->
+                <div class="form-group col-md-6">
+                    <label for="createdByInput">Created by</label>
+                    <input id="createdByInput" class="form-control" type="text" value="{{user.createdBy}}" readonly>
+                </div>
+
+                <!-- Creation date -->
+                <div class="form-group col-md-6">
+                    <label for="creationInput">Creation date</label>
+                    <input id="creationInput" class="form-control" type="text"
+                           value="{{user.createdDate | date:'dd/MM/yyyy HH:mm'}}" readonly>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
