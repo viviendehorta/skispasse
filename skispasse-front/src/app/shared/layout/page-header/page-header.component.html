@@ -1,17 +1,17 @@
 <div class="card-header">
 
     <h2>
-        <span class="page-title">{{ title }}</span>
+        <span>{{ headerLabel }}</span>
     </h2>
 
     <div class="float-right">
 
-        <button class="btn btn-primary" type="submit" (click)="goBack()">
-            <span>Previous</span>
+        <button class="btn btn-primary" type="submit" (click)="goBack()" title="Back">
+            <fa-icon prefix="fas" icon="long-arrow-alt-left"></fa-icon>
         </button>
 
-        <button class="btn btn-primary" type="submit" routerLink="/">
-            <span>Back home</span>
+        <button class="btn btn-primary" type="submit" routerLink="/" title="Home">
+            <fa-icon prefix="fas" icon="home"></fa-icon>
         </button>
 
         <!--Custom content set by the parent component-->
