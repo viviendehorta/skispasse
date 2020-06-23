@@ -1,18 +1,10 @@
-<div class="user-management">
+<div class="user-management card">
 
-    <div class="card-header">
-        <h2>
-            <span id="user-management-page-heading">Users</span>
-        </h2>
-        <div class="btn-group float-right">
-            <button class="btn btn-primary" type="submit" routerLink="/">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span>Back to map</span>
-            </button>
-            <button class="btn btn-primary float-right jh-create-entity ml-2" [routerLink]="['./new']">
-                <fa-icon [icon]="'plus'"></fa-icon> <span>Create a new User</span>
-            </button>
-        </div>
-    </div>
+    <skis-page-header title="Users">
+        <button class="btn btn-primary" [routerLink]="['./new']">
+            <span>New User</span>
+        </button>
+    </skis-page-header>
 
     <div class="card-body">
         <skis-alert></skis-alert>

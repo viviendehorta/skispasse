@@ -8,6 +8,8 @@ import {SortByDirective} from './sort/sort-by.directive';
 import {ItemCountComponent} from './pagination/item-count/item-count.component';
 import {BooleanFieldComponent} from './form/boolean-field/boolean-field.component';
 import {VideoPlayerComponent} from "./video/video-player.component";
+import {PageHeaderComponent} from "./layout/page-header/page-header.component";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
     declarations: [
@@ -16,17 +18,19 @@ import {VideoPlayerComponent} from "./video/video-player.component";
         BooleanFieldComponent,
         FindLanguageFromKeyPipe,
         ItemCountComponent,
+        PageHeaderComponent,
         SortDirective,
         SortByDirective,
         VideoPlayerComponent
     ],
-    imports: [SharedLibsModule],
+    imports: [RouterModule, SharedLibsModule],
     exports: [
         AlertComponent,
         AlertErrorComponent,
         BooleanFieldComponent,
         FindLanguageFromKeyPipe,
         ItemCountComponent,
+        PageHeaderComponent,
         SharedLibsModule,
         SortDirective,
         SortByDirective,
