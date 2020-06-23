@@ -1,11 +1,13 @@
-<form class="form" name="editForm" role="form" novalidate (ngSubmit)="submit()" [formGroup]="newsFactForm">
+<form class="form" name="newsFactForm" role="form" novalidate (ngSubmit)="submit()" [formGroup]="newsFactForm">
 
     <skis-alert-error></skis-alert-error>
 
     <!-- Id (hidden and not null when updating existing news fact) -->
     <div class="form-group" [hidden]="!newsFact">
-        <label>Id</label>
-        <input type="text" class="form-control" readonly
+        <label for="idField">Id</label>
+        <input readonly
+               class="form-control" id="idField"
+               type="text"
                name="id"
                formControlName="id">
     </div>
@@ -162,7 +164,7 @@
 
     <div>
 
-        <button type="button" class="btn btn-primary" (click)="previousState()">
+        <button type="button" class="btn btn-primary" (click)="goBack()">
             <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
         </button>
 

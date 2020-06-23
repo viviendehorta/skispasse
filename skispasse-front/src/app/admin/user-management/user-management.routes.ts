@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, Resolve, Routes} from '@angular/router';
 
-import { UserManagementComponent } from './user-management.component';
-import { UserManagementDetailComponent } from './user-management-detail.component';
-import { UserManagementUpdateComponent } from './user-management-update.component';
+import {UserManagementComponent} from './user-management.component';
+import {UserManagementDetailComponent} from './user-management-detail.component';
 import {UserService} from '../../core/user/user.service';
 import {User} from '../../shared/model/user.model';
 import {ResolvePaginationParamService} from '../../core/pagination/resolve-pagination-param-service';
+import {UserEditionComponent} from "./update-user/user-edition.component";
+import {UserCreationComponent} from "./create-user/user-creation.component";
 
 @Injectable({ providedIn: 'root' })
 export class UserManagementResolve implements Resolve<any> {
@@ -45,7 +46,7 @@ export const userManagementRoutes: Routes = [
   },
   {
     path: 'new',
-    component: UserManagementUpdateComponent,
+    component: UserCreationComponent,
     data: {
       pageTitle: 'New User'
     },
@@ -55,7 +56,7 @@ export const userManagementRoutes: Routes = [
   },
   {
     path: ':login/edit',
-    component: UserManagementUpdateComponent,
+    component: UserEditionComponent,
     data: {
       pageTitle: 'User edition'
     },
