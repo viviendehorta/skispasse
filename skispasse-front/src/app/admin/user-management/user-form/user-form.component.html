@@ -1,0 +1,130 @@
+<form class="form" name="userForm" role="form" novalidate (ngSubmit)="submit()" [formGroup]="userForm">
+
+    <skis-alert-error></skis-alert-error>
+
+    <!--Id-->
+    <div class="form-group" [hidden]="!user">
+        <label for="idField">Id</label>
+        <input class="form-control" id="idField"
+               readonly
+               type="text"
+               name="id"
+               formControlName="id">
+    </div>
+
+    <!--Login-->
+    <div class="form-group">
+        <label for="loginInput">Login</label>
+        <input class="form-control" id="loginInput"
+               type="text"
+               name="login"
+               formControlName="login">
+
+        <div *ngIf="userForm.get('login').invalid && (userForm.get('login').dirty || userForm.get('login').touched)">
+            <small class="form-text text-danger" *ngIf="userForm.get('login').errors.required">
+                This field is required.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="userForm.get('login').errors.maxlength">
+                This field cannot be longer than 50 characters.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="userForm.get('login').errors.pattern">
+                This field can only contain letters, digits and e-mail addresses.
+            </small>
+        </div>
+    </div>
+
+    <!--Email-->
+    <div class="form-group">
+        <label for="emailInput">Email</label>
+        <input class="form-control" id="emailInput"
+               type="email"
+               name="email"
+               formControlName="email">
+
+        <div *ngIf="userForm.get('email').invalid && (userForm.get('email').dirty || userForm.get('email').touched)">
+            <small class="form-text text-danger" *ngIf="userForm.get('email').errors.required">
+                This field is required.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="userForm.get('email').errors.maxlength">
+                This field cannot be longer than 100 characters.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="userForm.get('email').errors.minlength">
+                This field is required to be at least 5 characters.
+            </small>
+
+            <small class="form-text text-danger" *ngIf="userForm.get('email').errors.email">
+                Your email is invalid.
+            </small>
+        </div>
+    </div>
+
+    <!--Roles-->
+    <div class="form-group">
+        <label for="roleSelect">Roles</label>
+        <select class="form-control" id="roleSelect"
+                multiple
+                name="authority"
+                formControlName="authorities">
+            <option *ngFor="let authority of authorities" [value]="authority">{{authority}}</option>
+        </select>
+    </div>
+
+    <!--Activation-->
+    <div class="form-check form-group">
+        <label class="form-check-label" for="activated">
+            <input [disabled]="!user"
+                   class="form-check-input" id="activated"
+                   type="checkbox"
+                   name="activated"
+                   formControlName="activated">
+            <span>Activated</span>
+        </label>
+    </div>
+
+    <div class="form-row">
+
+        <!--First name-->
+        <div class="form-group col-md-6">
+            <label for="firstNameInput">First Name</label>
+            <input id="firstNameInput"
+                   type="text" class="form-control"
+                   name="firstName"
+                   formControlName="firstName">
+
+            <div *ngIf="userForm.get('firstName').invalid && (userForm.get('firstName').dirty || userForm.get('firstName').touched)">
+                <small class="form-text text-danger" *ngIf="userForm.get('firstName').errors.maxlength">
+                    This field cannot be longer than 50 characters.
+                </small>
+            </div>
+        </div>
+
+        <!--Last name-->
+        <div class="form-group col-md-6">
+            <label for="lastNameInput">Last Name</label>
+            <input class="form-control" id="lastNameInput"
+                   type="text"
+                   name="lastName"
+                   formControlName="lastName">
+
+            <div *ngIf="userForm.get('lastName').invalid && (userForm.get('lastName').dirty || userForm.get('lastName').touched)">
+                <small class="form-text text-danger" *ngIf="userForm.get('lastName').errors.maxlength">
+                    This field cannot be longer than 50 characters.
+                </small>
+            </div>
+        </div>
+
+    </div>
+
+    <!--Buttons-->
+    <div>
+        <button type="button" class="btn btn-primary" (click)="goBack()">
+            <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button type="submit" [disabled]="userForm.invalid" class="btn btn-primary">Save</button>
+    </div>
+</form>

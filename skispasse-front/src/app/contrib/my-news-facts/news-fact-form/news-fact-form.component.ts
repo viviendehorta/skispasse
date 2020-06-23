@@ -8,6 +8,7 @@ import * as  dayjs from 'dayjs';
 import {LocationCoordinate} from "../../../shared/model/location-coordinate.model";
 import {EventManager} from "../../../core/events/event-manager";
 import {NewsFactWithFile} from "./news-fact-with-file.model";
+import {Location} from "@angular/common";
 
 @Component({
     selector: 'skis-news-fact-form',
@@ -26,7 +27,8 @@ export class NewsFactFormComponent implements OnInit {
         private newsCategoryService: NewsCategoryService,
         private newsFactService: NewsFactService,
         private fb: FormBuilder,
-        private eventManager: EventManager
+        private eventManager: EventManager,
+        private location: Location
     ) {
     }
 
@@ -64,8 +66,8 @@ export class NewsFactFormComponent implements OnInit {
         }
     }
 
-    previousState() {
-        window.history.back();
+    goBack() {
+        this.location.back();
     }
 
     private updateForm(newsFact: INewsFactDetail): void {
