@@ -21,7 +21,8 @@ import {
     faNewspaper,
     faCalendarAlt,
     faHome,
-    faLongArrowAltLeft
+    faLongArrowAltLeft,
+    faTag
 } from '@fortawesome/free-solid-svg-icons';
 
 export const fontAwesomeIcons = [
@@ -47,5 +48,6 @@ export const fontAwesomeIcons = [
     faNewspaper,
     faCalendarAlt,
     faHome,
-    faLongArrowAltLeft
+    faLongArrowAltLeft,
+    faTag
 ];

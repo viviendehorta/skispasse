@@ -26,7 +26,7 @@ export class NewsFactService {
     );
   }
 
-  getNewsFactDetail(newsFactId: number): Observable<INewsFactDetail> {
+  getNewsFactDetail(newsFactId: string): Observable<INewsFactDetail> {
     return this.http.get<INewsFactDetail>(this.resourceUrl + newsFactId).pipe(
       map((unparsedNewsFactDetail: any) => {
         return this.parseNewsFactDetail(unparsedNewsFactDetail);
