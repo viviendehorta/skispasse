@@ -2,7 +2,7 @@
 
     <skis-video-player videoUrl="{{newsFactVideoUrl}}"></skis-video-player>
 
-    <div class="form" *ngIf="newsFactDetail">
+<!--    <div class="form" *ngIf="newsFactDetail">
 
         <div class="form-group">
             <fa-icon [icon]="['fas', 'globe']"></fa-icon>
@@ -11,6 +11,34 @@
         <div class="form-group">
             <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon>
             <Label>{{this.newsFactDetail.address}}</Label>
+        </div>
+    </div>-->
+
+
+    <div *ngIf="newsFactDetail" class="news-fact-detail-info-panel container-fluid">
+
+        <div class="row">
+
+            <div class="news-fact-detail-info-left-col col-8">
+
+                <!--Event date-->
+                <div class="news-fact-detail-info-text">
+                    <fa-icon [icon]="'calendar-alt'"></fa-icon>&nbsp;<span>{{this.newsFactDetail.eventDate}}</span>
+                </div>
+
+                <!--City, country-->
+                <div class="news-fact-detail-info-text">
+                    <fa-icon [icon]="'map-marker-alt'"></fa-icon>&nbsp;<span>{{this.newsFactDetail.city}}, {{this.newsFactDetail.country}}</span>
+                </div>
+            </div>
+
+            <div class="news-fact-detail-info-right-col col-4">
+
+                <!--News category-->
+                <span class="news-category-badge badge-pill badge-info" [ngStyle]="{'background-color': getNewsCategoryColor()}">
+                    <fa-icon [icon]="'tag'"></fa-icon>&nbsp;{{this.newsFactDetail.newsCategoryLabel}}
+                </span>
+            </div>
         </div>
     </div>
 </div>

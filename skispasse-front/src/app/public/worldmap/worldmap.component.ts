@@ -86,7 +86,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    private showNewsFactDetail(newsFactId: number) {
+    private showNewsFactDetail(newsFactId: string) {
         this.newsFactService.getNewsFactDetail(newsFactId).subscribe(newsFactDetail => {
             const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
             const detailComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
