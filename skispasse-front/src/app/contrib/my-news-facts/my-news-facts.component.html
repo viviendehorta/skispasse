@@ -15,13 +15,13 @@
                     <th scope="col" skisSortBy="id"><span>Id</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
-                    <th scope="col" skisSortBy="newsCategoryLabel"><span>News category</span>
+                    <th scope="col" skisSortBy="newsCategoryLabel">
+                        <span>Category</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
                     <th scope="col" skisSortBy="eventDate"><span>Event Date</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
-                    <th scope="col"><span>Location coordinate</span></th>
                     <th scope="col" skisSortBy="country"><span>Country</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
@@ -31,6 +31,7 @@
                     <th scope="col" skisSortBy="address"><span>Address</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
+                    <th scope="col"><span>Location coordinate</span></th>
                     <th scope="col" skisSortBy="createdDate"><span>Creation</span>
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
@@ -40,27 +41,34 @@
                 <tbody *ngIf="myNewsFacts">
                 <tr *ngFor="let newsFact of myNewsFacts; trackBy: trackIdentity">
                     <td>{{newsFact.id}}</td>
-                    <td>{{newsFact.newsCategoryLabel}}</td>
+                    <td>
+                        <span class="news-category-badge badge-pill badge-info"
+                              [ngStyle]="{'background-color': getNewsCategoryColor(this.newsFact.newsCategoryId)}">
+                            {{newsFact.newsCategoryLabel}}
+                        </span>
+                    </td>
                     <td>{{newsFact.eventDate | date:'dd/MM/yyyy HH:mm'}}</td>
-                    <td>{{formatLocationCoordinate(newsFact.locationCoordinate)}}</td>
                     <td>{{newsFact.country}}</td>
                     <td>{{newsFact.city}}</td>
                     <td>{{newsFact.address}}</td>
+                    <td>{{formatLocationCoordinate(newsFact.locationCoordinate)}}</td>
                     <td>{{newsFact.createdDate | date:'dd/MM/yyyy HH:mm'}}</td>
                     <td class="text-right">
                         <div class="btn-group">
-                            <button type="submit"
+                            <button
+                                    class="btn btn-primary btn-sm"
+                                    type="submit"
+                                    title="Edit"
                                     [routerLink]="['./', newsFact.id, 'edit']"
-                                    queryParamsHandling="merge"
-                                    class="btn btn-primary btn-sm">
+                                    queryParamsHandling="merge">
                                 <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                                <span class="d-none d-md-inline">Edit</span>
                             </button>
-                            <button type="button"
-                                    (click)="showDeleteNewsFactDialog(newsFact)"
-                                    class="btn btn-danger btn-sm">
-                                <fa-icon [icon]="'times'"></fa-icon>
-                                <span class="d-none d-md-inline">Delete</span>
+                            <button
+                                    class="btn btn-danger btn-sm"
+                                    type="button"
+                                    title="Delete"
+                                    (click)="showDeleteNewsFactDialog(newsFact)">
+                                <fa-icon [icon]="'trash-alt'"></fa-icon>
                             </button>
                         </div>
                     </td>

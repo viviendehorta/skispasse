@@ -13,6 +13,7 @@ import {AccountService} from '../../core/auth/account.service';
 import {NewsFactService} from '../../core/newsfacts/news-fact.service';
 import {EventManager} from '../../core/events/event-manager';
 import {AlertService} from '../../core/alert/alert.service';
+import {HTML_COLOR_BY_NEWS_CATEGORY} from "../../core/map/news-category-color.constants";
 
 @Component({
     selector: 'skis-news-fact-management',
@@ -120,5 +121,9 @@ export class MyNewsFactsComponent implements OnInit {
     showDeleteNewsFactDialog(newsFactDetail: INewsFactDetail) {
         const modalRef = this.modalService.open(DeleteNewsFactDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.newsFact = newsFactDetail;
+    }
+
+    getNewsCategoryColor(newsCategoryId: string) {
+        return HTML_COLOR_BY_NEWS_CATEGORY[newsCategoryId];
     }
 }

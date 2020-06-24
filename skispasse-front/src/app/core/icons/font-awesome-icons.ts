@@ -1,28 +1,28 @@
 import {
-    faUser,
-    faSort,
-    faSortUp,
-    faSortDown,
-    faEye,
-    faBan,
-    faTimes,
     faArrowLeft,
-    faSave,
-    faPlus,
-    faPencilAlt,
+    faBan,
     faBars,
-    faSignOutAlt,
-    faSignInAlt,
-    faGlobe,
-    faMapMarkerAlt,
-    faUserEdit,
-    faUserCog,
-    faCog,
-    faNewspaper,
     faCalendarAlt,
+    faCog,
+    faGlobe,
     faHome,
     faLongArrowAltLeft,
-    faTag
+    faMapMarkerAlt,
+    faNewspaper,
+    faPencilAlt,
+    faPlus,
+    faSave,
+    faSignInAlt,
+    faSignOutAlt,
+    faSort,
+    faSortDown,
+    faSortUp,
+    faTag,
+    faTimes,
+    faTrashAlt,
+    faUser,
+    faUserCog,
+    faUserEdit
 } from '@fortawesome/free-solid-svg-icons';
 
 export const fontAwesomeIcons = [
@@ -30,7 +30,6 @@ export const fontAwesomeIcons = [
     faSort,
     faSortUp,
     faSortDown,
-    faEye,
     faBan,
     faTimes,
     faArrowLeft,
@@ -49,5 +48,6 @@ export const fontAwesomeIcons = [
     faCalendarAlt,
     faHome,
     faLongArrowAltLeft,
-    faTag
+    faTag,
+    faTrashAlt
 ];
