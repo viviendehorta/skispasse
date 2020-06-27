@@ -13,10 +13,8 @@ import {ModalService} from '../../core/modal/modal.service';
 import {ROLE_ADMIN, ROLE_CONTRIBUTOR} from '../../shared/constants/role.constants';
 import {EventManager} from '../../core/events/event-manager';
 import {MapStyleService} from "../../core/map/map-style.service";
-import {
-    MEDIUM_IMG_STYLE_BY_NEWS_CATEGORY,
-    SELECTED_MULTIPLE_NEWS_FACTS_STYLE
-} from "../../core/map/marker-style.constants";
+import {NewsFactMarkerService} from "../../core/map/news-fact-marker.service";
+import {NewsFactMarker} from "../../core/map/news-fact-marker";
 
 @Component({
     selector: 'skis-worldmap',
@@ -31,7 +29,6 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private newsFactsMap: Map;
     private newsFactMarkerLayer: VectorLayer;
-    private selectedFeature: Feature;
 
     newsFacts: NewsFactNoDetail[];
 
@@ -44,7 +41,8 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         private modalService: ModalService,
         private newsCategorySelectionService: NewsCategorySelectionService,
         private eventManager: EventManager,
-        private mapboxStyleService: MapStyleService
+        private mapboxStyleService: MapStyleService,
+        private newsFactMarkerService: NewsFactMarkerService
     ) {
         this.newsFactsMap = null;
         this.newsFactMarkerLayer = null;
@@ -102,16 +100,12 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.newsFactsMap.forEachFeatureAtPixel(
                     evt.pixel,
                     (clickedClusterFeature: Feature) => {
-                        const atomicFeatures = clickedClusterFeature.get('features') as Feature[];
-                        if (this.selectedFeature) { //Set last selected to unselected
-                            this.unselectFeature(this.selectedFeature)
-                        }
-                        this.selectedFeature = clickedClusterFeature;
-                        if (atomicFeatures.length === 1) { // Single news fact (other case can be multiple when news fact are close)
-                            this.selectFeatureWithNewsCategory(this.selectedFeature, atomicFeatures[0].get('newsCategoryId'));
-                            // this.showNewsFactDetail(singleFeatures[0].get('newsFactId'));
-                        } else if (atomicFeatures.length > 1) {
-                            this.selectGroupFeature(this.selectedFeature);
+                        const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
+                        if (newsFactMarkers.length === 1) { // Single news fact (other case can be multiple when news fact are close)
+                            this.newsFactMarkerService.selectMarker(clickedClusterFeature);
+                            this.showNewsFactDetail(newsFactMarkers[0].getNewsFactId());
+                        } else if (newsFactMarkers.length > 1) {
+                            this.newsFactMarkerService.selectMarker(clickedClusterFeature, true);
                         }
                         return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
                     },
@@ -130,17 +124,5 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     isContributor() {
         return this.accountService.hasAnyAuthority(ROLE_CONTRIBUTOR);
-    }
-
-    private unselectFeature(feature: Feature) {
-        feature.setStyle(null);
-    }
-
-    private selectFeatureWithNewsCategory(feature: Feature, newsCategoryId: string) {
-        feature.setStyle(MEDIUM_IMG_STYLE_BY_NEWS_CATEGORY[newsCategoryId]);
-    }
-
-    private selectGroupFeature(groupFeature: Feature) {
-        groupFeature.setStyle(SELECTED_MULTIPLE_NEWS_FACTS_STYLE);
     }
 }
