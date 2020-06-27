@@ -27,6 +27,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private newsFactsMap: Map;
     private newsFactMarkerLayer: VectorLayer;
+    private selectedFeature: Feature;
 
     newsFacts: NewsFactNoDetail[];
 
@@ -80,8 +81,6 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
             this.newsFactsMap = map;
             this.newsFactsMap.addLayer(this.newsFactMarkerLayer);
             this.newsFactsMap.setView(this.openLayersService.buildView([270000, 6250000], 1));
-
-            // Display news fact detail on new fact markers' click
             this.subscribeToNewsFactMarkerClick();
         });
     }
@@ -98,12 +97,20 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.newsFactsMap.on('click', evt => {
                 this.newsFactsMap.forEachFeatureAtPixel(
                     evt.pixel,
-                    (clusterFeature: Feature) => {
-                        const newsFactFeatures = clusterFeature.get('features') as Feature[];
-                        if (newsFactFeatures.length === 1) { // Single news fact (other case can be multiple when news fact are close)
-                            this.showNewsFactDetail(newsFactFeatures[0].get('newsFactId'));
+                    (clickedClusterFeature: Feature) => {
+                        const singleFeatures = clickedClusterFeature.get('features') as Feature[];
+                        if (this.selectedFeature) { //Set last selected to unselected
+                            this.selectedFeature.set('isSelected', false);
                         }
-                        return true; // Returns true to stop clusterFeature iteration if there was several on the same pixel
+                        if (singleFeatures.length === 1) { // Single news fact (other case can be multiple when news fact are close)
+                            this.selectedFeature = singleFeatures[0];
+                            this.selectedFeature.set('isSelected', true);
+                            // this.showNewsFactDetail(singleFeatures[0].get('newsFactId'));
+                        } else if (singleFeatures.length > 1) {
+                            this.selectedFeature = clickedClusterFeature;
+                            this.selectedFeature.set('isSelected', true);
+                        }
+                        return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
                     },
                     {
                         layerFilter: candidate => candidate === this.newsFactMarkerLayer,
