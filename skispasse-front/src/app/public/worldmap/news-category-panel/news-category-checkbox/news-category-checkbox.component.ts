@@ -1,7 +1,7 @@
 import {Component, Input, ViewEncapsulation} from '@angular/core';
 import {NewsCategorySelection} from '../../../../shared/model/news-category-selection.model';
 import {EventManager} from '../../../../core/events/event-manager';
-import {PNG_BY_NEWS_CATEGORY} from "../../../../core/map/marker-style.constants";
+import {SMALL_PNG_BY_NEWS_CATEGORY} from "../../../../core/map/marker-style.constants";
 
 @Component({
   selector: 'skis-news-category-checkbox',
@@ -25,6 +25,6 @@ export class NewsCategoryCheckboxComponent {
   }
 
   getNewsCategoryMarkerIcon(newsCategoryId: string) {
-    return PNG_BY_NEWS_CATEGORY[newsCategoryId];
+    return SMALL_PNG_BY_NEWS_CATEGORY[newsCategoryId];
   }
 }
