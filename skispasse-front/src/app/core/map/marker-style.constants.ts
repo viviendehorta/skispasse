@@ -19,8 +19,8 @@ export const MEDIUM_MARKER_ICON_SIZE_IN_PIXEL = 40;
 /**
  * Style used for displaying multiple news facts that are too close on the map, at the current level of zoom, and that can't be displayed separately
  */
-export const MULTIPLE_NEWS_FACTS_STYLE = getStyleWithSrc(`/assets/images/markers/32/double-grey-32.png`);
-export const SELECTED_MULTIPLE_NEWS_FACTS_STYLE = getStyleWithSrc(`/assets/images/markers/40/double-grey-40.png`);
+export const SMALL_MULTIPLE_NEWS_FACTS_STYLE = getStyleWithSrc(`/assets/images/markers/32/double-grey-32.png`);
+export const MEDIUM_MULTIPLE_NEWS_FACTS_STYLE = getStyleWithSrc(`/assets/images/markers/40/double-grey-40.png`);
 
 export const SMALL_PNG_BY_NEWS_CATEGORY = {
     '1': `/assets/images/markers/${SMALL_MARKER_ICON_SIZE_IN_PIXEL}/red-${SMALL_MARKER_ICON_SIZE_IN_PIXEL}.png`, // Manifestation
