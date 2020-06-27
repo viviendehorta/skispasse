@@ -6,10 +6,9 @@ import View from 'ol/View';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import Point from "ol/geom/Point";
 import {
-    SMALL_MARKER_ICON_SIZE_IN_PIXEL,
     MULTIPLE_NEWS_FACTS_STYLE,
-    SELECTED_MULTIPLE_NEWS_FACTS_STYLE,
-    SMALL_IMG_STYLE_BY_NEWS_CATEGORY, MEDIUM_IMG_STYLE_BY_NEWS_CATEGORY
+    SMALL_IMG_STYLE_BY_NEWS_CATEGORY,
+    SMALL_MARKER_ICON_SIZE_IN_PIXEL
 } from "./marker-style.constants";
 
 @Injectable({providedIn: 'root'})
@@ -26,9 +25,7 @@ export class OpenLayersService {
     buildNewsFactMarkerLayer(newsFacts: NewsFactNoDetail[]): VectorLayer {
         const features = this.toFeatures(newsFacts);
 
-        const featureSource = new VectorSource({
-            features: features
-        });
+        const featureSource = new VectorSource({features});
 
         const clusterSource = new Cluster({
             distance: SMALL_MARKER_ICON_SIZE_IN_PIXEL + 4, // Add 4 pixels to MARKER_ICON_SIZE_IN_PIXEL to never have icon collision
@@ -40,14 +37,7 @@ export class OpenLayersService {
             style: (feature) => {
                 const clusterFeatures = feature.get('features') as Feature[];
                 if (clusterFeatures.length > 1) { // Several news facts in the cluster, use group icon
-                    if (feature.get('isSelected')) {
-                        return SELECTED_MULTIPLE_NEWS_FACTS_STYLE
-                    }
                     return MULTIPLE_NEWS_FACTS_STYLE;
-                }
-                // One news fact in the cluster, use normal icon
-                if (clusterFeatures[0].get('isSelected')) {
-                    return MEDIUM_IMG_STYLE_BY_NEWS_CATEGORY[(clusterFeatures[0].get('newsCategoryId'))];
                 }
                 return SMALL_IMG_STYLE_BY_NEWS_CATEGORY[(clusterFeatures[0].get('newsCategoryId'))];
             }
@@ -64,8 +54,7 @@ export class OpenLayersService {
         return new Feature({
             geometry: new Point([newsFactNoDetail.locationCoordinate.x, newsFactNoDetail.locationCoordinate.y]),
             newsFactId: newsFactNoDetail.id,
-            newsCategoryId: newsFactNoDetail.newsCategoryId,
-            isSelected: false
+            newsCategoryId: newsFactNoDetail.newsCategoryId
         });
     }
 
