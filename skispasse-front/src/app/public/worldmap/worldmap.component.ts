@@ -100,12 +100,10 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.newsFactsMap.forEachFeatureAtPixel(
                     evt.pixel,
                     (clickedClusterFeature: Feature) => {
+                        this.newsFactMarkerService.selectMarker(clickedClusterFeature);
                         const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
                         if (newsFactMarkers.length === 1) { // Single news fact (other case can be multiple when news fact are close)
-                            this.newsFactMarkerService.selectMarker(clickedClusterFeature);
                             this.showNewsFactDetail(newsFactMarkers[0].getNewsFactId());
-                        } else if (newsFactMarkers.length > 1) {
-                            this.newsFactMarkerService.selectMarker(clickedClusterFeature, true);
                         }
                         return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
                     },
