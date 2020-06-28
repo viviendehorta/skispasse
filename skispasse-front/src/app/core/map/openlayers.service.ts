@@ -7,7 +7,7 @@ import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {
     SMALL_MULTIPLE_NEWS_FACTS_STYLE,
     SMALL_IMG_STYLE_BY_NEWS_CATEGORY,
-    SMALL_MARKER_ICON_SIZE_IN_PIXEL
+    SMALL_MARKER_ICON_SIZE_IN_PIXEL, MEDIUM_MULTIPLE_NEWS_FACTS_STYLE, MEDIUM_IMG_STYLE_BY_NEWS_CATEGORY
 } from "./marker-style.constants";
 import {NewsFactMarkerService} from "./news-fact-marker.service";
 
@@ -28,11 +28,9 @@ export class OpenLayersService {
     buildNewsFactMarkerLayer(newsFacts: NewsFactNoDetail[]): VectorLayer {
         const newsFactMarkers = this.newsFactMarkerService.toNewsFactMarkers(newsFacts);
 
-        const newsFactMarkerSource = new VectorSource({features: newsFactMarkers});
-
         const clusterSource = new Cluster({
             distance: SMALL_MARKER_ICON_SIZE_IN_PIXEL + 4, // Add 4 pixels to MARKER_ICON_SIZE_IN_PIXEL to never have icon collision
-            source: newsFactMarkerSource
+            source: new VectorSource({features: newsFactMarkers})
         });
 
         return new VectorLayer({
@@ -40,9 +38,15 @@ export class OpenLayersService {
             style: (feature) => {
                 const clusterFeatures = feature.get('features') as Feature[];
                 if (clusterFeatures.length > 1) { // Several news facts in the cluster, use group icon
-                    return SMALL_MULTIPLE_NEWS_FACTS_STYLE;
+                    if (this.newsFactMarkerService.isSelectedMarker(feature)) {
+                        return MEDIUM_MULTIPLE_NEWS_FACTS_STYLE;
+                    }
+                    return  SMALL_MULTIPLE_NEWS_FACTS_STYLE;
                 }
-                return SMALL_IMG_STYLE_BY_NEWS_CATEGORY[(clusterFeatures[0].get('newsCategoryId'))];
+                if (this.newsFactMarkerService.isSelectedMarker(feature)) {
+                    return MEDIUM_IMG_STYLE_BY_NEWS_CATEGORY[clusterFeatures[0].get('newsCategoryId')];
+                }
+                return SMALL_IMG_STYLE_BY_NEWS_CATEGORY[clusterFeatures[0].get('newsCategoryId')];
             }
         });
     }
