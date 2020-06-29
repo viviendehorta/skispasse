@@ -11,9 +11,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Migration: 21/04/2020
- */
 @ChangeLog(order = "20200422")
 public class Migration20200422 {
 

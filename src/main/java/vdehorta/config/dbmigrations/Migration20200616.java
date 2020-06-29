@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Migration: 21/04/2020
- */
 @ChangeLog(order = "20200616")
 public class Migration20200616 {
 

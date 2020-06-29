@@ -4,7 +4,8 @@ import java.util.Optional;
 
 public enum ContentTypeEnum {
 
-    MP4("video/mp4", "mp4");
+    MP4("video/mp4", "mp4"),
+    THREE_GP("video/3gpp", "3gp");
 
     private String contentType;
     private String extension;

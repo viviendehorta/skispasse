@@ -12,9 +12,6 @@ import vdehorta.domain.User;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.ClockService;
 
-/**
- * Migration: 09/04/2020
- */
 @ChangeLog(order = "20200409")
 public class Migration20200409 {
 
