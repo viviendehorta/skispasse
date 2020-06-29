@@ -1,6 +1,5 @@
 package vdehorta.utils;
 
-import org.bson.BsonDocument;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.Set;
@@ -17,7 +16,7 @@ public final class PersistenceTestUtils {
      */
     public static void resetDatabase(MongoTemplate mongoTemplate) {
         Set<String> collectionNames = mongoTemplate.getCollectionNames();
-        collectionNames.forEach(collectionName -> mongoTemplate.getCollection(collectionName).deleteMany(BsonDocument.parse("{}")));
+        collectionNames.forEach(collectionName -> mongoTemplate.getCollection(collectionName).drop());
     }
 
     private PersistenceTestUtils() {}

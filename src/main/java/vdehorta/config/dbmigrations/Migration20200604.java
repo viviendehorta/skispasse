@@ -16,9 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-/**
- * Migration: 21/04/2020
- */
 @ChangeLog(order = "20200604")
 public class Migration20200604 {
 
