@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.zalando.problem.Problem;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.domain.MapStyle;
 import vdehorta.repository.MapStyleRepository;
 import vdehorta.service.MapsService;
@@ -32,10 +33,13 @@ public class MapsResourceITest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    @Autowired
+    private ApplicationProperties applicationProperties;
+
 
     @BeforeEach
     public void setup() {
-        PersistenceTestUtils.resetDatabase(mongoTemplate);
+        PersistenceTestUtils.resetDatabase(mongoTemplate, applicationProperties);
     }
 
     @Test

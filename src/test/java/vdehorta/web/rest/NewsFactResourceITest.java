@@ -87,7 +87,7 @@ public class NewsFactResourceITest {
 
     @BeforeEach
     public void setup() {
-        PersistenceTestUtils.resetDatabase(mongoTemplate);
+        PersistenceTestUtils.resetDatabase(mongoTemplate, applicationProperties);
         mockAnonymous(authenticationService); //By default, mock anonymous authentication
     }
 
