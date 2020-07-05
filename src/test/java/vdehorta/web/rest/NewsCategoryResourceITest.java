@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import vdehorta.bean.dto.NewsCategoryDto;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.repository.NewsCategoryRepository;
 import vdehorta.utils.BeanTestUtils;
 import vdehorta.utils.PersistenceTestUtils;
@@ -35,9 +36,12 @@ public class NewsCategoryResourceITest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    @Autowired
+    private ApplicationProperties applicationProperties;
+
     @BeforeEach
     public void setup() {
-        PersistenceTestUtils.resetDatabase(mongoTemplate);
+        PersistenceTestUtils.resetDatabase(mongoTemplate, applicationProperties);
     }
 
     @Test

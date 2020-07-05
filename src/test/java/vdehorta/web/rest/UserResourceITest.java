@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.zalando.problem.Problem;
 import vdehorta.bean.dto.UserDto;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.repository.AuthorityRepository;
@@ -60,12 +61,15 @@ public class UserResourceITest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    @Autowired
+    private ApplicationProperties applicationProperties;
+
     private User user;
 
 
     @BeforeEach
     public void initTest() {
-        PersistenceTestUtils.resetDatabase(mongoTemplate);
+        PersistenceTestUtils.resetDatabase(mongoTemplate, applicationProperties);
         user = createDefaultUser();
         mockAnonymous(authenticationService);
     }

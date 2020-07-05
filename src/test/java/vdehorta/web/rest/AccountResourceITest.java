@@ -15,6 +15,7 @@ import org.zalando.problem.Problem;
 import vdehorta.bean.dto.AuthenticationDto;
 import vdehorta.bean.dto.PasswordChangeDTO;
 import vdehorta.bean.dto.UserDto;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.config.Constants;
 import vdehorta.domain.User;
 import vdehorta.repository.UserRepository;
@@ -55,10 +56,13 @@ public class AccountResourceITest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    @Autowired
+    private ApplicationProperties applicationProperties;
+
 
     @BeforeEach
     public void setup() {
-        PersistenceTestUtils.resetDatabase(mongoTemplate);
+        PersistenceTestUtils.resetDatabase(mongoTemplate, applicationProperties);
         mockAnonymous(authenticationService); //By default, mock anonymous authentication
     }
 
