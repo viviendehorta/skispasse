@@ -35,7 +35,7 @@ public class Migration20200422 {
     @ChangeSet(order = "02", author = "admin", id = "02-addInitialNewsFacts")
     public void addInitialNewsFacts(MongoTemplate mongoTemplate) {
 
-        final Long baseCoord = 4500000L;
+        final double baseCoord = 4500000.0;
 
         final List<NewsCategory> allCategories = mongoTemplate.findAll(NewsCategory.class);
 

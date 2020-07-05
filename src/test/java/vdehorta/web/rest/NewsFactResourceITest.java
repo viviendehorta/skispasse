@@ -467,7 +467,7 @@ public class NewsFactResourceITest {
                 .eventDate("eventDate")
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
-                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
                 .build();
 
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDto), Problem.class);
@@ -489,7 +489,7 @@ public class NewsFactResourceITest {
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
                 .build();
 
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
@@ -510,7 +510,7 @@ public class NewsFactResourceITest {
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
@@ -532,7 +532,7 @@ public class NewsFactResourceITest {
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
@@ -554,7 +554,7 @@ public class NewsFactResourceITest {
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
@@ -576,7 +576,7 @@ public class NewsFactResourceITest {
                 .city(DEFAULT_CITY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(1L, 1L))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
@@ -687,7 +687,7 @@ public class NewsFactResourceITest {
         String newAddress = DEFAULT_ADDRESS + "-updated";
         String newCity = DEFAULT_CITY + "-updated";
         String newCountry = DEFAULT_COUNTRY + "-updated";
-        LocationCoordinate newLocationCoordinate = new LocationCoordinate.Builder().x(2000L).y(700L).build();
+        LocationCoordinate newLocationCoordinate = new LocationCoordinate.Builder().x(3000.0).y(700.0).build();
         NewsCategory oldNewsCategory = createDefaultNewsCategory1();
         NewsCategory newNewsCategory = createDefaultNewsCategory2();
 
