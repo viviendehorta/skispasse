@@ -21,10 +21,10 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     private String id;
 
     @Field("location_coord_x")
-    private Long locationCoordinateX;
+    private double locationCoordinateX;
 
     @Field("location_coord_y")
-    private Long locationCoordinateY;
+    private double locationCoordinateY;
 
     @Field("event_date")
     private LocalDateTime eventDate;
@@ -81,19 +81,19 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public Long getLocationCoordinateX() {
+    public double getLocationCoordinateX() {
         return locationCoordinateX;
     }
 
-    public void setLocationCoordinateX(Long locationCoordinateX) {
+    public void setLocationCoordinateX(double locationCoordinateX) {
         this.locationCoordinateX = locationCoordinateX;
     }
 
-    public Long getLocationCoordinateY() {
+    public double getLocationCoordinateY() {
         return locationCoordinateY;
     }
 
-    public void setLocationCoordinateY(Long locationCoordinateY) {
+    public void setLocationCoordinateY(double locationCoordinateY) {
         this.locationCoordinateY = locationCoordinateY;
     }
 
@@ -198,8 +198,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private String lastModifiedBy;
         private LocalDateTime lastModifiedDate;
         private String id;
-        private Long locationCoordinateX;
-        private Long locationCoordinateY;
+        private double locationCoordinateX;
+        private double locationCoordinateY;
         private LocalDateTime eventDate;
         private String newsCategoryId;
         private String newsCategoryLabel;
@@ -237,12 +237,12 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder locationCoordinateX(Long val) {
+        public Builder locationCoordinateX(double val) {
             locationCoordinateX = val;
             return this;
         }
 
-        public Builder locationCoordinateY(Long val) {
+        public Builder locationCoordinateY(double val) {
             locationCoordinateY = val;
             return this;
         }

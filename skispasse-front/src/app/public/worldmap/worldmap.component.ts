@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import Map from 'ol/Map';
 import {Vector as VectorLayer} from 'ol/layer';
-import {Feature} from 'ol';
+import {Feature, MapBrowserEvent} from 'ol';
 import {Subscription} from 'rxjs';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {AccountService} from '../../core/auth/account.service';
@@ -105,7 +105,8 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private subscribeToNewsFactMarkerClick() {
-        this.newsFactsMap.on('click', evt => {
+        this.newsFactsMap.on('click', (evt: MapBrowserEvent) => {
+
                 this.newsFactsMap.forEachFeatureAtPixel(
                     evt.pixel,
                     (clickedClusterFeature: Feature) => {

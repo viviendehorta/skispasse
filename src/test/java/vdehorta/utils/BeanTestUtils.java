@@ -19,8 +19,8 @@ public final class BeanTestUtils {
 
     public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public static final Long DEFAULT_LOCATION_COORDINATE_X = 100L;
-    public static final Long DEFAULT_LOCATION_COORDINATE_Y = 2000L;
+    public static final double DEFAULT_LOCATION_COORDINATE_X = 100.0;
+    public static final double DEFAULT_LOCATION_COORDINATE_Y = 2000.0;
     public static final LocalDateTime DEFAULT_CREATED_DATE = LocalDateTime.parse("2020-04-02T20:15:39");
     public static final LocalDateTime DEFAULT_LAST_MODIFIED_DATE = LocalDateTime.parse("2020-04-03T20:16:39");
     public static final LocalDateTime DEFAULT_EVENT_DATE = LocalDateTime.parse("2020-04-01T00:00:00");

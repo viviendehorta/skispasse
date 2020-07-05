@@ -29,8 +29,8 @@ class NewsFactMapperTest {
     @Test
     void newsFactToNewsFactDetailDto_shouldConvertXYLocationCoordinateFieldsToLocationCoordinateObject() {
         NewsFact input = new NewsFact.Builder()
-            .locationCoordinateX(10L)
-            .locationCoordinateY(2L)
+            .locationCoordinateX(10.0)
+            .locationCoordinateY(2.0)
             .build();
 
         NewsFactDetailDto result = newsFactMapper.newsFactToNewsFactDetailDto(input);

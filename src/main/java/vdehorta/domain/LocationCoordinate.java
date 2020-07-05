@@ -4,13 +4,13 @@ import java.util.Objects;
 
 public class LocationCoordinate {
 
-    private Long x;
-    private Long y;
+    private double x;
+    private double y;
 
     public LocationCoordinate() {
     }
 
-    public LocationCoordinate(Long x, Long y) {
+    public LocationCoordinate(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -20,19 +20,19 @@ public class LocationCoordinate {
         setY(builder.y);
     }
 
-    public Long getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(Long x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public Long getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(Long y) {
+    public void setY(double y) {
         this.y = y;
     }
 
@@ -52,18 +52,18 @@ public class LocationCoordinate {
 
 
     public static final class Builder {
-        private Long x;
-        private Long y;
+        private double x;
+        private double y;
 
         public Builder() {
         }
 
-        public Builder x(Long val) {
+        public Builder x(double val) {
             x = val;
             return this;
         }
 
-        public Builder y(Long val) {
+        public Builder y(double val) {
             y = val;
             return this;
         }
