@@ -267,8 +267,7 @@ public class NewsFactResourceITest {
         GridFSFile persistedVideoFile = persistedVideoCursor.next();
         assertThat(persistedVideoCursor.hasNext()).isFalse(); //Check there is only 1 matching file
 
-        assertThat(persistedVideoFile.getFilename()).contains("zeus"); //Owner login should be part of the filename
-        assertThat(persistedVideoFile.getUploadDate()).isNotNull(); //TODO : set that using the clockService in code to be able to test it
+        assertThat(persistedVideoFile.getFilename()).isEqualTo("zeus_2020-03-24_20:30:23.MP4");
         assertThat(persistedVideoFile.getMetadata().getString("owner")).isEqualTo("zeus");
     }
 
