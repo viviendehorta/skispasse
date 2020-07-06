@@ -1,24 +1,13 @@
-$newsFactsModalWidth: 850px;
-
-/* ==============================================================
-News Fact Detail Modal Style
-===============================================================*/
 .news-fact-detail-modal {
+
   .modal-dialog {
-    min-width: $newsFactsModalWidth;
-    width: $newsFactsModalWidth;
-    max-width: $newsFactsModalWidth;
 
     .modal-body {
       padding: 0;
       margin-bottom: 0;
 
-      .video-player {
-        display: inline-block;
-        width: 100%;
-        height: auto;
-        max-width: $newsFactsModalWidth;
-        max-height: 400px;
+      vg-player {
+        height: 500px;
       }
 
       .news-fact-detail-info-panel {
