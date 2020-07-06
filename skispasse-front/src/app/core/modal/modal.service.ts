@@ -14,6 +14,7 @@ export class ModalService {
     this.isOpen = true;
     const modalRef = this.ngbModalService.open(modalComponent, {
       centered: true,
+      size: 'lg',
       windowClass: modalClass
     });
     modalRef.result.finally(() => (this.isOpen = false));
