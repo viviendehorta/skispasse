@@ -69,16 +69,16 @@ public class VideoService {
         }
     }
 
-    private ContentTypeEnum validateFileContentType(String contentType) throws UnsupportedFileContentTypeException {
+    public void delete(String videoId) {
+        videoGridFsTemplate.delete(new Query(ID_CRITERIA.is(videoId)));
+    }
+
+    protected ContentTypeEnum validateFileContentType(String contentType) throws UnsupportedFileContentTypeException {
         return ContentTypeEnum.getByContentType(contentType).orElseThrow(() -> new UnsupportedFileContentTypeException(contentType));
     }
 
     private String generateUniqueFilename(ContentTypeEnum contentTypeEnum, String ownerLogin) {
         String dateString = DateUtil.DATE_TIME_FORMATTER.format(clockService.now());
         return ownerLogin + "_" + dateString + "." + contentTypeEnum.getExtension();
-    }
-
-    public void delete(String videoId) {
-        videoGridFsTemplate.delete(new Query(ID_CRITERIA.is(videoId)));
     }
 }
