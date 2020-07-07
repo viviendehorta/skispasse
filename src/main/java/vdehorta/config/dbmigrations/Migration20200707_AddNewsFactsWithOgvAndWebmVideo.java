@@ -109,6 +109,7 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
 
         //Update news fact with video id
         newsFact.setMediaId(mediaId);
+        newsFact.setMediaContentType(contentTypeEnum.getContentType());
         mongoTemplate.save(newsFact);
     }
 }

@@ -32,6 +32,7 @@ public final class BeanTestUtils {
     public static final String DEFAULT_NEWS_CATEGORY_LABEL = "newsCategoryLabel";
     public static final String DEFAULT_OWNER = "owner";
     public static final String DEFAULT_MEDIA_ID = "mediaId";
+    public static final String DEFAULT_MEDIA_CONTENT_TYPE = "mediaContentType";
     public static final String DEFAULT_AUTHORITY_VALUE = RoleEnum.USER.getValue();
 
 
@@ -126,7 +127,6 @@ public final class BeanTestUtils {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
                 .owner(DEFAULT_OWNER)
-                .mediaId(DEFAULT_MEDIA_ID)
                 .build();
     }
 
@@ -144,7 +144,6 @@ public final class BeanTestUtils {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "1")
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "1")
                 .owner(DEFAULT_OWNER + "1")
-                .mediaId(DEFAULT_MEDIA_ID + "1")
                 .build();
     }
 
@@ -162,7 +161,6 @@ public final class BeanTestUtils {
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "2")
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "2")
                 .owner(DEFAULT_OWNER + "2")
-                .mediaId(DEFAULT_MEDIA_ID + "2")
                 .build();
     }
 

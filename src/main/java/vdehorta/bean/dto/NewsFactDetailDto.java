@@ -32,6 +32,8 @@ public class NewsFactDetailDto {
 
     private String newsCategoryLabel;
 
+    private String mediaContentType;
+
 
     public NewsFactDetailDto() {
     }
@@ -46,6 +48,7 @@ public class NewsFactDetailDto {
         city = builder.city;
         address = builder.address;
         createdDate = builder.createdDate;
+        mediaContentType = builder.mediaContentType;
     }
 
     public String getAddress() {
@@ -120,6 +123,14 @@ public class NewsFactDetailDto {
         this.newsCategoryLabel = newsCategoryLabel;
     }
 
+    public String getMediaContentType() {
+        return mediaContentType;
+    }
+
+    public void setMediaContentType(String mediaContentType) {
+        this.mediaContentType = mediaContentType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -143,6 +154,7 @@ public class NewsFactDetailDto {
         private String city;
         private String address;
         private String createdDate;
+        private String mediaContentType;
 
         public Builder() {
         }
@@ -189,6 +201,11 @@ public class NewsFactDetailDto {
 
         public Builder createdDate(String val) {
             createdDate = val;
+            return this;
+        }
+
+        public Builder mediaContentType(String val) {
+            mediaContentType = val;
             return this;
         }
 

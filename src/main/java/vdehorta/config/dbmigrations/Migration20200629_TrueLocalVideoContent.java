@@ -2,13 +2,13 @@ package vdehorta.config.dbmigrations;
 
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
-import org.apache.commons.io.FilenameUtils;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import vdehorta.bean.ContentTypeEnum;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.service.ClockService;
@@ -53,17 +53,19 @@ public class Migration20200629_TrueLocalVideoContent {
 
             //Persist video
             File videoFile = new File(baseDirectory + entry.getKey());
-            String gridFsFilename = savedNewsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + FilenameUtils.getExtension(videoFile.getName());
+            ContentTypeEnum contentTypeEnum = ContentTypeEnum.MP4;
+            String gridFsFilename = savedNewsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + contentTypeEnum.getExtension();
 
             try (FileInputStream fileInputStream = new FileInputStream(videoFile)) {
                 String mediaId = gridFsTemplate.store(
                         fileInputStream,
                         gridFsFilename,
-                        "video/mp4",
+                        contentTypeEnum.getContentType(),
                         new Document().append(VideoService.OWNER_METADATA_KEY, savedNewsFact.getOwner())).toString();
 
                 //Update news fact with video id
                 savedNewsFact.setMediaId(mediaId);
+                savedNewsFact.setMediaContentType(contentTypeEnum.getContentType());
                 mongoTemplate.save(savedNewsFact);
 
             } catch (IOException e) {
