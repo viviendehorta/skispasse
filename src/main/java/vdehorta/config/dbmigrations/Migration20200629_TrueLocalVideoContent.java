@@ -61,6 +61,7 @@ public class Migration20200629_TrueLocalVideoContent {
                 String mediaId = gridFsTemplate.store(
                         fileInputStream,
                         gridFsFilename,
+                        "video/mp4",
                         new Document().append(VideoService.OWNER_METADATA_KEY, savedNewsFact.getOwner())).toString();
 
                 //Update news fact with video id
