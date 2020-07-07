@@ -107,21 +107,24 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     private subscribeToNewsFactMarkerClick() {
         this.newsFactsMap.on('click', (evt: MapBrowserEvent) => {
 
-                this.newsFactsMap.forEachFeatureAtPixel(
-                    evt.pixel,
-                    (clickedClusterFeature: Feature) => {
-                        this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
-                        const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
-                        if (newsFactMarkers.length === 1) { // Single news fact (other case can be multiple when news fact are close)
-                            this.showNewsFactDetail(newsFactMarkers[0].getNewsFactId());
-                        }
-                        return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
-                    },
-                    {
-                        layerFilter: candidate => candidate === this.newsFactMarkerLayer,
-                        hitTolerance: this.NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL
+            //Uncomment to display coordinates of clicked pixel
+            // console.log('Coordinates: ' + JSON.stringify(evt.coordinate));
+
+            this.newsFactsMap.forEachFeatureAtPixel(
+                evt.pixel,
+                (clickedClusterFeature: Feature) => {
+                    this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
+                    const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
+                    if (newsFactMarkers.length === 1) { // Single news fact (other case can be multiple when news fact are close)
+                        this.showNewsFactDetail(newsFactMarkers[0].getNewsFactId());
                     }
-                );
+                    return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
+                },
+                {
+                    layerFilter: candidate => candidate === this.newsFactMarkerLayer,
+                    hitTolerance: this.NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL
+                }
+            );
             }
         );
     }

@@ -30,13 +30,11 @@ import static vdehorta.service.util.DateUtil.DATE_FORMATTER;
 @ChangeLog(order = "20200629")
 public class Migration20200629_TrueLocalVideoContent {
 
-    @ChangeSet(order = "01", author = "admin", id = "01-replaceInitialNewsFactByRealOnes")
-    public void replaceInitialNewsFactByRealOnes(MongoTemplate mongoTemplate, Environment environment) {
+    @ChangeSet(order = "01", author = "admin", id = "01-addNewsFactWithTrueVideoContent")
+    public void addNewsFactWithTrueVideoContent(MongoTemplate mongoTemplate, Environment environment) {
 
         Logger logger = LoggerFactory.getLogger(Migration20200629_TrueLocalVideoContent.class);
         logger.debug("Start migration 'replaceInitialNewsFactByRealOnes'");
-
-        deleteInitialNewsFactsAndVideos(mongoTemplate, environment);
 
         GridFsTemplate gridFsTemplate = new GridFsTemplate(
                 mongoTemplate.getMongoDbFactory(),
@@ -74,12 +72,6 @@ public class Migration20200629_TrueLocalVideoContent {
         }
 
         logger.debug("End migration 'replaceInitialNewsFactByRealOnes'");
-    }
-
-    private void deleteInitialNewsFactsAndVideos(MongoTemplate mongoTemplate, Environment environment) {
-        mongoTemplate.dropCollection(NewsFact.class);
-        mongoTemplate.dropCollection(environment.getRequiredProperty("application.mongo.grid-fs.newsfact-video-bucket") + ".files");
-        mongoTemplate.dropCollection(environment.getRequiredProperty("application.mongo.grid-fs.newsfact-video-bucket") + ".chunks");
     }
 
     private Map<String, NewsFact> buildNewsFactByVideoFilename(MongoTemplate mongoTemplate, ClockService clockService) {
