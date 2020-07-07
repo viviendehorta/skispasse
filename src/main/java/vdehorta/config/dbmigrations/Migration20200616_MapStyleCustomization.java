@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @ChangeLog(order = "20200616")
-public class Migration20200616 {
+public class Migration20200616_MapStyleCustomization {
 
     @ChangeSet(order = "01", author = "admin", id = "01-addMapStyle")
     public void addMapStyle(MongoTemplate mongoTemplate) throws IOException {
