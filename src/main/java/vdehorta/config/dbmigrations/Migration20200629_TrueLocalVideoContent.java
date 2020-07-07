@@ -93,9 +93,6 @@ public class Migration20200629_TrueLocalVideoContent {
         map.put("echirolles-entrainement-confinement.mp4",
                 createNewsFact("2", categoryLabelById, 634725.214972053,5643960.29855006, "2020-03-26", "France", "Échirolles", "5 rue Louise Michel, 38130 Échirolles", clockService.now()));
 
-        map.put("echirolles-pingpong-interieur.3gp",
-                createNewsFact("2", categoryLabelById, 634734.2918764515,5643963.164935887, "2020-03-19", "France", "Échirolles", "5 rue Louise Michel, 38130 Échirolles", clockService.now()));
-
         map.put("floripa-lagoa-lever-soleil.mp4",
                 createNewsFact("5", categoryLabelById, -5394545.419658685,-3199444.088359589, "2020-06-22", "Brasil", "Florianópolis", "Avenida das Rendeiras, Lagoa da Conceição, Florianópolis", clockService.now()));
 
