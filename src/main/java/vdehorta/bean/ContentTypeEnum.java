@@ -5,7 +5,7 @@ import java.util.Optional;
 public enum ContentTypeEnum {
 
     MP4("video/mp4", "MP4"),
-    OGV("video/ogv", "OGV"),
+    OGG("video/ogg", "OGV"),
     WEBM("video/webm", "WEBM");
 
     private String contentType;

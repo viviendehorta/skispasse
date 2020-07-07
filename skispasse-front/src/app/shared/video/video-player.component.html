@@ -26,6 +26,6 @@
     </vg-controls>
 
     <video [vgMedia]="media" #media id="singleVideo" preload="auto" crossorigin>
-        <source src="{{videoUrl}}" type="video/mp4">
+        <source src="{{videoUrl}}" type="{{contentType}}">
     </video>
 </vg-player>

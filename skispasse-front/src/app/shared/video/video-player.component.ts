@@ -10,4 +10,5 @@ import {Component, Input} from '@angular/core';
 export class VideoPlayerComponent {
 
     @Input() videoUrl: string;
+    @Input() contentType: string;
 }
