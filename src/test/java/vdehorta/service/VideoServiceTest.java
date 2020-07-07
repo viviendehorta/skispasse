@@ -47,8 +47,8 @@ class VideoServiceTest {
     }
 
     @Test
-    void validateFileContentType_shouldAcceptOggContentType() {
-        assertThat(videoService.validateFileContentType("video/ogg")).isEqualTo(ContentTypeEnum.OGG);
+    void validateFileContentType_shouldAcceptOgvContentType() {
+        assertThat(videoService.validateFileContentType("video/ogv")).isEqualTo(ContentTypeEnum.OGV);
     }
 
     @Test
