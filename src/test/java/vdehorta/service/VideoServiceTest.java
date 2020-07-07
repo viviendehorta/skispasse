@@ -3,6 +3,7 @@ package vdehorta.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import vdehorta.bean.ContentTypeEnum;
 import vdehorta.bean.InMemoryFile;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
 
@@ -46,7 +47,12 @@ class VideoServiceTest {
     }
 
     @Test
-    void validateFileContentType_shouldAccept3gpContentType() {
-        assertThat(videoService.validateFileContentType("video/3gpp").getExtension()).isEqualTo("3GP");
+    void validateFileContentType_shouldAcceptOggContentType() {
+        assertThat(videoService.validateFileContentType("video/ogg")).isEqualTo(ContentTypeEnum.OGG);
+    }
+
+    @Test
+    void validateFileContentType_shouldAcceptWebmContentType() {
+        assertThat(videoService.validateFileContentType("video/webm")).isEqualTo(ContentTypeEnum.WEBM);
     }
 }
