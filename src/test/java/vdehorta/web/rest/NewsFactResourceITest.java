@@ -113,6 +113,8 @@ public class NewsFactResourceITest {
     public void getById_caseOk() {
 
         NewsFact newsFact = createDefaultNewsFact();
+        newsFact.setMediaId(DEFAULT_MEDIA_ID);
+        newsFact.setMediaContentType(DEFAULT_MEDIA_CONTENT_TYPE);
         newsFactRepository.save(newsFact);
 
         ResponseEntity<NewsFactDetailDto> response = testRestTemplate.getForEntity("/newsFacts/" + newsFact.getId(), NewsFactDetailDto.class);
@@ -126,6 +128,7 @@ public class NewsFactResourceITest {
         assertThat(resultNewsFact.getEventDate()).isEqualTo(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE));
         assertThat(resultNewsFact.getNewsCategoryId()).isEqualTo(DEFAULT_NEWS_CATEGORY_ID);
         assertThat(resultNewsFact.getNewsCategoryLabel()).isEqualTo(DEFAULT_NEWS_CATEGORY_LABEL);
+        assertThat(resultNewsFact.getMediaContentType()).isEqualTo(DEFAULT_MEDIA_CONTENT_TYPE);
     }
 
     @Test

@@ -2,11 +2,19 @@ package vdehorta.config.dbmigrations;
 
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
+import org.bson.Document;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import vdehorta.bean.ContentTypeEnum;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.service.ClockService;
+import vdehorta.service.VideoService;
+import vdehorta.service.util.DateUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +41,7 @@ public class Migration20200422_InitCategoriesAndNewsFact {
     }
 
     @ChangeSet(order = "02", author = "admin", id = "02-addInitialNewsFact")
-    public void addInitialNewsFact(MongoTemplate mongoTemplate) {
+    public void addInitialNewsFact(MongoTemplate mongoTemplate, Environment environment) {
         List<NewsCategory> allCategories = mongoTemplate.findAll(NewsCategory.class);
 
         assert allCategories.size() == 6;
@@ -55,5 +63,35 @@ public class Migration20200422_InitCategoriesAndNewsFact {
                 .build();
 
         mongoTemplate.insert(initialNewsFact);
+
+        addPersistedVideoToNewsFact(initialNewsFact, mongoTemplate, environment);
+    }
+
+    private void addPersistedVideoToNewsFact(NewsFact newsFact, MongoTemplate mongoTemplate, Environment environment) {
+
+        GridFsTemplate gridFsTemplate = new GridFsTemplate(mongoTemplate.getMongoDbFactory(),
+                mongoTemplate.getConverter(),
+                environment.getRequiredProperty("application.mongo.grid-fs.newsfact-video-bucket"));
+
+        String filename = "video-small.mp4";
+
+
+        //Persist video
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream videoInputStream = classloader.getResourceAsStream("media/" + filename);
+        String gridFsFilename = newsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + ContentTypeEnum.MP4.getExtension();
+        String mediaId = gridFsTemplate.store(
+                videoInputStream,
+                gridFsFilename,
+                new Document().append(VideoService.OWNER_METADATA_KEY, newsFact.getOwner())).toString();
+        try {
+            videoInputStream.close();
+        } catch (IOException ignored) {
+        }
+
+        //Update news fact with video id
+        newsFact.setMediaId(mediaId);
+        newsFact.setMediaContentType(ContentTypeEnum.MP4.getContentType());
+        mongoTemplate.save(newsFact);
     }
 }

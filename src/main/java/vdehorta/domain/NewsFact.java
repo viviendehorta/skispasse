@@ -44,12 +44,15 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Field("address")
     private String address;
 
-    @Field("media_id")
-    private String mediaId;
-
     @Indexed
     @Field("owner")
     private String owner;
+
+    @Field("media_id")
+    private String mediaId;
+
+    @Field("media_content_type")
+    private String mediaContentType;
 
 
     public NewsFact() {
@@ -70,6 +73,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         setCity(builder.city);
         setAddress(builder.address);
         setMediaId(builder.mediaId);
+        setMediaContentType(builder.mediaContentType);
         setOwner(builder.owner);
     }
 
@@ -153,6 +157,14 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         this.mediaId = mediaId;
     }
 
+    public String getMediaContentType() {
+        return mediaContentType;
+    }
+
+    public void setMediaContentType(String mediaContentType) {
+        this.mediaContentType = mediaContentType;
+    }
+
     public String getOwner() {
         return owner;
     }
@@ -187,6 +199,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             ", city='" + city + '\'' +
             ", address='" + address + '\'' +
             ", mediaId='" + mediaId + '\'' +
+            ", mediaContentType='" + mediaContentType + '\'' +
             ", owner='" + owner + '\'' +
             '}';
     }
@@ -207,6 +220,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private String city;
         private String address;
         private String mediaId;
+        private String mediaContentType;
         private String owner;
 
         public Builder() {
@@ -277,13 +291,18 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
+        public Builder owner(String val) {
+            owner = val;
+            return this;
+        }
+
         public Builder mediaId(String val) {
             mediaId = val;
             return this;
         }
 
-        public Builder owner(String val) {
-            owner = val;
+        public Builder mediaContentType(String val) {
+            mediaContentType = val;
             return this;
         }
 
