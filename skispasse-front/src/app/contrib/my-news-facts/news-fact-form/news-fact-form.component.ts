@@ -97,6 +97,7 @@ export class NewsFactFormComponent implements OnInit {
                 this.newsFactForm.get(['locationCoordinateY']).value
             ),
             this.newsFactForm.get(['newsCategoryId']).value,
+            null,
             null
         );
     }

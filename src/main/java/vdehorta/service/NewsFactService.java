@@ -80,12 +80,12 @@ public class NewsFactService {
         newsFact.setLastModifiedDate(now);
         NewsFact createdNewsFact = this.newsFactRepository.save(newsFact);
 
-        /* Save video file in the end because Mongo transaction doesnt apply to GridFs so file will not be deleted
-         if error occurs */
+        /* Save video file in the end because Mongo transaction doesnt apply to GridFs so file will not be deleted if error occurs */
         String videoFileId = videoService.save(inMemoryVideoFile, creatorLogin);
 
         //Update reference to video file in news fact
         createdNewsFact.setMediaId(videoFileId);
+        createdNewsFact.setMediaContentType(inMemoryVideoFile.getContentType());
         this.newsFactRepository.save(newsFact);
 
         log.debug("Created Information for News Fact: {}", createdNewsFact);

@@ -1,8 +1,8 @@
-<div class="modal-body">
+<div *ngIf="newsFactDetail" class="modal-body">
 
-    <skis-video-player videoUrl="{{newsFactVideoUrl}}"></skis-video-player>
+    <skis-video-player videoUrl="{{newsFactVideoUrl}}" contentType="{{newsFactDetail.mediaContentType}}"></skis-video-player>
 
-    <div *ngIf="newsFactDetail" class="news-fact-detail-info-panel container-fluid">
+    <div class="news-fact-detail-info-panel container-fluid">
 
         <div class="row">
 

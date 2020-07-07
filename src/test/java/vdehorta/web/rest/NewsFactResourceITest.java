@@ -46,6 +46,7 @@ import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.*;
 import static vdehorta.bean.ContentTypeEnum.MP4;
+import static vdehorta.bean.ContentTypeEnum.OGG;
 import static vdehorta.security.RoleEnum.*;
 import static vdehorta.utils.BeanTestUtils.*;
 import static vdehorta.utils.JsonTestUtils.toJsonString;
@@ -226,7 +227,7 @@ public class NewsFactResourceITest {
         ResponseEntity<NewsFactDetailDto> response = testRestTemplate.postForEntity(
                 "/newsFacts",
                 createFileAndJsonMultipartEntity(
-                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4.getContentType(), "newsFactJson", toJsonString(toCreateNewsFact)),
+                        "videoFile", "skispasse.ogv", "video file content".getBytes(), OGG.getContentType(), "newsFactJson", toJsonString(toCreateNewsFact)),
                 NewsFactDetailDto.class);
 
         //Check HTTP response
@@ -243,6 +244,7 @@ public class NewsFactResourceITest {
         assertThat(resultNewsFact.getId()).isNotEmpty();
         assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
         assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+        assertThat(resultNewsFact.getMediaContentType()).isEqualTo(OGG.getContentType());
 
         //Check news fact persistence
         assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
@@ -262,6 +264,7 @@ public class NewsFactResourceITest {
         assertThat(persistedNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
         assertThat(persistedNewsFact.getOwner()).isEqualTo("zeus");
         assertThat(persistedNewsFact.getMediaId()).isNotEmpty();
+        assertThat(persistedNewsFact.getMediaContentType()).isEqualTo(OGG.getContentType());
 
         //Check video file persistence
         MongoCursor<GridFSFile> persistedVideoCursor = videoGridFsTemplate.find(new Query().addCriteria(Criteria.where("_id").is(persistedNewsFact.getMediaId()))).iterator();
@@ -270,8 +273,9 @@ public class NewsFactResourceITest {
         GridFSFile persistedVideoFile = persistedVideoCursor.next();
         assertThat(persistedVideoCursor.hasNext()).isFalse(); //Check there is only 1 matching file
 
-        assertThat(persistedVideoFile.getFilename()).isEqualTo("zeus_2020-03-24_20:30:23.MP4");
+        assertThat(persistedVideoFile.getFilename()).isEqualTo("zeus_2020-03-24_20:30:23.OGV");
         assertThat(persistedVideoFile.getMetadata().getString("owner")).isEqualTo("zeus");
+        assertThat(persistedVideoFile.getMetadata().getString("_contentType")).isEqualTo(OGG.getContentType());
     }
 
     @Test

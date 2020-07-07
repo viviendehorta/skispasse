@@ -89,7 +89,7 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
         addVideoToNewsFact(
                 mongoTemplate.findById(newsFacts.get(1).getId(), NewsFact.class),
                 "video-small.ogv",
-                ContentTypeEnum.OGV,
+                ContentTypeEnum.OGG,
                 gridFsTemplate,
                 mongoTemplate,
                 classLoader);
