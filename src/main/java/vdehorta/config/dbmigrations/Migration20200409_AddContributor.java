@@ -13,7 +13,7 @@ import vdehorta.security.RoleEnum;
 import vdehorta.service.ClockService;
 
 @ChangeLog(order = "20200409")
-public class Migration20200409 {
+public class Migration20200409_AddContributor {
 
     private ClockService clockService = new ClockService();
 

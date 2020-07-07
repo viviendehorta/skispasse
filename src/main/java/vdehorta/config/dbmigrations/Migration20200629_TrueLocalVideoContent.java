@@ -28,12 +28,12 @@ import java.util.stream.Collectors;
 import static vdehorta.service.util.DateUtil.DATE_FORMATTER;
 
 @ChangeLog(order = "20200629")
-public class Migration20200629 {
+public class Migration20200629_TrueLocalVideoContent {
 
     @ChangeSet(order = "01", author = "admin", id = "01-replaceInitialNewsFactByRealOnes")
     public void replaceInitialNewsFactByRealOnes(MongoTemplate mongoTemplate, Environment environment) {
 
-        Logger logger = LoggerFactory.getLogger(Migration20200629.class);
+        Logger logger = LoggerFactory.getLogger(Migration20200629_TrueLocalVideoContent.class);
         logger.debug("Start migration 'replaceInitialNewsFactByRealOnes'");
 
         deleteInitialNewsFactsAndVideos(mongoTemplate, environment);

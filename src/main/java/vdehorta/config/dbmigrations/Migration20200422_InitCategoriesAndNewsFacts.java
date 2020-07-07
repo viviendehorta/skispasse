@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @ChangeLog(order = "20200422")
-public class Migration20200422 {
+public class Migration20200422_InitCategoriesAndNewsFacts {
 
     private ClockService clockService = new ClockService();
 

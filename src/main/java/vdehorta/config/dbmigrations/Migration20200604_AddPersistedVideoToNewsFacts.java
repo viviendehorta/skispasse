@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @ChangeLog(order = "20200604")
-public class Migration20200604 {
+public class Migration20200604_AddPersistedVideoToNewsFacts {
 
     @ChangeSet(order = "01", author = "admin", id = "01-addPersistedVideoToNewsFact")
     public void addPersistedVideoToNewsFact(MongoTemplate mongoTemplate, Environment environment) {
