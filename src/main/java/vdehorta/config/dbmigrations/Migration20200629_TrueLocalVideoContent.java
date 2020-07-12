@@ -5,10 +5,12 @@ import com.github.cloudyrock.mongock.ChangeSet;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import vdehorta.bean.ContentTypeEnum;
+import vdehorta.config.ProfileConstants;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.service.ClockService;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 import static vdehorta.service.util.DateUtil.DATE_FORMATTER;
 
 @ChangeLog(order = "20200629")
+@Profile(ProfileConstants.SPRING_PROFILE_LOCAL)
 public class Migration20200629_TrueLocalVideoContent {
 
     @ChangeSet(order = "01", author = "admin", id = "01-addNewsFactWithTrueVideoContent")
