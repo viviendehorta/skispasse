@@ -1,7 +1,7 @@
 package vdehorta.config.dbmigrations;
 
-import com.github.mongobee.changeset.ChangeLog;
-import com.github.mongobee.changeset.ChangeSet;
+import com.github.cloudyrock.mongock.ChangeLog;
+import com.github.cloudyrock.mongock.ChangeSet;
 import org.bson.Document;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -22,8 +22,6 @@ import java.util.List;
 @ChangeLog(order = "20200422")
 public class Migration20200422_InitCategoriesAndNewsFact {
 
-    private ClockService clockService = new ClockService();
-
     @ChangeSet(order = "01", author = "admin", id = "01-addInitialCategories")
     public void addInitialCategories(MongoTemplate mongoTemplate) {
 
@@ -41,13 +39,13 @@ public class Migration20200422_InitCategoriesAndNewsFact {
     }
 
     @ChangeSet(order = "02", author = "admin", id = "02-addInitialNewsFact")
-    public void addInitialNewsFact(MongoTemplate mongoTemplate, Environment environment) {
+    public void addInitialNewsFact(MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
         List<NewsCategory> allCategories = mongoTemplate.findAll(NewsCategory.class);
 
         assert allCategories.size() == 6;
 
-        LocalDateTime now = LocalDateTime.now();
         NewsCategory newsCategory = allCategories.get(0);
+        LocalDateTime now = clockService.now();
         NewsFact initialNewsFact = new NewsFact.Builder()
                 .newsCategoryId(newsCategory.getId())
                 .newsCategoryLabel(newsCategory.getLabel())
@@ -55,7 +53,7 @@ public class Migration20200422_InitCategoriesAndNewsFact {
                 .city("Vila Real de Santo Antonio")
                 .country("Portugal")
                 .owner("contributor")
-                .eventDate(clockService.now())
+                .eventDate(now)
                 .locationCoordinateX(-825497.1763430884)
                 .locationCoordinateY(4466253.087107279)
                 .createdDate(now)
@@ -64,23 +62,17 @@ public class Migration20200422_InitCategoriesAndNewsFact {
 
         mongoTemplate.insert(initialNewsFact);
 
-        addPersistedVideoToNewsFact(initialNewsFact, mongoTemplate, environment);
+        addPersistedVideoToNewsFact(initialNewsFact, mongoTemplate, environment, clockService, videoGridFsTemplate);
     }
 
-    private void addPersistedVideoToNewsFact(NewsFact newsFact, MongoTemplate mongoTemplate, Environment environment) {
-
-        GridFsTemplate gridFsTemplate = new GridFsTemplate(mongoTemplate.getMongoDbFactory(),
-                mongoTemplate.getConverter(),
-                environment.getRequiredProperty("application.mongo.grid-fs.newsfact-video-bucket"));
-
+    private void addPersistedVideoToNewsFact(NewsFact newsFact, MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
         String filename = "video-small.mp4";
-
 
         //Persist video
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         InputStream videoInputStream = classloader.getResourceAsStream("media/" + filename);
         String gridFsFilename = newsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + ContentTypeEnum.MP4.getExtension();
-        String mediaId = gridFsTemplate.store(
+        String mediaId = videoGridFsTemplate.store(
                 videoInputStream,
                 gridFsFilename,
                 new Document().append(VideoService.OWNER_METADATA_KEY, newsFact.getOwner())).toString();

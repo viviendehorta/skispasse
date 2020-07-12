@@ -1,7 +1,7 @@
 package vdehorta.config.dbmigrations;
 
-import com.github.mongobee.changeset.ChangeLog;
-import com.github.mongobee.changeset.ChangeSet;
+import com.github.cloudyrock.mongock.ChangeLog;
+import com.github.cloudyrock.mongock.ChangeSet;
 import org.apache.commons.io.IOUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import vdehorta.domain.MapStyle;

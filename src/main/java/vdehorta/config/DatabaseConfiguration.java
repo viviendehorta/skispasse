@@ -15,7 +15,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
 @EnableMongoRepositories("vdehorta.repository")
-@Import(value = {MongoAutoConfiguration.class, MongobeeConfiguration.class})
+@Import(value = {MongoAutoConfiguration.class})
 @EnableMongoAuditing(
         auditorAwareRef = "springSecurityAuditorAware",
         setDates = false

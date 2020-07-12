@@ -1,7 +1,7 @@
 package vdehorta.config.dbmigrations;
 
-import com.github.mongobee.changeset.ChangeLog;
-import com.github.mongobee.changeset.ChangeSet;
+import com.github.cloudyrock.mongock.ChangeLog;
+import com.github.cloudyrock.mongock.ChangeSet;
 import org.bson.Document;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -22,17 +22,15 @@ import java.util.List;
 @ChangeLog(order = "20200707")
 public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
 
-    private ClockService clockService = new ClockService();
-
     @ChangeSet(order = "01", author = "admin", id = "02-add2NewsFacts")
-    public void add2NewsFactsWithOgvAndWebmVideos(MongoTemplate mongoTemplate, Environment environment) {
+    public void add2NewsFactsWithOgvAndWebmVideos(MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
 
         final List<NewsCategory> allCategories = mongoTemplate.findAll(NewsCategory.class);
 
         assert allCategories.size() == 6;
 
         final NewsFact.Builder newsFactBuilder = new NewsFact.Builder();
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = clockService.now();
 
         final List<NewsFact> newsFacts = Arrays.asList(
                 newsFactBuilder
@@ -64,15 +62,11 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
 
         mongoTemplate.insertAll(newsFacts);
 
-        addOggAndWebmVideos(mongoTemplate, environment, newsFacts);
+        addOggAndWebmVideos(mongoTemplate, environment, newsFacts, clockService, videoGridFsTemplate);
     }
 
-    private void addOggAndWebmVideos(MongoTemplate mongoTemplate, Environment environment, List<NewsFact> newsFacts) {
+    private void addOggAndWebmVideos(MongoTemplate mongoTemplate, Environment environment, List<NewsFact> newsFacts, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
         assert newsFacts.size() == 2;
-
-        GridFsTemplate gridFsTemplate = new GridFsTemplate(mongoTemplate.getMongoDbFactory(),
-                mongoTemplate.getConverter(),
-                environment.getRequiredProperty("application.mongo.grid-fs.newsfact-video-bucket"));
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
@@ -81,24 +75,26 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
                 mongoTemplate.findById(newsFacts.get(0).getId(), NewsFact.class),
                 "video-small.webm",
                 ContentTypeEnum.WEBM,
-                gridFsTemplate,
+                videoGridFsTemplate,
                 mongoTemplate,
-                classLoader);
+                classLoader,
+                clockService);
 
         //Video2
         addVideoToNewsFact(
                 mongoTemplate.findById(newsFacts.get(1).getId(), NewsFact.class),
                 "video-small.ogv",
                 ContentTypeEnum.OGG,
-                gridFsTemplate,
+                videoGridFsTemplate,
                 mongoTemplate,
-                classLoader);
+                classLoader,
+                clockService);
     }
 
-    private void addVideoToNewsFact(NewsFact newsFact, String filename, ContentTypeEnum contentTypeEnum, GridFsTemplate gridFsTemplate, MongoTemplate mongoTemplate, ClassLoader classLoader) {
+    private void addVideoToNewsFact(NewsFact newsFact, String filename, ContentTypeEnum contentTypeEnum, GridFsTemplate videoGridFsTemplate, MongoTemplate mongoTemplate, ClassLoader classLoader, ClockService clockService) {
         InputStream videoInputStream = classLoader.getResourceAsStream("media/" + filename);
         String gridFsFilename = newsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + contentTypeEnum.getExtension();
-        String mediaId = gridFsTemplate.store(
+        String mediaId = videoGridFsTemplate.store(
                 videoInputStream,
                 gridFsFilename,
                 new Document().append(VideoService.OWNER_METADATA_KEY, newsFact.getOwner())).toString();
