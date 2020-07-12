@@ -1,7 +1,7 @@
 package vdehorta.config.dbmigrations;
 
-import com.github.mongobee.changeset.ChangeLog;
-import com.github.mongobee.changeset.ChangeSet;
+import com.github.cloudyrock.mongock.ChangeLog;
+import com.github.cloudyrock.mongock.ChangeSet;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,17 +31,10 @@ import static vdehorta.service.util.DateUtil.DATE_FORMATTER;
 public class Migration20200629_TrueLocalVideoContent {
 
     @ChangeSet(order = "01", author = "admin", id = "01-addNewsFactWithTrueVideoContent")
-    public void addNewsFactWithTrueVideoContent(MongoTemplate mongoTemplate, Environment environment) {
+    public void addNewsFactWithTrueVideoContent(MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
 
         Logger logger = LoggerFactory.getLogger(Migration20200629_TrueLocalVideoContent.class);
         logger.debug("Start migration 'replaceInitialNewsFactByRealOnes'");
-
-        GridFsTemplate gridFsTemplate = new GridFsTemplate(
-                mongoTemplate.getMongoDbFactory(),
-                mongoTemplate.getConverter(),
-                environment.getRequiredProperty("application.mongo.grid-fs.newsfact-video-bucket"));
-
-        ClockService clockService = new ClockService();
 
         Map<String, NewsFact> newsFactByVideoFileName = buildNewsFactByVideoFilename(mongoTemplate, clockService);
 
@@ -57,7 +50,7 @@ public class Migration20200629_TrueLocalVideoContent {
             String gridFsFilename = savedNewsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + contentTypeEnum.getExtension();
 
             try (FileInputStream fileInputStream = new FileInputStream(videoFile)) {
-                String mediaId = gridFsTemplate.store(
+                String mediaId = videoGridFsTemplate.store(
                         fileInputStream,
                         gridFsFilename,
                         contentTypeEnum.getContentType(),

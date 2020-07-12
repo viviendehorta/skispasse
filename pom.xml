@@ -121,17 +121,6 @@
             <version>6.2</version>
         </dependency>
         <dependency>
-            <groupId>com.github.mongobee</groupId>
-            <artifactId>mongobee</artifactId>
-            <version>0.13</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mongodb</groupId>
-                    <artifactId>mongo-java-driver</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
@@ -266,6 +255,22 @@
             <artifactId>cucumber-spring</artifactId>
             <scope>test</scope>
             <version>${cucumber.version}</version>
+        </dependency>
+        <!--Mongock-->
+        <dependency>
+            <groupId>com.github.cloudyrock.mongock</groupId>
+            <artifactId>mongock-spring</artifactId>
+            <version>3.2.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>mongo-java-driver</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>spring-boot</artifactId>
+                    <groupId>org.springframework.boot</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

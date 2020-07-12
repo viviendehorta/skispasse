@@ -1,7 +1,8 @@
 package vdehorta.config.dbmigrations;
 
-import com.github.mongobee.changeset.ChangeLog;
-import com.github.mongobee.changeset.ChangeSet;
+
+import com.github.cloudyrock.mongock.ChangeLog;
+import com.github.cloudyrock.mongock.ChangeSet;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
@@ -11,11 +12,8 @@ import vdehorta.service.ClockService;
 @ChangeLog(order = "20200407")
 public class Migration20200407_InitAuthoritiesAndUsers {
 
-    private ClockService clockService = new ClockService();
-
     @ChangeSet(order = "01", author = "initiator", id = "01-addAuthorities")
     public void addAuthorities(MongoTemplate mongoTemplate) {
-
         Authority adminAuthority = new Authority();
         adminAuthority.setName(RoleEnum.ADMIN.getValue());
         Authority userAuthority = new Authority();
@@ -25,7 +23,7 @@ public class Migration20200407_InitAuthoritiesAndUsers {
     }
 
     @ChangeSet(order = "02", author = "initiator", id = "02-addUsers")
-    public void addUsers(MongoTemplate mongoTemplate) {
+    public void addUsers(MongoTemplate mongoTemplate, ClockService clockService) {
         Authority adminAuthority = new Authority();
         adminAuthority.setName(RoleEnum.ADMIN.getValue());
         Authority userAuthority = new Authority();
