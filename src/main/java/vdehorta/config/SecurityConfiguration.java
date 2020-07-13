@@ -15,6 +15,11 @@ import vdehorta.security.AjaxAuthenticationFailureHandler;
 import vdehorta.security.AjaxAuthenticationSuccessHandler;
 import vdehorta.security.AjaxLogoutSuccessHandler;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @EnableWebSecurity
 @Import(SecurityProblemSupport.class)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -84,9 +89,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .permitAll()
             .and()
             .headers()
-            .contentSecurityPolicy("default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:")
-//            .and()
-//            .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
+            .contentSecurityPolicy(getContentSecurityPolicyValue())
         .and()
             .featurePolicy("geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none'")
         .and()
@@ -100,5 +103,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/newsFacts/**").permitAll()
                 .antMatchers("/maps/**").permitAll();
         // @formatter:on
+    }
+
+    private String getContentSecurityPolicyValue() {
+        final String selfAttr = "'self'";
+        final String dataAttr = "data:";
+        final String unsafeInlineAttr = "'unsafe-inline'";
+        List<String> defaultSrcValues = Arrays.asList("default-src", selfAttr);
+        List<String> connectSrcValues = Arrays.asList("connect-src", selfAttr, "https://api.maptiler.com");
+        List<String> frameSrcValues = Arrays.asList("frame-src", selfAttr, dataAttr);
+        List<String> scriptSrcValues = Arrays.asList("script-src", selfAttr, unsafeInlineAttr, "'unsafe-eval'");
+        List<String> styleSrcValues = Arrays.asList("style-src", selfAttr, unsafeInlineAttr, "https://fonts.googleapis.com");
+        List<String> fontSrcValues = Arrays.asList("font-src", selfAttr, dataAttr, "https://fonts.googleapis.com", "https://fonts.gstatic.com");
+
+        return Stream.of(defaultSrcValues, connectSrcValues, frameSrcValues, scriptSrcValues, styleSrcValues, fontSrcValues)
+                .map(policySrcValues -> policySrcValues.stream().collect(Collectors.joining(" ", "", " ; ")))
+                .collect(Collectors.joining());
     }
 }
