@@ -25,7 +25,7 @@ export class AccountService {
     }
 
     updatePassword(newPassword: string, currentPassword: string): Observable<any> {
-        return this.http.post(environment.serverUrl + '/change-password', { currentPassword, newPassword });
+        return this.http.post(this.resourceUrl + '/change-password', { currentPassword, newPassword });
     }
 
     getAccount(force?: boolean): Observable<UserAccount | null> {
