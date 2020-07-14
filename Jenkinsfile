@@ -35,5 +35,9 @@ node {
             sh "./mvnw -ntp install -DskipTests"
             archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
         }
+
+        stage('deploying app on azure') {
+            sh 'scp target/skispasse-*-SNAPSHOT.jar skispasse-azure-admin@13.82.88.209:/home/skispasse-azure-admin/'
+        }
     }
 }
