@@ -1,0 +1,40 @@
+.news-fact-detail-modal {
+
+  .modal-dialog {
+
+    .modal-body {
+      padding: 0;
+      margin-bottom: 0;
+
+      vg-player {
+        height: 500px;
+      }
+
+      .news-fact-detail-info-panel {
+
+        padding: 0.8rem;
+
+        .news-fact-detail-info-left-col {
+          align-self: center;
+          font-size: 0.9rem;
+
+          .news-fact-detail-info-text {
+            display: inline-block;
+            margin-right: 2rem;
+          }
+        }
+
+        .news-fact-detail-info-right-col {
+          align-self: center;
+          text-align: right;
+          padding-right: 2rem;
+
+          .news-category-badge {
+            font-size: 1.1rem;
+            padding: 0.4rem 1.5rem 0.4rem 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}

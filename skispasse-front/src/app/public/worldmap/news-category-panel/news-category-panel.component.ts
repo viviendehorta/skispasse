@@ -16,9 +16,8 @@ export class NewsCategoryPanelComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.newsCategoryService.fetchCategories().subscribe(unflattenedNewsCategories => {
-      const flattenedNewsCategories = this.newsCategoryService.flattenNewsCategories(unflattenedNewsCategories);
-      this.newsCategorySelections = this.newsCategorySelectionService.resetNewsCategorySelections(flattenedNewsCategories);
+    this.newsCategoryService.fetchNewsCategories().subscribe(newsCategories => {
+      this.newsCategorySelections = this.newsCategorySelectionService.resetNewsCategorySelections(newsCategories);
     });
   }
 }

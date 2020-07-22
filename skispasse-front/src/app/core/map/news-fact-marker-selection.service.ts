@@ -19,17 +19,18 @@ export class NewsFactMarkerSelectionService {
             this.selectedMarker.setStyle(MEDIUM_MULTIPLE_NEWS_FACTS_STYLE);
         } else if (newsFactMarkers.length === 1) { //Single marker
             const singleMarker = newsFactMarkers[0];
-            this.selectedMarker.setStyle(MEDIUM_IMG_STYLE_BY_NEWS_CATEGORY[singleMarker.getNewsCategoryId()]);
+            this.selectedMarker.setStyle(MEDIUM_IMG_STYLE_BY_NEWS_CATEGORY[singleMarker.getNewsFactNoDetail().newsCategoryId]);
         }
     }
 
     isSelectedMarker(marker: FeatureLike) {
+
         if (!this.selectedMarker) {
             return false;
         }
 
-        const selectedNewsFactIds = (this.selectedMarker.get('features') as NewsFactMarker[]).map(marker => marker.getNewsFactId());
-        const maySelectedNewsFactIds = (marker.get('features') as NewsFactMarker[]).map(marker => marker.getNewsFactId());
+        const selectedNewsFactIds = (this.selectedMarker.get('features') as NewsFactMarker[]).map(marker => marker.getNewsFactNoDetail().id);
+        const maySelectedNewsFactIds = (marker.get('features') as NewsFactMarker[]).map(marker => marker.getNewsFactNoDetail().id);
 
         //Count of features in the cluster is different => not equals
         if (selectedNewsFactIds.length !== maySelectedNewsFactIds.length) {

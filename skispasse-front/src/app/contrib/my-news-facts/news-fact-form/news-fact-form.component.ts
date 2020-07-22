@@ -34,9 +34,7 @@ export class NewsFactFormComponent implements OnInit {
 
     ngOnInit() {
         this.file = null;
-        this.newsCategoryService.fetchCategories().subscribe(unflattenedNewsCategories => {
-            this.newsCategories = this.newsCategoryService.flattenNewsCategories(unflattenedNewsCategories);
-        });
+        this.newsCategoryService.fetchNewsCategories().subscribe(newsCategories => this.newsCategories = newsCategories);
         this.newsFactForm = this.fb.group({
             id: [null],
             newsCategoryId: [null, Validators.required],
