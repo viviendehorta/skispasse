@@ -6,7 +6,7 @@ import {Subscription} from 'rxjs';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {AccountService} from '../../core/auth/account.service';
 import {NewsFactService} from '../../core/newsfacts/news-fact.service';
-import {NewsFactDetailModalContentComponent} from './news-fact-detail-modal/news-fact-detail-modal.content.component';
+import {NewsFactDetailModalContentComponent} from './news-fact-detail/news-fact-detail-modal.content.component';
 import {NewsCategorySelectionService} from '../../core/newscategory/news-category-selection.service';
 import {ModalService} from '../../core/modal/modal.service';
 import {ROLE_ADMIN, ROLE_CONTRIBUTOR} from '../../shared/constants/role.constants';
@@ -24,6 +24,7 @@ import {
     SMALL_MARKER_ICON_SIZE_IN_PIXEL,
     SMALL_MULTIPLE_NEWS_FACTS_STYLE
 } from "../../core/map/marker-style.constants";
+import {NewsFactGroupModalContentComponent} from "./news-fact-group/news-fact-group-modal.content.component";
 
 @Component({
     selector: 'skis-worldmap',
@@ -115,8 +116,10 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
                 (clickedClusterFeature: Feature) => {
                     this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
                     const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
-                    if (newsFactMarkers.length === 1) { // Single news fact (other case can be multiple when news fact are close)
-                        this.showNewsFactDetail(newsFactMarkers[0].getNewsFactId());
+                    if (newsFactMarkers.length === 1) { // Single news fact
+                        this.showNewsFactDetail(newsFactMarkers[0].getNewsFactNoDetail().id);
+                    } else if (newsFactMarkers.length > 1) { // News fact group
+                        this.showNewsFactGroup(newsFactMarkers.map(marker => marker.getNewsFactNoDetail()));
                     }
                     return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
                 },
@@ -173,8 +176,14 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     private showNewsFactDetail(newsFactId: string) {
         this.newsFactService.getNewsFactDetail(newsFactId).subscribe(newsFactDetail => {
             const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
-            const detailComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
-            detailComponentInstance.setNewsFactDetail(newsFactDetail);
+            const modalComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
+            modalComponentInstance.setNewsFactDetail(newsFactDetail);
         });
+    }
+
+    private showNewsFactGroup(newsFactNoDetails: NewsFactNoDetail[]) {
+        const modalRef = this.modalService.open(NewsFactGroupModalContentComponent, 'news-fact-group-modal');
+        const modalComponentInstance = modalRef.componentInstance as NewsFactGroupModalContentComponent;
+        modalComponentInstance.setNewsFactNoDetails(newsFactNoDetails);
     }
 }

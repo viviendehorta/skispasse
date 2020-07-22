@@ -1,0 +1,29 @@
+<div *ngIf="newsFactNoDetails && allNewsCategories" class="modal-body">
+
+    <div class="table-responsive">
+        <table class="table table-striped" aria-describedby="news-fact-group-heading">
+            <thead>
+            <tr>
+                <th scope="col">
+                    <span>Category</span>
+                </th>
+                <th scope="col">
+                    <span>Location coordinate</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let newsFactNoDetail of newsFactNoDetails; trackBy: trackIdentity">
+                <td>
+                        <span class="news-category-badge badge-pill badge-info"
+                              [ngStyle]="{'background-color': getNewsCategoryColor(newsFactNoDetail)}">
+                            {{getNewsCategoryLabel(newsFactNoDetail.newsCategoryId)}}
+                        </span>
+                </td>
+                <td>{{formatLocationCoordinate(newsFactNoDetail.locationCoordinate)}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

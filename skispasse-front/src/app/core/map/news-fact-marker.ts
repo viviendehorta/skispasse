@@ -1,33 +1,21 @@
 import {Feature} from "ol";
 import Point from "ol/geom/Point";
-import {LocationCoordinate} from "../../shared/model/location-coordinate.model";
+import {NewsFactNoDetail} from "../../shared/model/news-fact-no-detail.model";
 
 export class NewsFactMarker extends Feature<Point> {
 
-    private locationCoordinate: LocationCoordinate;
-    private newsFactId: string;
-    private mewsCategoryId: string;
+    private readonly newsFactNoDetail: NewsFactNoDetail;
 
-    constructor(locationCoordinate: LocationCoordinate, newsFactId: string, newsCategoryId: string) {
+    constructor(newsFactNoDetail:NewsFactNoDetail) {
         super({
-            geometry: new Point([locationCoordinate.x, locationCoordinate.y]),
-            newsFactId,
-            newsCategoryId
+            geometry: new Point([newsFactNoDetail.locationCoordinate.x, newsFactNoDetail.locationCoordinate.y]),
+            newsFactId: newsFactNoDetail.id,
+            newsCategoryId: newsFactNoDetail.newsCategoryId
         });
-        this.locationCoordinate = locationCoordinate;
-        this.newsFactId = newsFactId;
-        this.mewsCategoryId = newsCategoryId;
+        this.newsFactNoDetail = newsFactNoDetail;
     }
 
-    getLocationCoordinate(): LocationCoordinate {
-        return this.locationCoordinate;
-    }
-
-    getNewsFactId(): string {
-        return this.newsFactId;
-    }
-
-    getNewsCategoryId(): string {
-        return this.mewsCategoryId;
+    getNewsFactNoDetail() {
+        return this.newsFactNoDetail;
     }
 }

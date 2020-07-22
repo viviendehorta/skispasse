@@ -6,7 +6,7 @@ import {NewsFactMarker} from "./news-fact-marker";
 export class NewsFactMarkerService {
 
     toNewsFactMarker(newsFactNoDetail: NewsFactNoDetail): NewsFactMarker {
-        return new NewsFactMarker(newsFactNoDetail.locationCoordinate, newsFactNoDetail.id, newsFactNoDetail.newsCategoryId);
+        return new NewsFactMarker(newsFactNoDetail);
     }
 
     toNewsFactMarkers(newsFactNoDetails: NewsFactNoDetail[]): NewsFactMarker[] {
