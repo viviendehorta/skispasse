@@ -14,7 +14,7 @@ const LAYOUT_ROUTES = [...errorRoute];
     RouterModule.forRoot(
       [
         {
-          path: '',
+          path: 'map',
           component: WorldmapComponent,
           data: {
             authorities: [],

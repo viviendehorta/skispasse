@@ -36,7 +36,7 @@ export class AccountPanelComponent implements OnInit {
 
   logout() {
     this.loginService.logout();
-    this.router.navigate(['']);
+    this.router.navigate(['/map']);
   }
 
   isAuthenticated() {
