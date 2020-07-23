@@ -22,13 +22,29 @@
                     </thead>
                     <tbody>
                     <tr *ngFor="let newsFactNoDetail of newsFactNoDetails; trackBy: trackIdentity">
+
+                        <!--News category label-->
                         <td>
                                 <span class="news-category-badge badge-pill badge-info"
                                       [ngStyle]="{'background-color': getNewsCategoryColor(newsFactNoDetail)}">
                                     {{getNewsCategoryLabel(newsFactNoDetail.newsCategoryId)}}
                                 </span>
                         </td>
+
+                        <!--Location coordinates-->
                         <td>{{formatLocationCoordinate(newsFactNoDetail.locationCoordinate)}}</td>
+
+                        <!--News fact detail button-->
+                        <td>
+                            <button
+                                    class="btn btn-link"
+                                    type="submit"
+                                    title="Show video and full news fact information"
+                                    [routerLink]="['/map/', newsFactNoDetail.id]"
+                                    queryParamsHandling="merge">
+                                Show detail
+                            </button>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
