@@ -36,6 +36,7 @@
                         <fa-icon [icon]="'sort'"></fa-icon>
                     </th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody *ngIf="myNewsFacts">
@@ -53,24 +54,22 @@
                     <td>{{newsFact.address}}</td>
                     <td>{{formatLocationCoordinate(newsFact.locationCoordinate)}}</td>
                     <td>{{newsFact.createdDate | date:'dd/MM/yyyy HH:mm'}}</td>
-                    <td class="text-right">
-                        <div class="btn-group">
-                            <button
-                                    class="btn btn-primary btn-sm"
-                                    type="submit"
-                                    title="Edit"
-                                    [routerLink]="['./', newsFact.id, 'edit']"
-                                    queryParamsHandling="merge">
-                                <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            </button>
-                            <button
-                                    class="btn btn-danger btn-sm"
-                                    type="button"
-                                    title="Delete"
-                                    (click)="showDeleteNewsFactDialog(newsFact)">
-                                <fa-icon [icon]="'trash-alt'"></fa-icon>
-                            </button>
-                        </div>
+                    <td>
+                        <button
+                                class="btn btn-link"
+                                type="submit"
+                                [routerLink]="['./', newsFact.id, 'edit']"
+                                queryParamsHandling="merge">
+                            Edit
+                        </button>
+                    </td>
+                    <td>
+                        <button
+                                class="btn btn-link"
+                                type="button"
+                                (click)="showDeleteNewsFactDialog(newsFact)">
+                            Delete
+                        </button>
                     </td>
                 </tr>
                 </tbody>

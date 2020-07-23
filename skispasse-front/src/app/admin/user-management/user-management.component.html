@@ -12,57 +12,69 @@
             <table class="table table-striped" aria-describedby="user-management-page-heading">
                 <thead>
                 <tr skisSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-                  <th scope="col"  skisSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                  <th scope="col"  skisSortBy="login"><span>Login</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                  <th scope="col"  skisSortBy="email"><span>Email</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                  <th scope="col"></th>
-                  <th scope="col"><span>Profiles</span></th>
-                  <th scope="col" skisSortBy="createdDate"><span>Creation</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                  <th scope="col" skisSortBy="lastModifiedBy"><span>Last modifier</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                  <th scope="col" skisSortBy="lastModifiedDate"><span>Last Modification</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-                  <th scope="col"></th>
+                    <th scope="col" skisSortBy="id"><span>ID</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col" skisSortBy="login"><span>Login</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col" skisSortBy="email"><span>Email</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col"></th>
+                    <th scope="col"><span>Profiles</span></th>
+                    <th scope="col" skisSortBy="createdDate"><span>Creation</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col" skisSortBy="lastModifiedBy"><span>Last modifier</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col" skisSortBy="lastModifiedDate"><span>Last Modification</span>
+                        <fa-icon [icon]="'sort'"></fa-icon>
+                    </th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody *ngIf="users">
                 <tr *ngFor="let user of users; trackBy: trackIdentity">
-                  <td><a [routerLink]="['./', user.login, 'view']">{{user.id}}</a></td>
-                  <td>{{user.login}}</td>
-                  <td>{{user.email}}</td>
-                  <td>
-                    <button class="btn btn-danger btn-sm" (click)="setActive(user, true)" *ngIf="!user.activated"
-                    >Deactivated</button>
-                    <button class="btn btn-success btn-sm" (click)="setActive(user, false)" *ngIf="user.activated"
-                            [disabled]="currentAccount.login === user.login">Activated</button>
-                  </td>
+                    <td><a [routerLink]="['./', user.login, 'view']">{{user.id}}</a></td>
+                    <td>{{user.login}}</td>
+                    <td>{{user.email}}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" (click)="setActive(user, true)" *ngIf="!user.activated"
+                        >Deactivated
+                        </button>
+                        <button class="btn btn-success btn-sm" (click)="setActive(user, false)" *ngIf="user.activated"
+                                [disabled]="currentAccount.login === user.login">Activated
+                        </button>
+                    </td>
 
-                  <td>
-                    <div *ngFor="let authority of user.authorities">
-                      <span class="badge badge-info">{{ authority }}</span>
-                    </div>
-                  </td>
-                  <td>{{user.createdDate | date:'dd/MM/yy HH:mm'}}</td>
-                  <td>{{user.lastModifiedBy}}</td>
-                  <td>{{user.lastModifiedDate | date:'dd/MM/yy HH:mm'}}</td>
-                  <td class="text-right">
-                    <div class="btn-group">
+                    <td>
+                        <div *ngFor="let authority of user.authorities">
+                            <span class="badge badge-info">{{ authority }}</span>
+                        </div>
+                    </td>
+                    <td>{{user.createdDate | date:'dd/MM/yy HH:mm'}}</td>
+                    <td>{{user.lastModifiedBy}}</td>
+                    <td>{{user.lastModifiedDate | date:'dd/MM/yy HH:mm'}}</td>
+                    <td>
                         <button
-                                class="btn btn-primary btn-sm"
+                                class="btn btn-link"
                                 type="submit"
-                                title="Edit"
                                 [routerLink]="['./', user.login, 'edit']"
                                 queryParamsHandling="merge">
-                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            Edit
                         </button>
+                    </td>
+                    <td>
                         <button
-                                class="btn btn-danger btn-sm"
+                                class="btn btn-link"
                                 type="button"
-                                title="Delete"
                                 [disabled]="currentAccount.login === user.login"
                                 (click)="deleteUser(user)">
-                            <fa-icon [icon]="'trash-alt'"></fa-icon>
+                            Delete
                         </button>
-                    </div>
-                  </td>
+                    </td>
                 </tr>
                 </tbody>
             </table>
