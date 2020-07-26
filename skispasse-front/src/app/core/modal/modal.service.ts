@@ -3,21 +3,20 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {
-  private isOpen = false;
 
   constructor(private ngbModalService: NgbModal) {}
 
   open(modalComponent: any, modalClass: string): NgbModalRef {
-    if (this.isOpen) {
-      return;
+
+    if (this.ngbModalService.hasOpenModals()) {
+      this.ngbModalService.dismissAll('toto');
     }
-    this.isOpen = true;
+
     const modalRef = this.ngbModalService.open(modalComponent, {
       centered: true,
       size: 'lg',
       windowClass: modalClass
     });
-    modalRef.result.finally(() => (this.isOpen = false));
     return modalRef;
   }
 }

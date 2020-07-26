@@ -25,6 +25,7 @@ import {
     SMALL_MULTIPLE_NEWS_FACTS_STYLE
 } from "../../core/map/marker-style.constants";
 import {NewsFactGroupModalContentComponent} from "./news-fact-group/news-fact-group-modal.content.component";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'skis-worldmap',
@@ -39,6 +40,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private newsFactsMap: Map;
     private newsFactMarkerLayer: VectorLayer;
+    private selectedNewsFactId: string;
 
     newsFacts: NewsFactNoDetail[];
 
@@ -52,7 +54,9 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         private eventManager: EventManager,
         private mapboxStyleService: MapStyleService,
         private newsFactMarkerService: NewsFactMarkerService,
-        private newsFactMarkerSelectionService: NewsFactMarkerSelectionService
+        private newsFactMarkerSelectionService: NewsFactMarkerSelectionService,
+        private route: ActivatedRoute,
+        private router: Router,
     ) {
         this.newsFactsMap = null;
         this.newsFactMarkerLayer = null;
@@ -66,6 +70,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.newsFactService.getAll().subscribe(newsFactNoDetails => {
             this.newsFacts = newsFactNoDetails;
             this.buildMap(this.newsFacts);
+            this.selectNewsFactIfNeeded();
         });
     }
 
@@ -108,26 +113,33 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     private subscribeToNewsFactMarkerClick() {
         this.newsFactsMap.on('click', (evt: MapBrowserEvent) => {
 
-            //Uncomment to display coordinates of clicked pixel
-            // console.log('Coordinates: ' + JSON.stringify(evt.coordinate));
+                //Uncomment to display coordinates of clicked pixel
+                // console.log('Coordinates: ' + JSON.stringify(evt.coordinate));
 
-            this.newsFactsMap.forEachFeatureAtPixel(
-                evt.pixel,
-                (clickedClusterFeature: Feature) => {
-                    this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
-                    const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
-                    if (newsFactMarkers.length === 1) { // Single news fact
-                        this.showNewsFactDetail(newsFactMarkers[0].getNewsFactNoDetail().id);
-                    } else if (newsFactMarkers.length > 1) { // News fact group
-                        this.showNewsFactGroup(newsFactMarkers.map(marker => marker.getNewsFactNoDetail()));
+                this.newsFactsMap.forEachFeatureAtPixel(
+                    evt.pixel,
+                    (clickedClusterFeature: Feature) => {
+                        this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
+                        const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
+                        if (newsFactMarkers.length === 1) { // Single news fact
+                            // this.showNewsFactDetail(newsFactMarkers[0].getNewsFactNoDetail().id);
+                            this.router.navigate(
+                                [],
+                                {
+                                    relativeTo: this.route,
+                                    queryParams: { selectedNewsFact: newsFactMarkers[0].getNewsFactNoDetail().id },
+                                    queryParamsHandling: 'merge', // remove to replace all query params by provided
+                                });
+                        } else if (newsFactMarkers.length > 1) { // News fact group
+                            this.showNewsFactGroup(newsFactMarkers.map(marker => marker.getNewsFactNoDetail()));
+                        }
+                        return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
+                    },
+                    {
+                        layerFilter: candidate => candidate === this.newsFactMarkerLayer,
+                        hitTolerance: this.NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL
                     }
-                    return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
-                },
-                {
-                    layerFilter: candidate => candidate === this.newsFactMarkerLayer,
-                    hitTolerance: this.NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL
-                }
-            );
+                );
             }
         );
     }
@@ -174,6 +186,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private showNewsFactDetail(newsFactId: string) {
+        this.selectedNewsFactId = newsFactId;
         this.newsFactService.getNewsFactDetail(newsFactId).subscribe(newsFactDetail => {
             const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
             const modalComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
@@ -185,5 +198,17 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         const modalRef = this.modalService.open(NewsFactGroupModalContentComponent, 'news-fact-group-modal');
         const modalComponentInstance = modalRef.componentInstance as NewsFactGroupModalContentComponent;
         modalComponentInstance.setNewsFactNoDetails(newsFactNoDetails);
+    }
+
+    private selectNewsFactIfNeeded() {
+        this.route.queryParamMap.subscribe(params => {
+                const urlSelectedNewsFactId = params.get('selectedNewsFact');
+
+                if (urlSelectedNewsFactId && this.newsFacts.some(newsFact => newsFact.id === urlSelectedNewsFactId)) {
+                    this.showNewsFactDetail(urlSelectedNewsFactId);
+                }
+
+            }
+        );
     }
 }
