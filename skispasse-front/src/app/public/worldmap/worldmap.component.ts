@@ -37,10 +37,11 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     MAP_ID = 'worldmapPageNewsFactsMap';
     NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL = 3;
+    SELECTED_NEWS_FACT_URL_PARAM = 'selectedNewsFact';
 
     private newsFactsMap: Map;
     private newsFactMarkerLayer: VectorLayer;
-    private selectedNewsFactId: string;
+    private selectedNewsFactIds: string[];
 
     newsFacts: NewsFactNoDetail[];
 
@@ -70,7 +71,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.newsFactService.getAll().subscribe(newsFactNoDetails => {
             this.newsFacts = newsFactNoDetails;
             this.buildMap(this.newsFacts);
-            this.selectNewsFactIfNeeded();
+            this.selectNewsFactsIfNeeded();
         });
     }
 
@@ -122,16 +123,22 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
                         const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
                         if (newsFactMarkers.length === 1) { // Single news fact
-                            // this.showNewsFactDetail(newsFactMarkers[0].getNewsFactNoDetail().id);
                             this.router.navigate(
                                 [],
                                 {
                                     relativeTo: this.route,
-                                    queryParams: { selectedNewsFact: newsFactMarkers[0].getNewsFactNoDetail().id },
+                                    queryParams: {[this.SELECTED_NEWS_FACT_URL_PARAM]: newsFactMarkers[0].getNewsFactNoDetail().id},
                                     queryParamsHandling: 'merge', // remove to replace all query params by provided
                                 });
                         } else if (newsFactMarkers.length > 1) { // News fact group
-                            this.showNewsFactGroup(newsFactMarkers.map(marker => marker.getNewsFactNoDetail()));
+                            this.router.navigate(
+                                [],
+                                {
+                                    relativeTo: this.route,
+                                    queryParams: {[this.SELECTED_NEWS_FACT_URL_PARAM]: newsFactMarkers.map(marker => marker.getNewsFactNoDetail().id)},
+                                    queryParamsHandling: 'merge', // remove to replace all query params by provided
+                                });
+                            // this.showNewsFactGroup(newsFactMarkers.map(marker => marker.getNewsFactNoDetail()));
                         }
                         return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
                     },
@@ -186,7 +193,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private showNewsFactDetail(newsFactId: string) {
-        this.selectedNewsFactId = newsFactId;
+        this.selectedNewsFactIds = [newsFactId];
         this.newsFactService.getNewsFactDetail(newsFactId).subscribe(newsFactDetail => {
             const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
             const modalComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
@@ -200,12 +207,18 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         modalComponentInstance.setNewsFactNoDetails(newsFactNoDetails);
     }
 
-    private selectNewsFactIfNeeded() {
+    private selectNewsFactsIfNeeded() {
         this.route.queryParamMap.subscribe(params => {
-                const urlSelectedNewsFactId = params.get('selectedNewsFact');
+                const urlSelectedNewsFactParams = params.getAll(this.SELECTED_NEWS_FACT_URL_PARAM);
+                if (urlSelectedNewsFactParams && urlSelectedNewsFactParams.length > 0) {
 
-                if (urlSelectedNewsFactId && this.newsFacts.some(newsFact => newsFact.id === urlSelectedNewsFactId)) {
-                    this.showNewsFactDetail(urlSelectedNewsFactId);
+                    if (urlSelectedNewsFactParams.length === 1) { //Show news fact detail
+                        this.showNewsFactDetail(urlSelectedNewsFactParams[0]);
+
+                    } else { //Show news fact group
+                        this.showNewsFactGroup(this.newsFacts.filter(newsFact => urlSelectedNewsFactParams.includes(newsFact.id)));
+                    }
+
                 }
 
             }
