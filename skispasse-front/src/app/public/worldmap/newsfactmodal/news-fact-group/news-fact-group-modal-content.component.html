@@ -1,0 +1,53 @@
+<div *ngIf="newsFactNoDetails && allNewsCategories" class="card">
+
+    <div class="card-header">
+        <h5>{{newsFactNoDetails.length}} news facts here, access full information by selecting one below.</h5>
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-striped" aria-describedby="news-fact-group-heading">
+                <thead>
+                <tr>
+                    <th scope="col">
+                        <span>Category</span>
+                    </th>
+                    <th scope="col">
+                        <span>Location coordinate</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let newsFactNoDetail of newsFactNoDetails; trackBy: trackIdentity">
+
+                    <!--News category label-->
+                    <td>
+                                <span class="news-category-badge badge-pill badge-info"
+                                      [ngStyle]="{'background-color': getNewsCategoryColor(newsFactNoDetail)}">
+                                    {{getNewsCategoryLabel(newsFactNoDetail.newsCategoryId)}}
+                                </span>
+                    </td>
+
+                    <!--Location coordinates-->
+                    <td>{{formatLocationCoordinate(newsFactNoDetail.locationCoordinate)}}</td>
+
+                    <!--News fact detail button-->
+                    <td>
+                        <button
+                                class="btn btn-link"
+                                type="submit"
+                                title="Show video and full news fact information"
+                                [routerLink]="['/map']"
+                                [queryParams]="{ selectedNewsFact: newsFactNoDetail.id}"
+                                queryParamsHandling="merge">
+                            Show detail
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
