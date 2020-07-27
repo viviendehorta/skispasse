@@ -6,7 +6,6 @@ import {Subscription} from 'rxjs';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {AccountService} from '../../core/auth/account.service';
 import {NewsFactService} from '../../core/newsfacts/news-fact.service';
-import {NewsFactDetailModalContentComponent} from './news-fact-detail/news-fact-detail-modal.content.component';
 import {NewsCategorySelectionService} from '../../core/newscategory/news-category-selection.service';
 import {ModalService} from '../../core/modal/modal.service';
 import {ROLE_ADMIN, ROLE_CONTRIBUTOR} from '../../shared/constants/role.constants';
@@ -24,7 +23,6 @@ import {
     SMALL_MARKER_ICON_SIZE_IN_PIXEL,
     SMALL_MULTIPLE_NEWS_FACTS_STYLE
 } from "../../core/map/marker-style.constants";
-import {NewsFactGroupModalContentComponent} from "./news-fact-group/news-fact-group-modal.content.component";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
@@ -37,11 +35,9 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     MAP_ID = 'worldmapPageNewsFactsMap';
     NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL = 3;
-    SELECTED_NEWS_FACT_URL_PARAM = 'selectedNewsFact';
 
     private newsFactsMap: Map;
     private newsFactMarkerLayer: VectorLayer;
-    private selectedNewsFactIds: string[];
 
     newsFacts: NewsFactNoDetail[];
 
@@ -71,7 +67,6 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.newsFactService.getAll().subscribe(newsFactNoDetails => {
             this.newsFacts = newsFactNoDetails;
             this.buildMap(this.newsFacts);
-            this.selectNewsFactsIfNeeded();
         });
     }
 
@@ -124,20 +119,9 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
                         const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
                         if (newsFactMarkers.length === 1) { // Single news fact
                             this.router.navigate(
-                                [],
-                                {
-                                    relativeTo: this.route,
-                                    queryParams: {[this.SELECTED_NEWS_FACT_URL_PARAM]: newsFactMarkers[0].getNewsFactNoDetail().id},
-                                    queryParamsHandling: 'merge', // remove to replace all query params by provided
-                                });
+                                ['', {outlets: {modal: ['newsfact', newsFactMarkers[0].getNewsFactNoDetail().id]}}]);
                         } else if (newsFactMarkers.length > 1) { // News fact group
-                            this.router.navigate(
-                                [],
-                                {
-                                    relativeTo: this.route,
-                                    queryParams: {[this.SELECTED_NEWS_FACT_URL_PARAM]: newsFactMarkers.map(marker => marker.getNewsFactNoDetail().id)},
-                                    queryParamsHandling: 'merge', // remove to replace all query params by provided
-                                });
+                            this.router.navigate(["newsfact"]);
                             // this.showNewsFactGroup(newsFactMarkers.map(marker => marker.getNewsFactNoDetail()));
                         }
                         return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
@@ -192,36 +176,36 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         cluster.getSource().addFeatures(this.newsFactMarkerService.toNewsFactMarkers(newsFacts));
     }
 
-    private showNewsFactDetail(newsFactId: string) {
-        this.selectedNewsFactIds = [newsFactId];
-        this.newsFactService.getNewsFactDetail(newsFactId).subscribe(newsFactDetail => {
-            const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
-            const modalComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
-            modalComponentInstance.setNewsFactDetail(newsFactDetail);
-        });
-    }
-
-    private showNewsFactGroup(newsFactNoDetails: NewsFactNoDetail[]) {
-        const modalRef = this.modalService.open(NewsFactGroupModalContentComponent, 'news-fact-group-modal');
-        const modalComponentInstance = modalRef.componentInstance as NewsFactGroupModalContentComponent;
-        modalComponentInstance.setNewsFactNoDetails(newsFactNoDetails);
-    }
-
-    private selectNewsFactsIfNeeded() {
-        this.route.queryParamMap.subscribe(params => {
-                const urlSelectedNewsFactParams = params.getAll(this.SELECTED_NEWS_FACT_URL_PARAM);
-                if (urlSelectedNewsFactParams && urlSelectedNewsFactParams.length > 0) {
-
-                    if (urlSelectedNewsFactParams.length === 1) { //Show news fact detail
-                        this.showNewsFactDetail(urlSelectedNewsFactParams[0]);
-
-                    } else { //Show news fact group
-                        this.showNewsFactGroup(this.newsFacts.filter(newsFact => urlSelectedNewsFactParams.includes(newsFact.id)));
-                    }
-
-                }
-
-            }
-        );
-    }
+    // private showNewsFactDetail(newsFactId: string) {
+    //     this.selectedNewsFactIds = [newsFactId];
+    //     this.newsFactService.getNewsFactDetail(newsFactId).subscribe(newsFactDetail => {
+    //         const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
+    //         const modalComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
+    //         modalComponentInstance.setNewsFactDetail(newsFactDetail);
+    //     });
+    // }
+    //
+    // private showNewsFactGroup(newsFactNoDetails: NewsFactNoDetail[]) {
+    //     const modalRef = this.modalService.open(NewsFactGroupModalContentComponent, 'news-fact-group-modal');
+    //     const modalComponentInstance = modalRef.componentInstance as NewsFactGroupModalContentComponent;
+    //     modalComponentInstance.setNewsFactNoDetails(newsFactNoDetails);
+    // }
+    //
+    // private selectNewsFactsIfNeeded() {
+    //     this.route.queryParamMap.subscribe(params => {
+    //             const urlSelectedNewsFactParams = params.getAll(this.SELECTED_NEWS_FACT_URL_PARAM);
+    //             if (urlSelectedNewsFactParams && urlSelectedNewsFactParams.length > 0) {
+    //
+    //                 if (urlSelectedNewsFactParams.length === 1) { //Show news fact detail
+    //                     this.showNewsFactDetail(urlSelectedNewsFactParams[0]);
+    //
+    //                 } else { //Show news fact group
+    //                     this.showNewsFactGroup(this.newsFacts.filter(newsFact => urlSelectedNewsFactParams.includes(newsFact.id)));
+    //                 }
+    //
+    //             }
+    //
+    //         }
+    //     );
+    // }
 }

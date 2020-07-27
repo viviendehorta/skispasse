@@ -7,9 +7,9 @@ import {AdminPanelComponent} from './admin-panel/admin-panel.component';
 import {ContributorPanelComponent} from './contributor-panel/contributor-panel.component';
 import {NewsCategoryPanelComponent} from './news-category-panel/news-category-panel.component';
 import {NewsCategoryCheckboxComponent} from './news-category-panel/news-category-checkbox/news-category-checkbox.component';
-import {NewsFactDetailModalContentComponent} from './news-fact-detail/news-fact-detail-modal.content.component';
 import {SkispasseSharedModule} from '../../shared/shared.module';
-import {NewsFactGroupModalContentComponent} from "./news-fact-group/news-fact-group-modal.content.component";
+import {NewsFactDetailModalContentComponent} from "./newsfactmodal/news-fact-detail/news-fact-detail-modal.content.component";
+import {NewsFactGroupModalContentComponent} from "./newsfactmodal/news-fact-group/news-fact-group-modal.content.component";
 
 @NgModule({
   declarations: [
