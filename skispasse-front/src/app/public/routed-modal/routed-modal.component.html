@@ -1,0 +1,11 @@
+<div class="modal fade" id="routedModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <router-outlet
+                        name="modal"
+                        (activate)='open()'></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>
