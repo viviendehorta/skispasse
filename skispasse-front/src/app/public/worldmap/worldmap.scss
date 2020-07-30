@@ -16,10 +16,23 @@ Worldmap styles
   }
 
   .control-panel {
+
     padding: 0;
 
     .control-panel-title {
       font-size: 1rem;
+    }
+
+    .card {
+      margin: 0.3rem;
+    }
+
+    .card-body {
+      padding: 1rem;
+    }
+
+    .form-check {
+      padding-left: 0;
     }
   }
 }

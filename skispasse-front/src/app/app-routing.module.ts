@@ -8,12 +8,14 @@ import {ROLE_ADMIN, ROLE_CONTRIBUTOR, ROLE_USER} from './shared/constants/role.c
 import {environment} from '../environments/environment';
 import {NewsFactDetailModalContentComponent} from "./public/worldmap/newsfactmodal/news-fact-detail/news-fact-detail-modal.content.component";
 import {NewsFactService} from "./core/newsfacts/news-fact.service";
-import {NewsFactDetail} from "./shared/model/news-fact-detail.model";
+import {INewsFactDetail, NewsFactDetail} from "./shared/model/news-fact-detail.model";
+import {NewsFactGroupModalContentComponent} from "./public/worldmap/newsfactmodal/news-fact-group/news-fact-group-modal.content.component";
+import {NewsFactNoDetail} from "./shared/model/news-fact-no-detail.model";
 
 const LAYOUT_ROUTES = [...errorRoute];
 
 @Injectable({ providedIn: 'root' })
-export class NewsFactResolve implements Resolve<any> {
+export class NewsFactResolve implements Resolve<INewsFactDetail> {
     constructor(private newsFactService: NewsFactService) {}
 
     resolve(route: ActivatedRouteSnapshot) {
@@ -25,15 +27,36 @@ export class NewsFactResolve implements Resolve<any> {
     }
 }
 
+@Injectable({ providedIn: 'root' })
+export class NewsFactGroupResolve implements Resolve<NewsFactNoDetail[]> {
+    constructor(private newsFactService: NewsFactService) {}
+
+    resolve(route: ActivatedRouteSnapshot) {
+        const rawIds = route.params.ids as string;
+        if (rawIds) {
+            return this.newsFactService.getByIds(rawIds.split(','));
+        }
+        return [];
+    }
+}
+
 @NgModule({
     imports: [
         RouterModule.forRoot([
                 {
-                    path: 'newsfact/:id',
+                    path: 'newsFact/:id',
                     component: NewsFactDetailModalContentComponent,
                     outlet: 'modal',
                     resolve: {
                         newsFact: NewsFactResolve
+                    }
+                },
+                {
+                    path: 'newsFactGroup/:ids',
+                    component: NewsFactGroupModalContentComponent,
+                    outlet: 'modal',
+                    resolve: {
+                        newsFacts: NewsFactGroupResolve
                     }
                 },
                 {
