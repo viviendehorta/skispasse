@@ -8,9 +8,10 @@ import {WorldmapModule} from './public/worldmap/worldmap.module';
 import {SkisMainComponent} from './main/main.component';
 import {ErrorComponent} from './shared/error/error.component';
 import {LoginModalComponent} from './public/login/login.component';
+import {RoutedModalComponent} from "./public/routed-modal/routed-modal.component";
 
 @NgModule({
-  declarations: [SkisMainComponent, ErrorComponent, LoginModalComponent],
+  declarations: [SkisMainComponent, ErrorComponent, LoginModalComponent, RoutedModalComponent],
   bootstrap: [SkisMainComponent],
   entryComponents: [LoginModalComponent],
   imports: [
