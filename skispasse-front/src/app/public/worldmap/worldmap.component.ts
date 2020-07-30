@@ -109,30 +109,56 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     private subscribeToNewsFactMarkerClick() {
         this.newsFactsMap.on('click', (evt: MapBrowserEvent) => {
 
-                //Uncomment to display coordinates of clicked pixel
-                // console.log('Coordinates: ' + JSON.stringify(evt.coordinate));
+            //Uncomment to display coordinates of clicked pixel
+            // console.log('Coordinates: ' + JSON.stringify(evt.coordinate));
 
-                this.newsFactsMap.forEachFeatureAtPixel(
-                    evt.pixel,
-                    (clickedClusterFeature: Feature) => {
-                        this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
-                        const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
-                        if (newsFactMarkers.length === 1) { // Single news fact
-                            this.router.navigate(
-                                ['', {outlets: {modal: ['newsfact', newsFactMarkers[0].getNewsFactNoDetail().id]}}]);
-                        } else if (newsFactMarkers.length > 1) { // News fact group
-                            this.router.navigate(["newsfact"]);
-                            // this.showNewsFactGroup(newsFactMarkers.map(marker => marker.getNewsFactNoDetail()));
-                        }
-                        return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
-                    },
-                    {
-                        layerFilter: candidate => candidate === this.newsFactMarkerLayer,
-                        hitTolerance: this.NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL
+            this.newsFactsMap.forEachFeatureAtPixel(
+                evt.pixel,
+                (clickedClusterFeature: Feature) => {
+                    this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
+                    const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
+                    if (newsFactMarkers.length === 1) { // Single news fact
+                        this.router.navigate(WorldmapComponent.getNewsFactDetailUrl(newsFactMarkers[0])); //TODO create OutletUrlBuilderService
+                    } else if (newsFactMarkers.length > 1) { // News fact group
+                        this.router.navigate(WorldmapComponent.getNewsFactGroupUrl(newsFactMarkers)); //TODO create OutletUrlBuilderService
                     }
-                );
+                    return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
+                },
+                {
+                    layerFilter: candidate => candidate === this.newsFactMarkerLayer,
+                    hitTolerance: this.NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL
+                }
+            );
+
+        });
+    }
+
+    private static getNewsFactDetailUrl(newsFactMarker: NewsFactMarker): any[] {
+        return [
+            '',
+            {
+                outlets: {
+                    modal: [
+                        'newsFact',
+                        newsFactMarker.getNewsFactNoDetail().id
+                    ]
+                }
             }
-        );
+        ];
+    }
+
+    private static getNewsFactGroupUrl(newsFactMarkers: NewsFactMarker[]): any[] {
+        return [
+            '',
+            {
+                outlets: {
+                    modal: [
+                        "newsFactGroup",
+                        newsFactMarkers.map(marker => marker.getNewsFactNoDetail().id).join(',')
+                    ]
+                }
+            }
+        ];
     }
 
     private buildView(center: number[], zoom: number): View {

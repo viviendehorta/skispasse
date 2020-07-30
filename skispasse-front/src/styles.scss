@@ -10,20 +10,12 @@ Libraries styles
 
 
 /* ==========================================================================
-Styles shared by several components
+Global styles
 ========================================================================== */
-.control-panel {
-  .card {
-    margin: 0.3rem;
-  }
 
-  .card-body {
-    padding: 1rem;
-  }
-
-  .form-check {
-    padding-left: 0;
-  }
+.news-category-badge {
+  font-size: 1.1rem;
+  padding: 0.4rem 1.5rem 0.4rem 1.5rem;
 }
 
 body {

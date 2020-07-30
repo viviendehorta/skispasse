@@ -1,10 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Router} from "@angular/router";
+
 declare var $: any;
 
 @Component({
     selector: 'skis-map-modal',
-    templateUrl: './map-modal.component.html'
+    templateUrl: './map-modal.component.html',
+    styleUrls: ['./map-modal.component.scss']
 })
 export class MapModalComponent implements OnInit {
 

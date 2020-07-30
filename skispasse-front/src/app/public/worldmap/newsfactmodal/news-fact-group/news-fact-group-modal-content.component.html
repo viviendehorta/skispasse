@@ -38,9 +38,8 @@
                                 class="btn btn-link"
                                 type="submit"
                                 title="Show video and full news fact information"
-                                [routerLink]="['/map']"
-                                [queryParams]="{ selectedNewsFact: newsFactNoDetail.id}"
-                                queryParamsHandling="merge">
+                                [routerLink]="['',{outlets: {modal: ['newsFact',newsFactNoDetail.id]}}]"
+                        >
                             Show detail
                         </button>
                     </td>
