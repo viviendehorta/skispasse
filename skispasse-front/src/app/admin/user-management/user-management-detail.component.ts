@@ -4,8 +4,7 @@ import { User } from '../../shared/model/user.model';
 
 @Component({
   selector: 'skis-user-mgmt-detail',
-  templateUrl: './user-management-detail.component.html',
-  styleUrls: ['./user-management-detail.component.scss']
+  templateUrl: './user-management-detail.component.html'
 })
 export class UserManagementDetailComponent implements OnInit {
   user: User;

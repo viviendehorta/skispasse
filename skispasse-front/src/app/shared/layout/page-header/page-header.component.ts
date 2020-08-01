@@ -3,8 +3,7 @@ import {Location} from "@angular/common";
 
 @Component({
   selector: 'skis-page-header',
-  templateUrl: './page-header.component.html',
-  styleUrls: ['./page-header.component.scss']
+  templateUrl: './page-header.component.html'
 })
 export class PageHeaderComponent implements OnInit {
 
