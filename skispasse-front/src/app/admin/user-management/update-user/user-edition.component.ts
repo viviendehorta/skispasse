@@ -7,8 +7,7 @@ import {UserService} from "../../../core/user/user.service";
 
 @Component({
     selector: 'skis-user-edition',
-    templateUrl: './user-edition.component.html',
-    styleUrls: ['user-edition.component.scss']
+    templateUrl: './user-edition.component.html'
 })
 export class UserEditionComponent implements OnInit, OnDestroy {
     user: IUser;

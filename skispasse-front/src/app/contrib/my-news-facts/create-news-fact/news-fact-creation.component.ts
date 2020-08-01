@@ -7,8 +7,7 @@ import {EventManager} from "../../../core/events/event-manager";
 
 @Component({
     selector: 'skis-news-fact-creation',
-    templateUrl: './news-fact-creation.component.html',
-    styleUrls: ['news-fact-creation.component.scss']
+    templateUrl: './news-fact-creation.component.html'
 })
 export class NewsFactCreationComponent implements OnInit, OnDestroy {
 

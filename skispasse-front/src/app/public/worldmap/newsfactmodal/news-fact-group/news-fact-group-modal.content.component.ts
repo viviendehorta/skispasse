@@ -7,9 +7,7 @@ import {ILocationCoordinate} from "../../../../shared/model/location-coordinate.
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
-    templateUrl: './news-fact-group-modal-content.component.html',
-    styleUrls: ['./news-fact-group-modal-content.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    templateUrl: './news-fact-group-modal-content.component.html'
 })
 export class NewsFactGroupModalContentComponent implements OnInit {
 

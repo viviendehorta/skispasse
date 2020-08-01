@@ -17,8 +17,7 @@ import {HTML_COLOR_BY_NEWS_CATEGORY} from "../../core/map/news-category-color.co
 
 @Component({
     selector: 'skis-news-fact-management',
-    templateUrl: './my-news-facts.component.html',
-    styleUrls: ['./my-news-facts.component.scss']
+    templateUrl: './my-news-facts.component.html'
 })
 export class MyNewsFactsComponent implements OnInit {
 
