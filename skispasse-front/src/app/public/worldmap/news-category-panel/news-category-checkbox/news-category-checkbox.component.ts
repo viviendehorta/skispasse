@@ -6,7 +6,6 @@ import {SMALL_PNG_BY_NEWS_CATEGORY} from "../../../../core/map/marker-style.cons
 @Component({
   selector: 'skis-news-category-checkbox',
   templateUrl: './news-category-checkbox.component.html',
-  styleUrls: ['news-category-checkbox.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class NewsCategoryCheckboxComponent {

@@ -10,8 +10,7 @@ import {UserAccount} from "../../../shared/model/account.model";
 
 @Component({
   selector: 'skis-account-panel',
-  templateUrl: './account-panel.component.html',
-  styleUrls: ['./account-panel.component.scss']
+  templateUrl: './account-panel.component.html'
 })
 export class AccountPanelComponent implements OnInit {
 

@@ -7,8 +7,7 @@ import {Subscription} from "rxjs";
 
 @Component({
   selector: 'skis-main',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.scss']
+  templateUrl: './main.component.html'
 })
 export class SkisMainComponent implements OnInit, OnDestroy {
 

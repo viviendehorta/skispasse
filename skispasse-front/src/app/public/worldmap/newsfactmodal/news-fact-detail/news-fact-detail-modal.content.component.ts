@@ -5,8 +5,7 @@ import {HTML_COLOR_BY_NEWS_CATEGORY} from "../../../../core/map/news-category-co
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
-    templateUrl: './news-fact-detail-modal-content.component.html',
-    styleUrls: ['./news-fact-detail-modal-content.component.scss'],
+    templateUrl: './news-fact-detail-modal-content.component.html'
 })
 export class NewsFactDetailModalContentComponent implements OnInit {
 

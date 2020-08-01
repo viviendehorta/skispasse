@@ -5,8 +5,7 @@ declare var $: any;
 
 @Component({
     selector: 'skis-map-modal',
-    templateUrl: './map-modal.component.html',
-    styleUrls: ['./map-modal.component.scss']
+    templateUrl: './map-modal.component.html'
 })
 export class MapModalComponent implements OnInit {
 

@@ -28,7 +28,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 @Component({
     selector: 'skis-worldmap',
     templateUrl: './worldmap.component.html',
-    styleUrls: ['./worldmap.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {

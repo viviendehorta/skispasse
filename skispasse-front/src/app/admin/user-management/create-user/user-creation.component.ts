@@ -7,8 +7,7 @@ import {IUser} from "../../../shared/model/user.model";
 
 @Component({
     selector: 'skis-user-creation',
-    templateUrl: './user-creation.component.html',
-    styleUrls: ['user-creation.component.scss']
+    templateUrl: './user-creation.component.html'
 })
 export class UserCreationComponent implements OnInit, OnDestroy {
 
