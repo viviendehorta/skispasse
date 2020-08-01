@@ -5,8 +5,7 @@ import {NewsCategorySelectionService} from '../../../core/newscategory/news-cate
 
 @Component({
   selector: 'skis-news-category-panel',
-  templateUrl: './news-category-panel.component.html',
-  styleUrls: ['./news-category-panel.component.scss']
+  templateUrl: './news-category-panel.component.html'
 })
 export class NewsCategoryPanelComponent implements OnInit {
   newsCategorySelections: NewsCategorySelection[];

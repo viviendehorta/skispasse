@@ -8,8 +8,7 @@ import {INewsFactWithFile} from "../news-fact-form/news-fact-with-file.model";
 
 @Component({
     selector: 'skis-news-fact-edition',
-    templateUrl: './news-fact-edition.component.html',
-    styleUrls: ['news-fact-edition.component.scss']
+    templateUrl: './news-fact-edition.component.html'
 })
 export class NewsFactEditionComponent implements OnInit, OnDestroy {
     newsFact: INewsFactDetail;
