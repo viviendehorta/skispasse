@@ -8,8 +8,8 @@
 
     <div class="card-body">
         <skis-alert></skis-alert>
-        <div class="table-responsive">
-            <table class="table table-striped" aria-describedby="my-news-facts-page-heading">
+        <div class="table">
+            <table class="table table-striped">
                 <thead>
                 <tr skisSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
                     <th scope="col" skisSortBy="id"><span>Id</span>

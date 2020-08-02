@@ -1,4 +1,4 @@
-<div *ngIf="newsFactNoDetails && allNewsCategories" class="card">
+<div *ngIf="newsFactNoDetails && allNewsCategories" class="news-fact-group card">
 
     <div class="card-header">
         <h5>{{newsFactNoDetails.length}} news facts here, access full information by selecting one below.</h5>
@@ -6,8 +6,8 @@
 
     <div class="card-body">
 
-        <div class="table-responsive">
-            <table class="table table-striped" aria-describedby="news-fact-group-heading">
+        <div class="table">
+            <table class="table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">
