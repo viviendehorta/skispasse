@@ -5,7 +5,6 @@ import {AlertComponent} from './alert/alert.component';
 import {AlertErrorComponent} from './alert/alert-error.component';
 import {SortDirective} from './sort/sort.directive';
 import {SortByDirective} from './sort/sort-by.directive';
-import {ItemCountComponent} from './pagination/item-count/item-count.component';
 import {BooleanFieldComponent} from './form/boolean-field/boolean-field.component';
 import {VideoPlayerComponent} from "./video/video-player.component";
 import {PageHeaderComponent} from "./layout/page-header/page-header.component";
@@ -17,7 +16,6 @@ import {RouterModule} from "@angular/router";
         AlertErrorComponent,
         BooleanFieldComponent,
         FindLanguageFromKeyPipe,
-        ItemCountComponent,
         PageHeaderComponent,
         SortDirective,
         SortByDirective,
@@ -29,7 +27,6 @@ import {RouterModule} from "@angular/router";
         AlertErrorComponent,
         BooleanFieldComponent,
         FindLanguageFromKeyPipe,
-        ItemCountComponent,
         PageHeaderComponent,
         SharedLibsModule,
         SortDirective,

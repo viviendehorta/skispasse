@@ -74,7 +74,7 @@
 
 
 /* =====================================
-            Map modal
+            Routed Modal
 ===================================== */
 $modalHeight: 32rem;
 
@@ -124,6 +124,13 @@ $modalHeight: 32rem;
 
         .news-fact-group {
           height: 100%;
+
+          table {
+            td {
+              padding: 0.5rem;
+              vertical-align: middle;
+            }
+          }
         }
       }
     }
@@ -193,6 +200,9 @@ ul#strength {
 
 
 .pagination {
+
+  margin-bottom: 0;
+
   .disabled {
     .page-link {
       color: #dee2e6;
