@@ -4,9 +4,8 @@ import {HttpResponse} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {INewsFactDetail} from '../../shared/model/news-fact-detail.model';
-import {ITEMS_PER_PAGE} from '../../shared/constants/pagination.constants';
+import {BASIC_PAGE_ITEM_COUNT} from '../../shared/constants/pagination.constants';
 import {UserAccount} from '../../shared/model/account.model';
-import {INewsFactPage, NewsFactPage} from '../../shared/model/news-fact-page.model';
 import {ILocationCoordinate} from '../../shared/model/location-coordinate.model';
 import {DeleteNewsFactDialogComponent} from './delete-news-fact-dialog/delete-news-fact-dialog.component';
 import {AccountService} from '../../core/auth/account.service';
@@ -14,6 +13,7 @@ import {NewsFactService} from '../../core/newsfacts/news-fact.service';
 import {EventManager} from '../../core/events/event-manager';
 import {AlertService} from '../../core/alert/alert.service';
 import {HTML_COLOR_BY_NEWS_CATEGORY} from "../../core/map/news-category-color.constants";
+import {Page} from "../../shared/model/page.model";
 
 @Component({
     selector: 'skis-news-fact-management',
@@ -42,7 +42,7 @@ export class MyNewsFactsComponent implements OnInit {
         private modalService: NgbModal,
         private eventManager: EventManager
     ) {
-        this.itemsPerPage = ITEMS_PER_PAGE;
+        this.itemsPerPage = BASIC_PAGE_ITEM_COUNT;
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
@@ -70,7 +70,7 @@ export class MyNewsFactsComponent implements OnInit {
                 size: this.itemsPerPage,
                 sort: this.sort()
             })
-            .subscribe((newsFactPage: NewsFactPage) => this.onSuccess(newsFactPage), (res: HttpResponse<any>) => this.onError(res.body));
+            .subscribe((newsFactPage: Page) => this.onSuccess(newsFactPage), (res: HttpResponse<any>) => this.onError(res.body));
     }
 
     sort() {
@@ -103,10 +103,10 @@ export class MyNewsFactsComponent implements OnInit {
         }
     }
 
-    private onSuccess(newsFactPage: INewsFactPage) {
+    private onSuccess(newsFactPage: Page) {
         this.links = newsFactPage.links;
         this.totalItems = newsFactPage.itemCount;
-        this.myNewsFacts = newsFactPage.newsFactDetails;
+        this.myNewsFacts = newsFactPage.items;
     }
 
     private onError(error) {

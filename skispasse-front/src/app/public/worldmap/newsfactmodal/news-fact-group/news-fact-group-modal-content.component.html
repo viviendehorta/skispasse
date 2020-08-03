@@ -1,7 +1,7 @@
 <div *ngIf="newsFactNoDetails && allNewsCategories" class="news-fact-group card">
 
     <div class="card-header">
-        <h5>{{newsFactNoDetails.length}} news facts here, access full information by selecting one below.</h5>
+        <h5>{{newsFactNoDetails.length}} news facts here, access detail to see more.</h5>
     </div>
 
     <div class="card-body">
@@ -19,7 +19,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let newsFactNoDetail of newsFactNoDetails; trackBy: trackIdentity">
+                <tr *ngFor="let newsFactNoDetail of newsFactPageItems; trackBy: trackIdentity">
 
                     <!--News category label-->
                     <td>
@@ -38,8 +38,7 @@
                                 class="btn btn-link"
                                 type="submit"
                                 title="Show video and full news fact information"
-                                [routerLink]="['',{outlets: {modal: ['newsFact',newsFactNoDetail.id]}}]"
-                        >
+                                [routerLink]="['',{outlets: {modal: ['newsFact',newsFactNoDetail.id]}}]">
                             Show detail
                         </button>
                     </td>
@@ -47,6 +46,20 @@
                 </tbody>
             </table>
         </div>
+    </div>
 
+    <div class="card-footer">
+        <div *ngIf="newsFactNoDetails" class="row justify-content-center">
+            <ngb-pagination
+                    [(page)]="newsFactPageIndex"
+                    [pageSize]="NEWS_FACT_PAGE_SIZE"
+                    [collectionSize]="newsFactNoDetails.length"
+                    [maxSize]="3"
+                    [rotate]="true"
+                    [ellipses]="false"
+                    [boundaryLinks]="true"
+            (pageChange)="loadNewsFactPage($event)"
+            ></ngb-pagination>
+        </div>
     </div>
 </div>

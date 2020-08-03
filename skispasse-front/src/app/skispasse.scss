@@ -90,36 +90,40 @@ $modalHeight: 32rem;
       .modal-body {
         padding: 0;
         margin-bottom: 0;
-      }
 
-      $newsFactDetailInfoHeight: 3.5rem;
+        $newsFactDetailInfoHeight: 3.5rem;
 
-      .news-fact-detail {
+        .news-fact-detail {
 
-        vg-player {
-          height: calc(#{$modalHeight} - #{$newsFactDetailInfoHeight});
-        }
+          vg-player {
+            height: calc(#{$modalHeight} - #{$newsFactDetailInfoHeight});
+          }
 
-        .news-fact-detail-info-panel {
+          .news-fact-detail-info-panel {
 
-          height: $newsFactDetailInfoHeight;
-          padding: 0.8rem;
+            height: $newsFactDetailInfoHeight;
+            padding: 0.8rem;
 
-          .news-fact-detail-info-left-col {
-            align-self: center;
-            font-size: 0.9rem;
+            .news-fact-detail-info-left-col {
+              align-self: center;
+              font-size: 0.9rem;
 
-            .news-fact-detail-info-text {
-              display: inline-block;
-              margin-right: 2rem;
+              .news-fact-detail-info-text {
+                display: inline-block;
+                margin-right: 2rem;
+              }
+            }
+
+            .news-fact-detail-info-right-col {
+              align-self: center;
+              text-align: right;
+              padding-right: 2rem;
             }
           }
+        }
 
-          .news-fact-detail-info-right-col {
-            align-self: center;
-            text-align: right;
-            padding-right: 2rem;
-          }
+        .news-fact-group {
+          height: 100%;
         }
       }
     }
@@ -161,7 +165,7 @@ ul#strength {
 
 
 /* =====================================
-            Reusable components
+            Global styles
 ===================================== */
 
 .card-header {
@@ -187,6 +191,14 @@ ul#strength {
   padding: 0.4rem 1.5rem 0.4rem 1.5rem;
 }
 
+
+.pagination {
+  .disabled {
+    .page-link {
+      color: #dee2e6;
+    }
+  }
+}
 
 
 /* =====================================

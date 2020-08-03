@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NewsFactNoDetail} from "../../../../shared/model/news-fact-no-detail.model";
 import {NewsCategory} from "../../../../shared/model/news-category.model";
 import {NewsCategoryService} from "../../../../core/newscategory/news-category.service";
@@ -11,25 +11,32 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class NewsFactGroupModalContentComponent implements OnInit {
 
-    newsFactNoDetails: NewsFactNoDetail[];
+    NEWS_FACT_PAGE_SIZE = 4;
+
     allNewsCategories: NewsCategory[];
+    newsFactNoDetails: NewsFactNoDetail[];
+    newsFactPageIndex: number;
+    newsFactPageItems: NewsFactNoDetail[];
 
     constructor(
         private newsCategoryService: NewsCategoryService,
         private route: ActivatedRoute
-        ) {
+    ) {
     }
 
     ngOnInit() {
         this.route.data.subscribe((data) => {
-            this.newsFactNoDetails = data.newsFacts;
+
             this.newsCategoryService.fetchNewsCategories().subscribe(newsCategories => {
-                return this.allNewsCategories = newsCategories;
+                this.allNewsCategories = newsCategories;
+                this.newsFactNoDetails = data.newsFacts;
+                this.newsFactPageIndex = 1;
+                this.loadNewsFactPage(1);
             });
         });
     }
 
-    getNewsCategoryColor(newsFactNoDetail: NewsFactNoDetail):string {
+    getNewsCategoryColor(newsFactNoDetail: NewsFactNoDetail): string {
         return HTML_COLOR_BY_NEWS_CATEGORY[newsFactNoDetail.newsCategoryId];
     }
 
@@ -43,5 +50,10 @@ export class NewsFactGroupModalContentComponent implements OnInit {
 
     formatLocationCoordinate(locationCoordinate: ILocationCoordinate) {
         return '[' + locationCoordinate.x + '; ' + locationCoordinate.y + ']';
+    }
+
+    loadNewsFactPage(pageIndex: number) {
+        const startIndex = (pageIndex - 1) * this.NEWS_FACT_PAGE_SIZE;
+        this.newsFactPageItems = this.newsFactNoDetails.slice(startIndex, startIndex + this.NEWS_FACT_PAGE_SIZE);
     }
 }

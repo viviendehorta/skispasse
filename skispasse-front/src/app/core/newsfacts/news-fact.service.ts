@@ -2,15 +2,15 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
-import {filter, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {LocationCoordinate} from '../../shared/model/location-coordinate.model';
 import {INewsFactDetail, NewsFactDetail} from '../../shared/model/news-fact-detail.model';
-import {INewsFactPage, NewsFactPage} from '../../shared/model/news-fact-page.model';
 import {NewsFactNoDetail} from '../../shared/model/news-fact-no-detail.model';
 import {createHttpPagingOptions} from '../../shared/util/request-util';
 import {PaginationService} from '../pagination/pagination.service';
 import {environment} from '../../../environments/environment';
 import {INewsFactWithFile} from "../../contrib/my-news-facts/news-fact-form/news-fact-with-file.model";
+import {Page} from "../../shared/model/page.model";
 
 @Injectable({providedIn: 'root'})
 export class NewsFactService {
@@ -35,7 +35,7 @@ export class NewsFactService {
         );
     }
 
-    getByUser(userLogin: string, pagingParams?: any): Observable<INewsFactPage> {
+    getByUser(userLogin: string, pagingParams?: any): Observable<Page> {
         const httpPagingOptions = createHttpPagingOptions(pagingParams);
         return this.http
             .get<any[]>(this.resourceUrl + 'contributor', {
@@ -47,7 +47,7 @@ export class NewsFactService {
                     const newsFactDetails = this.parseNewsFactDetails(httpResponse.body);
                     const itemCount = httpResponse.headers.get('X-Total-Count');
                     const links = this.paginationService.parseHeaderLinks(httpResponse.headers.get('link'));
-                    return new NewsFactPage(newsFactDetails, itemCount, links);
+                    return new Page(newsFactDetails, itemCount, links);
                 })
             );
     }

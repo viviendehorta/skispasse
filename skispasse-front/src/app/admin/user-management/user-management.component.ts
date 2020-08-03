@@ -9,7 +9,7 @@ import {UserManagementDeleteDialogComponent} from './user-management-delete-dial
 import {UserService} from '../../core/user/user.service';
 import {AccountService} from '../../core/auth/account.service';
 import {User} from '../../shared/model/user.model';
-import {ITEMS_PER_PAGE} from '../../shared/constants/pagination.constants';
+import {BASIC_PAGE_ITEM_COUNT} from '../../shared/constants/pagination.constants';
 import {EventManager} from '../../core/events/event-manager';
 import {PaginationService} from '../../core/pagination/pagination.service';
 import {AlertService} from '../../core/alert/alert.service';
@@ -44,7 +44,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     private eventManager: EventManager,
     private modalService: NgbModal
   ) {
-    this.itemsPerPage = ITEMS_PER_PAGE;
+    this.itemsPerPage = BASIC_PAGE_ITEM_COUNT;
     this.routeData = this.activatedRoute.data.subscribe(data => {
       this.page = data.pagingParams.page;
       this.previousPage = data.pagingParams.page;
