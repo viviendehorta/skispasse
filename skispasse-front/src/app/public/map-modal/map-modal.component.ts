@@ -11,6 +11,7 @@ export class MapModalComponent implements OnInit {
 
     ROUTED_MODAL_ID = 'routedModal';
     mapModal: any;
+    routerOutlet: any;
 
     constructor(
         private router:Router
@@ -25,7 +26,14 @@ export class MapModalComponent implements OnInit {
         })
     }
 
-    onModalOutletActivated() {
+    onModalOutletOn() {
         this.mapModal.modal('show');
+    }
+
+    /* Mainly used to hide the popup when going back or up in the history to pages that don't use the popup */
+    onChange() {
+        if (!this.routerOutlet.isActivated) {
+            this.mapModal.modal('hide');
+        }
     }
 }
