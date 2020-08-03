@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import Map from 'ol/Map';
 import {Vector as VectorLayer} from 'ol/layer';
 import {Feature, MapBrowserEvent} from 'ol';
@@ -27,8 +27,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'skis-worldmap',
-    templateUrl: './worldmap.component.html',
-    encapsulation: ViewEncapsulation.None
+    templateUrl: './worldmap.component.html'
 })
 export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
 

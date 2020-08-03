@@ -1,1 +1,1 @@
-export const ITEMS_PER_PAGE = 20;
+export const BASIC_PAGE_ITEM_COUNT = 5;

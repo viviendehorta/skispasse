@@ -29,11 +29,4 @@ export class ItemCountComponent {
    *  Number of items per page.
    */
   @Input() itemsPerPage: number;
-
-  // TODO To remove
-  i18nEnabled: boolean;
-
-  constructor() {
-    this.i18nEnabled = false;
-  }
 }
