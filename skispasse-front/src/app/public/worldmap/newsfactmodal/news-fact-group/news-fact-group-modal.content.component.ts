@@ -11,7 +11,7 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class NewsFactGroupModalContentComponent implements OnInit {
 
-    NEWS_FACT_PAGE_SIZE = 4;
+    NEWS_FACT_PAGE_SIZE = 5;
 
     allNewsCategories: NewsCategory[];
     newsFactNoDetails: NewsFactNoDetail[];

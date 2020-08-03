@@ -2,12 +2,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <router-outlet
-                        name="modal"
-                        (activate)="onModalOutletOn()"
-                        [ngModel]="routerOutlet"
-                        (change)="onChange()"
-                ></router-outlet>
+                <router-outlet name="modal"></router-outlet>
             </div>
         </div>
     </div>

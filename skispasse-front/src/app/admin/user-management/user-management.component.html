@@ -82,14 +82,9 @@
     </div>
 
     <div class="card-footer">
-        <div *ngIf="users">
-            <div class="row justify-content-center">
-                <skis-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></skis-item-count>
-            </div>
-            <div class="row justify-content-center">
-                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5"
-                                [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
-            </div>
+        <div *ngIf="users" class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5"
+                            [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
         </div>
     </div>
 
