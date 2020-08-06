@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.errors.AuthenticationRequiredException;
-import vdehorta.service.errors.MissingRoleException;
+import vdehorta.service.errors.RoleIsRequiredException;
 
 import java.util.Optional;
 
@@ -87,10 +87,10 @@ public class AuthenticationService {
         return null;
     }
 
-    public void assertAuthenticationRole(RoleEnum requiredRole) throws AuthenticationRequiredException, MissingRoleException {
+    public void assertAuthenticationRole(RoleEnum requiredRole) throws AuthenticationRequiredException, RoleIsRequiredException {
         Authentication authentication = getAuthenticationOptional().orElseThrow(AuthenticationRequiredException::new);
         if (authentication.getAuthorities().stream().noneMatch(authority -> authority.getAuthority().equals(requiredRole.getValue()))) {
-            throw new MissingRoleException(requiredRole);
+            throw new RoleIsRequiredException(requiredRole);
         }
     }
 }

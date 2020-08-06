@@ -2,11 +2,11 @@ package vdehorta.service.errors;
 
 import vdehorta.security.RoleEnum;
 
-public class MissingRoleException extends RuntimeException {
+public class RoleIsRequiredException extends RuntimeException {
 
     private RoleEnum requiredRole;
 
-    public MissingRoleException(RoleEnum requiredRole) {
+    public RoleIsRequiredException(RoleEnum requiredRole) {
         super("Role '" + requiredRole.getValue() + "' is required!");
         this.requiredRole = requiredRole;
     }

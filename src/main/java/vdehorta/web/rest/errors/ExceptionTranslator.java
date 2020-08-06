@@ -99,8 +99,8 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
 
     @ExceptionHandler
-    public ResponseEntity<Problem> handleMissingRoleException(MissingRoleException ex, NativeWebRequest request) {
-        MissingRoleAlertException problem = new MissingRoleAlertException(ex.getRequiredRole());
+    public ResponseEntity<Problem> handleRoleIsRequiredException(RoleIsRequiredException ex, NativeWebRequest request) {
+        RoleIsRequiredAlertException problem = new RoleIsRequiredAlertException(ex.getRequiredRole());
         return create(problem, request);
     }
 

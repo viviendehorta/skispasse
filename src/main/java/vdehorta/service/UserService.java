@@ -1,6 +1,7 @@
 package vdehorta.service;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,23 +9,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import vdehorta.config.ApplicationProperties;
 import vdehorta.config.Constants;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.bean.dto.UserDto;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
-import vdehorta.service.errors.EmailAlreadyUsedException;
-import vdehorta.service.errors.InvalidPasswordException;
-import vdehorta.service.errors.LoginAlreadyUsedException;
-import vdehorta.service.errors.UserNotFoundException;
+import vdehorta.security.RoleEnum;
+import vdehorta.service.errors.*;
 import vdehorta.service.util.RandomUtil;
 import vdehorta.web.rest.vm.ManagedUserVM;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,23 +33,26 @@ public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthorityRepository authorityRepository;
-    private final ClockService clockService;
+    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+    private AuthorityRepository authorityRepository;
+    private ClockService clockService;
+    private ApplicationProperties applicationProperties;
 
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AuthorityRepository authorityRepository,
-                       ClockService clockService) {
+                       ClockService clockService,
+                       ApplicationProperties applicationProperties) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.clockService = clockService;
+        this.applicationProperties = applicationProperties;
     }
 
-    public UserDto createUser(UserDto userDTO) {
-        log.debug("Creating user {}", userDTO);
+    public UserDto createUserAccount(UserDto userDTO) {
+        log.debug("Creating user account {}", userDTO);
 
         String login = userDTO.getLogin();
         String email = userDTO.getEmail().toLowerCase();
@@ -61,20 +62,29 @@ public class UserService {
             throw new EmailAlreadyUsedException(email);
         }
 
+        //Extract roles
+        Set<String> roles = userDTO.getAuthorities();
+        if (roles == null) {
+            roles = Sets.newHashSet();
+        }
+        roles.add(RoleEnum.USER.getValue()); //Minimum role is 'USER'
+        Set<Authority> authorities = roles.stream()
+                .map(authorityRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+
         User user = new User();
         user.setLogin(login.toLowerCase());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(email.toLowerCase());
         user.setImageUrl(userDTO.getImageUrl());
-        if (userDTO.getLangKey() == null) {
-            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
-        } else {
-            user.setLangKey(userDTO.getLangKey());
-        }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+        user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
+        String encryptedPassword = passwordEncoder.encode(user.getLogin() + applicationProperties.getSecurity().getDefaultPasswordBase());
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
+        user.setAuthorities(authorities);
 
         final LocalDateTime now = clockService.now();
 
@@ -83,14 +93,6 @@ public class UserService {
 
         user.setResetDate(now);
         user.setActivated(true);
-        if (userDTO.getAuthorities() != null) {
-            Set<Authority> authorities = userDTO.getAuthorities().stream()
-                    .map(authorityRepository::findById)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .collect(Collectors.toSet());
-            user.setAuthorities(authorities);
-        }
         User createdUser = userRepository.save(user);
         log.debug("Created Information for User: {}", createdUser);
         return new UserDto(createdUser);

@@ -13,10 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.zalando.problem.Problem;
 import vdehorta.bean.dto.UserDto;
 import vdehorta.config.ApplicationProperties;
+import vdehorta.config.Constants;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
+import vdehorta.security.RoleEnum;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.ClockService;
 import vdehorta.service.mapper.UserMapper;
@@ -27,8 +29,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.*;
-import static vdehorta.security.RoleEnum.ADMIN;
-import static vdehorta.security.RoleEnum.USER;
+import static vdehorta.security.RoleEnum.*;
 import static vdehorta.utils.BeanTestUtils.*;
 import static vdehorta.utils.RestTestUtils.mockAnonymous;
 import static vdehorta.utils.RestTestUtils.mockAuthentication;
@@ -71,6 +72,7 @@ public class UserResourceITest {
     public void initTest() {
         PersistenceTestUtils.resetDatabase(mongoTemplate, applicationProperties);
         user = createDefaultUser();
+        initAuthorityRepository();
         mockAnonymous(authenticationService);
     }
 
@@ -81,33 +83,40 @@ public class UserResourceITest {
         int databaseSizeBeforeCreate = userRepository.findAll().size();
 
         // Create the User
-        ManagedUserVM managedUserVM = new ManagedUserVM();
-        managedUserVM.setLogin(DEFAULT_LOGIN);
-        managedUserVM.setPassword(DEFAULT_PASSWORD);
-        managedUserVM.setFirstName(DEFAULT_FIRSTNAME);
-        managedUserVM.setLastName(DEFAULT_LASTNAME);
-        managedUserVM.setEmail(DEFAULT_EMAIL);
-        managedUserVM.setActivated(true);
-        managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
-        managedUserVM.setLangKey(DEFAULT_LANGKEY);
-        managedUserVM.setAuthorities(Collections.singleton(USER.getValue()));
+        UserDto inputUser = new UserDto();
+        inputUser.setLogin(DEFAULT_LOGIN);
+        inputUser.setFirstName(DEFAULT_FIRSTNAME);
+        inputUser.setLastName(DEFAULT_LASTNAME);
+        inputUser.setEmail(DEFAULT_EMAIL);
+        inputUser.setImageUrl(DEFAULT_IMAGEURL);
+        inputUser.setAuthorities(Collections.singleton(CONTRIBUTOR.getValue()));
 
         //Then
-        ResponseEntity<Object> response = testRestTemplate.postForEntity("/users", managedUserVM, Object.class);
+        ResponseEntity<UserDto> response = testRestTemplate.postForEntity("/users", inputUser, UserDto.class);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(CREATED);
+        UserDto createdUser = response.getBody();
+        assertThat(createdUser.getLogin()).isEqualTo(DEFAULT_LOGIN);
+        assertThat(createdUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
+        assertThat(createdUser.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
+        assertThat(createdUser.getLastName()).isEqualTo(DEFAULT_LASTNAME);
+        assertThat(createdUser.getAuthorities()).containsExactlyInAnyOrder(USER.getValue(), CONTRIBUTOR.getValue());
+        assertThat(createdUser.getLangKey()).isEqualTo(Constants.DEFAULT_LANGUAGE);
+        assertThat(createdUser.isActivated()).isTrue();
 
         // Validate the User in the database
-        List<User> userList = userRepository.findAll();
-        assertThat(userList).hasSize(databaseSizeBeforeCreate + 1);
-        User testUser = userList.get(userList.size() - 1);
-        assertThat(testUser.getLogin()).isEqualTo(DEFAULT_LOGIN);
-        assertThat(testUser.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
-        assertThat(testUser.getLastName()).isEqualTo(DEFAULT_LASTNAME);
-        assertThat(testUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testUser.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
-        assertThat(testUser.getLangKey()).isEqualTo(DEFAULT_LANGKEY);
+        List<User> persistedUsers = userRepository.findAll();
+        assertThat(persistedUsers).hasSize(databaseSizeBeforeCreate + 1);
+        User persistedUser = persistedUsers.get(persistedUsers.size() - 1);
+        assertThat(persistedUser.getLogin()).isEqualTo(DEFAULT_LOGIN);
+        assertThat(persistedUser.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
+        assertThat(persistedUser.getLastName()).isEqualTo(DEFAULT_LASTNAME);
+        assertThat(persistedUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
+        assertThat(persistedUser.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
+        assertThat(persistedUser.getLangKey()).isEqualTo(Constants.DEFAULT_LANGUAGE);
+        assertThat(persistedUser.getPassword()).isNotEmpty();
+        assertThat(persistedUser.getActivated()).isTrue();
     }
 
     @Test
@@ -215,6 +224,53 @@ public class UserResourceITest {
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getBody().getDetail()).isEqualTo("Email is already in use!");
 
+        assertThat( userRepository.findAll()).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    void createUser_shouldThrowUnauthorizedWhenUserIsNotConnected() {
+        mockAnonymous(authenticationService);
+
+        int databaseSizeBeforeCreate = userRepository.findAll().size();
+
+        // Create the User
+        UserDto inputUser = new UserDto();
+        inputUser.setLogin(DEFAULT_LOGIN);
+        inputUser.setFirstName(DEFAULT_FIRSTNAME);
+        inputUser.setLastName(DEFAULT_LASTNAME);
+        inputUser.setEmail(DEFAULT_EMAIL);
+        inputUser.setImageUrl(DEFAULT_IMAGEURL);
+        inputUser.setAuthorities(Collections.singleton(CONTRIBUTOR.getValue()));
+
+        //Then
+        ResponseEntity<Problem> response = testRestTemplate.postForEntity("/users", inputUser, Problem.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
+        assertThat(response.getBody().getDetail()).isEqualTo("Authentication is required!");
+        assertThat( userRepository.findAll()).hasSize(databaseSizeBeforeCreate);
+    }
+
+
+    @Test
+    public void createUser_shouldThrowForbiddenWhenUserIsNotAdmin() {
+        mockAuthentication(authenticationService, "user", CONTRIBUTOR);
+
+        int databaseSizeBeforeCreate = userRepository.findAll().size();
+
+        // Create the User
+        UserDto inputUser = new UserDto();
+        inputUser.setLogin(DEFAULT_LOGIN);
+        inputUser.setFirstName(DEFAULT_FIRSTNAME);
+        inputUser.setLastName(DEFAULT_LASTNAME);
+        inputUser.setEmail(DEFAULT_EMAIL);
+        inputUser.setImageUrl(DEFAULT_IMAGEURL);
+        inputUser.setAuthorities(Collections.singleton(CONTRIBUTOR.getValue()));
+
+        //Then
+        ResponseEntity<Problem> response = testRestTemplate.postForEntity("/users", inputUser, Problem.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
+        assertThat(response.getBody().getDetail()).isEqualTo("Role 'administrator' is required!");
         assertThat( userRepository.findAll()).hasSize(databaseSizeBeforeCreate);
     }
 
@@ -444,19 +500,12 @@ public class UserResourceITest {
     public void getAllRoles_caseOk() {
         mockAuthentication(authenticationService, "user", ADMIN);
 
-        Authority adminAuthority = new Authority();
-        adminAuthority.setName(ADMIN.getValue());
-        Authority userAuthority = new Authority();
-        userAuthority.setName(USER.getValue());
-        authorityRepository.saveAll(Arrays.asList(adminAuthority, userAuthority));
-
-
         ResponseEntity<String[]> response = testRestTemplate.getForEntity("/users/roles", String[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody())
-                .hasSize(2)
-                .containsOnly(USER.getValue(), ADMIN.getValue());
+                .hasSize(3)
+                .containsExactlyInAnyOrder(USER.getValue(), ADMIN.getValue(), CONTRIBUTOR.getValue());
     }
 
     @Test
@@ -558,5 +607,13 @@ public class UserResourceITest {
         authorityB.setName(USER.getValue());
         assertThat(authorityA).isEqualTo(authorityB);
         assertThat(authorityA.hashCode()).isEqualTo(authorityB.hashCode());
+    }
+
+    private void initAuthorityRepository() {
+        for (RoleEnum roleEnum : RoleEnum.values()) {
+            Authority authority = new Authority();
+            authority.setName(roleEnum.getValue());
+            authorityRepository.save(authority);
+        }
     }
 }
