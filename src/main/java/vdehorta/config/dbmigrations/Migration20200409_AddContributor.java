@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import vdehorta.config.Constants;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.security.RoleEnum;
@@ -60,7 +61,7 @@ public class Migration20200409_AddContributor {
         contributorUser.setLastName("Contributor");
         contributorUser.setEmail("contributor@localhost");
         contributorUser.setActivated(true);
-        contributorUser.setLangKey("fr");
+        contributorUser.setLangKey(Constants.DEFAULT_LANGUAGE);
         contributorUser.setCreatedBy("system");
         contributorUser.setCreatedDate(clockService.now());
         contributorUser.getAuthorities().add(contributorAuthority);

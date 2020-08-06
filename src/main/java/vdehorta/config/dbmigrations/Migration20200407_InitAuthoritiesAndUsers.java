@@ -4,6 +4,7 @@ package vdehorta.config.dbmigrations;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import vdehorta.config.Constants;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.security.RoleEnum;
@@ -36,7 +37,7 @@ public class Migration20200407_InitAuthoritiesAndUsers {
         systemUser.setLastName("System");
         systemUser.setEmail("system@localhost");
         systemUser.setActivated(true);
-        systemUser.setLangKey("fr");
+        systemUser.setLangKey(Constants.DEFAULT_LANGUAGE);
         systemUser.setCreatedBy(systemUser.getLogin());
         systemUser.setCreatedDate(clockService.now());
         systemUser.getAuthorities().add(adminAuthority);
@@ -50,7 +51,7 @@ public class Migration20200407_InitAuthoritiesAndUsers {
         adminUser.setLastName("Administrator");
         adminUser.setEmail("admin@localhost");
         adminUser.setActivated(true);
-        adminUser.setLangKey("fr");
+        adminUser.setLangKey(Constants.DEFAULT_LANGUAGE);
         adminUser.setCreatedBy(systemUser.getLogin());
         adminUser.setCreatedDate(clockService.now());
         adminUser.getAuthorities().add(adminAuthority);

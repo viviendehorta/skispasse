@@ -92,7 +92,7 @@ public class UserService {
         user.setLastModifiedDate(now);
 
         user.setResetDate(now);
-        user.setActivated(true);
+        user.setActivated(userDTO.isActivated());
         User createdUser = userRepository.save(user);
         log.debug("Created Information for User: {}", createdUser);
         return new UserDto(createdUser);
