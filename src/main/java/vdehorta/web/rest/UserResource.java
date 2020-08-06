@@ -69,9 +69,7 @@ public class UserResource {
     /**
      * {@code POST  /user}  : Creates a new user.
      * <p>
-     * Creates a new user if the login and email are not already used, and sends an
-     * mail with an activation link.
-     * The user needs to be activated on creation.
+     * Creates a new user if the login and email are not already used
      *
      * @param userDTO the user to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the login or email is already in use.
@@ -79,8 +77,8 @@ public class UserResource {
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDTO) throws URISyntaxException {
-        log.debug("REST request to create a user : {}", userDTO);
+    public ResponseEntity<UserDto> createUserAccount(@Valid @RequestBody UserDto userDTO) throws URISyntaxException {
+        log.debug("REST request to create a user account : {}", userDTO);
 
         authenticationService.assertAuthenticationRole(RoleEnum.ADMIN);
 
@@ -88,7 +86,7 @@ public class UserResource {
             throw new BadRequestAlertException("A new user cannot already have an id!");
         }
 
-        UserDto newUser = userService.createUser(userDTO);
+        UserDto newUser = userService.createUserAccount(userDTO);
         return ResponseEntity
                 .created(new URI("/users/" + newUser.getLogin()))
                 .headers(HeaderUtil.createAlertHeaders(applicationName, "User '" + newUser.getLogin() + "' was created."))

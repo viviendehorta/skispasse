@@ -8,11 +8,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import vdehorta.bean.ContentTypeEnum;
 import vdehorta.security.RoleEnum;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.errors.AuthenticationRequiredException;
-import vdehorta.service.errors.MissingRoleException;
+import vdehorta.service.errors.RoleIsRequiredException;
 
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +64,7 @@ public final class RestTestUtils {
         RoleEnum[] allRoles = RoleEnum.values();
         for (RoleEnum role : allRoles) {
             if (!roles.contains(role)) {
-                Mockito.doThrow(new MissingRoleException(role)).when(authenticationServiceMock).assertAuthenticationRole(role);
+                Mockito.doThrow(new RoleIsRequiredException(role)).when(authenticationServiceMock).assertAuthenticationRole(role);
             }
         }
     }

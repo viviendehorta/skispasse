@@ -136,12 +136,22 @@ public class ApplicationProperties {
 
         private Csrf csrf = new Csrf();
 
+        private String defaultPasswordBase;
+
         public Csrf getCsrf() {
             return csrf;
         }
 
         public void setCsrf(Csrf csrf) {
             this.csrf = csrf;
+        }
+
+        public String getDefaultPasswordBase() {
+            return defaultPasswordBase;
+        }
+
+        public void setDefaultPasswordBase(String defaultPasswordBase) {
+            this.defaultPasswordBase = defaultPasswordBase;
         }
 
         public static class Csrf {
