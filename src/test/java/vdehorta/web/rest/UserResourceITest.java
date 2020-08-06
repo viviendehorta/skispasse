@@ -90,6 +90,7 @@ public class UserResourceITest {
         inputUser.setEmail(DEFAULT_EMAIL);
         inputUser.setImageUrl(DEFAULT_IMAGEURL);
         inputUser.setAuthorities(Collections.singleton(CONTRIBUTOR.getValue()));
+        inputUser.setActivated(true);
 
         //Then
         ResponseEntity<UserDto> response = testRestTemplate.postForEntity("/users", inputUser, UserDto.class);
