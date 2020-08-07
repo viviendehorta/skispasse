@@ -17,9 +17,7 @@ export class SettingsComponent implements OnInit {
     email: [undefined, [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
     activated: [false],
     authorities: [[]],
-    langKey: ['fr'],
-    login: [],
-    imageUrl: []
+    login: []
   });
 
   doesNotMatchPassword: string;
@@ -60,9 +58,7 @@ export class SettingsComponent implements OnInit {
       email: account.email,
       activated: account.activated,
       authorities: account.authorities,
-      langKey: account.langKey,
       login: account.login,
-      imageUrl: account.imageUrl
     });
   }
 
@@ -96,9 +92,7 @@ export class SettingsComponent implements OnInit {
       email: this.settingsForm.get('email').value,
       activated: this.settingsForm.get('activated').value,
       authorities: this.settingsForm.get('authorities').value,
-      langKey: this.settingsForm.get('langKey').value,
-      login: this.settingsForm.get('login').value,
-      imageUrl: this.settingsForm.get('imageUrl').value
+      login: this.settingsForm.get('login').value
     };
   }
 }

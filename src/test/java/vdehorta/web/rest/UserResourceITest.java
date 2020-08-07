@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.zalando.problem.Problem;
 import vdehorta.bean.dto.UserDto;
 import vdehorta.config.ApplicationProperties;
-import vdehorta.config.Constants;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
 import vdehorta.repository.AuthorityRepository;
@@ -25,7 +24,10 @@ import vdehorta.service.mapper.UserMapper;
 import vdehorta.utils.PersistenceTestUtils;
 import vdehorta.web.rest.vm.ManagedUserVM;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.*;
@@ -88,7 +90,6 @@ public class UserResourceITest {
         inputUser.setFirstName(DEFAULT_FIRSTNAME);
         inputUser.setLastName(DEFAULT_LASTNAME);
         inputUser.setEmail(DEFAULT_EMAIL);
-        inputUser.setImageUrl(DEFAULT_IMAGEURL);
         inputUser.setAuthorities(Collections.singleton(CONTRIBUTOR.getValue()));
         inputUser.setActivated(true);
 
@@ -103,7 +104,6 @@ public class UserResourceITest {
         assertThat(createdUser.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
         assertThat(createdUser.getLastName()).isEqualTo(DEFAULT_LASTNAME);
         assertThat(createdUser.getAuthorities()).containsExactlyInAnyOrder(USER.getValue(), CONTRIBUTOR.getValue());
-        assertThat(createdUser.getLangKey()).isEqualTo(Constants.DEFAULT_LANGUAGE);
         assertThat(createdUser.isActivated()).isTrue();
 
         // Validate the User in the database
@@ -114,8 +114,6 @@ public class UserResourceITest {
         assertThat(persistedUser.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
         assertThat(persistedUser.getLastName()).isEqualTo(DEFAULT_LASTNAME);
         assertThat(persistedUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(persistedUser.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
-        assertThat(persistedUser.getLangKey()).isEqualTo(Constants.DEFAULT_LANGUAGE);
         assertThat(persistedUser.getPassword()).isNotEmpty();
         assertThat(persistedUser.getActivated()).isTrue();
     }
@@ -133,8 +131,6 @@ public class UserResourceITest {
         managedUserVM.setLastName(DEFAULT_LASTNAME);
         managedUserVM.setEmail(DEFAULT_EMAIL);
         managedUserVM.setActivated(true);
-        managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
-        managedUserVM.setLangKey(DEFAULT_LANGKEY);
         managedUserVM.setAuthorities(Collections.singleton(USER.getValue()));
 
         //When
@@ -161,8 +157,6 @@ public class UserResourceITest {
         managedUserVM.setLastName(DEFAULT_LASTNAME);
         managedUserVM.setEmail(DEFAULT_EMAIL);
         managedUserVM.setActivated(true);
-        managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
-        managedUserVM.setLangKey(DEFAULT_LANGKEY);
         managedUserVM.setAuthorities(Collections.singleton(USER.getValue()));
 
         // An entity with an existing ID cannot be created, so this API call must fail
@@ -190,8 +184,6 @@ public class UserResourceITest {
         managedUserVM.setLastName(DEFAULT_LASTNAME);
         managedUserVM.setEmail("anothermail@localhost");
         managedUserVM.setActivated(true);
-        managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
-        managedUserVM.setLangKey(DEFAULT_LANGKEY);
         managedUserVM.setAuthorities(Collections.singleton(USER.getValue()));
 
         ResponseEntity<Problem> response = testRestTemplate.postForEntity("/users", managedUserVM, Problem.class);
@@ -216,8 +208,6 @@ public class UserResourceITest {
         managedUserVM.setLastName(DEFAULT_LASTNAME);
         managedUserVM.setEmail(DEFAULT_EMAIL);// this email is already used
         managedUserVM.setActivated(true);
-        managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
-        managedUserVM.setLangKey(DEFAULT_LANGKEY);
         managedUserVM.setAuthorities(Collections.singleton(USER.getValue()));
 
         ResponseEntity<Problem> response = testRestTemplate.postForEntity("/users", managedUserVM, Problem.class);
@@ -240,7 +230,6 @@ public class UserResourceITest {
         inputUser.setFirstName(DEFAULT_FIRSTNAME);
         inputUser.setLastName(DEFAULT_LASTNAME);
         inputUser.setEmail(DEFAULT_EMAIL);
-        inputUser.setImageUrl(DEFAULT_IMAGEURL);
         inputUser.setAuthorities(Collections.singleton(CONTRIBUTOR.getValue()));
 
         //Then
@@ -264,7 +253,6 @@ public class UserResourceITest {
         inputUser.setFirstName(DEFAULT_FIRSTNAME);
         inputUser.setLastName(DEFAULT_LASTNAME);
         inputUser.setEmail(DEFAULT_EMAIL);
-        inputUser.setImageUrl(DEFAULT_IMAGEURL);
         inputUser.setAuthorities(Collections.singleton(CONTRIBUTOR.getValue()));
 
         //Then
@@ -290,8 +278,6 @@ public class UserResourceITest {
         assertThat(userDto.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
         assertThat(userDto.getLastName()).isEqualTo(DEFAULT_LASTNAME);
         assertThat(userDto.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(userDto.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
-        assertThat(userDto.getLangKey()).isEqualTo(DEFAULT_LANGKEY);
     }
 
     @Test
@@ -308,8 +294,6 @@ public class UserResourceITest {
         assertThat(userDto.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
         assertThat(userDto.getLastName()).isEqualTo(DEFAULT_LASTNAME);
         assertThat(userDto.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(userDto.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
-        assertThat(userDto.getLangKey()).isEqualTo(DEFAULT_LANGKEY);
     }
 
     @Test
@@ -336,8 +320,6 @@ public class UserResourceITest {
         managedUserVM.setLastName(UPDATED_LASTNAME);
         managedUserVM.setEmail(UPDATED_EMAIL);
         managedUserVM.setActivated(updatedUser.getActivated());
-        managedUserVM.setImageUrl(UPDATED_IMAGEURL);
-        managedUserVM.setLangKey(UPDATED_LANGKEY);
         managedUserVM.setCreatedBy(updatedUser.getCreatedBy());
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
@@ -354,8 +336,6 @@ public class UserResourceITest {
         assertThat(testUser.getFirstName()).isEqualTo(UPDATED_FIRSTNAME);
         assertThat(testUser.getLastName()).isEqualTo(UPDATED_LASTNAME);
         assertThat(testUser.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testUser.getImageUrl()).isEqualTo(UPDATED_IMAGEURL);
-        assertThat(testUser.getLangKey()).isEqualTo(UPDATED_LANGKEY);
     }
 
     @Test
@@ -375,8 +355,6 @@ public class UserResourceITest {
         managedUserVM.setLastName(UPDATED_LASTNAME);
         managedUserVM.setEmail(UPDATED_EMAIL);
         managedUserVM.setActivated(updatedUser.getActivated());
-        managedUserVM.setImageUrl(UPDATED_IMAGEURL);
-        managedUserVM.setLangKey(UPDATED_LANGKEY);
         managedUserVM.setCreatedBy(updatedUser.getCreatedBy());
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
@@ -394,8 +372,6 @@ public class UserResourceITest {
         assertThat(testUser.getFirstName()).isEqualTo(UPDATED_FIRSTNAME);
         assertThat(testUser.getLastName()).isEqualTo(UPDATED_LASTNAME);
         assertThat(testUser.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testUser.getImageUrl()).isEqualTo(UPDATED_IMAGEURL);
-        assertThat(testUser.getLangKey()).isEqualTo(UPDATED_LANGKEY);
     }
 
     @Test
@@ -411,8 +387,6 @@ public class UserResourceITest {
         anotherUser.setEmail("skispasse@localhost");
         anotherUser.setFirstName("java");
         anotherUser.setLastName("hipster");
-        anotherUser.setImageUrl("");
-        anotherUser.setLangKey("en");
         userRepository.save(anotherUser);
 
         User updatedUser = userRepository.findById(user.getId()).get();
@@ -425,8 +399,6 @@ public class UserResourceITest {
         managedUserVM.setLastName(updatedUser.getLastName());
         managedUserVM.setEmail("skispasse@localhost");// this email should already be used by anotherUser
         managedUserVM.setActivated(updatedUser.getActivated());
-        managedUserVM.setImageUrl(updatedUser.getImageUrl());
-        managedUserVM.setLangKey(updatedUser.getLangKey());
         managedUserVM.setCreatedBy(updatedUser.getCreatedBy());
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
@@ -451,8 +423,6 @@ public class UserResourceITest {
         anotherUser.setEmail("skispasse@localhost");
         anotherUser.setFirstName("FirstName");
         anotherUser.setLastName("LastName");
-        anotherUser.setImageUrl("");
-        anotherUser.setLangKey("en");
         userRepository.save(anotherUser);
 
         final int initialCount = userRepository.findAll().size();
@@ -468,8 +438,6 @@ public class UserResourceITest {
         managedUserVM.setLastName(updatedUser.getLastName());
         managedUserVM.setEmail(updatedUser.getEmail());
         managedUserVM.setActivated(updatedUser.getActivated());
-        managedUserVM.setImageUrl(updatedUser.getImageUrl());
-        managedUserVM.setLangKey(updatedUser.getLangKey());
         managedUserVM.setCreatedBy(updatedUser.getCreatedBy());
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
@@ -532,8 +500,6 @@ public class UserResourceITest {
         userDTO.setLastName(DEFAULT_LASTNAME);
         userDTO.setEmail(DEFAULT_EMAIL);
         userDTO.setActivated(true);
-        userDTO.setImageUrl(DEFAULT_IMAGEURL);
-        userDTO.setLangKey(DEFAULT_LANGKEY);
         userDTO.setCreatedBy(DEFAULT_LOGIN);
         userDTO.setLastModifiedBy(DEFAULT_LOGIN);
         userDTO.setAuthorities(Collections.singleton(USER.getValue()));
@@ -547,8 +513,6 @@ public class UserResourceITest {
         assertThat(user.getLastName()).isEqualTo(DEFAULT_LASTNAME);
         assertThat(user.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertThat(user.getActivated()).isEqualTo(true);
-        assertThat(user.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
-        assertThat(user.getLangKey()).isEqualTo(DEFAULT_LANGKEY);
         assertThat(user.getCreatedBy()).isNull();
         assertThat(user.getCreatedDate()).isNotNull();
         assertThat(user.getLastModifiedBy()).isNull();
@@ -577,8 +541,6 @@ public class UserResourceITest {
         assertThat(userDTO.getLastName()).isEqualTo(DEFAULT_LASTNAME);
         assertThat(userDTO.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertThat(userDTO.isActivated()).isEqualTo(true);
-        assertThat(userDTO.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
-        assertThat(userDTO.getLangKey()).isEqualTo(DEFAULT_LANGKEY);
         assertThat(userDTO.getCreatedBy()).isEqualTo(DEFAULT_LOGIN);
         assertThat(userDTO.getCreatedDate()).isEqualTo(user.getCreatedDate());
         assertThat(userDTO.getLastModifiedBy()).isEqualTo(DEFAULT_LOGIN);

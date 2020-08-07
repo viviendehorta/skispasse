@@ -16,7 +16,6 @@ import vdehorta.bean.dto.AuthenticationDto;
 import vdehorta.bean.dto.PasswordChangeDTO;
 import vdehorta.bean.dto.UserDto;
 import vdehorta.config.ApplicationProperties;
-import vdehorta.config.Constants;
 import vdehorta.domain.User;
 import vdehorta.repository.UserRepository;
 import vdehorta.service.AuthenticationService;
@@ -96,8 +95,6 @@ public class AccountResourceITest {
         assertThat(resultUser.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
         assertThat(resultUser.getLastName()).isEqualTo(DEFAULT_LASTNAME);
         assertThat(resultUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(resultUser.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
-        assertThat(resultUser.getLangKey()).isEqualTo(DEFAULT_LANGKEY);
         assertThat(resultUser.getAuthorities()).containsOnly(USER.getValue());
     }
 
@@ -119,8 +116,6 @@ public class AccountResourceITest {
         userDTO.setLastName("lastname");
         userDTO.setEmail("save-account@example.com");
         userDTO.setActivated(false);
-        userDTO.setImageUrl("http://placehold.it/50x50");
-        userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
         userDTO.setAuthorities(Collections.singleton(ADMIN.getValue()));
 
         ResponseEntity<Object> response = testRestTemplate.exchange("/account", HttpMethod.PUT, new HttpEntity<>(userDTO), Object.class);
@@ -131,9 +126,7 @@ public class AccountResourceITest {
         assertThat(updatedUser.getFirstName()).isEqualTo(userDTO.getFirstName());
         assertThat(updatedUser.getLastName()).isEqualTo(userDTO.getLastName());
         assertThat(updatedUser.getEmail()).isEqualTo(userDTO.getEmail());
-        assertThat(updatedUser.getLangKey()).isEqualTo(userDTO.getLangKey());
         assertThat(updatedUser.getPassword()).isEqualTo(user.getPassword());
-        assertThat(updatedUser.getImageUrl()).isEqualTo(userDTO.getImageUrl());
         assertThat(updatedUser.getActivated()).isEqualTo(true);
         assertThat(updatedUser.getAuthorities()).isEmpty();
     }
@@ -156,8 +149,6 @@ public class AccountResourceITest {
         userDTO.setLastName("lastname");
         userDTO.setEmail("invalid email");
         userDTO.setActivated(false);
-        userDTO.setImageUrl("http://placehold.it/50x50");
-        userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
         userDTO.setAuthorities(Collections.singleton(ADMIN.getValue()));
 
         ResponseEntity<Problem> response = testRestTemplate.exchange("/account", HttpMethod.PUT, new HttpEntity<>(userDTO), Problem.class);
@@ -190,8 +181,6 @@ public class AccountResourceITest {
         userDTO.setLastName("lastname");
         userDTO.setEmail("save-existing-email2@example.com");
         userDTO.setActivated(false);
-        userDTO.setImageUrl("http://placehold.it/50x50");
-        userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
         userDTO.setAuthorities(Collections.singleton(ADMIN.getValue()));
 
         ResponseEntity<Problem> response = testRestTemplate.exchange("/account", HttpMethod.PUT, new HttpEntity<>(userDTO), Problem.class);

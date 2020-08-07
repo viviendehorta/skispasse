@@ -9,20 +9,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import vdehorta.bean.dto.UserDto;
 import vdehorta.config.ApplicationProperties;
-import vdehorta.config.Constants;
 import vdehorta.domain.Authority;
 import vdehorta.domain.User;
-import vdehorta.bean.dto.UserDto;
 import vdehorta.repository.AuthorityRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.security.RoleEnum;
-import vdehorta.service.errors.*;
-import vdehorta.service.util.RandomUtil;
+import vdehorta.service.errors.EmailAlreadyUsedException;
+import vdehorta.service.errors.InvalidPasswordException;
+import vdehorta.service.errors.LoginAlreadyUsedException;
+import vdehorta.service.errors.UserNotFoundException;
 import vdehorta.web.rest.vm.ManagedUserVM;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -79,20 +82,15 @@ public class UserService {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(email.toLowerCase());
-        user.setImageUrl(userDTO.getImageUrl());
-        user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
         String encryptedPassword = passwordEncoder.encode(user.getLogin() + applicationProperties.getSecurity().getDefaultPasswordBase());
         user.setPassword(encryptedPassword);
-        user.setResetKey(RandomUtil.generateResetKey());
         user.setAuthorities(authorities);
+        user.setActivated(userDTO.isActivated());
 
         final LocalDateTime now = clockService.now();
-
         user.setCreatedDate(now);
         user.setLastModifiedDate(now);
 
-        user.setResetDate(now);
-        user.setActivated(userDTO.isActivated());
         User createdUser = userRepository.save(user);
         log.debug("Created Information for User: {}", createdUser);
         return new UserDto(createdUser);
@@ -105,12 +103,10 @@ public class UserService {
      * @param firstName to update first name
      * @param lastName  to update last name
      * @param email     to update email
-     * @param langKey   to update lang key
-     * @param imageUrl  to update image url
      * @throws UserNotFoundException     if the user cannot be found in persistence
      * @throws EmailAlreadyUsedException if the given email is already used
      */
-    public void updateUser(String login, String firstName, String lastName, String email, String langKey, String imageUrl) throws UserNotFoundException, EmailAlreadyUsedException {
+    public void updateUser(String login, String firstName, String lastName, String email) throws UserNotFoundException, EmailAlreadyUsedException {
         log.debug("Updating basic user info of {}", login);
         String loginLowerCase = login.toLowerCase();
         User user = userRepository.findOneByLogin(loginLowerCase).orElseThrow(() -> new UserNotFoundException(login));
@@ -124,8 +120,6 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(lowerCaseEmail);
-        user.setLangKey(langKey);
-        user.setImageUrl(imageUrl);
         userRepository.save(user);
         log.debug("Changed basic information for user: {}", user);
     }
@@ -160,9 +154,7 @@ public class UserService {
         existingUser.setFirstName(userDTO.getFirstName());
         existingUser.setLastName(userDTO.getLastName());
         existingUser.setEmail(email);
-        existingUser.setImageUrl(userDTO.getImageUrl());
         existingUser.setActivated(userDTO.isActivated());
-        existingUser.setLangKey(userDTO.getLangKey());
         Set<Authority> managedAuthorities = existingUser.getAuthorities();
         managedAuthorities.clear();
         userDTO.getAuthorities().stream()

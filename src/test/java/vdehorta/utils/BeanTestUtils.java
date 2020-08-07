@@ -53,12 +53,6 @@ public final class BeanTestUtils {
     public static final String DEFAULT_LASTNAME = "doe";
     public static final String UPDATED_LASTNAME = "updatedLastName";
 
-    public static final String DEFAULT_IMAGEURL = "http://placehold.it/50x50";
-    public static final String UPDATED_IMAGEURL = "http://placehold.it/40x40";
-
-    public static final String DEFAULT_LANGKEY = "en";
-    public static final String UPDATED_LANGKEY = "fr";
-
     public static final String DEFAULT_ENCODED_PASSWORD = RandomStringUtils.random(60);
     private static final String DEFAULT_EVENT_DATE_STRING = DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE);
 
@@ -70,8 +64,6 @@ public final class BeanTestUtils {
         user.setEmail(DEFAULT_EMAIL);
         user.setFirstName(DEFAULT_FIRSTNAME);
         user.setLastName(DEFAULT_LASTNAME);
-        user.setImageUrl(DEFAULT_IMAGEURL);
-        user.setLangKey(DEFAULT_LANGKEY);
 
         Authority authority = new Authority();
         authority.setName(DEFAULT_AUTHORITY_VALUE);
@@ -87,8 +79,6 @@ public final class BeanTestUtils {
         user.setEmail(DEFAULT_EMAIL + "1");
         user.setFirstName(DEFAULT_FIRSTNAME + "1");
         user.setLastName(DEFAULT_LASTNAME + "1");
-        user.setImageUrl(DEFAULT_IMAGEURL + "1");
-        user.setLangKey(DEFAULT_LANGKEY + "1");
 
         Authority authority = new Authority();
         authority.setName(DEFAULT_AUTHORITY_VALUE);
@@ -104,8 +94,6 @@ public final class BeanTestUtils {
         user.setEmail(DEFAULT_EMAIL + "2");
         user.setFirstName(DEFAULT_FIRSTNAME + "2");
         user.setLastName(DEFAULT_LASTNAME + "2");
-        user.setImageUrl(DEFAULT_IMAGEURL + "2");
-        user.setLangKey(DEFAULT_LANGKEY + "2");
 
         Authority authority = new Authority();
         authority.setName(DEFAULT_AUTHORITY_VALUE);

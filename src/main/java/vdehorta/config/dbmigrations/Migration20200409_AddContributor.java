@@ -61,7 +61,6 @@ public class Migration20200409_AddContributor {
         contributorUser.setLastName("Contributor");
         contributorUser.setEmail("contributor@localhost");
         contributorUser.setActivated(true);
-        contributorUser.setLangKey(Constants.DEFAULT_LANGUAGE);
         contributorUser.setCreatedBy("system");
         contributorUser.setCreatedDate(clockService.now());
         contributorUser.getAuthorities().add(contributorAuthority);

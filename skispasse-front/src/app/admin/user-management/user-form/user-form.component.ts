@@ -62,7 +62,6 @@ export class UserFormComponent implements OnInit {
             lastName: user.lastName,
             email: user.email,
             activated: user.activated,
-            langKey: user.langKey,
             authorities: user.authorities
         });
     }
@@ -75,7 +74,6 @@ export class UserFormComponent implements OnInit {
             this.userForm.get(['lastName']).value,
             this.userForm.get(['email']).value,
             this.userForm.get(['activated']).value,
-            'en',
             this.userForm.get(['authorities']).value
         );
     }
