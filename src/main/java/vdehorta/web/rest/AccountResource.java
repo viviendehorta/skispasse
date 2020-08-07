@@ -68,7 +68,7 @@ public class AccountResource {
         authenticationService.assertAuthenticationRole(RoleEnum.USER);
 
         userService.updateUser(authenticationService.getCurrentUserLoginOrThrowError(), userDTO.getFirstName(),
-                userDTO.getLastName(), userDTO.getEmail(), userDTO.getLangKey(), userDTO.getImageUrl());
+                userDTO.getLastName(), userDTO.getEmail());
     }
 
     /**

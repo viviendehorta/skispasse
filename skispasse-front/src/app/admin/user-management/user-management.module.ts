@@ -9,6 +9,7 @@ import {SkispasseSharedModule} from '../../shared/shared.module';
 import {UserFormComponent} from "./user-form/user-form.component";
 import {UserCreationComponent} from "./create-user/user-creation.component";
 import {UserEditionComponent} from "./update-user/user-edition.component";
+import {UserManagementUpdateComponent} from "./user-management-update.component";
 
 @NgModule({
     imports: [SkispasseSharedModule, RouterModule.forChild(userManagementRoutes)],
@@ -18,7 +19,8 @@ import {UserEditionComponent} from "./update-user/user-edition.component";
         UserFormComponent,
         UserManagementComponent,
         UserManagementDeleteDialogComponent,
-        UserManagementDetailComponent
+        UserManagementDetailComponent,
+        UserManagementUpdateComponent
     ],
     entryComponents: [UserManagementDeleteDialogComponent]
 })
