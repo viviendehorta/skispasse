@@ -32,8 +32,7 @@ node {
         }
 
         stage('packaging') {
-            sh "./mvnw -ntp install -DskipTests"
-            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+            sh "./mvnw -ntp install -DskipTests -Pprod"
         }
 
         stage('deploying app on azure') {
