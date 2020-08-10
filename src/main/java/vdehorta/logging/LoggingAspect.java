@@ -2,6 +2,7 @@ package vdehorta.logging;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import vdehorta.config.ProfileConstants;
+import vdehorta.service.MapsService;
+import vdehorta.web.rest.MapsResource;
 
 import java.util.Arrays;
 
@@ -84,8 +87,10 @@ public class LoggingAspect {
         try {
             Object result = joinPoint.proceed();
             if (log.isDebugEnabled()) {
-                log.debug("Exit: {}.{}() with result = {}", joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), result);
+                if (!notToLogSignature(joinPoint.getSignature())) {
+                    log.debug("Exit: {}.{}() with result = {}", joinPoint.getSignature().getDeclaringTypeName(),
+                            joinPoint.getSignature().getName(), result);
+                }
             }
             return result;
         } catch (IllegalArgumentException e) {
@@ -94,5 +99,13 @@ public class LoggingAspect {
 
             throw e;
         }
+    }
+
+    private boolean notToLogSignature(Signature signature) {
+        Class calledClass = signature.getDeclaringType();
+        if (calledClass.equals(MapsService.class) || calledClass.equals(MapsResource.class)) { //Map style JSON should not be loggued
+            return true;
+        }
+        return false;
     }
 }
