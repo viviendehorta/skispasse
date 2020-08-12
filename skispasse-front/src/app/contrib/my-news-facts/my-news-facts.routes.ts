@@ -1,11 +1,13 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, Resolve, Routes} from '@angular/router';
+import {ActivatedRouteSnapshot, Resolve, Router, Routes} from '@angular/router';
 import {MyNewsFactsComponent} from './my-news-facts.component';
 import {NewsFactService} from '../../core/newsfacts/news-fact.service';
 import {NewsFactDetail} from '../../shared/model/news-fact-detail.model';
 import {ResolvePaginationParamService} from '../../core/pagination/resolve-pagination-param-service';
 import {NewsFactCreationComponent} from "./create-news-fact/news-fact-creation.component";
 import {NewsFactEditionComponent} from "./update-news-fact/news-fact-edition.component";
+import {NewsFactNoDetail} from "../../shared/model/news-fact-no-detail.model";
+import {ILocationCoordinate, LocationCoordinate} from "../../shared/model/location-coordinate.model";
 
 @Injectable({ providedIn: 'root' })
 export class NewsFactResolve implements Resolve<any> {
@@ -17,6 +19,28 @@ export class NewsFactResolve implements Resolve<any> {
       return this.newsFactService.getNewsFactDetail(id);
     }
     return new NewsFactDetail();
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class LocationCoordinateResolve implements Resolve<ILocationCoordinate> {
+  constructor(private router:Router) {}
+
+  resolve(route: ActivatedRouteSnapshot) {
+    const locationCoordinateString = route.params.locationCoordinateXY as string;
+
+    if (!locationCoordinateString) {
+      this.router.navigate(['/404']);
+    }
+
+    const locationCoordinateXYValues = locationCoordinateString.split(',');
+    if (!locationCoordinateXYValues || locationCoordinateXYValues.length < 2) {
+      this.router.navigate(['/404']);
+    }
+
+    const locationCoordinateX = parseInt(locationCoordinateXYValues[0], 10);
+    const locationCoordinateY = parseInt(locationCoordinateXYValues[1], 10);
+    return new LocationCoordinate(locationCoordinateX, locationCoordinateY);
   }
 }
 
@@ -33,10 +57,13 @@ export const myNewsFactsRoutes: Routes = [
     }
   },
   {
-    path: 'new',
+    path: 'new/:locationCoordinateXY',
     component: NewsFactCreationComponent,
     data: {
       pageTitle: 'New publication',
+    },
+    resolve : {
+      locationCoordinate: LocationCoordinateResolve
     }
   },
   {

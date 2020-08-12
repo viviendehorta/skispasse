@@ -1,6 +1,15 @@
 <div class="card">
     <div class="card-body">
-        <h5 class="control-panel-title card-title">Publication</h5>
+        <div>
+            <h5 class="control-panel-title">Publication</h5>
+<!--            <button class="btn btn-primary btn-sm" [routerLink]="['./new']">-->
+<!--                <span>New publication</span>-->
+<!--            </button>-->
+            <button type="button" class="btn-logout btn btn-primary btn-sm" (click)="switchToNewsFactCreationMode()"
+                    title="New publication">
+                <fa-icon icon="plus" fixedWidth="true"></fa-icon>
+            </button>
+        </div>
         <button class="btn btn-link" routerLink="/contrib/my-news-facts">
             <fa-icon [icon]="'newspaper'"></fa-icon>
             <span>My publications</span>
