@@ -38,7 +38,7 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     private newsFactMarkerLayer: VectorLayer;
 
     private categorySelectionSubscription: Subscription;
-    private isNewsFactCreationModeOn: boolean;
+    isNewsFactCreationModeOn: boolean;
     private newsFactCreationModeSubscription: Subscription;
 
     newsFacts: NewsFactNoDetail[];
