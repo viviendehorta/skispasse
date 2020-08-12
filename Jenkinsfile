@@ -35,8 +35,8 @@ node {
             sh "./mvnw -ntp install -DskipTests -Pprod"
         }
 
-        stage('deploying app on azure') {
-            sh 'scp target/skispasse-*-SNAPSHOT.jar skispasse-azure-admin@13.82.88.209:/home/skispasse-azure-admin/'
-        }
+//        stage('deploying app on azure') {
+//            sh 'scp target/skispasse-*-SNAPSHOT.jar skispasse-azure-admin@13.82.88.209:/home/skispasse-azure-admin/'
+//        }
     }
 }
