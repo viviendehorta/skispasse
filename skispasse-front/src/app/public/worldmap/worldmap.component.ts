@@ -37,9 +37,11 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     private newsFactsMap: Map;
     private newsFactMarkerLayer: VectorLayer;
 
-    newsFacts: NewsFactNoDetail[];
+    private categorySelectionSubscription: Subscription;
+    private isNewsFactCreationModeOn: boolean;
+    private newsFactCreationModeSubscription: Subscription;
 
-    categorySelectionSubscription: Subscription;
+    newsFacts: NewsFactNoDetail[];
 
     constructor(
         private accountService: AccountService,
@@ -58,7 +60,9 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.isNewsFactCreationModeOn = false;
         this.subscribeToNewsCategorySelectionEvents();
+        this.subscribeToNewsFactCreationModeEvents();
     }
 
     ngAfterViewInit() {
@@ -100,34 +104,39 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
             this.newsFactsMap = map;
             this.newsFactsMap.addLayer(this.newsFactMarkerLayer);
             this.newsFactsMap.setView(this.buildView([270000, 6250000], 1));
-            this.subscribeToNewsFactMarkerClick();
+            this.subscribeToMapClickEvents();
         });
     }
 
-    private subscribeToNewsFactMarkerClick() {
+    private subscribeToMapClickEvents() {
         this.newsFactsMap.on('click', (evt: MapBrowserEvent) => {
 
             //Uncomment to display coordinates of clicked pixel
             // console.log('Coordinates: ' + JSON.stringify(evt.coordinate));
 
-            this.newsFactsMap.forEachFeatureAtPixel(
-                evt.pixel,
-                (clickedClusterFeature: Feature) => {
-                    this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
-                    const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
-                    if (newsFactMarkers.length === 1) { // Single news fact
-                        this.router.navigate(WorldmapComponent.getNewsFactDetailUrl(newsFactMarkers[0])); //TODO create OutletUrlBuilderService
-                    } else if (newsFactMarkers.length > 1) { // News fact group
-                        this.router.navigate(WorldmapComponent.getNewsFactGroupUrl(newsFactMarkers)); //TODO create OutletUrlBuilderService
-                    }
-                    return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
-                },
-                {
-                    layerFilter: candidate => candidate === this.newsFactMarkerLayer,
-                    hitTolerance: this.NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL
-                }
-            );
+            if (this.isNewsFactCreationModeOn) { //Contributor user wants to create a news fact occurring here
 
+                this.router.navigate([`/contrib/my-news-facts/new/${evt.coordinate[0]},${evt.coordinate[1]}`]);
+            } else { //Check if news fact marker was clicked
+
+                this.newsFactsMap.forEachFeatureAtPixel(
+                    evt.pixel,
+                    (clickedClusterFeature: Feature) => {
+                        this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
+                        const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
+                        if (newsFactMarkers.length === 1) { // Single news fact
+                            this.router.navigate(WorldmapComponent.getNewsFactDetailUrl(newsFactMarkers[0])); //TODO create OutletUrlBuilderService
+                        } else if (newsFactMarkers.length > 1) { // News fact group
+                            this.router.navigate(WorldmapComponent.getNewsFactGroupUrl(newsFactMarkers)); //TODO create OutletUrlBuilderService
+                        }
+                        return true; // Returns true to stop clickedClusterFeature iteration if there was several on the same pixel
+                    },
+                    {
+                        layerFilter: candidate => candidate === this.newsFactMarkerLayer,
+                        hitTolerance: this.NEWS_FACT_MARKER_ICON_CLICK_TOLERANCE_IN_PIXEL
+                    }
+                );
+            }
         });
     }
 
@@ -200,36 +209,9 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
         cluster.getSource().addFeatures(this.newsFactMarkerService.toNewsFactMarkers(newsFacts));
     }
 
-    // private showNewsFactDetail(newsFactId: string) {
-    //     this.selectedNewsFactIds = [newsFactId];
-    //     this.newsFactService.getNewsFactDetail(newsFactId).subscribe(newsFactDetail => {
-    //         const modalRef = this.modalService.open(NewsFactDetailModalContentComponent, 'news-fact-detail-modal');
-    //         const modalComponentInstance = modalRef.componentInstance as NewsFactDetailModalContentComponent;
-    //         modalComponentInstance.setNewsFactDetail(newsFactDetail);
-    //     });
-    // }
-    //
-    // private showNewsFactGroup(newsFactNoDetails: NewsFactNoDetail[]) {
-    //     const modalRef = this.modalService.open(NewsFactGroupModalContentComponent, 'news-fact-group-modal');
-    //     const modalComponentInstance = modalRef.componentInstance as NewsFactGroupModalContentComponent;
-    //     modalComponentInstance.setNewsFactNoDetails(newsFactNoDetails);
-    // }
-    //
-    // private selectNewsFactsIfNeeded() {
-    //     this.route.queryParamMap.subscribe(params => {
-    //             const urlSelectedNewsFactParams = params.getAll(this.SELECTED_NEWS_FACT_URL_PARAM);
-    //             if (urlSelectedNewsFactParams && urlSelectedNewsFactParams.length > 0) {
-    //
-    //                 if (urlSelectedNewsFactParams.length === 1) { //Show news fact detail
-    //                     this.showNewsFactDetail(urlSelectedNewsFactParams[0]);
-    //
-    //                 } else { //Show news fact group
-    //                     this.showNewsFactGroup(this.newsFacts.filter(newsFact => urlSelectedNewsFactParams.includes(newsFact.id)));
-    //                 }
-    //
-    //             }
-    //
-    //         }
-    //     );
-    // }
+    private subscribeToNewsFactCreationModeEvents() {
+        this.newsFactCreationModeSubscription = this.eventManager.subscribe('newsFactCreationModeOn', () => {
+            this.isNewsFactCreationModeOn = true;
+        });
+    }
 }
