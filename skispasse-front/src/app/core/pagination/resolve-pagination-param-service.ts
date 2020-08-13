@@ -8,7 +8,7 @@ export class ResolvePaginationParamService {
   }
 
   resolve(route, state) {
-    const page = route.queryParams.page ? route.queryParamspage : '1';
+    const page = route.queryParams.page ? route.queryParams.page : '1';
     const defaultSort = route.data.defaultSort ? route.data.defaultSort : 'id,asc';
     const sort = route.queryParams.sort ? route.queryParams.sort : defaultSort;
     return {
