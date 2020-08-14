@@ -10,9 +10,9 @@ export class ContributorPanelComponent {
     constructor(private eventManager: EventManager) {
     }
 
-    switchToNewsFactCreationMode() {
+    switchNewsFactCreationMode() {
         this.eventManager.broadcast({
-            name: 'newsFactCreationModeOn',
+            name: 'switchNewsFactCreationMode',
             content: null
         });
     }

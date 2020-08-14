@@ -1,5 +1,5 @@
-<div class="worldmap row">
-    <div id="{{MAP_ID}}" class="map col-10" [ngClass]="isNewsFactCreationModeOn ? 'modeOn' : 'modeOff'"></div>
+<div class="worldmap row" [ngClass]="isNewsFactCreationModeOn ? 'news-fact-creation' : ''">
+    <div id="{{MAP_ID}}" class="map col-10"></div>
     <div class="control-panel col-2">
         <skis-account-panel></skis-account-panel>
         <skis-admin-panel *ngIf="this.isAdmin()"></skis-admin-panel>

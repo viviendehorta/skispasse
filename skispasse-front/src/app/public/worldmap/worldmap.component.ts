@@ -210,8 +210,8 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private subscribeToNewsFactCreationModeEvents() {
-        this.newsFactCreationModeSubscription = this.eventManager.subscribe('newsFactCreationModeOn', () => {
-            this.isNewsFactCreationModeOn = true;
+        this.newsFactCreationModeSubscription = this.eventManager.subscribe('switchNewsFactCreationMode', () => {
+            this.isNewsFactCreationModeOn = !this.isNewsFactCreationModeOn;
         });
     }
 }
