@@ -5,7 +5,6 @@ import {INewsFactDetail, NewsFactDetail} from '../../../shared/model/news-fact-d
 import {NewsCategory} from '../../../shared/model/news-category.model';
 import {NewsFactService} from '../../../core/newsfacts/news-fact.service';
 import * as  dayjs from 'dayjs';
-import {LocationCoordinate} from "../../../shared/model/location-coordinate.model";
 import {EventManager} from "../../../core/events/event-manager";
 import {NewsFactWithFile} from "./news-fact-with-file.model";
 import {Location} from "@angular/common";
@@ -42,13 +41,10 @@ export class NewsFactFormComponent implements OnInit {
             address: [null, Validators.required],
             city: [null, Validators.required],
             country: [null, Validators.required],
-            locationCoordinateX: [null, Validators.required],
-            locationCoordinateY: [null, Validators.required],
+            locationCoordinate: [null],
             newsFactMediaFile: this.withFileUpload ? [null, Validators.required] : null
         });
-        if (this.newsFact) {
-            this.updateForm(this.newsFact);
-        }
+        this.updateForm(this.newsFact);
     }
 
     submit(): void {
@@ -76,8 +72,7 @@ export class NewsFactFormComponent implements OnInit {
             address: newsFact.address,
             city: newsFact.city,
             country: newsFact.country,
-            locationCoordinateX: newsFact.locationCoordinate.x,
-            locationCoordinateY: newsFact.locationCoordinate.y,
+            locationCoordinate: newsFact.locationCoordinate,
             newsFactMediaFile: null
         });
     }
@@ -90,10 +85,7 @@ export class NewsFactFormComponent implements OnInit {
             null,
             NewsFactFormComponent.formatNgbDate(this.newsFactForm.get(['eventDate']).value),
             this.newsFact ? this.newsFact.id : null,
-            new LocationCoordinate(
-                this.newsFactForm.get(['locationCoordinateX']).value,
-                this.newsFactForm.get(['locationCoordinateY']).value
-            ),
+            this.newsFactForm.get(['locationCoordinate']).value,
             this.newsFactForm.get(['newsCategoryId']).value,
             null,
             null

@@ -113,10 +113,6 @@ export class MyNewsFactsComponent implements OnInit {
         this.alertService.error(error.error, error.message);
     }
 
-    formatLocationCoordinate(locationCoordinate: ILocationCoordinate) {
-        return '[' + locationCoordinate.x + '; ' + locationCoordinate.y + ']';
-    }
-
     showDeleteNewsFactDialog(newsFactDetail: INewsFactDetail) {
         const modalRef = this.modalService.open(DeleteNewsFactDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.newsFact = newsFactDetail;
