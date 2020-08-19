@@ -48,7 +48,7 @@
                     <td>{{newsFact.country}}</td>
                     <td>{{newsFact.city}}</td>
                     <td>{{newsFact.address}}</td>
-                    <td>{{formatLocationCoordinate(newsFact.locationCoordinate)}}</td>
+                    <td>{{newsFact.locationCoordinate.x}}; {{newsFact.locationCoordinate.y}}</td>
                     <td>{{newsFact.createdDate | date:'dd/MM/yyyy HH:mm'}}</td>
                     <td>
                         <button

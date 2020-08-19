@@ -3,13 +3,24 @@
     <skis-alert-error></skis-alert-error>
 
     <!-- Id (hidden and not null when updating existing news fact) -->
-    <div class="form-group" [hidden]="!newsFact">
+    <div class="form-group" [hidden]="!newsFact.id">
         <label for="idField">Id</label>
         <input readonly
                class="form-control" id="idField"
                type="text"
                name="id"
                formControlName="id">
+    </div>
+
+    <div class="form-group">
+
+        <!-- Location Coordinates -->
+        <label for="locationCoordinatesField">Location coordinates</label>
+        <input type="text" class="form-control" id="locationCoordinatesField"
+               readonly
+               name="locationCoordinate"
+               formControlName="locationCoordinate"
+               value="{{newsFact.locationCoordinate.x}}; {{newsFact.locationCoordinate.y}}"/>
     </div>
 
     <!-- News category -->
@@ -105,42 +116,6 @@
                 <small class="form-text text-danger"
                        *ngIf="newsFactForm.get('country').errors.required">
                     Country is required.
-                </small>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-row">
-
-        <!-- Location Coordinate X -->
-        <div class="form-group col-md-6">
-            <label for="locationCoordinateXInput">Location coordinate X</label>
-            <input type="number" class="form-control" id="locationCoordinateXInput"
-                   placeholder="Enter location coordinate X"
-                   name="locationCoordinateX"
-                   formControlName="locationCoordinateX"/>
-
-            <div
-                    *ngIf="newsFactForm.get('locationCoordinateX').invalid && (newsFactForm.get('locationCoordinateX').dirty || newsFactForm.get('locationCoordinateX').touched)">
-                <small class="form-text text-danger"
-                       *ngIf="newsFactForm.get('locationCoordinateX').errors.required">
-                    Location coordinate X is required.
-                </small>
-            </div>
-        </div>
-
-        <!-- Location Coordinate Y -->
-        <div class="form-group col-md-6">
-            <label for="locationCoordinateYInput">Location Coordinate Y</label>
-            <input type="number" class="form-control" id="locationCoordinateYInput"
-                   placeholder="Enter location coordinate Y"
-                   name="locationCoordinateY"
-                   formControlName="locationCoordinateY"/>
-            <div
-                    *ngIf="newsFactForm.get('locationCoordinateY').invalid && (newsFactForm.get('locationCoordinateY').dirty || newsFactForm.get('locationCoordinateY').touched)">
-                <small class="form-text text-danger"
-                       *ngIf="newsFactForm.get('locationCoordinateY').errors.required">
-                    Location coordinate Y is required.
                 </small>
             </div>
         </div>
