@@ -38,8 +38,8 @@ export class LocationCoordinateResolve implements Resolve<ILocationCoordinate> {
       this.router.navigate(['/404']);
     }
 
-    const locationCoordinateX = parseInt(locationCoordinateXYValues[0], 10);
-    const locationCoordinateY = parseInt(locationCoordinateXYValues[1], 10);
+    const locationCoordinateX = parseFloat(locationCoordinateXYValues[0]);
+    const locationCoordinateY = parseFloat(locationCoordinateXYValues[1]);
     return new LocationCoordinate(locationCoordinateX, locationCoordinateY);
   }
 }
