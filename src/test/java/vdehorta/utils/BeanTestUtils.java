@@ -2,6 +2,7 @@ package vdehorta.utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.mapstruct.ap.internal.util.Collections;
+import vdehorta.bean.MediaType;
 import vdehorta.domain.*;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.security.RoleEnum;
@@ -34,6 +35,7 @@ public final class BeanTestUtils {
     public static final String DEFAULT_MEDIA_ID = "mediaId";
     public static final String DEFAULT_MEDIA_CONTENT_TYPE = "mediaContentType";
     public static final String DEFAULT_AUTHORITY_VALUE = RoleEnum.USER.getValue();
+    public static final MediaType DEFAULT_MEDIA_TYPE = MediaType.VIDEO;
 
 
     public static final String DEFAULT_LOGIN = "johndoe";

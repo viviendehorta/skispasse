@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vdehorta.bean.InMemoryFile;
+import vdehorta.bean.MediaType;
 import vdehorta.bean.dto.NewsCategoryDto;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.bean.dto.NewsFactNoDetailDto;
@@ -79,13 +80,14 @@ public class NewsFactService {
         newsFact.setCreatedDate(now);
         newsFact.setLastModifiedDate(now);
         NewsFact createdNewsFact = this.newsFactRepository.save(newsFact);
+        createdNewsFact.setMediaType(MediaType.VIDEO.name());
+        createdNewsFact.setMediaContentType(inMemoryVideoFile.getContentType());
 
         /* Save video file in the end because Mongo transaction doesnt apply to GridFs so file will not be deleted if error occurs */
         String videoFileId = videoService.save(inMemoryVideoFile, creatorLogin);
 
         //Update reference to video file in news fact
         createdNewsFact.setMediaId(videoFileId);
-        createdNewsFact.setMediaContentType(inMemoryVideoFile.getContentType());
         this.newsFactRepository.save(newsFact);
 
         log.debug("Created Information for News Fact: {}", createdNewsFact);

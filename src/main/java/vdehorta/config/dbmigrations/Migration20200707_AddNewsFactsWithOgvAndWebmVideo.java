@@ -19,10 +19,12 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static vdehorta.bean.MediaType.VIDEO;
+
 @ChangeLog(order = "20200707")
 public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
 
-    @ChangeSet(order = "01", author = "admin", id = "02-add2NewsFacts")
+    @ChangeSet(order = "01", author = "admin", id = "01-add2NewsFactsWithOgvAndWebmVideos")
     public void add2NewsFactsWithOgvAndWebmVideos(MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
 
         final List<NewsCategory> allCategories = mongoTemplate.findAll(NewsCategory.class);
@@ -45,6 +47,8 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
                         .locationCoordinateY(4926744.235091185)
                         .createdDate(now)
                         .lastModifiedDate(now)
+                        .mediaType(VIDEO.name())
+                        .mediaContentType(ContentTypeEnum.WEBM.getContentType())
                         .build(),
                 newsFactBuilder
                         .newsCategoryId(allCategories.get(3).getId())
@@ -58,6 +62,8 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
                         .locationCoordinateY(5144548.909028099)
                         .createdDate(now)
                         .lastModifiedDate(now)
+                        .mediaType(VIDEO.name())
+                        .mediaContentType(ContentTypeEnum.OGG.getContentType())
                         .build());
 
         mongoTemplate.insertAll(newsFacts);
@@ -105,7 +111,6 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
 
         //Update news fact with video id
         newsFact.setMediaId(mediaId);
-        newsFact.setMediaContentType(contentTypeEnum.getContentType());
         mongoTemplate.save(newsFact);
     }
 }
