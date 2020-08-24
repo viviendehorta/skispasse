@@ -1,17 +1,14 @@
 package vdehorta.bean.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import vdehorta.bean.ContentTypeEnum;
 import vdehorta.bean.MediaType;
-import vdehorta.bean.serializer.ContentTypeEnumSerializer;
-import vdehorta.bean.serializer.MediaTypeSerializer;
 
 public class MediaDto {
 
-    @JsonSerialize(using = MediaTypeSerializer.class)
+//    @JsonSerialize(using = MediaTypeSerializer.class)
     private MediaType type;
 
-    @JsonSerialize(using = ContentTypeEnumSerializer.class)
+//    @JsonSerialize(using = ContentTypeEnumSerializer.class)
     private ContentTypeEnum contentType;
 
     private MediaDto(Builder builder) {
