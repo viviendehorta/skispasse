@@ -51,6 +51,9 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Field("media_id")
     private String mediaId;
 
+    @Field("media_type")
+    private String mediaType;
+
     @Field("media_content_type")
     private String mediaContentType;
 
@@ -71,10 +74,11 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         setNewsCategoryLabel(builder.newsCategoryLabel);
         setCountry(builder.country);
         setCity(builder.city);
+        setOwner(builder.owner);
         setAddress(builder.address);
         setMediaId(builder.mediaId);
+        setMediaType(builder.mediaType);
         setMediaContentType(builder.mediaContentType);
-        setOwner(builder.owner);
     }
 
     public String getId() {
@@ -149,6 +153,14 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         this.address = address;
     }
 
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
     public String getMediaId() {
         return mediaId;
     }
@@ -157,20 +169,20 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         this.mediaId = mediaId;
     }
 
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+    }
+
     public String getMediaContentType() {
         return mediaContentType;
     }
 
     public void setMediaContentType(String mediaContentType) {
         this.mediaContentType = mediaContentType;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
     }
 
     @Override
@@ -189,19 +201,20 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Override
     public String toString() {
         return "NewsFact{" +
-            "id=" + id +
-            ", locationCoordinateX='" + locationCoordinateX + '\'' +
-            ", locationCoordinateY='" + locationCoordinateY + '\'' +
-            ", eventDate=" + eventDate +
-            ", newsCategoryId='" + newsCategoryId + '\'' +
-            ", newsCategoryLabel='" + newsCategoryLabel + '\'' +
-            ", country='" + country + '\'' +
-            ", city='" + city + '\'' +
-            ", address='" + address + '\'' +
-            ", mediaId='" + mediaId + '\'' +
-            ", mediaContentType='" + mediaContentType + '\'' +
-            ", owner='" + owner + '\'' +
-            '}';
+                "id=" + id +
+                ", locationCoordinateX='" + locationCoordinateX + '\'' +
+                ", locationCoordinateY='" + locationCoordinateY + '\'' +
+                ", eventDate=" + eventDate +
+                ", newsCategoryId='" + newsCategoryId + '\'' +
+                ", newsCategoryLabel='" + newsCategoryLabel + '\'' +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                ", owner='" + owner + '\'' +
+                ", mediaId='" + mediaId + '\'' +
+                ", mediaType='" + mediaType + '\'' +
+                ", mediaContentType='" + mediaContentType + '\'' +
+                '}';
     }
 
 
@@ -219,9 +232,10 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private String country;
         private String city;
         private String address;
-        private String mediaId;
-        private String mediaContentType;
         private String owner;
+        private String mediaId;
+        private String mediaType;
+        private String mediaContentType;
 
         public Builder() {
         }
@@ -298,6 +312,11 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
 
         public Builder mediaId(String val) {
             mediaId = val;
+            return this;
+        }
+
+        public Builder mediaType(String val) {
+            mediaType = val;
             return this;
         }
 

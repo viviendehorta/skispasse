@@ -47,6 +47,7 @@ import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.*;
 import static vdehorta.bean.ContentTypeEnum.MP4;
 import static vdehorta.bean.ContentTypeEnum.OGG;
+import static vdehorta.bean.MediaType.VIDEO;
 import static vdehorta.security.RoleEnum.*;
 import static vdehorta.utils.BeanTestUtils.*;
 import static vdehorta.utils.JsonTestUtils.toJsonString;
@@ -115,7 +116,7 @@ public class NewsFactResourceITest {
 
         NewsFact newsFact = createDefaultNewsFact();
         newsFact.setMediaId(DEFAULT_MEDIA_ID);
-        newsFact.setMediaContentType(DEFAULT_MEDIA_CONTENT_TYPE);
+        newsFact.setMediaType(DEFAULT_MEDIA_TYPE.name());
         newsFactRepository.save(newsFact);
 
         ResponseEntity<NewsFactDetailDto> response = testRestTemplate.getForEntity("/newsFacts/" + newsFact.getId(), NewsFactDetailDto.class);
@@ -129,7 +130,7 @@ public class NewsFactResourceITest {
         assertThat(resultNewsFact.getEventDate()).isEqualTo(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE));
         assertThat(resultNewsFact.getNewsCategoryId()).isEqualTo(DEFAULT_NEWS_CATEGORY_ID);
         assertThat(resultNewsFact.getNewsCategoryLabel()).isEqualTo(DEFAULT_NEWS_CATEGORY_LABEL);
-        assertThat(resultNewsFact.getMediaContentType()).isEqualTo(DEFAULT_MEDIA_CONTENT_TYPE);
+        assertThat(resultNewsFact.getMedia().getType()).isEqualTo(DEFAULT_MEDIA_TYPE);
     }
 
     @Test
@@ -206,7 +207,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    void createNewsFact_caseOk() throws IOException {
+    void createVideoNewsFact_caseOk() throws IOException {
         mockAuthentication(authenticationService, "zeus", asList(USER, CONTRIBUTOR));
 
         // Init ClockService with a fix clock to be able to assert the date values
@@ -244,7 +245,9 @@ public class NewsFactResourceITest {
         assertThat(resultNewsFact.getId()).isNotEmpty();
         assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
         assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
-        assertThat(resultNewsFact.getMediaContentType()).isEqualTo(OGG.getContentType());
+        assertThat(resultNewsFact.getMedia()).isNotNull();
+        assertThat(resultNewsFact.getMedia().getType()).isEqualTo(VIDEO);
+        assertThat(resultNewsFact.getMedia().getContentType()).isEqualTo(OGG);
 
         //Check news fact persistence
         assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
@@ -264,6 +267,7 @@ public class NewsFactResourceITest {
         assertThat(persistedNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
         assertThat(persistedNewsFact.getOwner()).isEqualTo("zeus");
         assertThat(persistedNewsFact.getMediaId()).isNotEmpty();
+        assertThat(persistedNewsFact.getMediaType()).isEqualTo(VIDEO.name());
         assertThat(persistedNewsFact.getMediaContentType()).isEqualTo(OGG.getContentType());
 
         //Check video file persistence

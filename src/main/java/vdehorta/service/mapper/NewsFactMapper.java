@@ -5,6 +5,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
+import vdehorta.bean.ContentTypeEnum;
+import vdehorta.bean.MediaType;
 import vdehorta.domain.NewsFact;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.bean.dto.NewsFactNoDetailDto;
@@ -28,18 +30,36 @@ public interface NewsFactMapper {
     }
 
     @Named("stringToLocalDateTime")
-    static LocalDateTime stringToLocalDateTime(String stringDate) {
-        if (stringDate == null || stringDate.isEmpty()) {
+    static LocalDateTime stringToLocalDateTime(String dateString) {
+        if (dateString == null || dateString.isEmpty()) {
             return null;
         }
-        return DATE_FORMATTER.parse(stringDate, LocalDate::from).atStartOfDay();
+        return DATE_FORMATTER.parse(dateString, LocalDate::from).atStartOfDay();
+    }
+
+    @Named("stringToMediaType")
+    static MediaType stringToMediaType(String mediaTypeString) {
+        if (mediaTypeString == null || mediaTypeString.isEmpty()) {
+            return null;
+        }
+        return MediaType.getByValue(mediaTypeString).orElse(null);
+    }
+
+    @Named("stringToContentType")
+    static ContentTypeEnum stringToContentType(String contentTypeString) {
+        if (contentTypeString == null || contentTypeString.isEmpty()) {
+            return null;
+        }
+        return ContentTypeEnum.getByContentType(contentTypeString).orElse(null);
     }
 
     @Mappings({
         @Mapping(source = "locationCoordinateX", target = "locationCoordinate.x"),
         @Mapping(source = "locationCoordinateY", target = "locationCoordinate.y"),
         @Mapping(source = "eventDate", target="eventDate", qualifiedByName = "localDateTimeToString"),
-        @Mapping(source = "createdDate", target="createdDate", qualifiedByName = "localDateTimeToString")
+        @Mapping(source = "createdDate", target="createdDate", qualifiedByName = "localDateTimeToString"),
+        @Mapping(source = "mediaType", target="media.type", qualifiedByName = "stringToMediaType"),
+        @Mapping(source = "mediaContentType", target="media.contentType", qualifiedByName = "stringToMediaContentType")
     })
     NewsFactDetailDto newsFactToNewsFactDetailDto(NewsFact newsFact);
 

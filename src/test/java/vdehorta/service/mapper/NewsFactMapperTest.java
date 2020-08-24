@@ -51,15 +51,4 @@ class NewsFactMapperTest {
         assertThat(result.getCreatedDate()).isEqualTo(LocalDateTime.parse("2020-04-02T00:00:00"));
         assertThat(result.getEventDate()).isEqualTo(LocalDateTime.parse("2020-04-01T00:00:00"));
     }
-
-    @Test
-    void newsFactToNewsFactDetailDto_shouldMapMediaContentTypeValue() {
-        NewsFact input = new NewsFact.Builder()
-                .mediaContentType("mediaContentType")
-                .build();
-
-        NewsFactDetailDto result = newsFactMapper.newsFactToNewsFactDetailDto(input);
-
-        assertThat(result.getMediaContentType()).isEqualTo("mediaContentType");
-    }
 }

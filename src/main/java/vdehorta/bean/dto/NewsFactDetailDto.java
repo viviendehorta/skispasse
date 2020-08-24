@@ -32,7 +32,8 @@ public class NewsFactDetailDto {
 
     private String newsCategoryLabel;
 
-    private String mediaContentType;
+    private MediaDto media;
+//    private String mediaContentType;
 
 
     public NewsFactDetailDto() {
@@ -48,7 +49,8 @@ public class NewsFactDetailDto {
         city = builder.city;
         address = builder.address;
         createdDate = builder.createdDate;
-        mediaContentType = builder.mediaContentType;
+//        mediaContentType = builder.mediaContentType;
+        media = builder.media;
     }
 
     public String getAddress() {
@@ -123,12 +125,20 @@ public class NewsFactDetailDto {
         this.newsCategoryLabel = newsCategoryLabel;
     }
 
-    public String getMediaContentType() {
-        return mediaContentType;
+//    public String getMediaContentType() {
+//        return mediaContentType;
+//    }
+//
+//    public void setMediaContentType(String mediaContentType) {
+//        this.mediaContentType = mediaContentType;
+//    }
+
+    public MediaDto getMedia() {
+        return media;
     }
 
-    public void setMediaContentType(String mediaContentType) {
-        this.mediaContentType = mediaContentType;
+    public void setMedia(MediaDto media) {
+        this.media = media;
     }
 
     @Override
@@ -154,7 +164,8 @@ public class NewsFactDetailDto {
         private String city;
         private String address;
         private String createdDate;
-        private String mediaContentType;
+        //        private String mediaContentType;
+        private MediaDto media;
 
         public Builder() {
         }
@@ -204,8 +215,13 @@ public class NewsFactDetailDto {
             return this;
         }
 
-        public Builder mediaContentType(String val) {
-            mediaContentType = val;
+//        public Builder mediaContentType(String val) {
+//            mediaContentType = val;
+//            return this;
+//        }
+
+        public Builder media(MediaDto val) {
+            media = val;
             return this;
         }
 

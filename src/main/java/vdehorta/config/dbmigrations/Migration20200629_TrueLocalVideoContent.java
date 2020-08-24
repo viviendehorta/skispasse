@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import vdehorta.bean.ContentTypeEnum;
+import vdehorta.bean.MediaType;
 import vdehorta.config.ProfileConstants;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
@@ -53,15 +54,14 @@ public class Migration20200629_TrueLocalVideoContent {
             String gridFsFilename = savedNewsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + contentTypeEnum.getExtension();
 
             try (FileInputStream fileInputStream = new FileInputStream(videoFile)) {
-                String mediaId = videoGridFsTemplate.store(
+                String videoId = videoGridFsTemplate.store(
                         fileInputStream,
                         gridFsFilename,
                         contentTypeEnum.getContentType(),
                         new Document().append(VideoService.OWNER_METADATA_KEY, savedNewsFact.getOwner())).toString();
 
                 //Update news fact with video id
-                savedNewsFact.setMediaId(mediaId);
-                savedNewsFact.setMediaContentType(contentTypeEnum.getContentType());
+                savedNewsFact.setMediaId(videoId);
                 mongoTemplate.save(savedNewsFact);
 
             } catch (IOException e) {
@@ -173,6 +173,8 @@ public class Migration20200629_TrueLocalVideoContent {
                 .locationCoordinateY(yCoordinate)
                 .createdDate(now)
                 .lastModifiedDate(now)
+                .mediaType(MediaType.VIDEO.name())
+                .mediaContentType(ContentTypeEnum.MP4.getContentType())
                 .build();
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import vdehorta.bean.ContentTypeEnum;
+import vdehorta.bean.MediaType;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.service.ClockService;
@@ -58,6 +59,8 @@ public class Migration20200422_InitCategoriesAndNewsFact {
                 .locationCoordinateY(4466253.087107279)
                 .createdDate(now)
                 .lastModifiedDate(now)
+                .mediaType(MediaType.VIDEO.name())
+                .mediaContentType(ContentTypeEnum.MP4.getContentType())
                 .build();
 
         mongoTemplate.insert(initialNewsFact);
@@ -75,6 +78,7 @@ public class Migration20200422_InitCategoriesAndNewsFact {
         String mediaId = videoGridFsTemplate.store(
                 videoInputStream,
                 gridFsFilename,
+                ContentTypeEnum.MP4.getContentType(),
                 new Document().append(VideoService.OWNER_METADATA_KEY, newsFact.getOwner())).toString();
         try {
             videoInputStream.close();
@@ -83,7 +87,6 @@ public class Migration20200422_InitCategoriesAndNewsFact {
 
         //Update news fact with video id
         newsFact.setMediaId(mediaId);
-        newsFact.setMediaContentType(ContentTypeEnum.MP4.getContentType());
         mongoTemplate.save(newsFact);
     }
 }
