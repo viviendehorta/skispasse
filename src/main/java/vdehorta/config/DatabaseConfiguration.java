@@ -33,11 +33,11 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public GridFsTemplate videoGridFsTemplate(MongoDbFactory mongoDbFactory, MongoConverter mongoConverter, ApplicationProperties applicationProperties) {
+    public GridFsTemplate mediaGridFsTemplate(MongoDbFactory mongoDbFactory, MongoConverter mongoConverter, ApplicationProperties applicationProperties) {
         return new GridFsTemplate(
                 mongoDbFactory,
                 mongoConverter,
-                applicationProperties.getMongo().getGridFs().getNewsFactVideoBucket());
+                applicationProperties.getMongo().getGridFs().getNewsFactMediaBucket());
     }
 
     /**

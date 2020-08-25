@@ -8,10 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vdehorta.bean.InMemoryFile;
-import vdehorta.bean.MediaType;
 import vdehorta.bean.dto.NewsCategoryDto;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.bean.dto.NewsFactNoDetailDto;
+import vdehorta.domain.Media;
 import vdehorta.domain.NewsFact;
 import vdehorta.repository.NewsFactRepository;
 import vdehorta.service.errors.*;
@@ -36,19 +36,19 @@ public class NewsFactService {
     private final NewsFactMapper newsFactMapper;
     private final NewsCategoryService newsCategoryService;
     private final ClockService clockService;
-    private final VideoService videoService;
+    private final MediaService mediaService;
 
 
     public NewsFactService(NewsFactRepository newsFactRepository,
                            NewsFactMapper newsFactMapper,
                            NewsCategoryService newsCategoryService,
                            ClockService clockService,
-                           VideoService videoService) {
+                           MediaService mediaService) {
         this.newsFactRepository = newsFactRepository;
         this.newsFactMapper = newsFactMapper;
         this.newsCategoryService = newsCategoryService;
         this.clockService = clockService;
-        this.videoService = videoService;
+        this.mediaService = mediaService;
     }
 
     public List<NewsFactNoDetailDto> getAll() {
@@ -68,26 +68,31 @@ public class NewsFactService {
     }
 
     @Transactional
-    public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, InMemoryFile inMemoryVideoFile, String creatorLogin) {
+    public NewsFactDetailDto create(NewsFactDetailDto newsFactDetailDto, InMemoryFile inMemoryMediaFile, String creatorLogin) {
         log.debug("Creating  news fact...");
+
+        //Force field values that should be null on creation
+        newsFactDetailDto.setCreatedDate(null);
+        newsFactDetailDto.setId(null);
+        newsFactDetailDto.setMedia(null);
+        newsFactDetailDto.setNewsCategoryLabel(null);
 
         NewsFact newsFact = newsFactMapper.newsFactDetailDtoToNewsFact(newsFactDetailDto);
 
         newsFact.setOwner(creatorLogin);
         newsFact.setNewsCategoryLabel(newsCategoryService.getById(newsFactDetailDto.getNewsCategoryId()).getLabel());
-
         LocalDateTime now = clockService.now();
         newsFact.setCreatedDate(now);
         newsFact.setLastModifiedDate(now);
         NewsFact createdNewsFact = this.newsFactRepository.save(newsFact);
-        createdNewsFact.setMediaType(MediaType.VIDEO.name());
-        createdNewsFact.setMediaContentType(inMemoryVideoFile.getContentType());
 
-        /* Save video file in the end because Mongo transaction doesnt apply to GridFs so file will not be deleted if error occurs */
-        String videoFileId = videoService.save(inMemoryVideoFile, creatorLogin);
+        /* Save media file in the end because Mongo transaction doesnt apply to GridFs so file will not be deleted if error occurs */
+        Media persistedMedia = mediaService.save(inMemoryMediaFile, creatorLogin);
 
         //Update reference to video file in news fact
-        createdNewsFact.setMediaId(videoFileId);
+        createdNewsFact.setMediaId(persistedMedia.getId());
+        createdNewsFact.setMediaType(persistedMedia.getMediaType());
+        createdNewsFact.setMediaContentType(persistedMedia.getContentType());
         this.newsFactRepository.save(newsFact);
 
         log.debug("Created Information for News Fact: {}", createdNewsFact);
@@ -136,7 +141,7 @@ public class NewsFactService {
         }
 
         newsFactRepository.deleteById(newsFactId);
-        videoService.delete(newsFact.getMediaId());
+        mediaService.delete(newsFact.getMediaId());
     }
 
     /**
@@ -148,7 +153,7 @@ public class NewsFactService {
     public InputStream getNewsFactVideo(String newsFactId) throws NewsFactNotFoundException, NewsFactVideoNotFoundException {
         NewsFact newsFact = newsFactRepository.findById(newsFactId).orElseThrow(() -> new NewsFactNotFoundException(newsFactId));
         try {
-            return this.videoService.getVideoStream(newsFact.getMediaId());
+            return this.mediaService.getVideoStream(newsFact.getMediaId());
         } catch (VideoNotFoundException e) {
             throw new NewsFactVideoNotFoundException(newsFact.getId());
         }

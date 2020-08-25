@@ -120,14 +120,14 @@ public class ApplicationProperties {
 
         public static class GridFs {
 
-            private String newsFactVideoBucket;
+            private String newsFactMediaBucket;
 
-            public String getNewsFactVideoBucket() {
-                return newsFactVideoBucket;
+            public String getNewsFactMediaBucket() {
+                return newsFactMediaBucket;
             }
 
-            public void setNewsFactVideoBucket(String newsFactVideoBucket) {
-                this.newsFactVideoBucket = newsFactVideoBucket;
+            public void setNewsFactMediaBucket(String newsFactMediaBucket) {
+                this.newsFactMediaBucket = newsFactMediaBucket;
             }
         }
     }

@@ -27,7 +27,7 @@ class NewsFactServiceTest {
     private NewsCategoryService newsCategoryServiceMock;
     private NewsFactMapper newsFactMapper;
     private ClockService clockService = new ClockService();
-    private VideoService videoFileServiceMock;
+    private MediaService videoFileServiceMock;
 
 
     @BeforeEach
@@ -35,7 +35,7 @@ class NewsFactServiceTest {
         newsFactMapper = Mappers.getMapper(NewsFactMapper.class);
         newsFactRepositoryMock = Mockito.mock(NewsFactRepository.class);
         newsCategoryServiceMock = Mockito.mock(NewsCategoryService.class);
-        videoFileServiceMock = Mockito.mock(VideoService.class);
+        videoFileServiceMock = Mockito.mock(MediaService.class);
         newsFactService = new NewsFactService(
                 newsFactRepositoryMock,
                 newsFactMapper,

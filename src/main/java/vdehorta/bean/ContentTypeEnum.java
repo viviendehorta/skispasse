@@ -2,18 +2,22 @@ package vdehorta.bean;
 
 import java.util.Optional;
 
+import static vdehorta.bean.MediaType.VIDEO;
+import static vdehorta.bean.MediaType.PHOTO;
+
 public enum ContentTypeEnum {
 
-    MP4("video/mp4", "MP4"),
-    OGG("video/ogg", "OGV"),
-    WEBM("video/webm", "WEBM");
+    MP4("video/mp4", VIDEO),
+    OGG("video/ogg", VIDEO),
+    WEBM("video/webm", VIDEO),
+    PNG("image/png", PHOTO);
 
     private String contentType;
-    private String extension;
+    private MediaType mediaType;
 
-    ContentTypeEnum(String contentType, String extension) {
+    ContentTypeEnum(String contentType, MediaType mediaType) {
         this.contentType = contentType;
-        this.extension = extension;
+        this.mediaType = mediaType;
     }
 
     public static Optional<ContentTypeEnum> getByContentType(String contentType) {
@@ -29,7 +33,7 @@ public enum ContentTypeEnum {
         return contentType;
     }
 
-    public String getExtension() {
-        return extension;
+    public MediaType getMediaType() {
+        return mediaType;
     }
 }

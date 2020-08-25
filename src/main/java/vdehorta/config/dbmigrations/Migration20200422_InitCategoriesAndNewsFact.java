@@ -11,7 +11,7 @@ import vdehorta.bean.MediaType;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.service.ClockService;
-import vdehorta.service.VideoService;
+import vdehorta.service.MediaService;
 import vdehorta.service.util.DateUtil;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class Migration20200422_InitCategoriesAndNewsFact {
     }
 
     @ChangeSet(order = "02", author = "admin", id = "02-addInitialNewsFact")
-    public void addInitialNewsFact(MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
+    public void addInitialNewsFact(MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate mediaGridFsTemplate) {
         List<NewsCategory> allCategories = mongoTemplate.findAll(NewsCategory.class);
 
         assert allCategories.size() == 6;
@@ -65,21 +65,21 @@ public class Migration20200422_InitCategoriesAndNewsFact {
 
         mongoTemplate.insert(initialNewsFact);
 
-        addPersistedVideoToNewsFact(initialNewsFact, mongoTemplate, environment, clockService, videoGridFsTemplate);
+        addPersistedVideoToNewsFact(initialNewsFact, mongoTemplate, clockService, mediaGridFsTemplate);
     }
 
-    private void addPersistedVideoToNewsFact(NewsFact newsFact, MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
+    private void addPersistedVideoToNewsFact(NewsFact newsFact, MongoTemplate mongoTemplate, ClockService clockService, GridFsTemplate mediaGridFsTemplate) {
         String filename = "video-small.mp4";
 
         //Persist video
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         InputStream videoInputStream = classloader.getResourceAsStream("media/" + filename);
-        String gridFsFilename = newsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + ContentTypeEnum.MP4.getExtension();
-        String mediaId = videoGridFsTemplate.store(
+        String gridFsFilename = newsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "_" + ContentTypeEnum.MP4.name();
+        String mediaId = mediaGridFsTemplate.store(
                 videoInputStream,
                 gridFsFilename,
                 ContentTypeEnum.MP4.getContentType(),
-                new Document().append(VideoService.OWNER_METADATA_KEY, newsFact.getOwner())).toString();
+                new Document().append(MediaService.OWNER_METADATA_KEY, newsFact.getOwner())).toString();
         try {
             videoInputStream.close();
         } catch (IOException ignored) {

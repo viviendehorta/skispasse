@@ -28,7 +28,7 @@ import vdehorta.repository.NewsFactRepository;
 import vdehorta.repository.UserRepository;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.ClockService;
-import vdehorta.service.VideoService;
+import vdehorta.service.MediaService;
 import vdehorta.utils.BeanTestUtils;
 import vdehorta.utils.PersistenceTestUtils;
 import vdehorta.utils.RestTestUtils;
@@ -75,7 +75,7 @@ public class NewsFactResourceITest {
     private NewsCategoryRepository newsCategoryRepository;
 
     @Autowired
-    private GridFsTemplate videoGridFsTemplate;
+    private GridFsTemplate mediaGridFsTemplate;
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -228,7 +228,7 @@ public class NewsFactResourceITest {
         ResponseEntity<NewsFactDetailDto> response = testRestTemplate.postForEntity(
                 "/newsFacts",
                 createFileAndJsonMultipartEntity(
-                        "videoFile", "skispasse.ogv", "video file content".getBytes(), OGG.getContentType(), "newsFactJson", toJsonString(toCreateNewsFact)),
+                        "mediaFile", "skispasse.ogv", "video file content".getBytes(), OGG.getContentType(), "newsFactJson", toJsonString(toCreateNewsFact)),
                 NewsFactDetailDto.class);
 
         //Check HTTP response
@@ -271,7 +271,7 @@ public class NewsFactResourceITest {
         assertThat(persistedNewsFact.getMediaContentType()).isEqualTo(OGG.getContentType());
 
         //Check video file persistence
-        MongoCursor<GridFSFile> persistedVideoCursor = videoGridFsTemplate.find(new Query().addCriteria(Criteria.where("_id").is(persistedNewsFact.getMediaId()))).iterator();
+        MongoCursor<GridFSFile> persistedVideoCursor = mediaGridFsTemplate.find(new Query().addCriteria(Criteria.where("_id").is(persistedNewsFact.getMediaId()))).iterator();
         assertThat(persistedVideoCursor.hasNext()).isTrue();
 
         GridFSFile persistedVideoFile = persistedVideoCursor.next();
@@ -294,7 +294,7 @@ public class NewsFactResourceITest {
 
         ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
                 createFileAndJsonMultipartEntity(
-                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4.getContentType(), "newsFactJson", toJsonString(newsFactDto)), Problem.class);
+                        "mediaFile", "skispasse.mp4", "video file content".getBytes(), MP4.getContentType(), "newsFactJson", toJsonString(newsFactDto)), Problem.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -311,7 +311,7 @@ public class NewsFactResourceITest {
 
         ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
                 createFileAndJsonMultipartEntity(
-                        "videoFile", "skispasse.mp4", "video file content".getBytes(), MP4.getContentType(), "newsFactJson", toJsonString(newsFactDto)), Problem.class);
+                        "mediaFile", "skispasse.mp4", "video file content".getBytes(), MP4.getContentType(), "newsFactJson", toJsonString(newsFactDto)), Problem.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
@@ -340,7 +340,7 @@ public class NewsFactResourceITest {
         //When
         ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
                 createFileAndJsonMultipartEntity(
-                        "videoFile", "tooBigVideo.mp4", fileBytes, MP4.getContentType(), "newsFactJson", toJsonString(newsFact)), Problem.class);
+                        "mediaFile", "tooBigVideo.mp4", fileBytes, MP4.getContentType(), "newsFactJson", toJsonString(newsFact)), Problem.class);
 
         //Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -367,7 +367,7 @@ public class NewsFactResourceITest {
 
         ResponseEntity<Problem> response = testRestTemplate.postForEntity("/newsFacts",
                 createFileAndJsonMultipartEntity(
-                        "videoFile", "skispasse.txt", "text content".getBytes(), "text/plain", "newsFactJson", toJsonString(toCreateNewsFact)), Problem.class);
+                        "mediaFile", "skispasse.txt", "text content".getBytes(), "text/plain", "newsFactJson", toJsonString(toCreateNewsFact)), Problem.class);
 
         //Then
         assertThat(response.getStatusCode()).isEqualTo(UNSUPPORTED_MEDIA_TYPE);
@@ -383,10 +383,10 @@ public class NewsFactResourceITest {
         String owner = "titi";
 
         //Init NewsFact video
-        String videoId = this.videoGridFsTemplate.store(
+        String videoId = this.mediaGridFsTemplate.store(
                 new ByteArrayInputStream("video-content".getBytes()),
                 "ma-video",
-                new Document().append(VideoService.OWNER_METADATA_KEY, owner)).toString();
+                new Document().append(MediaService.OWNER_METADATA_KEY, owner)).toString();
         //Init NewsFact
         NewsFact newsFact = createDefaultNewsFact();
         newsFact.setOwner(owner);
@@ -404,7 +404,7 @@ public class NewsFactResourceITest {
         assertThat(newsFactRepository.findAll()).hasSize(initialNewsFactCount - 1);
         assertThat(countGridFsVideos()).isEqualTo(initialVideoFilesCount - 1);
         assertThat(newsFactRepository.findById(newsFact.getId())).isEmpty();
-        assertThat(videoGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNull();
+        assertThat(mediaGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNull();
     }
 
     @Test
@@ -412,10 +412,10 @@ public class NewsFactResourceITest {
         mockAuthentication(authenticationService, "bandido", CONTRIBUTOR);
 
         //Init NewsFact video
-        String videoId = this.videoGridFsTemplate.store(
+        String videoId = this.mediaGridFsTemplate.store(
                 new ByteArrayInputStream("video-content".getBytes()),
                 "ma-video",
-                new Document().append(VideoService.OWNER_METADATA_KEY, "owner")).toString();
+                new Document().append(MediaService.OWNER_METADATA_KEY, "owner")).toString();
         //Init NewsFact
         NewsFact newsFact = createDefaultNewsFact();
         newsFact.setOwner("owner");
@@ -433,7 +433,7 @@ public class NewsFactResourceITest {
         assertThat(newsFactRepository.findAll()).hasSize(initialNewsFactCount);
         assertThat(countGridFsVideos()).isEqualTo(initialVideoFilesCount);
         assertThat(newsFactRepository.findById(newsFact.getId())).isPresent();
-        assertThat(videoGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNotNull();
+        assertThat(mediaGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)))).isNotNull();
     }
 
     @Test
@@ -772,7 +772,7 @@ public class NewsFactResourceITest {
     }
 
     private int countGridFsVideos() {
-        String newsFactVideoBucket = applicationProperties.getMongo().getGridFs().getNewsFactVideoBucket();
+        String newsFactVideoBucket = applicationProperties.getMongo().getGridFs().getNewsFactMediaBucket();
         MongoCollection<Document> videoFilesCollection = mongoTemplate.getCollection(newsFactVideoBucket + ".files");
         return (int) videoFilesCollection.countDocuments();
     }

@@ -6,7 +6,6 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import vdehorta.bean.ContentTypeEnum;
@@ -15,7 +14,7 @@ import vdehorta.config.ProfileConstants;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.service.ClockService;
-import vdehorta.service.VideoService;
+import vdehorta.service.MediaService;
 import vdehorta.service.util.DateUtil;
 
 import java.io.File;
@@ -35,7 +34,7 @@ import static vdehorta.service.util.DateUtil.DATE_FORMATTER;
 public class Migration20200629_TrueLocalVideoContent {
 
     @ChangeSet(order = "01", author = "admin", id = "01-addNewsFactWithTrueVideoContent")
-    public void addNewsFactWithTrueVideoContent(MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
+    public void addNewsFactWithTrueVideoContent(MongoTemplate mongoTemplate, ClockService clockService, GridFsTemplate mediaGridFsTemplate) {
 
         Logger logger = LoggerFactory.getLogger(Migration20200629_TrueLocalVideoContent.class);
         logger.debug("Start migration 'replaceInitialNewsFactByRealOnes'");
@@ -51,14 +50,14 @@ public class Migration20200629_TrueLocalVideoContent {
             //Persist video
             File videoFile = new File(baseDirectory + entry.getKey());
             ContentTypeEnum contentTypeEnum = ContentTypeEnum.MP4;
-            String gridFsFilename = savedNewsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + contentTypeEnum.getExtension();
+            String gridFsFilename = savedNewsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "_" + contentTypeEnum.name();
 
             try (FileInputStream fileInputStream = new FileInputStream(videoFile)) {
-                String videoId = videoGridFsTemplate.store(
+                String videoId = mediaGridFsTemplate.store(
                         fileInputStream,
                         gridFsFilename,
                         contentTypeEnum.getContentType(),
-                        new Document().append(VideoService.OWNER_METADATA_KEY, savedNewsFact.getOwner())).toString();
+                        new Document().append(MediaService.OWNER_METADATA_KEY, savedNewsFact.getOwner())).toString();
 
                 //Update news fact with video id
                 savedNewsFact.setMediaId(videoId);
