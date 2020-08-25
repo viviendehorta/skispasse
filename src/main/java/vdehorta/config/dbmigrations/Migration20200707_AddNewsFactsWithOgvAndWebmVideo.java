@@ -3,14 +3,13 @@ package vdehorta.config.dbmigrations;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import org.bson.Document;
-import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import vdehorta.bean.ContentTypeEnum;
 import vdehorta.domain.NewsCategory;
 import vdehorta.domain.NewsFact;
 import vdehorta.service.ClockService;
-import vdehorta.service.VideoService;
+import vdehorta.service.MediaService;
 import vdehorta.service.util.DateUtil;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ import static vdehorta.bean.MediaType.VIDEO;
 public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
 
     @ChangeSet(order = "01", author = "admin", id = "01-add2NewsFactsWithOgvAndWebmVideos")
-    public void add2NewsFactsWithOgvAndWebmVideos(MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
+    public void add2NewsFactsWithOgvAndWebmVideos(MongoTemplate mongoTemplate, ClockService clockService, GridFsTemplate mediaGridFsTemplate) {
 
         final List<NewsCategory> allCategories = mongoTemplate.findAll(NewsCategory.class);
 
@@ -68,10 +67,10 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
 
         mongoTemplate.insertAll(newsFacts);
 
-        addOggAndWebmVideos(mongoTemplate, environment, newsFacts, clockService, videoGridFsTemplate);
+        addOggAndWebmVideos(mongoTemplate, newsFacts, clockService, mediaGridFsTemplate);
     }
 
-    private void addOggAndWebmVideos(MongoTemplate mongoTemplate, Environment environment, List<NewsFact> newsFacts, ClockService clockService, GridFsTemplate videoGridFsTemplate) {
+    private void addOggAndWebmVideos(MongoTemplate mongoTemplate, List<NewsFact> newsFacts, ClockService clockService, GridFsTemplate mediaGridFsTemplate) {
         assert newsFacts.size() == 2;
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -81,7 +80,7 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
                 mongoTemplate.findById(newsFacts.get(0).getId(), NewsFact.class),
                 "video-small.webm",
                 ContentTypeEnum.WEBM,
-                videoGridFsTemplate,
+                mediaGridFsTemplate,
                 mongoTemplate,
                 classLoader,
                 clockService);
@@ -91,7 +90,7 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
                 mongoTemplate.findById(newsFacts.get(1).getId(), NewsFact.class),
                 "video-small.ogv",
                 ContentTypeEnum.OGG,
-                videoGridFsTemplate,
+                mediaGridFsTemplate,
                 mongoTemplate,
                 classLoader,
                 clockService);
@@ -99,11 +98,12 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
 
     private void addVideoToNewsFact(NewsFact newsFact, String filename, ContentTypeEnum contentTypeEnum, GridFsTemplate videoGridFsTemplate, MongoTemplate mongoTemplate, ClassLoader classLoader, ClockService clockService) {
         InputStream videoInputStream = classLoader.getResourceAsStream("media/" + filename);
-        String gridFsFilename = newsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "." + contentTypeEnum.getExtension();
+        String gridFsFilename = newsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "_" + contentTypeEnum.name();
         String mediaId = videoGridFsTemplate.store(
                 videoInputStream,
                 gridFsFilename,
-                new Document().append(VideoService.OWNER_METADATA_KEY, newsFact.getOwner())).toString();
+                contentTypeEnum.getContentType(),
+                new Document().append(MediaService.OWNER_METADATA_KEY, newsFact.getOwner())).toString();
         try {
             videoInputStream.close();
         } catch (IOException ignored) {

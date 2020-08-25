@@ -26,7 +26,7 @@ public final class PersistenceTestUtils {
         List<String> managedCollectionNames = mongoTemplate.getConverter().getMappingContext().getPersistentEntities().stream()
                 .map(MongoPersistentEntity::getCollection)
                 .collect(Collectors.toList());
-        String newsFactVideoBucket = applicationProperties.getMongo().getGridFs().getNewsFactVideoBucket();
+        String newsFactVideoBucket = applicationProperties.getMongo().getGridFs().getNewsFactMediaBucket();
         managedCollectionNames.add(newsFactVideoBucket + ".chunks");
         managedCollectionNames.add(newsFactVideoBucket + ".files");
         managedCollectionNames.forEach(collectionName -> {

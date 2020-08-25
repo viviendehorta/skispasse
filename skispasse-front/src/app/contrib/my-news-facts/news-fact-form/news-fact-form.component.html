@@ -121,11 +121,11 @@
         </div>
     </div>
 
-    <!-- News fact video upload -->
+    <!-- News fact media file upload -->
     <div *ngIf="withFileUpload" class="form-group">
-        <label for="videoFileInput">Video file</label>
-        <input type="file" class="form-control-file" id="videoFileInput"
-               name="newsFactMediaId"
+        <label for="mediaFileInput">Video file</label>
+        <input type="file" class="form-control-file" id="mediaFileInput"
+               name="newsFactMediaFile"
                formControlName="newsFactMediaFile"
                (change)="onFileChange($event)"/>
 

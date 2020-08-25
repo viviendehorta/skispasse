@@ -3,7 +3,6 @@ package vdehorta.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import vdehorta.bean.ContentTypeEnum;
 import vdehorta.bean.InMemoryFile;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
 
@@ -11,10 +10,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static vdehorta.bean.ContentTypeEnum.*;
 
-class VideoServiceTest {
+class MediaServiceTest {
 
-    private VideoService videoService;
+    private MediaService mediaService;
 
     private GridFsTemplate gridFsTemplateMock;
     private ClockService clockServiceMock;
@@ -25,7 +25,7 @@ class VideoServiceTest {
         gridFsTemplateMock = mock(GridFsTemplate.class);
         clockServiceMock = mock(ClockService.class);
         userServiceMock = mock(UserService.class);
-        videoService = new VideoService(gridFsTemplateMock, clockServiceMock);
+        mediaService = new MediaService(gridFsTemplateMock, clockServiceMock);
     }
 
     @Test
@@ -37,22 +37,27 @@ class VideoServiceTest {
         when(unsupportedFileMock.getContentType()).thenReturn("image/jpg");
 
         //Assert-Thrown
-        assertThatThrownBy(() -> videoService.save(unsupportedFileMock, "aUser"))
+        assertThatThrownBy(() -> mediaService.save(unsupportedFileMock, "aUser"))
                 .isInstanceOf(UnsupportedFileContentTypeException.class);
     }
 
     @Test
     void validateFileContentType_shouldAcceptMp4ContentType() {
-        assertThat(videoService.validateFileContentType("video/mp4").getExtension()).isEqualTo("MP4");
+        assertThat(mediaService.validateFileContentType("video/mp4")).isEqualTo(MP4);
     }
 
     @Test
     void validateFileContentType_shouldAcceptOggContentType() {
-        assertThat(videoService.validateFileContentType("video/ogg")).isEqualTo(ContentTypeEnum.OGG);
+        assertThat(mediaService.validateFileContentType("video/ogg")).isEqualTo(OGG);
     }
 
     @Test
     void validateFileContentType_shouldAcceptWebmContentType() {
-        assertThat(videoService.validateFileContentType("video/webm")).isEqualTo(ContentTypeEnum.WEBM);
+        assertThat(mediaService.validateFileContentType("video/webm")).isEqualTo(WEBM);
+    }
+
+    @Test
+    void validateFileContentType_shouldAcceptPngContentType() {
+        assertThat(mediaService.validateFileContentType("image/png")).isEqualTo(PNG);
     }
 }

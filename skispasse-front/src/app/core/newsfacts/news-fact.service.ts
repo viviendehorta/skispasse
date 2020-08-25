@@ -11,6 +11,7 @@ import {PaginationService} from '../pagination/pagination.service';
 import {environment} from '../../../environments/environment';
 import {INewsFactWithFile} from "../../contrib/my-news-facts/news-fact-form/news-fact-with-file.model";
 import {Page} from "../../shared/model/page.model";
+import {Media} from "../../shared/model/media.model";
 
 @Injectable({providedIn: 'root'})
 export class NewsFactService {
@@ -55,7 +56,7 @@ export class NewsFactService {
     create(newsFactWithFile: INewsFactWithFile): Observable<INewsFactDetail> {
         const formData = new FormData();
         formData.append("newsFactJson", JSON.stringify(newsFactWithFile.newsFact));
-        formData.append("videoFile", newsFactWithFile.file);
+        formData.append("mediaFile", newsFactWithFile.file);
 
         return this.http.post<INewsFactDetail>(this.resourceUrl, formData).pipe(
             map((unparsedNewsFactDetail: any) => {
@@ -99,7 +100,7 @@ export class NewsFactService {
             json.locationCoordinate ? new LocationCoordinate(json.locationCoordinate.x, json.locationCoordinate.y) : null,
             json.newsCategoryId,
             json.newsCategoryLabel,
-            json.mediaContentType
+            json.media ? new Media(json.media.type, json.media.contentType) : null
         );
     }
 

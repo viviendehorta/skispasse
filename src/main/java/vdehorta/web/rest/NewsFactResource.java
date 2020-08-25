@@ -97,7 +97,7 @@ public class NewsFactResource {
      * @throws URISyntaxException
      */
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<NewsFactDetailDto> createNewsFact(@RequestParam("videoFile") MultipartFile videoFile, @RequestParam("newsFactJson") String newsFactJson) throws URISyntaxException {
+    public ResponseEntity<NewsFactDetailDto> createNewsFact(@RequestParam("mediaFile") MultipartFile mediaFile, @RequestParam("newsFactJson") String newsFactJson) throws URISyntaxException {
         log.debug("REST request to create a news fact : {}", newsFactJson);
 
         authenticationService.assertAuthenticationRole(CONTRIBUTOR);
@@ -108,19 +108,16 @@ public class NewsFactResource {
         } catch (IOException e) {
             throw new BadRequestAlertException("News fact data is invalid!");
         }
-        if (newsFact.getId() != null) {
-            throw new BadRequestAlertException("A news fact to create can't already have an id!");
-        }
 
         InMemoryFile inMemoryVideoFile;
         try {
             inMemoryVideoFile = new InMemoryFile.Builder()
-                    .contentType(videoFile.getContentType())
-                    .inputStream(videoFile.getInputStream())
-                    .sizeInBytes(videoFile.getSize())
+                    .contentType(mediaFile.getContentType())
+                    .inputStream(mediaFile.getInputStream())
+                    .sizeInBytes(mediaFile.getSize())
                     .build();
         } catch (IOException e) {
-            throw new InternalServerErrorAlertException("Error trying to access to uploaded video file!");
+            throw new InternalServerErrorAlertException("Error trying to access to uploaded media file!");
         }
 
         NewsFactDetailDto createdNewsFact = newsFactService.create(newsFact, inMemoryVideoFile, authenticationService.getCurrentUserLoginOrThrowError());
