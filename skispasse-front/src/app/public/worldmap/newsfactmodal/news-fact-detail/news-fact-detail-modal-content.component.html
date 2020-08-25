@@ -1,6 +1,7 @@
-<div *ngIf="newsFactDetail" class="news-fact-detail">
+<div *ngIf="newsFactDetail" class="news-fact-detail" [ngSwitch]="newsFactDetail.media.type">
 
-    <skis-video-player videoUrl="{{newsFactVideoUrl}}" contentType="{{newsFactDetail.media.contentType}}"></skis-video-player>
+    <skis-video-player *ngSwitchCase="'VIDEO'" videoUrl="{{newsFactMediaData}}" contentType="{{newsFactDetail.media.contentType}}"></skis-video-player>
+    <img *ngSwitchCase="'PHOTO'" src="{{newsFactMediaData}}" alt="News fact image" />
 
     <div class="news-fact-detail-info-panel container-fluid">
 
