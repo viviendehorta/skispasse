@@ -2,12 +2,14 @@ package vdehorta.service.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import vdehorta.domain.NewsFact;
 import vdehorta.bean.dto.NewsFactDetailDto;
+import vdehorta.domain.NewsFact;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static vdehorta.bean.ContentTypeEnum.MP4;
+import static vdehorta.bean.MediaType.VIDEO;
 
 class NewsFactMapperTest {
 
@@ -50,5 +52,19 @@ class NewsFactMapperTest {
 
         assertThat(result.getCreatedDate()).isEqualTo(LocalDateTime.parse("2020-04-02T00:00:00"));
         assertThat(result.getEventDate()).isEqualTo(LocalDateTime.parse("2020-04-01T00:00:00"));
+    }
+
+    @Test
+    void newsFactToNewsFactDetailDto_shouldConvertMediaFieldsToMediaObject() {
+        NewsFact input = new NewsFact.Builder()
+                .mediaType(VIDEO.name())
+                .mediaId("id")
+                .mediaContentType(MP4.getContentType())
+                .build();
+
+        NewsFactDetailDto result = newsFactMapper.newsFactToNewsFactDetailDto(input);
+
+        assertThat(result.getMedia().getType()).isEqualTo(VIDEO);
+        assertThat(result.getMedia().getContentType()).isEqualTo(MP4);
     }
 }
