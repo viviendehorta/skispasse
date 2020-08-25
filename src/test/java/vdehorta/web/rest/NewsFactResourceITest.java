@@ -277,7 +277,7 @@ public class NewsFactResourceITest {
         GridFSFile persistedVideoFile = persistedVideoCursor.next();
         assertThat(persistedVideoCursor.hasNext()).isFalse(); //Check there is only 1 matching file
 
-        assertThat(persistedVideoFile.getFilename()).isEqualTo("zeus_2020-03-24_20:30:23.OGV");
+        assertThat(persistedVideoFile.getFilename()).isEqualTo("zeus_2020-03-24_20:30:23_OGG");
         assertThat(persistedVideoFile.getMetadata().getString("owner")).isEqualTo("zeus");
         assertThat(persistedVideoFile.getMetadata().getString("_contentType")).isEqualTo(OGG.getContentType());
     }
