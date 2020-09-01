@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import vdehorta.bean.ContentTypeEnum;
 import vdehorta.bean.InMemoryFile;
 import vdehorta.domain.Media;
+import vdehorta.service.errors.MediaNotFoundException;
 import vdehorta.service.errors.UnsupportedFileContentTypeException;
-import vdehorta.service.errors.VideoNotFoundException;
-import vdehorta.service.errors.VideoStreamException;
+import vdehorta.service.errors.MediaAccessException;
 import vdehorta.service.util.DateUtil;
 
 import java.io.IOException;
@@ -41,17 +41,17 @@ public class MediaService {
         this.clockService = clockService;
     }
 
-    public Media save(InMemoryFile inMemoryMediaFile, String owner) {
-        log.debug("Trying to save media file '{}' with content type '{}'", inMemoryMediaFile.getOriginalFilename(), inMemoryMediaFile.getContentType());
+    public Media saveMediaFile(InMemoryFile inMemoryMediaFile, String owner) {
+        log.debug("Save media file '{}' with content type '{}'", inMemoryMediaFile.getOriginalFilename(), inMemoryMediaFile.getContentType());
 
         ContentTypeEnum contentTypeEnum = validateFileContentType(inMemoryMediaFile.getContentType());
+
         String mediaId = mediaGridFsTemplate.store(
                 inMemoryMediaFile.getInputStream(),
-                generateUniqueFilename(contentTypeEnum, owner),
+                generateUniqueMediaName(contentTypeEnum, owner),
                 contentTypeEnum.getContentType(),
-                new Document()
-                        .append(OWNER_METADATA_KEY, owner))
-                .toString();
+                new Document().append(OWNER_METADATA_KEY, owner)
+        ).toString();
         inMemoryMediaFile.closeStream();
 
         return new Media.Builder()
@@ -61,17 +61,17 @@ public class MediaService {
                 .build();
     }
 
-    public InputStream getVideoStream(String videoMediaId) throws VideoNotFoundException, VideoStreamException {
-        GridFSFile gridFsFile = mediaGridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoMediaId)));
+    public InputStream getMediaStream(String mediaId) {
+        GridFSFile gridFsFile = mediaGridFsTemplate.findOne(new Query(Criteria.where("_id").is(mediaId)));
 
         if (gridFsFile == null) {
-            throw new VideoNotFoundException(videoMediaId);
+            throw new MediaNotFoundException(mediaId);
         }
 
         try {
             return mediaGridFsTemplate.getResource(gridFsFile).getInputStream();
         } catch (IOException e) {
-            throw new VideoStreamException(videoMediaId, e);
+            throw new MediaAccessException(mediaId, e);
         }
     }
 
@@ -79,11 +79,11 @@ public class MediaService {
         mediaGridFsTemplate.delete(new Query(ID_CRITERIA.is(mediaId)));
     }
 
-    protected ContentTypeEnum validateFileContentType(String contentType) throws UnsupportedFileContentTypeException {
+    protected ContentTypeEnum validateFileContentType(String contentType) {
         return ContentTypeEnum.getByContentType(contentType).orElseThrow(() -> new UnsupportedFileContentTypeException(contentType));
     }
 
-    private String generateUniqueFilename(ContentTypeEnum contentTypeEnum, String ownerLogin) {
+    private String generateUniqueMediaName(ContentTypeEnum contentTypeEnum, String ownerLogin) {
         String dateString = DateUtil.DATE_TIME_FORMATTER.format(clockService.now());
         return ownerLogin + "_" + dateString + "_" + contentTypeEnum.name();
     }

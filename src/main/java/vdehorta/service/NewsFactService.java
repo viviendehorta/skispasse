@@ -87,7 +87,7 @@ public class NewsFactService {
         NewsFact createdNewsFact = this.newsFactRepository.save(newsFact);
 
         /* Save media file in the end because Mongo transaction doesnt apply to GridFs so file will not be deleted if error occurs */
-        Media persistedMedia = mediaService.save(inMemoryMediaFile, creatorLogin);
+        Media persistedMedia = mediaService.saveMediaFile(inMemoryMediaFile, creatorLogin);
 
         //Update reference to video file in news fact
         createdNewsFact.setMediaId(persistedMedia.getId());
@@ -145,17 +145,20 @@ public class NewsFactService {
     }
 
     /**
-     * Get the NewsFactVideo associated to the news fact with the given id
+     * Get an input stream to the media associated to the news fact with the given id
      *
-     * @param newsFactId id of the news fact associated with the video to retrieve
-     * @return The NewsFactVideo associated with the
+     * @param newsFactId id of the news fact associated with the media to retrieve
+     * @return An input stream to the media associated to the news fact with the given id
      */
-    public InputStream getNewsFactVideo(String newsFactId) throws NewsFactNotFoundException, NewsFactVideoNotFoundException {
+    public InputStream getNewsFactMediaStream(String newsFactId) {
         NewsFact newsFact = newsFactRepository.findById(newsFactId).orElseThrow(() -> new NewsFactNotFoundException(newsFactId));
+        String mediaId = newsFact.getMediaId();
         try {
-            return this.mediaService.getVideoStream(newsFact.getMediaId());
-        } catch (VideoNotFoundException e) {
-            throw new NewsFactVideoNotFoundException(newsFact.getId());
+            return this.mediaService.getMediaStream(mediaId);
+        } catch (MediaNotFoundException nfe) {
+            throw new NewsFactMediaNotFoundException(newsFactId, mediaId);
+        } catch (MediaAccessException ae) {
+            throw new NewsFactMediaAccessException(newsFactId, mediaId);
         }
     }
 }

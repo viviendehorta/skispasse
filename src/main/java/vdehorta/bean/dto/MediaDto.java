@@ -5,10 +5,8 @@ import vdehorta.bean.MediaType;
 
 public class MediaDto {
 
-//    @JsonSerialize(using = MediaTypeSerializer.class)
     private MediaType type;
 
-//    @JsonSerialize(using = ContentTypeEnumSerializer.class)
     private ContentTypeEnum contentType;
 
     private MediaDto(Builder builder) {

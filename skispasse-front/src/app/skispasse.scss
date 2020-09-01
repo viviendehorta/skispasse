@@ -98,7 +98,6 @@ $modalHeight: 32rem;
     .modal-content {
 
       height: $modalHeight;
-      max-height: $modalHeight;
 
       .modal-body {
         padding: 0;
@@ -110,6 +109,11 @@ $modalHeight: 32rem;
 
           vg-player {
             height: calc(#{$modalHeight} - #{$newsFactDetailInfoHeight});
+          }
+
+          .news-fact-media-img {
+            height: calc(#{$modalHeight} - #{$newsFactDetailInfoHeight});
+            max-width: 100%;
           }
 
           .news-fact-detail-info-panel {

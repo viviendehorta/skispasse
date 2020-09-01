@@ -10,7 +10,8 @@ public enum ContentTypeEnum {
     MP4("video/mp4", VIDEO),
     OGG("video/ogg", VIDEO),
     WEBM("video/webm", VIDEO),
-    PNG("image/png", PHOTO);
+    PNG("image/png", PHOTO),
+    JPEG("image/jpeg", PHOTO);
 
     private String contentType;
     private MediaType mediaType;

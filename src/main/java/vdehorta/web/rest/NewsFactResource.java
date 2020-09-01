@@ -27,7 +27,6 @@ import vdehorta.web.rest.util.PaginationUtil;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -170,9 +169,9 @@ public class NewsFactResource {
                 .body(updated);
     }
 
-    @GetMapping("/video/{newsFactId}")
-    public void streamNewsFactVideo(@PathVariable String newsFactId, HttpServletResponse response) throws IOException {
-        InputStream videoStream = newsFactService.getNewsFactVideo(newsFactId);
-        FileCopyUtils.copy(videoStream, response.getOutputStream());
+    @GetMapping("/media/{newsFactId}")
+    public void getNewsFactMedia(@PathVariable String newsFactId, HttpServletResponse response) throws IOException {
+        log.debug("REST request to get video stream url of news fact with id : {}", newsFactId);
+        FileCopyUtils.copy(newsFactService.getNewsFactMediaStream(newsFactId), response.getOutputStream());
     }
 }
