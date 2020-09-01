@@ -10,7 +10,7 @@ import {ActivatedRoute} from "@angular/router";
 export class NewsFactDetailModalContentComponent implements OnInit {
 
     newsFactDetail: INewsFactDetail;
-    newsFactMediaData: string;
+    newsFactMediaUrl: string;
 
     constructor(
         private newsFactService: NewsFactService,
@@ -20,11 +20,7 @@ export class NewsFactDetailModalContentComponent implements OnInit {
     ngOnInit() {
         this.route.data.subscribe((data) => {
             this.newsFactDetail = data.newsFact;
-            if (this.newsFactDetail.media.type === 'VIDEO') {
-                this.newsFactMediaData = this.newsFactService.getNewsFactVideoUrl(this.newsFactDetail.id);
-            } else {
-                this.newsFactMediaData = `data:${this.newsFactDetail.media.contentType};base64,${this.newsFactService.getNewsFactImageString(this.newsFactDetail.id)}`;
-            }
+            this.newsFactMediaUrl = this.newsFactService.getNewsFactMediaUrl(this.newsFactDetail.id);
         });
     }
 

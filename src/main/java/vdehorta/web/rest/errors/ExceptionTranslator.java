@@ -111,9 +111,16 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
 
     @ExceptionHandler
-    public ResponseEntity<Problem> handleNewsFactVideoNotFoundException(NewsFactVideoNotFoundException ex, NativeWebRequest request) {
-        //Return a 500 and not a not found because due to desynchronization between news fact and video
-        InternalServerErrorAlertException problem = new InternalServerErrorAlertException("Error while accessing video of news fact with id '" + ex.getNewsFactId() + "'!");
+    public ResponseEntity<Problem> handleNewsFactMediaNotFoundException(NewsFactMediaNotFoundException ex, NativeWebRequest request) {
+        //Return a 500 and not a not found because due to desynchronization between news fact and media
+        InternalServerErrorAlertException problem = new InternalServerErrorAlertException("Media of news fact with id '" + ex.getNewsFactId() + "' was not found!");
+        return create(problem, request);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleNewsFactMediaAccessException(NewsFactMediaAccessException ex, NativeWebRequest request) {
+        //Return a 500 and not a not found because due to desynchronization between news fact and media
+        InternalServerErrorAlertException problem = new InternalServerErrorAlertException("Error while trying to access to media of news fact with id '" + ex.getNewsFactId() + "'!");
         return create(problem, request);
     }
 

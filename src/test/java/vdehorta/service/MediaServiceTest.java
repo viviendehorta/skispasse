@@ -34,10 +34,10 @@ class MediaServiceTest {
         //Given
         InMemoryFile unsupportedFileMock = mock(InMemoryFile.class);
         when(unsupportedFileMock.getSizeInBytes()).thenReturn(0L);
-        when(unsupportedFileMock.getContentType()).thenReturn("image/jpg");
+        when(unsupportedFileMock.getContentType()).thenReturn("audio/mpeg");
 
         //Assert-Thrown
-        assertThatThrownBy(() -> mediaService.save(unsupportedFileMock, "aUser"))
+        assertThatThrownBy(() -> mediaService.saveMediaFile(unsupportedFileMock, "aUser"))
                 .isInstanceOf(UnsupportedFileContentTypeException.class);
     }
 
