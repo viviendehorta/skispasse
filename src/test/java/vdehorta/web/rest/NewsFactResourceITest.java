@@ -749,14 +749,14 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void streamNewsFactVideo_shouldThrowNotFoundIfNewsFactIdDoesntExist() {
-        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/video/unexistingId", Problem.class);
+    public void getNewsFactMedia_shouldThrowNotFoundIfNewsFactIdDoesntExist() {
+        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/media/unexistingId", Problem.class);
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
         assertThat(response.getBody().getDetail()).isEqualTo("News fact with id 'unexistingId' was not found!");
     }
 
     @Test
-    public void streamNewsFactVideo_shouldThrowInternalServerErrorIfVideoFileDoesntExist() {
+    public void getNewsFactMedia_shouldThrowInternalServerErrorIfVideoFileDoesntExist() {
 
         //Init Database with a news fact wihout associated video file
         final NewsCategory newsCategory = createDefaultNewsCategory();
@@ -765,10 +765,10 @@ public class NewsFactResourceITest {
         newsFact.setMediaId("unexistingMediaId");
         newsFactRepository.save(newsFact);
 
-        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/video/" + newsFact.getId(), Problem.class);
+        ResponseEntity<Problem> response = testRestTemplate.getForEntity("/newsFacts/media/" + newsFact.getId(), Problem.class);
 
         assertThat(response.getStatusCode()).isEqualTo(INTERNAL_SERVER_ERROR);
-        assertThat(response.getBody().getDetail()).isEqualTo("Error while accessing video of news fact with id '" + newsFact.getId() + "'!");
+        assertThat(response.getBody().getDetail()).isEqualTo("Media of news fact with id 'news_fact_id' was not found!");
     }
 
     private int countGridFsVideos() {
