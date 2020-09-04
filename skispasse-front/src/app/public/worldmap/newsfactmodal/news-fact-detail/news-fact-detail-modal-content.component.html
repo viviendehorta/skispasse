@@ -1,18 +1,23 @@
 <div *ngIf="newsFactDetail" class="news-fact-detail" [ngSwitch]="newsFactDetail.media.type">
 
-    <skis-video-player *ngSwitchCase="'VIDEO'" videoUrl="{{newsFactMediaUrl}}" contentType="{{newsFactDetail.media.contentType}}"></skis-video-player>
-    <img class="news-fact-media-img" *ngSwitchCase="'PHOTO'" src="{{this.newsFactMediaUrl}}" alt="Photo of the publication" />
+    <div class="news-fact-detail-media">
+        <skis-video-player *ngSwitchCase="'VIDEO'" videoUrl="{{newsFactMediaUrl}}" contentType="{{newsFactDetail.media.contentType}}"></skis-video-player>
+        <img class="news-fact-media-img" *ngSwitchCase="'PHOTO'" src="{{this.newsFactMediaUrl}}" alt="Photo of the publication" />
+    </div>
 
     <div class="news-fact-detail-info-panel container-fluid">
 
         <div class="row">
 
-            <div class="news-fact-detail-info-left-col col-8">
+            <div class="news-fact-detail-info-left-col col-4">
 
                 <!--Event date-->
                 <div class="news-fact-detail-info-text">
                     <fa-icon [icon]="'calendar-alt'"></fa-icon>&nbsp;<span>{{this.newsFactDetail.eventDate}}</span>
                 </div>
+            </div>
+
+            <div class="news-fact-detail-info-left-col col-4">
 
                 <!--City, country-->
                 <div class="news-fact-detail-info-text">

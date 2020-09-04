@@ -40,7 +40,7 @@ public class Migration20200422_InitCategoriesAndNewsFact {
     }
 
     @ChangeSet(order = "02", author = "admin", id = "02-addInitialNewsFact")
-    public void addInitialNewsFact(MongoTemplate mongoTemplate, Environment environment, ClockService clockService, GridFsTemplate mediaGridFsTemplate) {
+    public void addInitialNewsFact(MongoTemplate mongoTemplate, ClockService clockService, GridFsTemplate mediaGridFsTemplate) {
         List<NewsCategory> allCategories = mongoTemplate.findAll(NewsCategory.class);
 
         assert allCategories.size() == 6;
