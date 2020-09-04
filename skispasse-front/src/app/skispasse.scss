@@ -107,13 +107,18 @@ $modalHeight: 32rem;
 
         .news-fact-detail {
 
-          vg-player {
-            height: calc(#{$modalHeight} - #{$newsFactDetailInfoHeight});
-          }
+          .news-fact-detail-media {
 
-          .news-fact-media-img {
-            height: calc(#{$modalHeight} - #{$newsFactDetailInfoHeight});
-            max-width: 100%;
+            text-align: center;
+
+            vg-player {
+              height: calc(#{$modalHeight} - #{$newsFactDetailInfoHeight});
+            }
+
+            .news-fact-media-img {
+              height: calc(#{$modalHeight} - #{$newsFactDetailInfoHeight});
+              max-width: 100%;
+            }
           }
 
           .news-fact-detail-info-panel {
