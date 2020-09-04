@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.zalando.problem.Problem;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.bean.dto.NewsFactNoDetailDto;
@@ -29,13 +30,16 @@ import vdehorta.repository.UserRepository;
 import vdehorta.service.AuthenticationService;
 import vdehorta.service.ClockService;
 import vdehorta.service.MediaService;
+import vdehorta.service.util.DateUtil;
 import vdehorta.utils.BeanTestUtils;
 import vdehorta.utils.PersistenceTestUtils;
 import vdehorta.utils.RestTestUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.*;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -45,8 +49,8 @@ import static org.assertj.core.groups.Tuple.tuple;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.*;
-import static vdehorta.bean.ContentTypeEnum.MP4;
-import static vdehorta.bean.ContentTypeEnum.OGG;
+import static vdehorta.bean.ContentTypeEnum.*;
+import static vdehorta.bean.MediaType.PHOTO;
 import static vdehorta.bean.MediaType.VIDEO;
 import static vdehorta.security.RoleEnum.*;
 import static vdehorta.utils.BeanTestUtils.*;
@@ -280,6 +284,82 @@ public class NewsFactResourceITest {
         assertThat(persistedVideoFile.getFilename()).isEqualTo("zeus_2020-03-24_20:30:23_OGG");
         assertThat(persistedVideoFile.getMetadata().getString("owner")).isEqualTo("zeus");
         assertThat(persistedVideoFile.getMetadata().getString("_contentType")).isEqualTo(OGG.getContentType());
+    }
+
+    @Test
+    void createPhotoNewsFact_caseOk() throws IOException {
+        mockAuthentication(authenticationService, "cedric", CONTRIBUTOR);
+
+        // Init ClockService with a fix clock to be able to assert the date values
+        LocalDateTime fixedNow = LocalDateTime.parse("2020-09-03T20:24:00");
+        clockService.setClock(Clock.fixed(fixedNow.toInstant(ZoneOffset.UTC), ZoneId.of("Z"))); // "Z" for UTC time zone
+
+        // Initialize database
+        NewsCategory newsCategory = createDefaultNewsCategory1();
+        newsCategoryRepository.save(newsCategory);
+        final int newsFactInitialCount = newsFactRepository.findAll().size();
+
+        //Given
+        NewsFactDetailDto toCreateNewsFact = createDefaultNewsFactDetailDto();
+        toCreateNewsFact.setId(null);
+        toCreateNewsFact.setNewsCategoryId(newsCategory.getId());
+        toCreateNewsFact.setNewsCategoryLabel(null);
+
+        ResponseEntity<NewsFactDetailDto> response = testRestTemplate.postForEntity(
+                "/newsFacts",
+                createFileAndJsonMultipartEntity(
+                        "mediaFile", "skispasse.jpg", "image content".getBytes(), JPEG.getContentType(), "newsFactJson", toJsonString(toCreateNewsFact)),
+                NewsFactDetailDto.class);
+
+        //Check HTTP response
+        assertThat(response.getStatusCode()).isEqualTo(CREATED);
+        NewsFactDetailDto resultNewsFact = response.getBody();
+        assertThat(resultNewsFact).isNotNull();
+        assertThat(resultNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
+        assertThat(resultNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
+        assertThat(resultNewsFact.getEventDate()).isEqualTo(DEFAULT_DATE_FORMATTER.format(DEFAULT_EVENT_DATE));
+        assertThat(resultNewsFact.getCreatedDate()).isEqualTo("2020-09-03");
+        assertThat(resultNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
+        assertThat(resultNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
+        assertThat(resultNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(resultNewsFact.getId()).isNotEmpty();
+        assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
+        assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+        assertThat(resultNewsFact.getMedia()).isNotNull();
+        assertThat(resultNewsFact.getMedia().getType()).isEqualTo(PHOTO);
+        assertThat(resultNewsFact.getMedia().getContentType()).isEqualTo(JPEG);
+
+        //Check news fact persistence
+        assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
+        NewsFact persistedNewsFact = newsFactRepository.findById(resultNewsFact.getId()).orElse(null);
+        assertThat(persistedNewsFact).isNotNull();
+        assertThat(persistedNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(persistedNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
+        assertThat(persistedNewsFact.getCreatedBy()).isEqualTo("cedric");
+        assertThat(persistedNewsFact.getCreatedDate()).isEqualToIgnoringSeconds(fixedNow);
+        assertThat(persistedNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
+        assertThat(persistedNewsFact.getEventDate()).isEqualTo(DEFAULT_EVENT_DATE);
+        assertThat(persistedNewsFact.getLastModifiedBy()).isEqualTo("cedric");
+        assertThat(persistedNewsFact.getLastModifiedDate()).isEqualToIgnoringSeconds(fixedNow);
+        assertThat(persistedNewsFact.getLocationCoordinateX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
+        assertThat(persistedNewsFact.getLocationCoordinateY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+        assertThat(persistedNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
+        assertThat(persistedNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
+        assertThat(persistedNewsFact.getOwner()).isEqualTo("cedric");
+        assertThat(persistedNewsFact.getMediaId()).isNotEmpty();
+        assertThat(persistedNewsFact.getMediaType()).isEqualTo(PHOTO.name());
+        assertThat(persistedNewsFact.getMediaContentType()).isEqualTo(JPEG.getContentType());
+
+        //Check video file persistence
+        MongoCursor<GridFSFile> persistedMediaCursor = mediaGridFsTemplate.find(new Query().addCriteria(Criteria.where("_id").is(persistedNewsFact.getMediaId()))).iterator();
+        assertThat(persistedMediaCursor.hasNext()).isTrue();
+
+        GridFSFile persistedMediaFile = persistedMediaCursor.next();
+        assertThat(persistedMediaCursor.hasNext()).isFalse(); //Check there is only 1 matching file
+
+        assertThat(persistedMediaFile.getFilename()).isEqualTo("cedric_2020-09-03_20:24:00_JPEG");
+        assertThat(persistedMediaFile.getMetadata().getString("owner")).isEqualTo("cedric");
+        assertThat(persistedMediaFile.getMetadata().getString("_contentType")).isEqualTo(JPEG.getContentType());
     }
 
     @Test
@@ -756,7 +836,7 @@ public class NewsFactResourceITest {
     }
 
     @Test
-    public void getNewsFactMedia_shouldThrowInternalServerErrorIfVideoFileDoesntExist() {
+    public void getNewsFactMedia_shouldThrowInternalServerErrorIfMediaFileDoesntExist() {
 
         //Init Database with a news fact wihout associated video file
         final NewsCategory newsCategory = createDefaultNewsCategory();
@@ -769,6 +849,34 @@ public class NewsFactResourceITest {
 
         assertThat(response.getStatusCode()).isEqualTo(INTERNAL_SERVER_ERROR);
         assertThat(response.getBody().getDetail()).isEqualTo("Media of news fact with id 'news_fact_id' was not found!");
+    }
+
+    @Test
+    public void getNewsFactMedia_caseOk() {
+
+        //Init Database with news category, news fact and news fact media
+        final NewsCategory newsCategory = createDefaultNewsCategory();
+        newsCategoryRepository.save(newsCategory);
+
+        final NewsFact newsFact = createDefaultNewsFact();
+
+        InputStream mediaInputStream = new ByteArrayInputStream("media content".getBytes());
+        String gridFsFilename = newsFact.getOwner() + "_" + DateUtil.DATE_TIME_FORMATTER.format(clockService.now()) + "_" + PNG.name();
+        String mediaId = mediaGridFsTemplate.store(
+                mediaInputStream,
+                gridFsFilename,
+                PNG.getContentType(),
+                new Document().append(MediaService.OWNER_METADATA_KEY, newsFact.getOwner())).toString();
+
+        newsFact.setMediaId(mediaId);
+        newsFactRepository.save(newsFact);
+
+        //Configure REST Template to convert response of type octet/stream using ByteArrayHttpMessageConverter
+        testRestTemplate.getRestTemplate().setMessageConverters(Arrays.asList(new ByteArrayHttpMessageConverter()));
+        ResponseEntity<byte[]> response = testRestTemplate.getForEntity("/newsFacts/media/" + newsFact.getId(), byte[].class);
+
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+        assertThat(response.getBody()).isEqualTo("media content".getBytes());
     }
 
     private int countGridFsVideos() {
