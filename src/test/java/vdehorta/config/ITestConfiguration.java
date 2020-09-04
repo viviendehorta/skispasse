@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import vdehorta.service.AuthenticationService;
 
 import javax.annotation.PostConstruct;
@@ -32,9 +33,19 @@ public class ITestConfiguration {
      * https://stackoverflow.com/questions/16748969/java-net-httpretryexception-cannot-retry-due-to-server-authentication-in-strea/29468005
      */
     @PostConstruct
-    public void setTestRestTemplateFactory() {
+    public void setRestTemplateFactory() {
         final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setOutputStreaming(false);
         testRestTemplate.getRestTemplate().setRequestFactory(requestFactory);
+    }
+
+    /**
+     * Set SimpleClientHttpRequestFactory output streaming to false on the spring context bean TestRestTemplate
+     * to fix a bug ocurring when receiving http response 401 UNAUTHORIZED with Spring HttpClient
+     * https://stackoverflow.com/questions/16748969/java-net-httpretryexception-cannot-retry-due-to-server-authentication-in-strea/29468005
+     */
+    @PostConstruct
+    public void configureRestTemplateForApplicationOctetStreamContentType() {
+        testRestTemplate.getRestTemplate().getMessageConverters().add(new ByteArrayHttpMessageConverter());
     }
 }

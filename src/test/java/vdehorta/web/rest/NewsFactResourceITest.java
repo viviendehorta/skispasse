@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.zalando.problem.Problem;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.bean.dto.NewsFactNoDetailDto;
@@ -39,7 +38,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.*;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -871,8 +869,6 @@ public class NewsFactResourceITest {
         newsFact.setMediaId(mediaId);
         newsFactRepository.save(newsFact);
 
-        //Configure REST Template to convert response of type octet/stream using ByteArrayHttpMessageConverter
-        testRestTemplate.getRestTemplate().setMessageConverters(Arrays.asList(new ByteArrayHttpMessageConverter()));
         ResponseEntity<byte[]> response = testRestTemplate.getForEntity("/newsFacts/media/" + newsFact.getId(), byte[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
