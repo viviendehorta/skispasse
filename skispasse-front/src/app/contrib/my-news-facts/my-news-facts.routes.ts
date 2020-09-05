@@ -6,74 +6,85 @@ import {NewsFactDetail} from '../../shared/model/news-fact-detail.model';
 import {ResolvePaginationParamService} from '../../core/pagination/resolve-pagination-param-service';
 import {NewsFactCreationComponent} from "./create-news-fact/news-fact-creation.component";
 import {NewsFactEditionComponent} from "./update-news-fact/news-fact-edition.component";
-import {NewsFactNoDetail} from "../../shared/model/news-fact-no-detail.model";
-import {ILocationCoordinate, LocationCoordinate} from "../../shared/model/location-coordinate.model";
+import {LocationCoordinate} from "../../shared/model/location-coordinate.model";
+import {INewsFactLocation, NewsFactLocation} from "../../shared/model/alert/news-fact-location.model";
+import {AddressFinderService} from "../../core/reverse-geocoding/address-finder.service";
+import {map} from "rxjs/operators";
+import {Address} from "../../shared/model/address.model";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class NewsFactResolve implements Resolve<any> {
-  constructor(private newsFactService: NewsFactService) {}
-
-  resolve(route: ActivatedRouteSnapshot) {
-    const id = route.params.id ? route.params.id : null;
-    if (id) {
-      return this.newsFactService.getNewsFactDetail(id);
+    constructor(private newsFactService: NewsFactService) {
     }
-    return new NewsFactDetail();
-  }
+
+    resolve(route: ActivatedRouteSnapshot) {
+        const id = route.params.id ? route.params.id : null;
+        if (id) {
+            return this.newsFactService.getNewsFactDetail(id);
+        }
+        return new NewsFactDetail();
+    }
 }
 
-@Injectable({ providedIn: 'root' })
-export class LocationCoordinateResolve implements Resolve<ILocationCoordinate> {
-  constructor(private router:Router) {}
-
-  resolve(route: ActivatedRouteSnapshot) {
-    const locationCoordinateString = route.params.locationCoordinateXY as string;
-
-    if (!locationCoordinateString) {
-      this.router.navigate(['/404']);
+@Injectable({providedIn: 'root'})
+export class NewsFactLocationResolve implements Resolve<INewsFactLocation> {
+    constructor(
+        private router: Router,
+        private addressFinderService: AddressFinderService
+    ) {
     }
 
-    const locationCoordinateXYValues = locationCoordinateString.split(',');
-    if (!locationCoordinateXYValues || locationCoordinateXYValues.length < 2) {
-      this.router.navigate(['/404']);
-    }
+    resolve(route: ActivatedRouteSnapshot) {
+        const locationCoordinateString = route.params.locationCoordinateXY as string;
 
-    const locationCoordinateX = parseFloat(locationCoordinateXYValues[0]);
-    const locationCoordinateY = parseFloat(locationCoordinateXYValues[1]);
-    return new LocationCoordinate(locationCoordinateX, locationCoordinateY);
-  }
+        if (!locationCoordinateString) {
+            this.router.navigate(['/404']);
+        }
+
+        const locationCoordinateXYValues = locationCoordinateString.split(',');
+        if (!locationCoordinateXYValues || locationCoordinateXYValues.length < 2) {
+            this.router.navigate(['/404']);
+        }
+
+        const locationCoordinate = new LocationCoordinate(parseFloat(locationCoordinateXYValues[0]), parseFloat(locationCoordinateXYValues[1]));
+        return this.addressFinderService.findAddress(locationCoordinate).pipe(
+            map((address: Address) => {
+                return new NewsFactLocation(address, locationCoordinate)
+            })
+        );
+    }
 }
 
 export const myNewsFactsRoutes: Routes = [
-  {
-    path: '',
-    component: MyNewsFactsComponent,
-    resolve: {
-      pagingParams: ResolvePaginationParamService
+    {
+        path: '',
+        component: MyNewsFactsComponent,
+        resolve: {
+            pagingParams: ResolvePaginationParamService
+        },
+        data: {
+            pageTitle: 'My publications',
+            defaultSort: 'id,asc'
+        }
     },
-    data: {
-      pageTitle: 'My publications',
-      defaultSort: 'id,asc'
-    }
-  },
-  {
-    path: 'new/:locationCoordinateXY',
-    component: NewsFactCreationComponent,
-    data: {
-      pageTitle: 'New publication',
+    {
+        path: 'new/:locationCoordinateXY',
+        component: NewsFactCreationComponent,
+        data: {
+            pageTitle: 'New publication',
+        },
+        resolve: {
+          newsFactLocation: NewsFactLocationResolve
+        }
     },
-    resolve : {
-      locationCoordinate: LocationCoordinateResolve
+    {
+        path: ':id/edit',
+        component: NewsFactEditionComponent,
+        data: {
+            pageTitle: 'Publication edition'
+        },
+        resolve: {
+            newsFact: NewsFactResolve
+        }
     }
-  },
-  {
-    path: ':id/edit',
-    component: NewsFactEditionComponent,
-    data: {
-      pageTitle: 'Publication edition'
-    },
-    resolve: {
-      newsFact: NewsFactResolve
-    }
-  }
 ];
