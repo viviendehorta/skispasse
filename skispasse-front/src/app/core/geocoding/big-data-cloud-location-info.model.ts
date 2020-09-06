@@ -1,4 +1,4 @@
-export interface GeocodeAddress {
+export interface BigDataCloudLocationInfo {
     latitude: number,
     longitude: number,
     countryName: string,

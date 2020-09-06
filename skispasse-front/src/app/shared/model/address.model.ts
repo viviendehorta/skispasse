@@ -1,10 +1,10 @@
-export interface IAddress {
+export interface ILocationInfo {
     country: string,
     city: string,
     detail: string
 }
 
-export class Address implements IAddress {
+export class LocationInfo implements ILocationInfo {
 
     country: string;
     city: string;

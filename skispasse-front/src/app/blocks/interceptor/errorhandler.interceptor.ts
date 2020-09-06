@@ -3,6 +3,7 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest}
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {EventManager} from '../../core/events/event-manager';
+import {environment} from "../../../environments/environment";
 
 @Injectable()
 export class ErrorHandlerInterceptor implements HttpInterceptor {
@@ -14,7 +15,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
         () => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (!(err.status === 401 && (err.message === ''))) {
+            if (this.mustShowError(err)) {
               this.eventManager.broadcast({ name: 'skispasseApp.httpError', content: err });
             }
           }
@@ -22,4 +23,14 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
       )
     );
   }
+
+    private mustShowError(err: HttpErrorResponse) {
+        if (err.status === 401 && (err.message === '')) { //User authentication expired
+            return false;
+        }
+        if (err.url === environment.reverseGeoCodeAPIUrl) {
+            return false;
+        }
+        return true;
+    }
 }

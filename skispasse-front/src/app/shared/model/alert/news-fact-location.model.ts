@@ -1,17 +1,16 @@
-import {Address} from "../address.model";
+import {LocationInfo} from "../address.model";
 import {LocationCoordinate} from "../location-coordinate.model";
 
 export interface INewsFactLocation {
-    address: Address,
+    address: LocationInfo,
     locationCoordinate: LocationCoordinate
 }
 
 export class NewsFactLocation implements INewsFactLocation {
-
-    address: Address;
+    address: LocationInfo;
     locationCoordinate: LocationCoordinate;
 
-    constructor(address: Address, locationCoordinate: LocationCoordinate) {
+    constructor(address: LocationInfo, locationCoordinate: LocationCoordinate) {
         this.address = address;
         this.locationCoordinate = locationCoordinate;
     }

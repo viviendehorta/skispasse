@@ -8,9 +8,9 @@ import {NewsFactCreationComponent} from "./create-news-fact/news-fact-creation.c
 import {NewsFactEditionComponent} from "./update-news-fact/news-fact-edition.component";
 import {LocationCoordinate} from "../../shared/model/location-coordinate.model";
 import {INewsFactLocation, NewsFactLocation} from "../../shared/model/alert/news-fact-location.model";
-import {AddressFinderService} from "../../core/reverse-geocoding/address-finder.service";
 import {map} from "rxjs/operators";
-import {Address} from "../../shared/model/address.model";
+import {LocationInfo} from "../../shared/model/address.model";
+import {LocationInfoService} from "../../core/geocoding/location-info.service";
 
 @Injectable({providedIn: 'root'})
 export class NewsFactResolve implements Resolve<any> {
@@ -30,7 +30,7 @@ export class NewsFactResolve implements Resolve<any> {
 export class NewsFactLocationResolve implements Resolve<INewsFactLocation> {
     constructor(
         private router: Router,
-        private addressFinderService: AddressFinderService
+        private locationInfoService: LocationInfoService
     ) {
     }
 
@@ -47,8 +47,8 @@ export class NewsFactLocationResolve implements Resolve<INewsFactLocation> {
         }
 
         const locationCoordinate = new LocationCoordinate(parseFloat(locationCoordinateXYValues[0]), parseFloat(locationCoordinateXYValues[1]));
-        return this.addressFinderService.findAddress(locationCoordinate).pipe(
-            map((address: Address) => {
+        return this.locationInfoService.fetchLocationInfo(locationCoordinate).pipe(
+            map((address: LocationInfo) => {
                 return new NewsFactLocation(address, locationCoordinate)
             })
         );
