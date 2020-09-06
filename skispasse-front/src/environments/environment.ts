@@ -6,5 +6,6 @@ export const environment = {
   production: false,
   version: '0.0.1-SNAPSHOT',
   debugInfoEnabled: true,
-  serverUrl: ''
+  serverUrl: '',
+  reverseGeoCodeAPIUrl: 'https://api.bigdatacloud.net/data/reverse-geocode-client'
 };
