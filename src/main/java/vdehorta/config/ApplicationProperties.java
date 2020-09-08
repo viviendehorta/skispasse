@@ -12,6 +12,8 @@ public class ApplicationProperties {
 
     private String applicationName;
 
+    private Bigdatacloud bigdatacloud;
+
     private Logging logging = new Logging();
 
     private Mongo mongo = new Mongo();
@@ -24,6 +26,14 @@ public class ApplicationProperties {
 
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
+    }
+
+    public Bigdatacloud getBigdatacloud() {
+        return bigdatacloud;
+    }
+
+    public void setBigdatacloud(Bigdatacloud bigdatacloud) {
+        this.bigdatacloud = bigdatacloud;
     }
 
     public Logging getLogging() {
@@ -48,6 +58,28 @@ public class ApplicationProperties {
 
     public void setSecurity(Security security) {
         this.security = security;
+    }
+
+    public static class Bigdatacloud {
+
+        private String apiKey;
+        private String apiUrl;
+
+        public String getApiKey() {
+            return apiKey;
+        }
+
+        public void setApiKey(String apiKey) {
+            this.apiKey = apiKey;
+        }
+
+        public String getApiUrl() {
+            return apiUrl;
+        }
+
+        public void setApiUrl(String apiUrl) {
+            this.apiUrl = apiUrl;
+        }
     }
 
     public static class Logging {

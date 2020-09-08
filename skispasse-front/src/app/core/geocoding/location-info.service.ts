@@ -5,7 +5,6 @@ import {catchError, map} from "rxjs/operators";
 import {ILocationInfo, LocationInfo} from "../../shared/model/address.model";
 import {LocationCoordinate} from "../../shared/model/location-coordinate.model";
 import {toLonLat} from 'ol/proj';
-import {BigDataCloudLocationInfo} from "./big-data-cloud-location-info.model";
 import {environment} from "../../../environments/environment";
 
 @Injectable({providedIn: 'root'})
@@ -18,7 +17,7 @@ export class LocationInfoService {
 
     fetchLocationInfo(locationCoordinate: LocationCoordinate): Observable<ILocationInfo> {
         const lonLat = toLonLat([locationCoordinate.x, locationCoordinate.y]);
-        return this.http.get<BigDataCloudLocationInfo>(environment.reverseGeoCodeAPIUrl, {
+        return this.http.get<any>(environment.reverseGeoCodeAPIUrl, {
             params: {
                 latitude: lonLat[1].toString(),
                 longitude: lonLat[0].toString(),
@@ -26,12 +25,12 @@ export class LocationInfoService {
             },
             observe: 'response'
         }).pipe(
-            map((httpResponse: HttpResponse<BigDataCloudLocationInfo>) => {
-                const bigDataCloudLocationInfo = httpResponse.body;
+            map((httpResponse: HttpResponse<any>) => {
+                console.log(JSON.stringify(httpResponse.body.localityInfo));
+                const responseBody = httpResponse.body;
                 return new LocationInfo(
-                    bigDataCloudLocationInfo.countryName,
-                    bigDataCloudLocationInfo.city,
-                    bigDataCloudLocationInfo.locality
+                    responseBody.countryName,
+                    responseBody.city,
                 );
             }),
             catchError((error) => {
