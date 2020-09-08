@@ -9,12 +9,17 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
+import vdehorta.bean.dto.LocationInfoDto;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.domain.MapStyle;
 import vdehorta.repository.MapStyleRepository;
 import vdehorta.service.MapsService;
 import vdehorta.utils.PersistenceTestUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,5 +64,16 @@ public class MapsResourceITest {
         ResponseEntity<Problem> response = testRestTemplate.getForEntity("/maps/map-style", Problem.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThat(response.getBody().getDetail()).isEqualTo("Error getting application map style!");
+    }
+
+    @Test
+    public void getLocationInfo_caseOk() {
+        ResponseEntity<LocationInfoDto> response = testRestTemplate.getForEntity(
+                "/maps/location-info?longitude=2.4776271235391145&latitude=48.89515222739624", LocationInfoDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getCountry()).isEqualTo("France");
+        assertThat(response.getBody().getCity()).isEqualTo("Bondy");
+        assertThat(response.getBody().getLocality()).isEqualTo("Bondy");
     }
 }

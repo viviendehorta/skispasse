@@ -182,10 +182,7 @@ public final class BeanTestUtils {
                 .country(DEFAULT_COUNTRY)
                 .eventDate(DEFAULT_EVENT_DATE_STRING)
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate.Builder()
-                        .x(DEFAULT_LOCATION_COORDINATE_X)
-                        .y(DEFAULT_LOCATION_COORDINATE_Y)
-                        .build())
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
                 .build();

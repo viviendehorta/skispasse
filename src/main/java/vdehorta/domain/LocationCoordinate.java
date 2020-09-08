@@ -15,11 +15,6 @@ public class LocationCoordinate {
         this.y = y;
     }
 
-    private LocationCoordinate(Builder builder) {
-        setX(builder.x);
-        setY(builder.y);
-    }
-
     public double getX() {
         return x;
     }
@@ -48,28 +43,5 @@ public class LocationCoordinate {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
-    }
-
-
-    public static final class Builder {
-        private double x;
-        private double y;
-
-        public Builder() {
-        }
-
-        public Builder x(double val) {
-            x = val;
-            return this;
-        }
-
-        public Builder y(double val) {
-            y = val;
-            return this;
-        }
-
-        public LocationCoordinate build() {
-            return new LocationCoordinate(this);
-        }
     }
 }

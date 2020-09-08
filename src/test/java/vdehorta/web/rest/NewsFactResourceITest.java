@@ -775,7 +775,7 @@ public class NewsFactResourceITest {
         String newAddress = DEFAULT_ADDRESS + "-updated";
         String newCity = DEFAULT_CITY + "-updated";
         String newCountry = DEFAULT_COUNTRY + "-updated";
-        LocationCoordinate newLocationCoordinate = new LocationCoordinate.Builder().x(3000.0).y(700.0).build();
+        LocationCoordinate newLocationCoordinate = new LocationCoordinate(3000.0, 700.0);
         NewsCategory oldNewsCategory = createDefaultNewsCategory1();
         NewsCategory newNewsCategory = createDefaultNewsCategory2();
 

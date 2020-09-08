@@ -132,7 +132,7 @@
         <div *ngIf="newsFactForm.get('newsFactMediaFile').invalid
                 && (newsFactForm.get('newsFactMediaFile').dirty || newsFactForm.get('newsFactMediaFile').touched)">
             <small class="form-text text-danger" *ngIf="newsFactForm.get('newsFactMediaFile').errors.required">
-                Video file is required.
+                Media file (video or image) is required.
             </small>
         </div>
     </div>
