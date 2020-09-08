@@ -3,7 +3,6 @@ package vdehorta.config.dbmigrations;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import org.bson.Document;
-import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import vdehorta.bean.ContentTypeEnum;
@@ -50,7 +49,7 @@ public class Migration20200422_InitCategoriesAndNewsFact {
         NewsFact initialNewsFact = new NewsFact.Builder()
                 .newsCategoryId(newsCategory.getId())
                 .newsCategoryLabel(newsCategory.getLabel())
-                .address("12 Place de la République, 75011 Bondy, France")
+                .addressDetail("12 Place de la République, 75011 Bondy, France")
                 .city("Vila Real de Santo Antonio")
                 .country("Portugal")
                 .owner("contributor")

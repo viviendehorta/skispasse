@@ -116,7 +116,7 @@ public class NewsFactService {
         }
 
         //Update
-        toUpdate.setAddress(newsFactDetailDto.getAddress());
+        toUpdate.setAddressDetail(newsFactDetailDto.getAddressDetail());
         toUpdate.setEventDate(newEventDate);
         toUpdate.setLocationCoordinateX(newsFactDetailDto.getLocationCoordinate().getX());
         toUpdate.setLocationCoordinateY(newsFactDetailDto.getLocationCoordinate().getY());

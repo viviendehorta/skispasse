@@ -41,8 +41,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Field("city")
     private String city;
 
-    @Field("address")
-    private String address;
+    @Field("address_detail")
+    private String addressDetail;
 
     @Indexed
     @Field("owner")
@@ -75,7 +75,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         setCountry(builder.country);
         setCity(builder.city);
         setOwner(builder.owner);
-        setAddress(builder.address);
+        setAddressDetail(builder.addressDetail);
         setMediaId(builder.mediaId);
         setMediaType(builder.mediaType);
         setMediaContentType(builder.mediaContentType);
@@ -145,12 +145,12 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         this.city = city;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddressDetail() {
+        return addressDetail;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail;
     }
 
     public String getOwner() {
@@ -209,7 +209,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
                 ", newsCategoryLabel='" + newsCategoryLabel + '\'' +
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +
-                ", address='" + address + '\'' +
+                ", address='" + addressDetail + '\'' +
                 ", owner='" + owner + '\'' +
                 ", mediaId='" + mediaId + '\'' +
                 ", mediaType='" + mediaType + '\'' +
@@ -231,7 +231,7 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private String newsCategoryLabel;
         private String country;
         private String city;
-        private String address;
+        private String addressDetail;
         private String owner;
         private String mediaId;
         private String mediaType;
@@ -300,8 +300,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder address(String val) {
-            address = val;
+        public Builder addressDetail(String val) {
+            addressDetail = val;
             return this;
         }
 

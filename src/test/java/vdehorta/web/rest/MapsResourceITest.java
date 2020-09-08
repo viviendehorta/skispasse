@@ -74,6 +74,6 @@ public class MapsResourceITest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getCountry()).isEqualTo("France");
         assertThat(response.getBody().getCity()).isEqualTo("Bondy");
-        assertThat(response.getBody().getLocality()).isEqualTo("Bondy");
+        assertThat(response.getBody().getLocality()).isEqualTo("Bondy-Nord-Ouest");
     }
 }

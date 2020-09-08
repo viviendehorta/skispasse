@@ -3,7 +3,6 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest}
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {EventManager} from '../../core/events/event-manager';
-import {environment} from "../../../environments/environment";
 
 @Injectable()
 export class ErrorHandlerInterceptor implements HttpInterceptor {
@@ -26,9 +25,6 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
 
     private mustShowError(err: HttpErrorResponse) {
         if (err.status === 401 && (err.message === '')) { //User authentication expired
-            return false;
-        }
-        if (err.url === environment.reverseGeoCodeAPIUrl) {
             return false;
         }
         return true;

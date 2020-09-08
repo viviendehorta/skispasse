@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import vdehorta.bean.dto.LocationInfoDto;
 import vdehorta.config.ApplicationProperties;
 import vdehorta.service.MapsService;
@@ -45,16 +46,13 @@ public class MapsResource {
      */
     @GetMapping(value = "/location-info", produces = MediaType.APPLICATION_JSON_VALUE)
     public LocationInfoDto getLocationInfo(@RequestParam("latitude") String latitude, @RequestParam("longitude") String longitude) {
-        String urlWithParams = new StringBuilder()
-                .append(applicationProperties.getBigdatacloud().getApiUrl())
-                .append("?latitude=")
-                .append(latitude)
-                .append("&longitude=")
-                .append(longitude)
-                .append("&localityLanguage=en")
-                .append("&key=")
-                .append(applicationProperties.getBigdatacloud().getApiKey())
-                .toString();
+        String urlWithParams = UriComponentsBuilder
+                .fromHttpUrl(applicationProperties.getBigdatacloud().getApiUrl())
+                .queryParam("latitude", latitude)
+                .queryParam("longitude", longitude)
+                .queryParam("localityLanguage", "en")
+                .queryParam("key", applicationProperties.getBigdatacloud().getApiKey())
+                .toUriString();
 
         ResponseEntity<BigDataCloudLocationInfo> bigDataCloudResponse = restTemplate.getForEntity(urlWithParams, BigDataCloudLocationInfo.class);
         return new LocationInfoDto.Builder()

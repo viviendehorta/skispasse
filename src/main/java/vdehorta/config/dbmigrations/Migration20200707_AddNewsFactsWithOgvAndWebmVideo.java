@@ -37,7 +37,7 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
                 newsFactBuilder
                         .newsCategoryId(allCategories.get(2).getId())
                         .newsCategoryLabel(allCategories.get(2).getLabel())
-                        .address("Palacio Real, Calle de Bailén, s/n, 28071 Madrid")
+                        .addressDetail("Palacio Real, Calle de Bailén, s/n, 28071 Madrid")
                         .city("Madrid")
                         .country("Spain")
                         .owner("contributor")
@@ -52,7 +52,7 @@ public class Migration20200707_AddNewsFactsWithOgvAndWebmVideo {
                 newsFactBuilder
                         .newsCategoryId(allCategories.get(3).getId())
                         .newsCategoryLabel(allCategories.get(3).getLabel())
-                        .address("Coliseo de Roma, Piazza del Colosseo, 1, 00184 Roma RM, Italia")
+                        .addressDetail("Coliseo de Roma, Piazza del Colosseo, 1, 00184 Roma RM, Italia")
                         .city("Roma")
                         .country("Italia")
                         .owner("contributor")

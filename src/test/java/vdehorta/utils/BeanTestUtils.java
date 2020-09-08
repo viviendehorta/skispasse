@@ -25,7 +25,7 @@ public final class BeanTestUtils {
     public static final LocalDateTime DEFAULT_CREATED_DATE = LocalDateTime.parse("2020-04-02T20:15:39");
     public static final LocalDateTime DEFAULT_LAST_MODIFIED_DATE = LocalDateTime.parse("2020-04-03T20:16:39");
     public static final LocalDateTime DEFAULT_EVENT_DATE = LocalDateTime.parse("2020-04-01T00:00:00");
-    public static final String DEFAULT_ADDRESS = "address";
+    public static final String DEFAULT_ADDRESS_DETAIL = "address_detail";
     public static final String DEFAULT_CITY = "city";
     public static final String DEFAULT_COUNTRY = "country";
     public static final String DEFAULT_NEWS_FACT_ID = "news_fact_id";
@@ -105,7 +105,7 @@ public final class BeanTestUtils {
 
     public static NewsFact createDefaultNewsFact() {
         return new NewsFact.Builder()
-                .address(DEFAULT_ADDRESS)
+                .addressDetail(DEFAULT_ADDRESS_DETAIL)
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
                 .createdDate(DEFAULT_CREATED_DATE)
@@ -122,7 +122,7 @@ public final class BeanTestUtils {
 
     public static NewsFact createDefaultNewsFact1() {
         return new NewsFact.Builder()
-                .address(DEFAULT_ADDRESS + "1")
+                .addressDetail(DEFAULT_ADDRESS_DETAIL + "1")
                 .city(DEFAULT_CITY + "1")
                 .country(DEFAULT_COUNTRY + "1")
                 .createdDate(DEFAULT_CREATED_DATE)
@@ -139,7 +139,7 @@ public final class BeanTestUtils {
 
     public static NewsFact createDefaultNewsFact2() {
         return new NewsFact.Builder()
-                .address(DEFAULT_ADDRESS + "2")
+                .addressDetail(DEFAULT_ADDRESS_DETAIL + "2")
                 .city(DEFAULT_CITY + "2")
                 .country(DEFAULT_COUNTRY + "2")
                 .createdDate(DEFAULT_CREATED_DATE.plus(Duration.ofDays(1)))
@@ -177,7 +177,7 @@ public final class BeanTestUtils {
 
     public static NewsFactDetailDto createDefaultNewsFactDetailDto() {
         return new NewsFactDetailDto.Builder()
-                .address(DEFAULT_ADDRESS)
+                .addressDetail(DEFAULT_ADDRESS_DETAIL)
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
                 .eventDate(DEFAULT_EVENT_DATE_STRING)

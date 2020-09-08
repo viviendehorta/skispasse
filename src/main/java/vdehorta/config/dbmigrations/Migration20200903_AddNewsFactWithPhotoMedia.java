@@ -32,7 +32,7 @@ public class Migration20200903_AddNewsFactWithPhotoMedia {
         NewsFact photoMediaNewsFact = new NewsFact.Builder()
                 .newsCategoryId(newsCategory.getId())
                 .newsCategoryLabel(newsCategory.getLabel())
-                .address("Playa de Cabo Polonio")
+                .addressDetail("Playa de Cabo Polonio")
                 .city("Cabo Polonio")
                 .country("Uruguay")
                 .owner("contributor")
