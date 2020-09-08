@@ -125,7 +125,7 @@ public class NewsFactResourceITest {
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
         NewsFactDetailDto resultNewsFact = response.getBody();
-        assertThat(resultNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(resultNewsFact.getAddressDetail()).isEqualTo(DEFAULT_ADDRESS_DETAIL);
         assertThat(resultNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
         assertThat(resultNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
         assertThat(resultNewsFact.getCreatedDate()).isEqualTo(DEFAULT_DATE_FORMATTER.format(DEFAULT_CREATED_DATE));
@@ -243,7 +243,7 @@ public class NewsFactResourceITest {
         assertThat(resultNewsFact.getCreatedDate()).isEqualTo("2020-03-24");
         assertThat(resultNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
         assertThat(resultNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
-        assertThat(resultNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(resultNewsFact.getAddressDetail()).isEqualTo(DEFAULT_ADDRESS_DETAIL);
         assertThat(resultNewsFact.getId()).isNotEmpty();
         assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
         assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
@@ -255,7 +255,7 @@ public class NewsFactResourceITest {
         assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
         NewsFact persistedNewsFact = newsFactRepository.findById(resultNewsFact.getId()).orElse(null);
         assertThat(persistedNewsFact).isNotNull();
-        assertThat(persistedNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(persistedNewsFact.getAddressDetail()).isEqualTo(DEFAULT_ADDRESS_DETAIL);
         assertThat(persistedNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
         assertThat(persistedNewsFact.getCreatedBy()).isEqualTo("zeus");
         assertThat(persistedNewsFact.getCreatedDate()).isEqualToIgnoringSeconds(fixedNow);
@@ -319,7 +319,7 @@ public class NewsFactResourceITest {
         assertThat(resultNewsFact.getCreatedDate()).isEqualTo("2020-09-03");
         assertThat(resultNewsFact.getCountry()).isEqualTo(DEFAULT_COUNTRY);
         assertThat(resultNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
-        assertThat(resultNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(resultNewsFact.getAddressDetail()).isEqualTo(DEFAULT_ADDRESS_DETAIL);
         assertThat(resultNewsFact.getId()).isNotEmpty();
         assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
         assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
@@ -331,7 +331,7 @@ public class NewsFactResourceITest {
         assertThat(newsFactRepository.findAll()).hasSize(newsFactInitialCount + 1);
         NewsFact persistedNewsFact = newsFactRepository.findById(resultNewsFact.getId()).orElse(null);
         assertThat(persistedNewsFact).isNotNull();
-        assertThat(persistedNewsFact.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(persistedNewsFact.getAddressDetail()).isEqualTo(DEFAULT_ADDRESS_DETAIL);
         assertThat(persistedNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
         assertThat(persistedNewsFact.getCreatedBy()).isEqualTo("cedric");
         assertThat(persistedNewsFact.getCreatedDate()).isEqualToIgnoringSeconds(fixedNow);
@@ -550,7 +550,7 @@ public class NewsFactResourceITest {
 
         NewsFactDetailDto newsFactDto = new NewsFactDetailDto.Builder()
                 .id(null)
-                .address(DEFAULT_ADDRESS)
+                .addressDetail(DEFAULT_ADDRESS_DETAIL)
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .eventDate("eventDate")
                 .city(DEFAULT_CITY)
@@ -572,7 +572,7 @@ public class NewsFactResourceITest {
         final int initialCount = newsFactRepository.findAll().size();
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .newsCategoryId(null)
-                .address(DEFAULT_ADDRESS)
+                .addressDetail(DEFAULT_ADDRESS_DETAIL)
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
@@ -594,7 +594,7 @@ public class NewsFactResourceITest {
 
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .eventDate(null)
-                .address(DEFAULT_ADDRESS)
+                .addressDetail(DEFAULT_ADDRESS_DETAIL)
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
                 .id(DEFAULT_NEWS_FACT_ID)
@@ -615,7 +615,7 @@ public class NewsFactResourceITest {
 
         final int initialCount = newsFactRepository.findAll().size();
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
-                .address(null)
+                .addressDetail(null)
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
@@ -627,7 +627,7 @@ public class NewsFactResourceITest {
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
 
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
-        assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'address'!");
+        assertThat(response.getBody().getDetail()).isEqualTo("Some data is invalid : Value 'null' is invalid for field 'addressDetail'!");
         assertThat(newsFactRepository.findAll()).hasSize(initialCount);
     }
 
@@ -638,7 +638,7 @@ public class NewsFactResourceITest {
         final int initialCount = newsFactRepository.findAll().size();
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .city(null)
-                .address(DEFAULT_ADDRESS)
+                .addressDetail(DEFAULT_ADDRESS_DETAIL)
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
@@ -660,7 +660,7 @@ public class NewsFactResourceITest {
         final int initialCount = newsFactRepository.findAll().size();
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .country(null)
-                .address(DEFAULT_ADDRESS)
+                .addressDetail(DEFAULT_ADDRESS_DETAIL)
                 .city(DEFAULT_CITY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
@@ -682,7 +682,7 @@ public class NewsFactResourceITest {
         final int initialCount = newsFactRepository.findAll().size();
         NewsFactDetailDto newsFact = new NewsFactDetailDto.Builder()
                 .locationCoordinate(null)
-                .address(DEFAULT_ADDRESS)
+                .addressDetail(DEFAULT_ADDRESS_DETAIL)
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
@@ -772,7 +772,7 @@ public class NewsFactResourceITest {
         String todayString = "2020-05-02";
         LocalDateTime today = LocalDate.parse(todayString).atStartOfDay();
         LocalDateTime yesterday = LocalDate.parse(yesterdayString).atStartOfDay();
-        String newAddress = DEFAULT_ADDRESS + "-updated";
+        String newAddress = DEFAULT_ADDRESS_DETAIL + "-updated";
         String newCity = DEFAULT_CITY + "-updated";
         String newCountry = DEFAULT_COUNTRY + "-updated";
         LocationCoordinate newLocationCoordinate = new LocationCoordinate(3000.0, 700.0);
@@ -792,7 +792,7 @@ public class NewsFactResourceITest {
 
         //Given
         final NewsFactDetailDto toUpdateNewsFact = new NewsFactDetailDto.Builder()
-                .address(newAddress)
+                .addressDetail(newAddress)
                 .city(newCity)
                 .country(newCountry)
                 .eventDate(todayString)
@@ -807,7 +807,7 @@ public class NewsFactResourceITest {
         // Then
         assertThat(response.getStatusCode()).isEqualTo(OK);
         NewsFactDetailDto resultNewsFact = response.getBody();
-        assertThat(resultNewsFact.getAddress()).isEqualTo(newAddress);
+        assertThat(resultNewsFact.getAddressDetail()).isEqualTo(newAddress);
         assertThat(resultNewsFact.getCity()).isEqualTo(newCity);
         assertThat(resultNewsFact.getCountry()).isEqualTo(newCountry);
         assertThat(resultNewsFact.getCreatedDate()).isEqualTo(yesterdayString);

@@ -39,7 +39,7 @@ export class NewsFactCreationComponent implements OnInit, OnDestroy {
         this.route.data.subscribe((data: { newsFactLocation: INewsFactLocation }) => {
             const newsFactLocation = data.newsFactLocation;
             this.toCreateNewsFact = new NewsFactDetail(
-                newsFactLocation.address.detail,
+                newsFactLocation.address.locality,
                 newsFactLocation.address.city,
                 newsFactLocation.address.country,
                 null,

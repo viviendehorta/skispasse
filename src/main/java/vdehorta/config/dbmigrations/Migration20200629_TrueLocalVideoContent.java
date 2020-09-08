@@ -165,7 +165,7 @@ public class Migration20200629_TrueLocalVideoContent {
                 .newsCategoryLabel(categoryLabelById.get(categoryId))
                 .country(country)
                 .city(city)
-                .address(address)
+                .addressDetail(address)
                 .owner("admin")
                 .eventDate(LocalDate.parse(eventDate, DATE_FORMATTER).atStartOfDay())
                 .locationCoordinateX(xCoordinate)

@@ -8,8 +8,8 @@ import java.util.Objects;
 
 public class NewsFactDetailDto {
 
-    @NotBlank(message = "Address is mandatory")
-    private String address;
+    @NotBlank(message = "Address detail is mandatory")
+    private String addressDetail;
 
     @NotBlank(message = "City is mandatory")
     private String city;
@@ -46,17 +46,17 @@ public class NewsFactDetailDto {
         newsCategoryLabel = builder.newsCategoryLabel;
         country = builder.country;
         city = builder.city;
-        address = builder.address;
+        addressDetail = builder.addressDetail;
         createdDate = builder.createdDate;
         media = builder.media;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddressDetail() {
+        return addressDetail;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail;
     }
 
     public String getCity() {
@@ -152,7 +152,7 @@ public class NewsFactDetailDto {
         private String newsCategoryLabel;
         private String country;
         private String city;
-        private String address;
+        private String addressDetail;
         private String createdDate;
         private MediaDto media;
 
@@ -194,8 +194,8 @@ public class NewsFactDetailDto {
             return this;
         }
 
-        public Builder address(String val) {
-            address = val;
+        public Builder addressDetail(String val) {
+            addressDetail = val;
             return this;
         }
 

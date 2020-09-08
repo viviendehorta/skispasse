@@ -38,7 +38,7 @@ export class NewsFactFormComponent implements OnInit {
             id: [null],
             newsCategoryId: [null, Validators.required],
             eventDate: [null, Validators.required],
-            address: [null, Validators.required],
+            addressDetail: [null, Validators.required],
             city: [null, Validators.required],
             country: [null, Validators.required],
             locationCoordinate: [null],
@@ -69,7 +69,7 @@ export class NewsFactFormComponent implements OnInit {
             id: newsFact.id,
             newsCategoryId: newsFact.newsCategoryId,
             eventDate: NewsFactFormComponent.parseDate(newsFact.eventDate),
-            address: newsFact.address,
+            addressDetail: newsFact.addressDetail,
             city: newsFact.city,
             country: newsFact.country,
             locationCoordinate: newsFact.locationCoordinate,
@@ -79,7 +79,7 @@ export class NewsFactFormComponent implements OnInit {
 
     private getNewsFactFromForm(): INewsFactDetail {
         return new NewsFactDetail(
-            this.newsFactForm.get(['address']).value,
+            this.newsFactForm.get(['addressDetail']).value,
             this.newsFactForm.get(['city']).value,
             this.newsFactForm.get(['country']).value,
             null,
