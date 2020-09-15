@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Configuration
-@Profile("dev")
+@Profile(ProfileConstants.SPRING_PROFILE_DEV)
 public class MongockConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(MongockConfiguration.class);
