@@ -125,6 +125,14 @@ export class WorldmapComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.newsFactMarkerSelectionService.selectMarker(clickedClusterFeature);
                         const newsFactMarkers = clickedClusterFeature.get('features') as NewsFactMarker[];
                         if (newsFactMarkers.length === 1) { // Single news fact
+
+                            //To log clicked news fact coordinates and Latitude/longitude, uncomment below
+                            // const feature = newsFactMarkers[0];
+                            // const olCoordinates = feature.getGeometry().getCoordinates();
+                            // const lonLat = toLonLat(olCoordinates);
+                            // console.log(`Coordonnées format ol : ${olCoordinates[0]},${olCoordinates[1]}`);
+                            // console.log(`Coordonnées format lonLat : ${lonLat[1]}, ${lonLat[0]}`);
+
                             this.router.navigate(WorldmapComponent.getNewsFactDetailUrl(newsFactMarkers[0])); //TODO create OutletUrlBuilderService
                         } else if (newsFactMarkers.length > 1) { // News fact group
                             this.router.navigate(WorldmapComponent.getNewsFactGroupUrl(newsFactMarkers)); //TODO create OutletUrlBuilderService

@@ -31,14 +31,14 @@ class NewsFactMapperTest {
     @Test
     void newsFactToNewsFactDetailDto_shouldConvertXYLocationCoordinateFieldsToLocationCoordinateObject() {
         NewsFact input = new NewsFact.Builder()
-            .locationCoordinateX(10.0)
-            .locationCoordinateY(2.0)
+            .locationLatitude(10.0)
+            .locationLongitude(2.0)
             .build();
 
         NewsFactDetailDto result = newsFactMapper.newsFactToNewsFactDetailDto(input);
 
-        assertThat(result.getLocationCoordinate().getX()).isEqualTo(10L);
-        assertThat(result.getLocationCoordinate().getY()).isEqualTo(2L);
+        assertThat(result.getLocationCoordinate().getLatitude()).isEqualTo(10L);
+        assertThat(result.getLocationCoordinate().getLongitude()).isEqualTo(2L);
     }
 
     @Test

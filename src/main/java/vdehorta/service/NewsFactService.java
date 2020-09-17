@@ -118,8 +118,8 @@ public class NewsFactService {
         //Update
         toUpdate.setAddressDetail(newsFactDetailDto.getAddressDetail());
         toUpdate.setEventDate(newEventDate);
-        toUpdate.setLocationCoordinateX(newsFactDetailDto.getLocationCoordinate().getX());
-        toUpdate.setLocationCoordinateY(newsFactDetailDto.getLocationCoordinate().getY());
+        toUpdate.setLocationLatitude(newsFactDetailDto.getLocationCoordinate().getLatitude());
+        toUpdate.setLocationLongitude(newsFactDetailDto.getLocationCoordinate().getLongitude());
         toUpdate.setNewsCategoryId(newNewsCategory.getId());
         toUpdate.setNewsCategoryLabel(newNewsCategory.getLabel());
         toUpdate.setCity(newsFactDetailDto.getCity());

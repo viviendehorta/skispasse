@@ -20,8 +20,8 @@ public final class BeanTestUtils {
 
     public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public static final double DEFAULT_LOCATION_COORDINATE_X = 100.0;
-    public static final double DEFAULT_LOCATION_COORDINATE_Y = 2000.0;
+    public static final double DEFAULT_LOCATION_LATITUDE = 50.0;
+    public static final double DEFAULT_LOCATION_LONGITUDE = -40.0;
     public static final LocalDateTime DEFAULT_CREATED_DATE = LocalDateTime.parse("2020-04-02T20:15:39");
     public static final LocalDateTime DEFAULT_LAST_MODIFIED_DATE = LocalDateTime.parse("2020-04-03T20:16:39");
     public static final LocalDateTime DEFAULT_EVENT_DATE = LocalDateTime.parse("2020-04-01T00:00:00");
@@ -112,8 +112,8 @@ public final class BeanTestUtils {
                 .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
                 .eventDate(DEFAULT_EVENT_DATE)
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
-                .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
+                .locationLatitude(DEFAULT_LOCATION_LATITUDE)
+                .locationLongitude(DEFAULT_LOCATION_LONGITUDE)
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
                 .owner(DEFAULT_OWNER)
@@ -129,8 +129,8 @@ public final class BeanTestUtils {
                 .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
                 .eventDate(DEFAULT_EVENT_DATE)
                 .id(DEFAULT_NEWS_FACT_ID + "1")
-                .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
-                .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
+                .locationLatitude(DEFAULT_LOCATION_LATITUDE)
+                .locationLongitude(DEFAULT_LOCATION_LONGITUDE)
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "1")
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "1")
                 .owner(DEFAULT_OWNER + "1")
@@ -146,8 +146,8 @@ public final class BeanTestUtils {
                 .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE.plus(Duration.ofDays(1)))
                 .eventDate(DEFAULT_EVENT_DATE.plus(Duration.ofDays(1)))
                 .id(DEFAULT_NEWS_FACT_ID + "2")
-                .locationCoordinateX(DEFAULT_LOCATION_COORDINATE_X)
-                .locationCoordinateY(DEFAULT_LOCATION_COORDINATE_Y)
+                .locationLatitude(DEFAULT_LOCATION_LATITUDE)
+                .locationLongitude(DEFAULT_LOCATION_LONGITUDE)
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID + "2")
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL + "2")
                 .owner(DEFAULT_OWNER + "2")
@@ -182,7 +182,7 @@ public final class BeanTestUtils {
                 .country(DEFAULT_COUNTRY)
                 .eventDate(DEFAULT_EVENT_DATE_STRING)
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_LATITUDE, DEFAULT_LOCATION_LONGITUDE))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .newsCategoryLabel(DEFAULT_NEWS_CATEGORY_LABEL)
                 .build();

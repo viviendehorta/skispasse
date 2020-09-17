@@ -7,9 +7,9 @@ import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 import vdehorta.bean.ContentTypeEnum;
 import vdehorta.bean.MediaType;
-import vdehorta.domain.NewsFact;
 import vdehorta.bean.dto.NewsFactDetailDto;
 import vdehorta.bean.dto.NewsFactNoDetailDto;
+import vdehorta.domain.NewsFact;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,8 +54,8 @@ public interface NewsFactMapper {
     }
 
     @Mappings({
-        @Mapping(source = "locationCoordinateX", target = "locationCoordinate.x"),
-        @Mapping(source = "locationCoordinateY", target = "locationCoordinate.y"),
+        @Mapping(source = "locationLatitude", target = "locationCoordinate.latitude"),
+        @Mapping(source = "locationLongitude", target = "locationCoordinate.longitude"),
         @Mapping(source = "eventDate", target="eventDate", qualifiedByName = "localDateTimeToString"),
         @Mapping(source = "createdDate", target="createdDate", qualifiedByName = "localDateTimeToString"),
         @Mapping(source = "mediaType", target="media.type", qualifiedByName = "stringToMediaType"),
@@ -64,16 +64,16 @@ public interface NewsFactMapper {
     NewsFactDetailDto newsFactToNewsFactDetailDto(NewsFact newsFact);
 
     @Mappings({
-        @Mapping(source = "locationCoordinateX", target = "locationCoordinate.x"),
-        @Mapping(source = "locationCoordinateY", target = "locationCoordinate.y"),
+        @Mapping(source = "locationLatitude", target = "locationCoordinate.latitude"),
+        @Mapping(source = "locationLongitude", target = "locationCoordinate.longitude"),
     })
     NewsFactNoDetailDto newsFactToNewsFactNoDetailDto(NewsFact newsFact);
 
     List<NewsFactNoDetailDto> newsFactsToNewsFactNoDetailDtos(List<NewsFact> newsFact);
 
     @Mappings({
-        @Mapping(source = "locationCoordinate.x", target = "locationCoordinateX"),
-        @Mapping(source = "locationCoordinate.y", target = "locationCoordinateY"),
+        @Mapping(source = "locationCoordinate.latitude", target = "locationLatitude"),
+        @Mapping(source = "locationCoordinate.longitude", target = "locationLongitude"),
         @Mapping(source = "eventDate", target="eventDate", qualifiedByName = "stringToLocalDateTime"),
         @Mapping(source = "createdDate", target="createdDate", qualifiedByName = "stringToLocalDateTime")
     })

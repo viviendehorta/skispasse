@@ -49,7 +49,7 @@ export class NewsFactGroupModalContentComponent implements OnInit {
     }
 
     formatLocationCoordinate(locationCoordinate: ILocationCoordinate) {
-        return '[' + locationCoordinate.x + '; ' + locationCoordinate.y + ']';
+        return '[' + locationCoordinate.latitude + ',' + locationCoordinate.longitude + ']';
     }
 
     loadNewsFactPage(pageIndex: number) {

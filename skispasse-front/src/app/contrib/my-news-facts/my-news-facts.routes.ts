@@ -35,18 +35,18 @@ export class NewsFactLocationResolve implements Resolve<INewsFactLocation> {
     }
 
     resolve(route: ActivatedRouteSnapshot) {
-        const locationCoordinateString = route.params.locationCoordinateXY as string;
+        const locationLatLongString = route.params.locationLatLong as string;
 
-        if (!locationCoordinateString) {
+        if (!locationLatLongString) {
             this.router.navigate(['/404']);
         }
 
-        const locationCoordinateXYValues = locationCoordinateString.split(',');
-        if (!locationCoordinateXYValues || locationCoordinateXYValues.length < 2) {
+        const locationLatLongValues = locationLatLongString.split(',');
+        if (!locationLatLongValues || locationLatLongValues.length < 2) {
             this.router.navigate(['/404']);
         }
 
-        const locationCoordinate = new LocationCoordinate(parseFloat(locationCoordinateXYValues[0]), parseFloat(locationCoordinateXYValues[1]));
+        const locationCoordinate = new LocationCoordinate(parseFloat(locationLatLongValues[0]), parseFloat(locationLatLongValues[1]));
         return this.geocodingService.fetchLocationInfo(locationCoordinate).pipe(
             map((address: LocationInfo) => {
                 return new NewsFactLocation(address, locationCoordinate)
@@ -68,7 +68,7 @@ export const myNewsFactsRoutes: Routes = [
         }
     },
     {
-        path: 'new/:locationCoordinateXY',
+        path: 'new/:locationLatLong',
         component: NewsFactCreationComponent,
         data: {
             pageTitle: 'New publication',

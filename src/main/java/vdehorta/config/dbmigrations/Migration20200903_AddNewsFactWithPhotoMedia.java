@@ -18,10 +18,10 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@ChangeLog(order = "20200903")
+//@ChangeLog(order = "20200903")
 public class Migration20200903_AddNewsFactWithPhotoMedia {
 
-    @ChangeSet(order = "01", author = "admin", id = "01-addPhotoMediaNewsFact")
+//    @ChangeSet(order = "01", author = "admin", id = "01-addPhotoMediaNewsFact")
     public void addPhotoMediaNewsFact(MongoTemplate mongoTemplate, ClockService clockService, GridFsTemplate mediaGridFsTemplate) {
         List<NewsCategory> allCategories = mongoTemplate.findAll(NewsCategory.class);
 
@@ -37,8 +37,8 @@ public class Migration20200903_AddNewsFactWithPhotoMedia {
                 .country("Uruguay")
                 .owner("contributor")
                 .eventDate(now)
-                .locationCoordinateX(-5987367.13975459)
-                .locationCoordinateY(-4083276.254336838)
+                .locationLatitude(-5987367.13975459)
+                .locationLongitude(-4083276.254336838)
                 .createdDate(now)
                 .lastModifiedDate(now)
                 .mediaType(MediaType.PHOTO.name())

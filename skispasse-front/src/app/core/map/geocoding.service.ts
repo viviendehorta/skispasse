@@ -15,11 +15,10 @@ export class GeocodingService {
     }
 
     fetchLocationInfo(locationCoordinate: LocationCoordinate): Observable<ILocationInfo> {
-        const lonLat = toLonLat([locationCoordinate.x, locationCoordinate.y]);
         return this.http.get<ILocationInfo>(this.resourceUrl, {
             params: {
-                longitude: lonLat[0].toString(),
-                latitude: lonLat[1].toString()
+                longitude: locationCoordinate.longitude.toString(),
+                latitude: locationCoordinate.latitude.toString()
             },
             observe: 'response'
         }).pipe(

@@ -107,10 +107,10 @@ public class NewsFactResourceITest {
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody())
                 .hasSize(2)
-                .extracting("id", "newsCategoryId", "locationCoordinate.x", "locationCoordinate.y")
+                .extracting("id", "newsCategoryId", "locationCoordinate.latitude", "locationCoordinate.longitude")
                 .containsOnly(
-                        tuple("news_fact_id1", "newsCategoryId1", DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y),
-                        tuple("news_fact_id2", "newsCategoryId2", DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y));
+                        tuple("news_fact_id1", "newsCategoryId1", DEFAULT_LOCATION_LATITUDE, DEFAULT_LOCATION_LONGITUDE),
+                        tuple("news_fact_id2", "newsCategoryId2", DEFAULT_LOCATION_LATITUDE, DEFAULT_LOCATION_LONGITUDE));
     }
 
     @Test
@@ -245,8 +245,8 @@ public class NewsFactResourceITest {
         assertThat(resultNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
         assertThat(resultNewsFact.getAddressDetail()).isEqualTo(DEFAULT_ADDRESS_DETAIL);
         assertThat(resultNewsFact.getId()).isNotEmpty();
-        assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
-        assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+        assertThat(resultNewsFact.getLocationCoordinate().getLatitude()).isEqualTo(DEFAULT_LOCATION_LATITUDE);
+        assertThat(resultNewsFact.getLocationCoordinate().getLongitude()).isEqualTo(DEFAULT_LOCATION_LONGITUDE);
         assertThat(resultNewsFact.getMedia()).isNotNull();
         assertThat(resultNewsFact.getMedia().getType()).isEqualTo(VIDEO);
         assertThat(resultNewsFact.getMedia().getContentType()).isEqualTo(OGG);
@@ -263,8 +263,8 @@ public class NewsFactResourceITest {
         assertThat(persistedNewsFact.getEventDate()).isEqualTo(DEFAULT_EVENT_DATE);
         assertThat(persistedNewsFact.getLastModifiedBy()).isEqualTo("zeus");
         assertThat(persistedNewsFact.getLastModifiedDate()).isEqualToIgnoringSeconds(fixedNow);
-        assertThat(persistedNewsFact.getLocationCoordinateX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
-        assertThat(persistedNewsFact.getLocationCoordinateY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+        assertThat(persistedNewsFact.getLocationLatitude()).isEqualTo(DEFAULT_LOCATION_LATITUDE);
+        assertThat(persistedNewsFact.getLocationLongitude()).isEqualTo(DEFAULT_LOCATION_LONGITUDE);
         assertThat(persistedNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
         assertThat(persistedNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
         assertThat(persistedNewsFact.getOwner()).isEqualTo("zeus");
@@ -321,8 +321,8 @@ public class NewsFactResourceITest {
         assertThat(resultNewsFact.getCity()).isEqualTo(DEFAULT_CITY);
         assertThat(resultNewsFact.getAddressDetail()).isEqualTo(DEFAULT_ADDRESS_DETAIL);
         assertThat(resultNewsFact.getId()).isNotEmpty();
-        assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
-        assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+        assertThat(resultNewsFact.getLocationCoordinate().getLatitude()).isEqualTo(DEFAULT_LOCATION_LATITUDE);
+        assertThat(resultNewsFact.getLocationCoordinate().getLongitude()).isEqualTo(DEFAULT_LOCATION_LONGITUDE);
         assertThat(resultNewsFact.getMedia()).isNotNull();
         assertThat(resultNewsFact.getMedia().getType()).isEqualTo(PHOTO);
         assertThat(resultNewsFact.getMedia().getContentType()).isEqualTo(JPEG);
@@ -339,8 +339,8 @@ public class NewsFactResourceITest {
         assertThat(persistedNewsFact.getEventDate()).isEqualTo(DEFAULT_EVENT_DATE);
         assertThat(persistedNewsFact.getLastModifiedBy()).isEqualTo("cedric");
         assertThat(persistedNewsFact.getLastModifiedDate()).isEqualToIgnoringSeconds(fixedNow);
-        assertThat(persistedNewsFact.getLocationCoordinateX()).isEqualTo(DEFAULT_LOCATION_COORDINATE_X);
-        assertThat(persistedNewsFact.getLocationCoordinateY()).isEqualTo(DEFAULT_LOCATION_COORDINATE_Y);
+        assertThat(persistedNewsFact.getLocationLatitude()).isEqualTo(DEFAULT_LOCATION_LATITUDE);
+        assertThat(persistedNewsFact.getLocationLongitude()).isEqualTo(DEFAULT_LOCATION_LONGITUDE);
         assertThat(persistedNewsFact.getNewsCategoryId()).isEqualTo(newsCategory.getId());
         assertThat(persistedNewsFact.getNewsCategoryLabel()).isEqualTo(newsCategory.getLabel());
         assertThat(persistedNewsFact.getOwner()).isEqualTo("cedric");
@@ -555,7 +555,7 @@ public class NewsFactResourceITest {
                 .eventDate("eventDate")
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
-                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_LATITUDE, DEFAULT_LOCATION_LONGITUDE))
                 .build();
 
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFactDto), Problem.class);
@@ -577,7 +577,7 @@ public class NewsFactResourceITest {
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_LATITUDE, DEFAULT_LOCATION_LONGITUDE))
                 .build();
 
         ResponseEntity<Problem> response = testRestTemplate.exchange("/newsFacts", PUT, new HttpEntity<>(newsFact), Problem.class);
@@ -598,7 +598,7 @@ public class NewsFactResourceITest {
                 .city(DEFAULT_CITY)
                 .country(DEFAULT_COUNTRY)
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_LATITUDE, DEFAULT_LOCATION_LONGITUDE))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
@@ -620,7 +620,7 @@ public class NewsFactResourceITest {
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_LATITUDE, DEFAULT_LOCATION_LONGITUDE))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
@@ -642,7 +642,7 @@ public class NewsFactResourceITest {
                 .country(DEFAULT_COUNTRY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_LATITUDE, DEFAULT_LOCATION_LONGITUDE))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
@@ -664,7 +664,7 @@ public class NewsFactResourceITest {
                 .city(DEFAULT_CITY)
                 .eventDate("eventDate")
                 .id(DEFAULT_NEWS_FACT_ID)
-                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_COORDINATE_X, DEFAULT_LOCATION_COORDINATE_Y))
+                .locationCoordinate(new LocationCoordinate(DEFAULT_LOCATION_LATITUDE, DEFAULT_LOCATION_LONGITUDE))
                 .newsCategoryId(DEFAULT_NEWS_CATEGORY_ID)
                 .build();
 
@@ -813,8 +813,8 @@ public class NewsFactResourceITest {
         assertThat(resultNewsFact.getCreatedDate()).isEqualTo(yesterdayString);
         assertThat(resultNewsFact.getEventDate()).isEqualTo(todayString);
         assertThat(resultNewsFact.getId()).isEqualTo(DEFAULT_NEWS_FACT_ID);
-        assertThat(resultNewsFact.getLocationCoordinate().getX()).isEqualTo(newLocationCoordinate.getX());
-        assertThat(resultNewsFact.getLocationCoordinate().getY()).isEqualTo(newLocationCoordinate.getY());
+        assertThat(resultNewsFact.getLocationCoordinate().getLatitude()).isEqualTo(newLocationCoordinate.getLatitude());
+        assertThat(resultNewsFact.getLocationCoordinate().getLongitude()).isEqualTo(newLocationCoordinate.getLongitude());
         assertThat(resultNewsFact.getNewsCategoryId()).isEqualTo(newNewsCategory.getId());
         assertThat(resultNewsFact.getNewsCategoryLabel()).isEqualTo(newNewsCategory.getLabel());
 

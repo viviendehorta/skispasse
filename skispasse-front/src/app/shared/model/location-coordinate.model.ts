@@ -1,14 +1,14 @@
 export interface ILocationCoordinate {
-  x: number;
-  y: number;
+  latitude: number;
+  longitude: number;
 }
 
 export class LocationCoordinate implements ILocationCoordinate {
-  x: number;
-  y: number;
+  latitude: number;
+  longitude: number;
 
-  constructor(x?: number, y?: number) {
-    this.x = x ? x : null;
-    this.y = y ? y : null;
+  constructor(latitude?: number, longitude?: number) {
+    this.latitude = latitude ? latitude : null;
+    this.longitude = longitude ? longitude : null;
   }
 }

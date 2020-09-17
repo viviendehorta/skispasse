@@ -4,31 +4,31 @@ import java.util.Objects;
 
 public class LocationCoordinate {
 
-    private double x;
-    private double y;
+    private double latitude;
+    private double longitude;
 
     public LocationCoordinate() {
     }
 
-    public LocationCoordinate(double x, double y) {
-        this.x = x;
-        this.y = y;
+    public LocationCoordinate(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public double getX() {
-        return x;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public double getY() {
-        return y;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     @Override
@@ -36,12 +36,12 @@ public class LocationCoordinate {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LocationCoordinate that = (LocationCoordinate) o;
-        return x == that.x &&
-            y == that.y;
+        return latitude == that.latitude &&
+            longitude == that.longitude;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return Objects.hash(latitude, longitude);
     }
 }

@@ -20,11 +20,11 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     @Id
     private String id;
 
-    @Field("location_coord_x")
-    private double locationCoordinateX;
+    @Field("location_latitude")
+    private double locationLatitude;
 
-    @Field("location_coord_y")
-    private double locationCoordinateY;
+    @Field("location_longitude")
+    private double locationLongitude;
 
     @Field("event_date")
     private LocalDateTime eventDate;
@@ -67,8 +67,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         setLastModifiedBy(builder.lastModifiedBy);
         setLastModifiedDate(builder.lastModifiedDate);
         id = builder.id;
-        setLocationCoordinateX(builder.locationCoordinateX);
-        setLocationCoordinateY(builder.locationCoordinateY);
+        setLocationLatitude(builder.locationLatitude);
+        setLocationLongitude(builder.locationLongitude);
         setEventDate(builder.eventDate);
         setNewsCategoryId(builder.newsCategoryId);
         setNewsCategoryLabel(builder.newsCategoryLabel);
@@ -89,20 +89,20 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public double getLocationCoordinateX() {
-        return locationCoordinateX;
+    public double getLocationLatitude() {
+        return locationLatitude;
     }
 
-    public void setLocationCoordinateX(double locationCoordinateX) {
-        this.locationCoordinateX = locationCoordinateX;
+    public void setLocationLatitude(double locationLatitude) {
+        this.locationLatitude = locationLatitude;
     }
 
-    public double getLocationCoordinateY() {
-        return locationCoordinateY;
+    public double getLocationLongitude() {
+        return locationLongitude;
     }
 
-    public void setLocationCoordinateY(double locationCoordinateY) {
-        this.locationCoordinateY = locationCoordinateY;
+    public void setLocationLongitude(double locationLongitude) {
+        this.locationLongitude = locationLongitude;
     }
 
     public LocalDateTime getEventDate() {
@@ -202,8 +202,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "NewsFact{" +
                 "id=" + id +
-                ", locationCoordinateX='" + locationCoordinateX + '\'' +
-                ", locationCoordinateY='" + locationCoordinateY + '\'' +
+                ", locationLatitude='" + locationLatitude + '\'' +
+                ", locationLongitude='" + locationLongitude + '\'' +
                 ", eventDate=" + eventDate +
                 ", newsCategoryId='" + newsCategoryId + '\'' +
                 ", newsCategoryLabel='" + newsCategoryLabel + '\'' +
@@ -224,8 +224,8 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
         private String lastModifiedBy;
         private LocalDateTime lastModifiedDate;
         private String id;
-        private double locationCoordinateX;
-        private double locationCoordinateY;
+        private double locationLatitude;
+        private double locationLongitude;
         private LocalDateTime eventDate;
         private String newsCategoryId;
         private String newsCategoryLabel;
@@ -265,13 +265,13 @@ public class NewsFact extends AbstractAuditingEntity implements Serializable {
             return this;
         }
 
-        public Builder locationCoordinateX(double val) {
-            locationCoordinateX = val;
+        public Builder locationLatitude(double val) {
+            locationLatitude = val;
             return this;
         }
 
-        public Builder locationCoordinateY(double val) {
-            locationCoordinateY = val;
+        public Builder locationLongitude(double val) {
+            locationLongitude = val;
             return this;
         }
 
