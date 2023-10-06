@@ -1,9 +1,9 @@
-package com.vdehorta.mesaides.web.controller;
+package com.vdehorta.skispasse.web.controller;
 
-import com.vdehorta.mesaides.model.dto.FindAidsResultDto;
-import com.vdehorta.mesaides.model.dto.PersonalDetailDto;
-import com.vdehorta.mesaides.service.FindAidsService;
-import com.vdehorta.mesaides.web.validator.PersonalDetailValidator;
+import com.vdehorta.skispasse.model.dto.FindAidsResultDto;
+import com.vdehorta.skispasse.model.dto.PersonalDetailDto;
+import com.vdehorta.skispasse.service.FindAidsService;
+import com.vdehorta.skispasse.web.validator.PersonalDetailValidator;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

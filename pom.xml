@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.vdehorta</groupId>
-    <artifactId>my-aids</artifactId>
+    <artifactId>skispasse</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>mes-aides</name>
-    <description>Trouvez les aides auxquelles vous avez droit.</description>
+    <name>skispasse</name>
+    <description>Voyez ce qu'il se passe aujourd1hui dans le monde.</description>
     <properties>
         <java.version>17</java.version>
     </properties>

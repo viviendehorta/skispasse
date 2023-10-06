@@ -1,4 +1,4 @@
-package com.vdehorta.mesaides.model.dto;
+package com.vdehorta.skispasse.model.dto;
 
 import java.io.Serializable;
 import java.util.List;

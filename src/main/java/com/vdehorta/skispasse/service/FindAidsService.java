@@ -1,8 +1,8 @@
-package com.vdehorta.mesaides.service;
+package com.vdehorta.skispasse.service;
 
-import com.vdehorta.mesaides.model.dto.AidSummaryDto;
-import com.vdehorta.mesaides.model.dto.FindAidsResultDto;
-import com.vdehorta.mesaides.model.dto.PersonalDetailDto;
+import com.vdehorta.skispasse.model.dto.AidSummaryDto;
+import com.vdehorta.skispasse.model.dto.FindAidsResultDto;
+import com.vdehorta.skispasse.model.dto.PersonalDetailDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;

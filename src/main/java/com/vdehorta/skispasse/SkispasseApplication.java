@@ -1,13 +1,13 @@
-package com.vdehorta.mesaides;
+package com.vdehorta.skispasse;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MyAidsApplication {
+public class SkispasseApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MyAidsApplication.class, args);
+        SpringApplication.run(SkispasseApplication.class, args);
     }
 
 }

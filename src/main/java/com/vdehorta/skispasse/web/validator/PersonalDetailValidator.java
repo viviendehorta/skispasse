@@ -1,6 +1,6 @@
-package com.vdehorta.mesaides.web.validator;
+package com.vdehorta.skispasse.web.validator;
 
-import com.vdehorta.mesaides.model.dto.PersonalDetailDto;
+import com.vdehorta.skispasse.model.dto.PersonalDetailDto;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 

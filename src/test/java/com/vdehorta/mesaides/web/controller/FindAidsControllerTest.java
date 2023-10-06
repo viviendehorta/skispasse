@@ -1,7 +1,7 @@
 package com.vdehorta.mesaides.web.controller;
 
-import com.vdehorta.mesaides.model.dto.FindAidsResultDto;
-import com.vdehorta.mesaides.model.dto.PersonalDetailDto;
+import com.vdehorta.skispasse.model.dto.FindAidsResultDto;
+import com.vdehorta.skispasse.model.dto.PersonalDetailDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

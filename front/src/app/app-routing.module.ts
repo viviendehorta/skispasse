@@ -1,11 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {FindAidsComponent} from "./find-aids/find-aids.component";
+import {NewsfactsMapComponent} from "./world-view/newsfacts-map/newsfacts-map.component";
 
 const routes: Routes = [
   {
     path: "",
-    component: FindAidsComponent,
+    component: NewsfactsMapComponent,
   },
 ];
 
