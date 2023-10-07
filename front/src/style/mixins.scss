@@ -1,0 +1,45 @@
+@import "../../node_modules/primeflex/primeflex.scss";
+
+@mixin skispasse-font {
+  font-family: "Work Sans", "Liberation Sans", sans-serif;
+}
+
+@mixin font-size-s {
+  font-size: 13px;
+
+  @media only screen and (min-width: $md) {
+    font-size: 12px;
+  }
+}
+
+@mixin font-size-m {
+  font-size: 15px;
+
+  @media only screen and (min-width: $md) {
+    font-size: 13px;
+  }
+}
+
+@mixin font-size-l {
+  font-size: 16px;
+
+  @media only screen and (min-width: $md) {
+    font-size: 15px;
+  }
+}
+
+@mixin font-size-xl {
+  font-size: 20px;
+}
+
+@mixin base-font-color {
+  color: #212529;
+}
+
+@mixin no-overflow-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
