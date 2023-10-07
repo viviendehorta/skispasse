@@ -1,8 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="back" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="dev" />
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="skispasse" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="com.vdehorta.skispasse.SkispasseApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.vdehorta.skispasse.SkispasseApp" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
