@@ -8,6 +8,7 @@ import {ButtonModule} from "primeng/button";
 import {WorldViewComponent} from "./world-view/world-view.component"
 import {MenuComponent} from "./menu/menu.component"
 import {MenuLogoComponent} from "./menu/menu-logo/menu-logo.component"
+import {HttpClientModule} from "@angular/common/http"
 
 @NgModule({
     declarations: [
@@ -20,7 +21,8 @@ import {MenuLogoComponent} from "./menu/menu-logo/menu-logo.component"
     imports: [
         BrowserModule,
         AppRoutingModule,
-        ButtonModule
+        ButtonModule,
+        HttpClientModule,
     ],
     providers: [],
     bootstrap: [AppComponent]

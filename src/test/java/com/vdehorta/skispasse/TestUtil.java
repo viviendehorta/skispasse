@@ -1,4 +1,4 @@
-package com.vdehorta.mesaides;
+package com.vdehorta.skispasse;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

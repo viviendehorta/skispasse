@@ -1,5 +1,10 @@
 @import "../../node_modules/primeflex/primeflex.scss";
 
+$sk-gray-super-light: #fafafa;
+$sk-gray-light: var(--gray-300);
+$sk-gray: var(--gray-300);
+$sk-gray-dark: var(--gray-600);
+
 @mixin skispasse-font {
   font-family: "Work Sans", "Liberation Sans", sans-serif;
 }

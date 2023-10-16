@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="starters-dev" type="CompoundRunConfigurationType">
+  <configuration default="false" name="skispasse-dev" type="CompoundRunConfigurationType">
     <toRun name="front" type="js.build_tools.npm" />
     <toRun name="run-db" type="ShConfigurationType" />
     <toRun name="back" type="SpringBootApplicationConfigurationType" />

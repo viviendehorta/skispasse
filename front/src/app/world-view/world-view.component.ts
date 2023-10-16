@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core'
 import {NewsFact} from "../model/newsfact.model"
+import {NewsfactService} from "../core/service/newsfact.service"
 
 @Component({
     templateUrl: './world-view.component.html',
@@ -10,10 +11,13 @@ export class WorldViewComponent implements OnInit {
     selectedNewsFactIds: string[] = []
     isCollapsedSelectedNewsFactsPanel: boolean = true
 
-    constructor() {
+    constructor(private newsfactService: NewsfactService) {
     }
 
     ngOnInit(): void {
+        this.newsfactService.list().subscribe(newsFacts => {
+            this.newsFacts = newsFacts
+        })
     }
 
     collapseSelectedNewsFactsPanel() {

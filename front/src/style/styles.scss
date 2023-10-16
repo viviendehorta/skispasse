@@ -1,7 +1,8 @@
 @import "../../node_modules/primeng/resources/primeng.css";
 @import "../../node_modules/primeicons/primeicons.css";
 @import "../../node_modules/primeflex/primeflex.scss";
-@import "./mixins";
+@import "../../node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css";
+@import "./skispasse-theme";
 
 //layout styles
 html {
@@ -48,23 +49,40 @@ html {
 
 
 //page styles
-.sk-newsfacts-map {
+.sk-world-view {
     height: 100%;
 
-    .ol-control {
-        right: 1rem;
-        left: auto;
-        background-color: transparent;
-        border: none;
+    .sk-newsfacts-map {
+        height: 100%;
 
-        button {
-            height: 1.6rem;
-            width: 1.6rem;
-            border: var(--ol-subtle-background-color) 2px solid;
-            @include font-size-l;
+        .ol-control {
+            right: 1rem;
+            left: auto;
+            background-color: transparent;
+            border: none;
 
-            &.ol-zoom-in {
-                margin-bottom: 0.4rem;
+            button {
+                height: 1.6rem;
+                width: 1.6rem;
+                outline: none;
+                //border: $sk-gray-light 2px solid;
+                @include font-size-l;
+
+                &:hover {
+                    background-color: $sk-gray-super-light;
+                }
+
+                &:focus {
+                    //outline: none;
+                }
+
+                &:active {
+                    background-color: $sk-gray-light;
+                }
+
+                &.ol-zoom-in {
+                    margin-bottom: 0.4rem;
+                }
             }
         }
     }
