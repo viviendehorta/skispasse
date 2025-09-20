@@ -1,4 +1,9 @@
-<s-menu></s-menu>
-<div class="sk-content">
-  <router-outlet></router-outlet>
+<div class="sk-app">
+    <sk-newsfacts-map
+        [newsFacts$]="newsFacts$"
+        [selectedNewsFactId]="selectedNewsFactId"></sk-newsfacts-map>
+
+    <router-outlet class="sk-content"></router-outlet>
+<!--    <s-newsfact-list [newsFacts$]="newsFacts$"></s-newsfact-list>-->
+<!--    <s-newsfact-view [isVisible]="selectedNewsFactId != null" [newsFactId]="selectedNewsFactId" (onClose)="closeNewsFactView()"></s-newsfact-view>-->
 </div>

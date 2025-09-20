@@ -6,7 +6,7 @@ import {ButtonModule} from "primeng/button";
 
 @Component({
     templateUrl: "./news-fact-list.component.html",
-    selector: "s-newsfact-list",
+    selector: "sk-newsfact-list",
     standalone: true,
     imports: [
         ButtonModule,

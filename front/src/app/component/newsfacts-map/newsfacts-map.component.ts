@@ -16,7 +16,8 @@ import {CommonModule} from "@angular/common";
 
 @Component({
     templateUrl: "./newsfacts-map.component.html",
-    selector: "s-newsfacts-map",
+    selector: "sk-newsfacts-map",
+    styleUrls: ["./newsfacts-map.component.scss"],
     imports: [
         CommonModule,
         ProgressSpinner
@@ -24,7 +25,7 @@ import {CommonModule} from "@angular/common";
     standalone: true
 })
 export class NewsfactsMapComponent implements OnInit {
-    readonly htmlMapId = "newsFactsMap"
+    readonly mapId = "newsFactsMap"
     readonly initialZoom = 1
     readonly defaultMapCenterLonLat = [3.162845, 46.990896]
     //min distance between markers in pixels, when distance is smaller, then markers are grouped into the same cluster
@@ -55,7 +56,7 @@ export class NewsfactsMapComponent implements OnInit {
 
         apply(noStyleMap, environment.mapStyleLink).then(mapOrLayerGroup => {
             let styledMap = mapOrLayerGroup as OLMap
-            styledMap.setTarget(this.htmlMapId) //display the map
+            styledMap.setTarget(this.mapId) //display the map
             this.map = styledMap
             this.isReadyMap = true
         })

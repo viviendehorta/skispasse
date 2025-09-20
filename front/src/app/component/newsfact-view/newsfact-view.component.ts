@@ -3,7 +3,7 @@ import {DialogModule} from "primeng/dialog";
 
 @Component({
     templateUrl: "./newsfact-view.component.html",
-    selector: "s-newsfact-view",
+    selector: "sk-newsfact-view",
     standalone: true,
     imports: [
         DialogModule,
