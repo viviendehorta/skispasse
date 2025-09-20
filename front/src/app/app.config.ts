@@ -7,26 +7,30 @@ import {provideHttpClient} from "@angular/common/http";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {routes} from "./routes";
 import {primengPreset} from "../style/primeng-preset";
+import {provideState, provideStore} from '@ngrx/store';
+import {mapFeature} from "./core/map-store";
+import {provideStoreDevtools} from "@ngrx/store-devtools";
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({eventCoalescing: true}),
-    provideRouter(routes),
-    provideAnimationsAsync(),
-    providePrimeNG({
-      theme: {
-        preset: primengPreset,
-      },
-      translation: {
-        dayNamesMin: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
-        monthNames: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-        monthNamesShort: ["jan", "fév", "mars", "avr", "mai", "juin", "juil", "août", "sept", "oct", "nov", "déc"],
-
-      },
-      ripple: true,
-    }),
-    provideHttpClient(),
-    ConfirmationService,
-    MessageService,
-  ]
+    providers: [
+        provideZoneChangeDetection({eventCoalescing: true}),
+        provideRouter(routes),
+        provideAnimationsAsync(),
+        providePrimeNG({
+            theme: {
+                preset: primengPreset,
+            },
+            translation: {
+                dayNamesMin: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+                monthNames: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+                monthNamesShort: ["jan", "fév", "mars", "avr", "mai", "juin", "juil", "août", "sept", "oct", "nov", "déc"],
+            },
+        }),
+        provideHttpClient(),
+        ConfirmationService,
+        MessageService,
+        provideStore(),
+        provideState(mapFeature),
+        provideStoreDevtools()
+    ]
 };

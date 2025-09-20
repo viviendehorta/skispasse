@@ -1,22 +1,22 @@
 import {Component, Input, OnInit} from '@angular/core'
-import {NewsFact} from "../../model/newsfact.model"
+import {EventDetail} from "../../model/event.model"
 import {Observable} from "rxjs"
 import {CommonModule} from "@angular/common";
 import {ButtonModule} from "primeng/button";
 
 @Component({
-    templateUrl: "./news-fact-list.component.html",
-    selector: "sk-newsfact-list",
+    templateUrl: "./event-list.component.html",
+    selector: "sk-event-list",
     standalone: true,
     imports: [
         ButtonModule,
         CommonModule,
     ]
 })
-export class NewsFactListComponent implements OnInit {
+export class EventListComponent implements OnInit {
 
-    @Input() newsFacts$!: Observable<NewsFact[]>
-    newsFacts!: NewsFact[]
+    @Input() newsFacts$!: Observable<EventDetail[]>
+    newsFacts!: EventDetail[]
 
     isCollapsed: boolean = false
 

@@ -1,5 +1,9 @@
-.sk-newsfacts-map {
+.events-map {
     height: 100Vh;
+
+    &.isSelectingLocation {
+        cursor: crosshair;
+    }
 }
 
 .ol-control {

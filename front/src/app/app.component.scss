@@ -1,9 +1,51 @@
 :host {
     height: 100vh;
     display: block;
-}
 
-.sk-content {
-    height: 80%;
-    overflow-y: auto;
+    $top-actions-height: 4rem;
+
+    .top-actions {
+        position: absolute;
+        top: 1vh;
+        right: 1vw;
+        background-color: transparent;
+        height: $top-actions-height;
+        display: flex;
+        align-items: center;
+    }
+
+    ::ng-deep.p-drawer {
+        position: absolute;
+        top: calc($top-actions-height + 2rem);
+        right: 1rem;
+        max-height: 80vh;
+        height: unset;
+        width: unset;
+        border-radius: 6px;
+
+
+        .content-panel {
+            padding: 0 1rem 1rem;
+            display: flex;
+            flex-direction: column;
+
+            .close-button {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+
+                .p-button {
+                    padding: 0;
+                    background-color: transparent;
+                    width: unset;
+                    color: #777;
+                    border: none;
+
+                    &:hover {
+                        color: #111;
+                    }
+                }
+            }
+        }
+    }
 }

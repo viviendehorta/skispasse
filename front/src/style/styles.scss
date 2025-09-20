@@ -3,10 +3,38 @@
 
 //layout styles
 html {
+    font-family: "Work Sans", "Liberation Sans", sans-serif;
     height: 100vh;
 
     body {
         height: 100vh;
         margin: 0;
+        overflow: hidden;
+    }
+
+    h2 {
+        margin: 1rem 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    form {
+        .field {
+            label {
+                font-weight: bold;
+                color: #555;
+                margin-right: 1rem;
+            }
+
+            input[type=text], .p-inputwrapper {
+                width: 100%;
+            }
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: end;
+            align-items: center;
+        }
     }
 }

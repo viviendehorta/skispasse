@@ -1,9 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {RouterOutlet} from "@angular/router";
-import {Observable} from "rxjs";
-import {NewsFact} from "./model/newsfact.model";
-import {NewsfactService} from "./core/service/newsfact.service";
-import {NewsfactsMapComponent} from "./component/newsfacts-map/newsfacts-map.component";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {NavigationEnd, Router, RouterOutlet} from "@angular/router";
+import {EventService} from "./core/service/event.service";
+import {EventMapComponent} from "./component/events-map/event-map.component";
+import {Button} from "primeng/button";
+import {Drawer} from "primeng/drawer";
+import {mapActions, MapState} from "./core/map-store";
+import {Store} from "@ngrx/store";
 
 @Component({
     selector: 'sk-app',
@@ -11,22 +13,46 @@ import {NewsfactsMapComponent} from "./component/newsfacts-map/newsfacts-map.com
     styleUrls: ['./app.component.scss'],
     standalone: true,
     imports: [
-        NewsfactsMapComponent,
+        EventMapComponent,
         RouterOutlet,
+        Drawer,
+        Button,
+    ],
+    providers: [
+        EventService
     ]
 })
 export class AppComponent implements OnInit {
-    newsFacts$!: Observable<NewsFact[]>
-    selectedNewsFactId: string | null = null
+    @ViewChild('contentDrawerRef') drawerRef!: Drawer;
+    showContent: boolean = false;
 
-    constructor(private newsfactService: NewsfactService) {
+    constructor(
+        private router: Router,
+        private store: Store<MapState>
+    ) {
     }
 
     ngOnInit(): void {
-        this.newsFacts$ = this.newsfactService.list()
+        this.router.events.subscribe(event => {
+            this.showContent = this.needsToogleContent(event);
+        })
     }
 
-    closeNewsFactView() {
-        this.selectedNewsFactId = null
+    private needsToogleContent(event: any) {
+        return event instanceof NavigationEnd
+            && event.urlAfterRedirects !== ""
+            && event.urlAfterRedirects !== "/";
+    }
+
+    protected onCloseContentPanel() {
+        this.router.navigate([""])
+    }
+
+    protected closeCallback(event: MouseEvent) {
+        this.drawerRef.close(event);
+    }
+
+    protected toggleSelectingLocation() {
+        this.store.dispatch(mapActions.toggleSelectingLocation())
     }
 }

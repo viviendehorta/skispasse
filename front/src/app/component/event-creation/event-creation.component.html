@@ -1,0 +1,35 @@
+<div class="event-creation">
+    <h2>Création d'évènement</h2>
+    <form [formGroup]="creationForm" (submit)="onSubmit()">
+        <!--title-->
+        <div class="field">
+            <label [for]="titleInput">Titre</label>
+            <input #titleInput type="text" pInputText [formControl]="titleControl"/>
+        </div>
+
+        <!--category-->
+        <div class="field">
+            <label [for]="categoryInput">Catégorie</label>
+            <p-select #categoryInput
+                      [formControl]="categoryControl"
+                      [options]="categoryValues"
+                      optionLabel="label"
+                      optionValue="value">
+            </p-select>
+        </div>
+
+        <!--location-->
+        <div class="field">
+            <label [for]="latitudeInput">Latitude</label>
+            <input #latitudeInput type="text" pInputText [formControl]="latitudeControl"/>
+        </div>
+        <div class="field">
+            <label [for]="longitudeInput">Longitude</label>
+            <input #longitudeInput type="text" pInputText [formControl]="longitudeControl"/>
+        </div>
+
+        <div class="toolbar">
+            <p-button type="submit" label="Valider"></p-button>
+        </div>
+    </form>
+</div>
