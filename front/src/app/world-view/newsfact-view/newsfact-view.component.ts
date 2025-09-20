@@ -1,8 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core'
+import {DialogModule} from "primeng/dialog";
 
 @Component({
     templateUrl: "./newsfact-view.component.html",
-    selector: "s-newsfact-view"
+    selector: "s-newsfact-view",
+    standalone: true,
+    imports: [
+        DialogModule,
+    ]
 })
 export class NewsfactViewComponent {
 

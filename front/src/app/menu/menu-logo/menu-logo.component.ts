@@ -2,8 +2,9 @@ import {Component} from "@angular/core"
 import {Router} from "@angular/router"
 
 @Component({
-    selector: "v-menu-logo",
-    templateUrl: "./menu-logo.component.html"
+    selector: "s-menu-logo",
+    templateUrl: "./menu-logo.component.html",
+    standalone: true
 })
 export class MenuLogoComponent {
 

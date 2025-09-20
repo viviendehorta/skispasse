@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {NewsFact} from "../../model/newsfact.model"
-import {HttpClient} from "@angular/common/http"
+import { HttpClient } from "@angular/common/http"
 import {API_NEWSFACT_URL} from "../../constants"
 import {HttpUtils} from "../util/http-utils"
 import {Observable} from "rxjs"

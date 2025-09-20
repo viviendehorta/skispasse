@@ -1,2 +1,3 @@
-<div [hidden]="!isReadyMap" [id]="htmlId" class="sk-newsfacts-map">
+<p-progress-spinner *ngIf="!isReadyMap"></p-progress-spinner>
+<div [id]="htmlMapId" class="sk-newsfacts-map">
 </div>
