@@ -1,17 +1,10 @@
 <div class="sk-world-view">
 
-    <!--selected news facts collapsable panel-->
-    <div class="newsfact-selection-panel" [ngClass]="{'s-collapsed': isCollapsedSelectedNewsFactsPanel }">
-
-        <p>Some news fact(s) are selected</p>
-
-        <!--collapse button-->
-        <button pButton type="button" [icon]="!selectedNewsFactIds.length ? 'pi pi-chevron-left': 'pi pi-chevron-right'"
-                class="collapse-button"
-                (click)="collapseSelectedNewsFactsPanel()"></button>
-    </div>
+    <s-newsfact-list [newsFacts$]="newsFacts$"></s-newsfact-list>
 
     <s-newsfacts-map
-        [newsFacts]="newsFacts"
-        [selectedNewsFactIds]="selectedNewsFactIds"></s-newsfacts-map>
+        [newsFacts$]="newsFacts$"
+        [selectedNewsFactId]="selectedNewsFactId"></s-newsfacts-map>
+
+    <s-newsfact-view [isVisible]="selectedNewsFactId != null" [newsFactId]="selectedNewsFactId" (onClose)="closeNewsFactView()"></s-newsfact-view>
 </div>

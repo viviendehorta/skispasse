@@ -1,26 +1,25 @@
 import {Component, OnInit} from '@angular/core'
 import {NewsFact} from "../model/newsfact.model"
 import {NewsfactService} from "../core/service/newsfact.service"
+import {Observable} from "rxjs"
 
 @Component({
     templateUrl: './world-view.component.html',
 })
 export class WorldViewComponent implements OnInit {
 
-    newsFacts!: NewsFact[]
-    selectedNewsFactIds: string[] = []
-    isCollapsedSelectedNewsFactsPanel: boolean = true
+    newsFacts$!: Observable<NewsFact[]>
+    selectedNewsFactId: string | null = null
+
 
     constructor(private newsfactService: NewsfactService) {
     }
 
     ngOnInit(): void {
-        this.newsfactService.list().subscribe(newsFacts => {
-            this.newsFacts = newsFacts
-        })
+        this.newsFacts$ = this.newsfactService.list()
     }
 
-    collapseSelectedNewsFactsPanel() {
-        this.isCollapsedSelectedNewsFactsPanel = true
+    closeNewsFactView() {
+        this.selectedNewsFactId = null
     }
 }

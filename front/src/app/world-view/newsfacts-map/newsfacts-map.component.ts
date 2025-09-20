@@ -10,6 +10,7 @@ import VectorSource from "ol/source/Vector"
 import {Geometry, Point} from "ol/geom"
 import {Cluster} from "ol/source"
 import {Icon, Style} from "ol/style"
+import {Observable} from "rxjs"
 
 @Component({
     templateUrl: "./newsfacts-map.component.html",
@@ -33,30 +34,38 @@ export class NewsfactsMapComponent implements OnInit {
     isReadyMap: boolean = false //flag used to hide map during initialization
     newsfactMarkersLayer!: VectorLayer<VectorSource<Geometry>>
 
-    @Input() newsFacts!: NewsFact[]
-    @Input() selectedNewsFactIds: string[] = []
+    @Input() newsFacts$!: Observable<NewsFact[]>
+    @Input() selectedNewsFactId: string | null = null
+
+    newsFacts: NewsFact[] | null = null
 
     constructor() {
     }
 
     ngOnInit(): void {
-        let noStyleMap = new OLMap({
-            view: new View({
-                constrainResolution: true,
-                center: fromLonLat(this.defaultMapCenterLonLat),
-                zoom: this.initialZoom,
+
+        this.newsFacts$.subscribe(newsFacts => {
+
+            let noStyleMap = new OLMap({
+                view: new View({
+                    constrainResolution: true,
+                    center: fromLonLat(this.defaultMapCenterLonLat),
+                    zoom: this.initialZoom,
+                })
             })
-        })
 
-        apply(noStyleMap, environment.mapStyleLink).then(mapOrLayerGroup => {
+            apply(noStyleMap, environment.mapStyleLink).then(mapOrLayerGroup => {
 
-            let styledMap = mapOrLayerGroup as OLMap
+                let styledMap = mapOrLayerGroup as OLMap
 
-            this.initNewsfactMarkers(this.newsFacts, styledMap)
+                this.initNewsfactMarkers(newsFacts, styledMap)
 
-            styledMap.setTarget(this.htmlId) //display the map
-            this.map = styledMap
-            this.isReadyMap = true
+                styledMap.setTarget(this.htmlId) //display the map
+                this.map = styledMap
+                this.isReadyMap = true
+            })
+
+            this.newsFacts = newsFacts
         })
     }
 
