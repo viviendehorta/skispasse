@@ -1,35 +1,48 @@
 import {Component, OnInit} from '@angular/core'
-import {DialogModule} from "primeng/dialog";
 import {EventService} from "../../core/service/event.service";
 import {ActivatedRoute} from "@angular/router";
-import {EventDetail} from "../../model/event.model";
+import {EventDetail} from "../../model/event-detail.model";
+import {mapFeature, MapState} from "../../core/map-store";
+import {Store} from "@ngrx/store";
+import {filter} from "rxjs";
+import {CommonModule} from "@angular/common";
+import {VideoPlayerComponent} from "./video-player/video-player.component";
 
 @Component({
     selector: "sk-event-detail",
     templateUrl: "./event-detail.component.html",
     standalone: true,
     imports: [
-        DialogModule,
+        CommonModule,
+        VideoPlayerComponent
     ],
     providers: [
         EventService,
     ]
 })
 export class EventDetailComponent implements OnInit {
-
-    eventId: string
     eventDetail: EventDetail
 
     constructor(
-        private eventService: EventService,
         private route: ActivatedRoute,
+        private store: Store<MapState>
     ) {
     }
 
     ngOnInit(): void {
-        this.eventId = this.route.snapshot.paramMap.get('eventId') || "";
-        this.eventService.getEvent(this.eventId).subscribe(eventDetail => {
-            this.eventDetail = eventDetail;
+        this.store.select(mapFeature.selectSelectedEventDetail).pipe(
+            filter(selectedEventDetail => !!selectedEventDetail)
+        ).subscribe(eventDetail => {
+            this.eventDetail = eventDetail!
         })
+    }
+
+    protected getEventInfoText() {
+        let infoText = ""
+        if (this.eventDetail.city) {
+            infoText += `À ${this.eventDetail.city}, `
+        }
+        infoText += `${this.eventDetail.country} le ${this.eventDetail.eventDate.format("DD/MM/YYYY")}`
+        return infoText;
     }
 }

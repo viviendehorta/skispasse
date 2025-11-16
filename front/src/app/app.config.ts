@@ -8,8 +8,10 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {routes} from "./routes";
 import {primengPreset} from "../style/primeng-preset";
 import {provideState, provideStore} from '@ngrx/store';
-import {mapFeature} from "./core/map-store";
+import {mapEffects, mapFeature} from "./core/map-store";
 import {provideStoreDevtools} from "@ngrx/store-devtools";
+import {provideEffects} from "@ngrx/effects";
+import {EventService} from "./core/service/event.service";
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -31,6 +33,8 @@ export const appConfig: ApplicationConfig = {
         MessageService,
         provideStore(),
         provideState(mapFeature),
-        provideStoreDevtools()
+        provideEffects([mapEffects]),
+        provideStoreDevtools(),
+        EventService
     ]
 };

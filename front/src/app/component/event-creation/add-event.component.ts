@@ -9,9 +9,8 @@ import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
 
 @Component({
-    selector: "sk-event-creation",
-    templateUrl: "./event-creation.component.html",
-    styleUrls: ["event-creation.component.scss"],
+    templateUrl: "./add-event.component.html",
+    styleUrls: ["add-event.component.scss"],
     standalone: true,
     imports: [
         ReactiveFormsModule,
@@ -23,7 +22,7 @@ import {Router} from "@angular/router";
         EventService,
     ]
 })
-export class EventCreationComponent implements OnInit {
+export class AddEventComponent implements OnInit {
     creationForm: FormGroup
     titleControl: FormControl<string>
     categoryControl: FormControl<string | null>
@@ -107,14 +106,7 @@ export class EventCreationComponent implements OnInit {
                 longitude: this.longitudeControl.value!!,
                 latitude: this.latitudeControl.value!!
             }))
-            // this.eventService.addEvent(
-            //     this.titleControl.value,
-            //     this.categoryControl.value!!,
-            //     this.longitudeControl.value!!,
-            //     this.latitudeControl.value!!,
-            // ).subscribe(newEvent => {
-            //     this.router.navigate([""])
-            // })
+            this.router.navigate([""])
         }
     }
 }

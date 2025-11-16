@@ -12,4 +12,6 @@ export interface EventDetail {
     created: Moment
     address: string
     eventDate: Moment
+    city: string | null,
+    country: string
 }

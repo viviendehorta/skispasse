@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core'
-import {EventDetail} from "../../model/event.model"
+import {EventDetail} from "../../model/event-detail.model"
 import {Observable} from "rxjs"
 import {CommonModule} from "@angular/common";
 import {ButtonModule} from "primeng/button";

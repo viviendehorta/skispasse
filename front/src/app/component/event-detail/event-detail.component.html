@@ -1,8 +1,19 @@
-<div class="event-detail">
-    <div>
-        <label>Id:</label><span>{{eventDetail.id}}</span>
+<div *ngIf="eventDetail" class="event-detail">
+
+    <h1>{{ eventDetail.title }}</h1>
+
+    <div class="media-view">
+        <sk-video-player *ngIf="eventDetail.media.type === 'VIDEO'" videoUrl="{{eventDetail.media.url}}"
+                           contentType="{{eventDetail.media.contentType}}"></sk-video-player>
+        <img *ngIf="eventDetail.media.type === 'IMAGE'" src="{{eventDetail.media.url}}" alt="Image of event"/>
     </div>
-    <div>
-        <label>Title:</label><span>{{eventDetail.title}}</span>
+
+    <div class="event-info">
+
+        <!--category-->
+        <div class="category">{{ eventDetail.category }}</div>
+
+        <!--city, country-->
+        <p class="city-country">{{ getEventInfoText() }}</p>
     </div>
 </div>

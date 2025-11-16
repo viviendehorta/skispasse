@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {EventDetail} from "../../model/event.model"
+import {EventDetail} from "../../model/event-detail.model"
 import {HttpClient} from "@angular/common/http"
 import {EVENT_URL} from "../../constants"
 import {JSON_REQUEST_HEADER_OPTIONS} from "../util/http-utils"
@@ -12,20 +12,21 @@ export class EventService {
         {
             id: "1",
             title: "Manifestation pour la Palestine",
-            category: "1",
+            category: "Droits humains",
             location: {
                 latitude: 52.373090992339826,
                 longitude: -9.133719679095094
-                // latitude: 0,
-                // longitude: 0
             },
             created: moment(),
             eventDate: moment(),
             address: "1 rue Rima Hassan",
             media: {
+                type: "IMAGE",
                 contentType: "image/jpeg",
                 url: "/image-url"
-            }
+            },
+            city: null,
+            country: "Irlande"
         }
     ];
 
@@ -38,6 +39,7 @@ export class EventService {
     }
 
     getEvent(eventId: string): Observable<EventDetail> {
-        return this.http.get<EventDetail>(`${EVENT_URL}/detail/${eventId}`, JSON_REQUEST_HEADER_OPTIONS)
+        // return this.http.get<EventDetail>(`${EVENT_URL}/detail/${eventId}`, JSON_REQUEST_HEADER_OPTIONS)
+        return of(this.events[0])
     }
 }

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core'
-import {EventDetail} from "../../model/event.model"
+import {EventDetail} from "../../model/event-detail.model"
 import OLMap from "ol/Map"
 import {Feature, MapBrowserEvent, View} from "ol"
 import {fromLonLat, toLonLat} from "ol/proj"
@@ -10,14 +10,13 @@ import VectorSource from "ol/source/Vector"
 import {Geometry, Point} from "ol/geom"
 import {Cluster, Source} from "ol/source"
 import {Icon, Style} from "ol/style"
-import {ProgressSpinner} from "primeng/progressspinner";
 import {CommonModule} from "@angular/common";
 import {Store} from "@ngrx/store";
 import {mapActions, mapFeature, MapState} from "../../core/map-store";
 import {LonLat} from "../../model/lonlat.model";
 import {Router} from "@angular/router";
 import {EventService} from "../../core/service/event.service";
-import {combineLatestWith, from, map} from "rxjs";
+import {combineLatestWith, from} from "rxjs";
 import {FeatureLike} from "ol/Feature";
 import {Layer} from "ol/layer";
 import LayerRenderer from "ol/renderer/Layer";
@@ -28,15 +27,17 @@ import LayerRenderer from "ol/renderer/Layer";
     styleUrls: ["./event-map.component.scss"],
     imports: [
         CommonModule,
-        ProgressSpinner
     ],
     standalone: true
 })
 export class EventMapComponent implements OnInit {
-    readonly mapId = "newsFactsMap"
+    readonly baseMarkerPath = "/assets/map-markers/unselected.png"
+    readonly selectedMarkerPath = "/assets/map-markers/selected.png"
+    readonly groupMarkerPath = "/assets/map-markers/group.png"
+
+    readonly mapId = "eventsMap"
     readonly initialZoom = 1
     readonly defaultMapCenterLonLat = [3.162845, 46.990896]
-
     //minimum distance allowed between markers before grouping into cluster
     readonly clusterMinDistance = 32
     //distance around markers to detect click
@@ -44,20 +45,14 @@ export class EventMapComponent implements OnInit {
     //duration of map animations triggered when changing page or clicking on trainer group markers
     readonly mapAnimationDuration = 1000
 
-    readonly baseMarkerPath = "/assets/map-markers/unselected.png"
-    readonly selectedMarkerPath = "/assets/map-markers/selected.png"
-    readonly groupMarkerPath = "/assets/map-markers/group.png"
-
     isSelectingLocation: boolean;
 
     map: OLMap
-    isReadyMap: boolean = false
     eventMarkersById!: { [id: string]: Feature<Point> }
     selectedEventId: string | null = null
 
     eventMarkersLayer: VectorLayer
     eventMarkersSource: VectorSource
-    clusteredEventSource: Cluster
 
     constructor(
         private mapStore: Store<MapState>,
@@ -67,14 +62,26 @@ export class EventMapComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.initEmptyMarkerLayer()
+        this.configureMapLayers()
         this.mapStore.select(mapFeature.selectSelectingLocation).subscribe(selectResult => {
             this.isSelectingLocation = selectResult
         })
         this.mapStore.select(mapFeature.selectEvents).subscribe(events => {
-            if (events.length) {
-                this.displayEvents(events)
+            this.displayEventsOnMap(events)
+        })
+        this.mapStore.select(mapFeature.selectSelectedEventId).subscribe(selectedEventId => {
+            //unselect previously selected event
+            if (this.selectedEventId && this.selectedEventId !== selectedEventId) {
+                this.eventMarkersById[this.selectedEventId].set("selected", false)
             }
+            //select new event
+            if (selectedEventId && this.eventMarkersById[selectedEventId]) {
+                this.eventMarkersById[selectedEventId].set("selected", true)
+                this.router.navigate([`/event-detail/${selectedEventId}`])
+            } else {
+
+            }
+            this.selectedEventId = selectedEventId
         })
 
         let unstyledMap = new OLMap({
@@ -84,17 +91,16 @@ export class EventMapComponent implements OnInit {
                 zoom: this.initialZoom,
             })
         })
+        let getMapWithStyle$ = from(apply(unstyledMap, environment.mapStyleLink));
         this.eventService.list().pipe(
-            combineLatestWith(from(apply(unstyledMap, environment.mapStyleLink)).pipe(
-                map(styledMapOrLayer => styledMapOrLayer as OLMap)
-            ))
+            combineLatestWith(getMapWithStyle$.pipe()),
         ).subscribe(([events, styledMap]) => {
-            this.map = styledMap
-            this.map.setTarget(this.mapId)
-            this.map.addLayer(this.eventMarkersLayer)
+            let map = styledMap as OLMap
+            map.setTarget(this.mapId)
+            map.addLayer(this.eventMarkersLayer)
+            this.map = map
             this.initMapInteractions()
             this.mapStore.dispatch(mapActions.setEvents({events: events}))
-            this.isReadyMap = true
         })
     }
 
@@ -107,7 +113,7 @@ export class EventMapComponent implements OnInit {
                     latitude: olLonLat[1]
                 }
                 this.mapStore.dispatch(mapActions.setLocationForEventCreation({location: location}))
-                this.router.navigate(["add-event"])
+                this.router.navigate(["event-creation"])
             } else {
                 this.map.forEachFeatureAtPixel(
                     mapClickEvent.pixel,
@@ -137,9 +143,8 @@ export class EventMapComponent implements OnInit {
     }
 
     private toEventMarker(event: EventDetail): Feature<Point> {
-        const olCoordinates = fromLonLat([event.location.longitude, event.location.latitude])
         return new Feature<Point>({
-            geometry: new Point(olCoordinates),
+            geometry: new Point(fromLonLat([event.location.longitude, event.location.latitude])),
             eventId: event.id,
         })
     }
@@ -155,18 +160,10 @@ export class EventMapComponent implements OnInit {
     }
 
     private selectEvent(eventId: string | null) {
-        //unselect previously selected trainer marker
-        if (this.selectedEventId) {
-            this.eventMarkersById[this.selectedEventId].set("selected", false)
-        }
-        //select new trainer
-        if (eventId && this.eventMarkersById[eventId]) {
-            this.eventMarkersById[eventId].set("selected", true)
-        }
-        this.selectedEventId = eventId
+        this.mapStore.dispatch(mapActions.setSelectedEvent({eventId: eventId}))
     }
 
-    private displayEvents(events: EventDetail[]) {
+    private displayEventsOnMap(events: EventDetail[]) {
         this.eventMarkersById = {}
         let eventMarkers: Feature<Point>[] = []
         events.forEach(event => {
@@ -178,14 +175,13 @@ export class EventMapComponent implements OnInit {
         this.eventMarkersSource.addFeatures(eventMarkers)
     }
 
-    private initEmptyMarkerLayer(): void {
+    private configureMapLayers(): void {
         this.eventMarkersSource = new VectorSource({features: []})
-        this.clusteredEventSource = new Cluster({
-            distance: this.clusterMinDistance,
-            source: this.eventMarkersSource
-        })
         this.eventMarkersLayer = new VectorLayer({
-            source: this.clusteredEventSource,
+            source: new Cluster({
+                distance: this.clusterMinDistance,
+                source: this.eventMarkersSource
+            }),
             style: (clusterFeature) => {
                 const clusteredFeatures = clusterFeature.get('features') as Feature[]
                 let markerImagePath
