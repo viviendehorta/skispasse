@@ -37,6 +37,8 @@ export const mapActions = createActionGroup({
     },
 });
 
+let currentEventId: number = 2;
+
 export const mapFeature = createFeature({
     name: 'Map',
     reducer: createReducer(
@@ -61,8 +63,10 @@ export const mapFeature = createFeature({
         }),
         on(mapActions.addEvent, (state, {title, category, longitude, latitude}) => {
             return produce(state, draft => {
+                let eventId = currentEventId;
+                currentEventId += 1;
                 draft.events.push({
-                    id: "id",
+                    id: eventId,
                     title,
                     category,
                     location: {longitude, latitude},
