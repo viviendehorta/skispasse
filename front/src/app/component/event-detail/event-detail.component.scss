@@ -1,3 +1,10 @@
 .event-detail {
     width: 60vw;
+
+    .media-view {
+        img.event-image {
+            height: 30vh;
+            width: auto;
+        }
+    }
 }

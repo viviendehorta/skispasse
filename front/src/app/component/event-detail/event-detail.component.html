@@ -5,7 +5,10 @@
     <div class="media-view">
         <sk-video-player *ngIf="eventDetail.media.type === 'VIDEO'" videoUrl="{{eventDetail.media.url}}"
                            contentType="{{eventDetail.media.contentType}}"></sk-video-player>
-        <img *ngIf="eventDetail.media.type === 'IMAGE'" src="{{eventDetail.media.url}}" alt="Image of event"/>
+        <img *ngIf="eventDetail.media.type === 'IMAGE'"
+             class="event-image"
+             src="{{eventDetail.media.url}}"
+             alt="Image of event"/>
     </div>
 
     <div class="event-info">

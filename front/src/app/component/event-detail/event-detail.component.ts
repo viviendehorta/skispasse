@@ -10,6 +10,7 @@ import {VideoPlayerComponent} from "./video-player/video-player.component";
 
 @Component({
     selector: "sk-event-detail",
+    styleUrls: ["./event-detail.component.scss"],
     templateUrl: "./event-detail.component.html",
     standalone: true,
     imports: [

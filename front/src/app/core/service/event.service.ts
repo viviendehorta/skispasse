@@ -23,7 +23,7 @@ export class EventService {
             media: {
                 type: "IMAGE",
                 contentType: "image/jpeg",
-                url: "/image-url"
+                url: "/assets/pictures/city.jpg"
             },
             city: null,
             country: "Irlande"

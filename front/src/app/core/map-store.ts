@@ -63,7 +63,7 @@ export const mapFeature = createFeature({
         }),
         on(mapActions.addEvent, (state, {title, category, longitude, latitude}) => {
             return produce(state, draft => {
-                let eventId = currentEventId;
+                let eventId = currentEventId.toString();
                 currentEventId += 1;
                 draft.events.push({
                     id: eventId,
@@ -73,7 +73,7 @@ export const mapFeature = createFeature({
                     media: {
                         type: "IMAGE",
                         contentType: "image/jpeg",
-                        url: "/image-url"
+                        url: "/assets/pictures/city.jpg"
                     },
                     created: moment(),
                     eventDate: moment(),
