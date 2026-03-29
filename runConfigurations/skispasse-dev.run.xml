@@ -1,6 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="skispasse-dev" type="CompoundRunConfigurationType">
-    <toRun name="run-db" type="ShConfigurationType" />
-    <method v="2" />
-  </configuration>
-</component>
