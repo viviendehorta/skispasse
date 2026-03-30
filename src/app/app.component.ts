@@ -1,10 +1,13 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from "@angular/router";
-import {EventMapComponent} from "./component/events-map/event-map.component";
+import {Store} from "@ngrx/store";
 import {Button} from "primeng/button";
 import {Drawer} from "primeng/drawer";
-import {mapActions, MapState} from "./core/map-store";
-import {Store} from "@ngrx/store";
+import {Toast} from "primeng/toast";
+import {filter} from "rxjs";
+import {EventMapComponent} from "./component/events-map/event-map.component";
+import {mapActions, mapFeature, MapState} from "./core/map-store";
+import {ToastMessageService} from "./core/service/toast-message.service";
 
 @Component({
     selector: 'sk-app',
@@ -16,41 +19,56 @@ import {Store} from "@ngrx/store";
         RouterOutlet,
         Drawer,
         Button,
+        Toast,
     ],
-    providers: []
+    providers: [
+        ToastMessageService
+    ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
     @ViewChild('contentDrawerRef') drawerRef!: Drawer;
-    showContent: boolean = false;
+    showModalContent: boolean = false;
+    protected transitionOptions: string;
 
     constructor(
         private router: Router,
-        private mapStore: Store<MapState>
+        private mapStore: Store<MapState>,
+        private readonly toastMessageService: ToastMessageService
     ) {
-    }
+        this.mapStore.select(mapFeature.selectErrorMessage)
+            .pipe(filter(errorMessage => !!errorMessage))
+            .subscribe(errorMessage => {
+                this.toastMessageService.displayError(errorMessage!);
+            });
 
-    ngOnInit(): void {
+        this.mapStore.select(mapFeature.selectSelectedEventId)
+            .pipe(filter(eventId => eventId === null))
+            .subscribe(() => {
+                this.showModalContent = false;
+                this.goBackHome();
+            });
+
         this.router.events.subscribe(event => {
-            this.showContent = this.needsToogleContent(event);
-        })
-    }
-
-    private needsToogleContent(event: any) {
-        return event instanceof NavigationEnd
-            && event.urlAfterRedirects !== ""
-            && event.urlAfterRedirects !== "/";
+            this.showModalContent = event instanceof NavigationEnd
+                && event.urlAfterRedirects !== ""
+                && event.urlAfterRedirects !== "/";
+        });
     }
 
     protected onCloseContentPanel() {
-        this.router.navigate([""])
+        this.goBackHome();
+    }
+
+    private goBackHome() {
+        this.router.navigate([""]);
     }
 
     protected closeCallback(event: MouseEvent) {
         this.drawerRef.close(event);
-        this.mapStore.dispatch(mapActions.setSelectedEvent({eventId: null}))
+        this.mapStore.dispatch(mapActions.setSelectedEvent({eventId: null}));
     }
 
     protected toggleSelectingLocation() {
-        this.mapStore.dispatch(mapActions.toggleSelectingLocation())
+        this.mapStore.dispatch(mapActions.toggleSelectingLocation());
     }
 }

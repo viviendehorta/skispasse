@@ -1,24 +1,24 @@
 .events-map {
-    height: 100Vh;
+  height: 100Vh;
 
-    &.isSelectingLocation {
-        cursor: crosshair;
-    }
+  &.isSelectingLocation {
+    cursor: crosshair;
+  }
 }
 
 .ol-control {
-    right: 1rem;
-    left: auto;
-    background-color: transparent;
-    border: none;
+  right: 1rem;
+  left: auto;
+  background-color: transparent;
+  border: none;
 
-    button {
-        height: 1.6rem;
-        width: 1.6rem;
-        outline: none;
+  button {
+    height: 1.6rem;
+    width: 1.6rem;
+    outline: none;
 
-        &.ol-zoom-in {
-            margin-bottom: 0.4rem;
-        }
+    &.ol-zoom-in {
+      margin-bottom: 0.4rem;
     }
+  }
 }

@@ -4,7 +4,7 @@
 
     <div class="media-view">
         <sk-video-player *ngIf="eventDetail.media.type === 'VIDEO'" videoUrl="{{eventDetail.media.url}}"
-                           contentType="{{eventDetail.media.contentType}}"></sk-video-player>
+                         contentType="{{eventDetail.media.contentType}}"></sk-video-player>
         <img *ngIf="eventDetail.media.type === 'IMAGE'"
              class="event-image"
              src="{{eventDetail.media.url}}"

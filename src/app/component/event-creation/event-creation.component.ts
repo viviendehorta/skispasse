@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core'
-import {InputText} from "primeng/inputtext";
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
+import {Store} from "@ngrx/store";
 import {Button} from "primeng/button";
+import {InputText} from "primeng/inputtext";
 import {Select} from "primeng/select";
 import {mapActions, mapFeature, MapState} from "../../core/map-store";
-import {Store} from "@ngrx/store";
-import {Router} from "@angular/router";
 
 @Component({
-    templateUrl: "./add-event.component.html",
-    styleUrls: ["add-event.component.scss"],
+    templateUrl: "./event-creation.component.html",
+    styleUrls: ["event-creation.component.scss"],
     standalone: true,
     imports: [
         ReactiveFormsModule,
@@ -19,12 +19,12 @@ import {Router} from "@angular/router";
     ],
     providers: []
 })
-export class AddEventComponent implements OnInit {
-    creationForm: FormGroup
-    titleControl: FormControl<string>
-    categoryControl: FormControl<string | null>
-    latitudeControl: FormControl<number | null>
-    longitudeControl: FormControl<number | null>
+export class EventCreationComponent implements OnInit {
+    creationForm: FormGroup;
+    titleControl: FormControl<string>;
+    categoryControl: FormControl<string | null>;
+    latitudeControl: FormControl<number | null>;
+    longitudeControl: FormControl<number | null>;
     categoryValues: { label: string, value: string | null }[] = [
         {
             label: "-",
@@ -66,43 +66,43 @@ export class AddEventComponent implements OnInit {
             label: "Évènementiel",
             value: "8"
         }
-    ]
+    ];
 
     constructor(
         private fb: FormBuilder,
-        private store: Store<MapState>,
+        private mapStore: Store<MapState>,
         private router: Router
     ) {
     }
 
     ngOnInit(): void {
-        this.store.select(mapFeature.selectLocationForEventCreation).subscribe(location => {
+        this.mapStore.select(mapFeature.selectLocationForEventCreation).subscribe(location => {
             this.titleControl = new FormControl<string>("", {
                 nonNullable: true,
                 validators: Validators.required
-            })
+            });
             this.categoryControl = new FormControl<string | null>(null, {
                 validators: Validators.required
-            })
+            });
             this.latitudeControl = new FormControl<number | null>(location?.latitude || null, {
                 validators: Validators.required
-            })
+            });
             this.longitudeControl = new FormControl<number | null>(location?.longitude || null, {
                 validators: Validators.required
             });
-            this.creationForm = this.fb.group([this.titleControl])
-        })
+            this.creationForm = this.fb.group([this.titleControl]);
+        });
     }
 
     protected onSubmit() {
         if (this.creationForm.valid) {
-            this.store.dispatch(mapActions.addEvent({
+            this.mapStore.dispatch(mapActions.addEvent({
                 title: this.titleControl.value,
                 category: this.categoryControl.value!!,
                 longitude: this.longitudeControl.value!!,
                 latitude: this.latitudeControl.value!!
-            }))
-            this.router.navigate([""])
+            }));
+            this.router.navigate([""]);
         }
     }
 }

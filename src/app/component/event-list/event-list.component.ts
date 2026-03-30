@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core'
-import {EventDetail} from "../../model/event-detail.model"
-import {Observable} from "rxjs"
 import {CommonModule} from "@angular/common";
+import {Component, Input, OnInit} from '@angular/core';
 import {ButtonModule} from "primeng/button";
+import {Observable} from "rxjs";
+import {EventDetail} from "../../model/event-detail.model";
 
 @Component({
     templateUrl: "./event-list.component.html",
@@ -15,16 +15,16 @@ import {ButtonModule} from "primeng/button";
 })
 export class EventListComponent implements OnInit {
 
-    @Input() newsFacts$!: Observable<EventDetail[]>
-    newsFacts!: EventDetail[]
+    @Input() newsFacts$!: Observable<EventDetail[]>;
+    newsFacts!: EventDetail[];
 
-    isCollapsed: boolean = false
+    isCollapsed: boolean = false;
 
     ngOnInit() {
-        this.newsFacts$.subscribe(newsFacts => this.newsFacts = newsFacts)
+        this.newsFacts$.subscribe(newsFacts => this.newsFacts = newsFacts);
     }
 
     collapse() {
-        this.isCollapsed = true
+        this.isCollapsed = true;
     }
 }

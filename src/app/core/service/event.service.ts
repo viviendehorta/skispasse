@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {EventDetail} from "../../model/event-detail.model"
-import {delay, Observable, of} from "rxjs"
-import * as moment from 'moment'
+import * as moment from 'moment';
+import {delay, Observable, of} from "rxjs";
+import {EventDetail} from "../../model/event-detail.model";
 
 @Injectable()
 export class EventService {
@@ -32,10 +32,11 @@ export class EventService {
     }
 
     list(): Observable<EventDetail[]> {
-        return of(this.events).pipe(delay(3000))
+        return of(this.events).pipe(delay(3000));
     }
 
     addEvent(title: string, category: string, longitude: number, latitude: number): Observable<EventDetail> {
+        // return throwError(() => new Error("Erreur back mockée."))
         let eventId = this.nextIdEvent.toString();
         this.nextIdEvent += 1;
         let newEvent: EventDetail = {
@@ -57,7 +58,7 @@ export class EventService {
             country: "",
             created: moment()
         };
-        this.events = [...this.events, newEvent]
-        return of(newEvent).pipe(delay(3000))
+        this.events = [...this.events, newEvent];
+        return of(newEvent).pipe(delay(3000));
     }
 }

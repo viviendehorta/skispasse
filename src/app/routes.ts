@@ -1,11 +1,11 @@
 import {Routes} from '@angular/router';
-import {AddEventComponent} from "./component/event-creation/add-event.component";
+import {EventCreationComponent} from "./component/event-creation/event-creation.component";
 import {EventDetailComponent} from "./component/event-detail/event-detail.component";
 
 export const routes: Routes = [
     {
         path: "event-creation",
-        component: AddEventComponent,
+        component: EventCreationComponent,
     },
     {
         path: "event-detail/:eventId",

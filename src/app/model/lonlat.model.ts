@@ -1,4 +1,4 @@
 export interface LonLat {
-    longitude: number
-    latitude: number
+    longitude: number;
+    latitude: number;
 }

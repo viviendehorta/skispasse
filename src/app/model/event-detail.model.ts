@@ -1,6 +1,6 @@
-import {LonLat} from "./lonlat.model"
-import {Moment} from "moment"
-import {EventMedia} from "./media.model"
+import {Moment} from "moment";
+import {LonLat} from "./lonlat.model";
+import {EventMedia} from "./media.model";
 
 export interface EventDetail {
     id: string

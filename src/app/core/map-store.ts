@@ -1,11 +1,11 @@
-import {createActionGroup, createFeature, createReducer, createSelector, emptyProps, on, props} from "@ngrx/store";
-import {LonLat} from "../model/lonlat.model";
-import {EventDetail} from "../model/event-detail.model";
-import {produce} from "immer";
-import {EventService} from "./service/event.service";
 import {inject} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
+import {createActionGroup, createFeature, createReducer, createSelector, emptyProps, on, props} from "@ngrx/store";
+import {produce} from "immer";
 import {catchError, map, of, switchMap} from "rxjs";
+import {EventDetail} from "../model/event-detail.model";
+import {LonLat} from "../model/lonlat.model";
+import {EventService} from "./service/event.service";
 
 export interface MapState {
     isInError: boolean | null,
@@ -16,7 +16,6 @@ export interface MapState {
     locationForEventCreation: LonLat | null,
     events: EventDetail[],
     selectedEventId: string | null,
-    selectedEventDetail: EventDetail | null
 }
 
 const initialState: MapState = {
@@ -28,8 +27,7 @@ const initialState: MapState = {
     locationForEventCreation: null,
     events: [],
     selectedEventId: null,
-    selectedEventDetail: null
-}
+};
 
 export const mapActions = createActionGroup({
     source: 'Map',
@@ -51,21 +49,22 @@ export const mapFeature = createFeature({
         initialState,
         on(mapActions.loadEvents, (state, {}) => {
             return produce(state, draft => {
-                draft.isLoadingEvents = true
-            })
+                draft.isLoadingEvents = true;
+            });
         }),
         on(mapActions.loadEventsSuccess, (state, {events}) => {
             return produce(state, draft => {
-                draft.events = events
-                draft.isLoadingEvents = false
-            })
+                draft.events = events;
+                draft.isLoadingEvents = false;
+            });
         }),
         on(mapActions.setInError, (state, {errorMessage}) => {
             return produce(state, draft => {
-                draft.isInError = true
-                draft.errorMessage = errorMessage
-                draft.isLoadingEvents = false
-            })
+                draft.isInError = true;
+                draft.errorMessage = errorMessage;
+                draft.isLoadingEvents = false;
+                draft.isAddingEvent = false;
+            });
         }),
         on(mapActions.toggleSelectingLocation, (state, {}) => {
             return {
@@ -82,30 +81,31 @@ export const mapFeature = createFeature({
         }),
         on(mapActions.addEvent, (state, {}) => {
             return produce(state, draft => {
-                draft.isAddingEvent = true
-            })
+                draft.isAddingEvent = true;
+            });
         }),
         on(mapActions.addEventSuccess, (state, {eventDetail}) => {
             return produce(state, draft => {
-                draft.events = [...state.events, eventDetail]
-                draft.isAddingEvent = false
-            })
+                draft.events = [...state.events, eventDetail];
+                draft.locationForEventCreation = null;
+                draft.isAddingEvent = false;
+            });
         }),
         on(mapActions.setSelectedEvent, (state, {eventId}) => {
-            return produce(state,  draft => {
-                draft.selectedEventId = eventId
-            })
+            return produce(state, draft => {
+                draft.selectedEventId = eventId;
+            });
         }),
     ),
-    extraSelectors: ({ selectEvents, selectSelectedEventId }) => ({
+    extraSelectors: ({selectEvents, selectSelectedEventId}) => ({
         selectSelectedEventDetail: createSelector(
             selectEvents,
             selectSelectedEventId,
             (events, selectedEventId): EventDetail | null => {
                 if (!selectedEventId) {
-                    return null
+                    return null;
                 }
-                return events.find(e => e.id === selectedEventId) || null
+                return events.find(e => e.id === selectedEventId) || null;
             }
         ),
     }),
@@ -118,14 +118,14 @@ const loadEventsEffect = createEffect(
             switchMap(() => eventService.list().pipe(
                 map(events => mapActions.loadEventsSuccess({events: events})),
                 catchError((error) => {
-                    console.error(error)
+                    console.error(error);
                     return of(mapActions.setInError({errorMessage: "Erreur de chargement des évènements."}));
                 })
             ))
-        )
+        );
     },
     {functional: true}
-)
+);
 
 const addEventEffect = createEffect(
     (actions$ = inject(Actions), eventService = inject(EventService)) => {
@@ -139,16 +139,16 @@ const addEventEffect = createEffect(
             ).pipe(
                 map(eventDetail => mapActions.addEventSuccess({eventDetail: eventDetail})),
                 catchError((error) => {
-                    console.error(error)
+                    console.error(error);
                     return of(mapActions.setInError({errorMessage: `Erreur de création de l'évènement "${action.title}".`}));
                 })
             ))
-        )
+        );
     },
     {functional: true}
-)
+);
 
 export const mapEffects = {
     loadEventsEffect,
     addEventEffect
-}
+};

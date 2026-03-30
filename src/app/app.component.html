@@ -1,14 +1,21 @@
 <div class="app" #appElement>
     <sk-events-map></sk-events-map>
 
+    <p-toast class="message-toast" position="top-center"></p-toast>
+
     <div class="top-actions">
-        <p-button (onClick)="toggleSelectingLocation()" [disabled]="showContent" label="Évènement" icon="pi pi-plus">
+        <p-button (onClick)="toggleSelectingLocation()" [disabled]="showModalContent" label="Évènement"
+                  icon="pi pi-plus">
         </p-button>
     </div>
 
-    <p-drawer #contentDrawerRef [appendTo]="appElement"
-              [(visible)]="showContent" position="right"
-              [closable]="true" [closeOnEscape]="false" (onHide)="onCloseContentPanel()"
+    <p-drawer #contentDrawerRef
+              [appendTo]="appElement"
+              [(visible)]="showModalContent"
+              position="right"
+              [closable]="true"
+              [closeOnEscape]="false"
+              (onHide)="onCloseContentPanel()"
               [modal]="false">
         <ng-template #headless>
             <div class="content-panel">

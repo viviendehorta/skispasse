@@ -1,13 +1,14 @@
 <div class="newsfact-list-panel" [ngClass]="{'sk-collapsed': isCollapsed }">
 
-    <ul *ngIf="newsFacts" >
+    <ul *ngIf="newsFacts">
         <li *ngFor="let newsFact of newsFacts">
-            {{newsFact.title}}
+            {{ newsFact.title }}
         </li>
     </ul>
 
     <!--collapse button-->
-    <button *ngIf="newsFacts" pButton type="button" [icon]="!newsFacts.length ? 'pi pi-chevron-left': 'pi pi-chevron-right'"
+    <button *ngIf="newsFacts" pButton type="button"
+            [icon]="!newsFacts.length ? 'pi pi-chevron-left': 'pi pi-chevron-right'"
             class="collapse-button"
             (click)="collapse()"></button>
 </div>

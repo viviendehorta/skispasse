@@ -1,17 +1,17 @@
+import {provideHttpClient} from "@angular/common/http";
 import {ApplicationConfig, provideZoneChangeDetection} from "@angular/core";
-import {provideRouter} from "@angular/router";
 
 import {provideAnimationsAsync} from "@angular/platform-browser/animations/async";
-import {providePrimeNG} from "primeng/config";
-import {provideHttpClient} from "@angular/common/http";
-import {ConfirmationService, MessageService} from "primeng/api";
-import {routes} from "./routes";
-import {primengPreset} from "../style/primeng-preset";
-import {provideState, provideStore} from '@ngrx/store';
-import {mapEffects, mapFeature} from "./core/map-store";
-import {provideStoreDevtools} from "@ngrx/store-devtools";
+import {provideRouter} from "@angular/router";
 import {provideEffects} from "@ngrx/effects";
+import {provideState, provideStore} from '@ngrx/store';
+import {provideStoreDevtools} from "@ngrx/store-devtools";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {providePrimeNG} from "primeng/config";
+import {primengPreset} from "../style/primeng-preset";
+import {mapEffects, mapFeature} from "./core/map-store";
 import {EventService} from "./core/service/event.service";
+import {routes} from "./routes";
 
 export const appConfig: ApplicationConfig = {
     providers: [
