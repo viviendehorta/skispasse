@@ -1,4 +1,3 @@
-import {Moment} from "moment";
 import {LonLat} from "./lonlat.model";
 import {EventMedia} from "./media.model";
 
@@ -7,10 +6,10 @@ export interface EventDetail {
     title: string
     location: LonLat
     media: EventMedia
-    category: string
-    created: Moment
+    categoryId: string
+    created: Date
     address: string
-    eventDate: Moment
+    eventDate: Date
     city: string,
     country: string
 }

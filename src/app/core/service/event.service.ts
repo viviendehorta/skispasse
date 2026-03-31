@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import * as moment from 'moment';
 import {delay, Observable, of} from "rxjs";
 import {EventDetail} from "../../model/event-detail.model";
 
@@ -9,13 +8,13 @@ export class EventService {
         {
             id: "1",
             title: "Manifestation pour la Palestine",
-            category: "Droits humains",
+            categoryId: "Droits humains",
             location: {
                 latitude: 52.373090992339826,
                 longitude: -9.133719679095094
             },
-            created: moment(),
-            eventDate: moment(),
+            created: new Date(),
+            eventDate: new Date(),
             address: "1 rue Rima Hassan",
             media: {
                 type: "IMAGE",
@@ -44,7 +43,7 @@ export class EventService {
             title: title,
             city: "",
             address: "",
-            category: category,
+            categoryId: category,
             location: {
                 longitude: longitude,
                 latitude: latitude
@@ -54,9 +53,9 @@ export class EventService {
                 contentType: "image/jpeg",
                 url: "no-url"
             },
-            eventDate: moment(),
+            eventDate: new Date(),
             country: "",
-            created: moment()
+            created: new Date()
         };
         this.events = [...this.events, newEvent];
         return of(newEvent).pipe(delay(3000));

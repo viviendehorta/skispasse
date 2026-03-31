@@ -32,39 +32,39 @@ export class EventCreationComponent implements OnInit {
         },
         {
             label: "Crime environnemental",
-            value: "0"
+            value: "CRIME_ENVIRONNEMENTAL"
         },
         {
             label: "Crise climatique",
-            value: "1"
+            value: "CRISE_CLIMATIQUE"
         },
         {
             label: "Délinquance financière",
-            value: "2"
+            value: "DELINQUANCE_FINANCIERE"
         },
         {
             label: "Droits humains",
-            value: "3"
+            value: "DROITS_HUMAINS"
         },
         {
             label: "Santé publique",
-            value: "4"
+            value: "SANTE_PUBLIQUE"
         },
         {
             label: "Secret défense",
-            value: "5"
+            value: "SECRET_DEFENSE"
         },
         {
             label: "Sécurité alimentaire",
-            value: "6"
+            value: "SECURITE_ALIMENTAIRE"
         },
         {
             label: "Violences sexuelles",
-            value: "7"
+            value: "VIOLENCES_SEXUELLES"
         },
         {
             label: "Évènementiel",
-            value: "8"
+            value: "EVENEMENTIEL"
         }
     ];
 

@@ -1,0 +1,59 @@
+[
+  {
+    "id": "1",
+    "title": "Manifestation pour la Palestine",
+    "categoryId": "DROITS_HUMAINS",
+    "location": {
+      "latitude": 52.373090992339826,
+      "longitude": -9.133719679095094
+    },
+    "created": "2026-03-31T17:29:35.576Z",
+    "eventDate": "2026-03-31T17:29:35.576Z",
+    "address": "1 rue Rima Hassan",
+    "media": {
+      "type": "IMAGE",
+      "contentType": "image/jpeg",
+      "url": "/assets/pictures/city.jpg"
+    },
+    "city": "",
+    "country": "Irlande"
+  },
+  {
+    "id": "2",
+    "title": "Vagues immenses à Pipa",
+    "city": "",
+    "address": "",
+    "categoryId": "CRISE_CLIMATIQUE",
+    "location": {
+      "longitude": -45.52856125000001,
+      "latitude": -1.5662338085302565
+    },
+    "media": {
+      "type": "IMAGE",
+      "contentType": "image/jpeg",
+      "url": "no-url"
+    },
+    "eventDate": "2026-03-31T17:30:10.331Z",
+    "country": "",
+    "created": "2026-03-31T17:30:10.331Z"
+  },
+  {
+    "id": "3",
+    "title": "Manifestation en Sibérie",
+    "city": "",
+    "address": "",
+    "categoryId": "EVENEMENTIEL",
+    "location": {
+      "longitude": 97.90893874999999,
+      "latitude": 64.4036792554767
+    },
+    "media": {
+      "type": "IMAGE",
+      "contentType": "image/jpeg",
+      "url": "no-url"
+    },
+    "eventDate": "2026-03-31T17:30:41.007Z",
+    "country": "",
+    "created": "2026-03-31T17:30:41.007Z"
+  }
+]

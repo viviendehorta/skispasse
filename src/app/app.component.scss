@@ -4,14 +4,11 @@
 
   $top-actions-height: 4rem;
 
-  .top-actions {
+  actions {
     position: absolute;
     top: 1vh;
     right: 1vw;
-    background-color: transparent;
     height: $top-actions-height;
-    display: flex;
-    align-items: center;
   }
 
   ::ng-deep.p-drawer {

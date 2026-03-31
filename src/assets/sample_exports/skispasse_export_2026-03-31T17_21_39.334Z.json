@@ -1,0 +1,21 @@
+[
+    {
+        "id": "1",
+        "title": "Manifestation pour la Palestine",
+        "category": "Droits humains",
+        "location": {
+            "latitude": 52.373090992339826,
+            "longitude": -9.133719679095094
+        },
+        "created": "2026-03-31T17:21:20.540Z",
+        "eventDate": "2026-03-31T17:21:20.540Z",
+        "address": "1 rue Rima Hassan",
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "/assets/pictures/city.jpg"
+        },
+        "city": "",
+        "country": "Irlande"
+    }
+]
