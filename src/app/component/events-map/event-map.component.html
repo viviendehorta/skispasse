@@ -1,4 +1,5 @@
-<div *ngIf="isSelectingLocation">Selecting location...</div>
-<div *ngIf="isLoadingEvents">Loading events...</div>
 <div *ngIf="isAddingEvent">Adding event...</div>
+<div *ngIf="isImportingEvents">Importing event...</div>
+<div *ngIf="isLoadingEvents">Loading events...</div>
+<div *ngIf="isSelectingLocation">Selecting location...</div>
 <div [id]="mapId" class="events-map" [ngClass]="{'isSelectingLocation': isSelectingLocation}"></div>

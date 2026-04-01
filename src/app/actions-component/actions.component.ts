@@ -4,7 +4,7 @@ import exportFromJSON from "export-from-json";
 import {Button} from "primeng/button";
 import {from} from "rxjs";
 import {mapActions, mapFeature, MapState} from "../core/map-store";
-import {EventDetail} from "../model/event-detail.model";
+import {EventInfo} from "../model/event-info.model";
 
 @Component({
     selector: 'actions',
@@ -21,11 +21,23 @@ export class ActionsComponent {
     protected isRunningExport: boolean = false;
     protected isRunningImport: boolean = false;
 
-    events: EventDetail[];
+    events: EventInfo[];
 
     constructor(private mapStore: Store<MapState>) {
         this.mapStore.select(mapFeature.selectEvents).subscribe(events => {
-            this.events = events;
+            this.events = events.map(eventDetail => {
+                return {
+                    title: eventDetail.country,
+                    location: eventDetail.location,
+                    media: eventDetail.media,
+                    categoryId: eventDetail.categoryId,
+                    created: eventDetail.created,
+                    address: eventDetail.address,
+                    eventDate: eventDetail.eventDate,
+                    city: eventDetail.city,
+                    country: eventDetail.country,
+                };
+            });
         });
     }
 
@@ -41,8 +53,8 @@ export class ActionsComponent {
                 }
                 return response.json();
             }))
-            .subscribe(eventsJson => {
-                this.mapStore.dispatch(mapActions.loadEventsSuccess({events: eventsJson}));
+            .subscribe((eventsJson: EventInfo[]) => {
+                this.mapStore.dispatch(mapActions.importEvents({events: eventsJson}));
             });
     }
 

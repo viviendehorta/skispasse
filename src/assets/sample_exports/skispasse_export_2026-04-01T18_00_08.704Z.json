@@ -1,0 +1,38 @@
+[
+    {
+        "title": "",
+        "location": {
+            "longitude": -45.52856125000001,
+            "latitude": -1.5662338085302565
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "no-url"
+        },
+        "categoryId": "CRISE_CLIMATIQUE",
+        "created": "2026-03-31T17:30:10.331Z",
+        "address": "",
+        "eventDate": "2026-03-31T17:30:10.331Z",
+        "city": "",
+        "country": ""
+    },
+    {
+        "title": "",
+        "location": {
+            "longitude": 97.90893874999999,
+            "latitude": 64.4036792554767
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "no-url"
+        },
+        "categoryId": "EVENEMENTIEL",
+        "created": "2026-03-31T17:30:41.007Z",
+        "address": "",
+        "eventDate": "2026-03-31T17:30:41.007Z",
+        "city": "",
+        "country": ""
+    }
+]

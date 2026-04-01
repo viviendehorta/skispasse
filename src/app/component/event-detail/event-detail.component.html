@@ -1,22 +1,19 @@
 <div *ngIf="eventDetail" class="event-detail">
-
-    <h1>{{ eventDetail.title }}</h1>
-
     <div class="media-view">
         <sk-video-player *ngIf="eventDetail.media.type === 'VIDEO'" videoUrl="{{eventDetail.media.url}}"
-                         contentType="{{eventDetail.media.contentType}}"></sk-video-player>
+        contentType="{{eventDetail.media.contentType}}"></sk-video-player>
         <img *ngIf="eventDetail.media.type === 'IMAGE'"
              class="event-image"
              src="{{eventDetail.media.url}}"
              alt="Image of event"/>
     </div>
-
-    <div class="event-info">
-
-        <!--category-->
-        <div class="category">{{ categoryLabel }}</div>
-
-        <!--city, country-->
-        <p class="city-country">{{ getEventInfoText() }}</p>
+    <div class="info">
+        <p class="info-group">
+            <span class="title">{{eventDetail.title}}, </span>
+        </p>
+        <p class="info-group">
+            <span class="city">{{eventDetail.city}}, </span>
+            <span class="country">{{eventDetail.country}}</span>
+        </p>
     </div>
 </div>

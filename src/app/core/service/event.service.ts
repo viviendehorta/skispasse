@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {delay, Observable, of} from "rxjs";
 import {EventDetail} from "../../model/event-detail.model";
+import {EventInfo} from "../../model/event-info.model";
 
 @Injectable()
 export class EventService {
     events: EventDetail[] = [
         {
             id: "1",
-            title: "Manifestation pour la Palestine",
+            title: "Manifestation pour la Palestine Manifestation pour la Palestine Manifestation pour la Palestine Manifestation pour la Palestine",
             categoryId: "Droits humains",
             location: {
                 latitude: 52.373090992339826,
@@ -21,7 +22,7 @@ export class EventService {
                 contentType: "image/jpeg",
                 url: "/assets/pictures/city.jpg"
             },
-            city: "",
+            city: "Dublin",
             country: "Irlande"
         }
     ];
@@ -30,8 +31,33 @@ export class EventService {
     constructor() {
     }
 
-    list(): Observable<EventDetail[]> {
-        return of(this.events).pipe(delay(3000));
+    importEvents(events: EventInfo[]): Observable<EventDetail[]> {
+        // return throwError(() => new Error("Erreur import simulée."));
+        this.events = [
+            ...this.events,
+            ...events.map(eventInfo => {
+                let newEventId = this.nextIdEvent.toString();
+                this.nextIdEvent += 1;
+                let newEvent: EventDetail = {
+                    id: newEventId,
+                    title: eventInfo.title,
+                    city: eventInfo.city,
+                    address: eventInfo.address,
+                    categoryId: eventInfo.categoryId,
+                    location: {...eventInfo.location},
+                    media: {...eventInfo.media},
+                    eventDate: eventInfo.eventDate,
+                    country: eventInfo.country,
+                    created: eventInfo.created
+                };
+                return newEvent;
+            })
+        ]
+        return of([...this.events]).pipe(delay(3000));
+    }
+
+    listEvents(): Observable<EventDetail[]> {
+        return of(this.events);
     }
 
     addEvent(title: string, category: string, longitude: number, latitude: number): Observable<EventDetail> {

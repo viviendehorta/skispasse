@@ -43,6 +43,7 @@ export class EventMapComponent implements OnInit {
     isSelectingLocation: boolean = false;
     isLoadingEvents: boolean = false;
     isAddingEvent: boolean = false;
+    isImportingEvents: boolean = false;
 
     map: OLMap;
     eventMarkersById!: { [id: string]: Feature<Point> };
@@ -60,19 +61,11 @@ export class EventMapComponent implements OnInit {
 
     ngOnInit(): void {
         this.configureMapLayers();
-
-        this.mapStore.select(mapFeature.selectSelectingLocation).subscribe(selectResult => {
-            this.isSelectingLocation = selectResult;
-        });
-        this.mapStore.select(mapFeature.selectIsLoadingEvents).subscribe(isLoadingEvents => {
-            this.isLoadingEvents = isLoadingEvents;
-        });
-        this.mapStore.select(mapFeature.selectIsAddingEvent).subscribe(isAddingEvent => {
-            this.isAddingEvent = isAddingEvent;
-        });
-        this.mapStore.select(mapFeature.selectEvents).subscribe(events => {
-            this.displayEventsOnMap(events);
-        });
+        this.mapStore.select(mapFeature.selectIsAddingEvent).subscribe(isAddingEvent => this.isAddingEvent = isAddingEvent);
+        this.mapStore.select(mapFeature.selectIsLoadingEvents).subscribe(isLoadingEvents => this.isLoadingEvents = isLoadingEvents);
+        this.mapStore.select(mapFeature.selectIsImportingEvents).subscribe(isImporting => this.isImportingEvents = isImporting);
+        this.mapStore.select(mapFeature.selectSelectingLocation).subscribe(selectResult => this.isSelectingLocation = selectResult);
+        this.mapStore.select(mapFeature.selectEvents).subscribe(events => this.displayEventsOnMap(events));
         this.mapStore.select(mapFeature.selectSelectedEventDetail).subscribe(newSelectedEvent => {
             //unselect previously selected event
             if (this.selectedEvent && this.selectedEvent.id !== newSelectedEvent?.id) {

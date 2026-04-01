@@ -1,4 +1,4 @@
-import {CommonModule} from "@angular/common";
+import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {Component, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
 import * as moment from "moment";
@@ -14,7 +14,8 @@ import {VideoPlayerComponent} from "./video-player/video-player.component";
     standalone: true,
     imports: [
         CommonModule,
-        VideoPlayerComponent
+        VideoPlayerComponent,
+        NgOptimizedImage
     ],
     providers: []
 })

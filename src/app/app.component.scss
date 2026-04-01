@@ -4,42 +4,43 @@
 
   $top-actions-height: 4rem;
 
-  actions {
-    position: absolute;
-    top: 1vh;
-    right: 1vw;
-    height: $top-actions-height;
-  }
+  .app {
+    position: relative;
 
-  ::ng-deep.p-drawer {
-    position: absolute;
-    top: calc($top-actions-height + 2rem);
-    right: 1rem;
-    max-height: 80vh;
-    height: unset;
-    width: unset;
-    border-radius: 6px;
+    actions {
+      position: absolute;
+      top: 1vh;
+      right: 1vw;
+      height: $top-actions-height;
+    }
 
+    ::ng-deep.p-drawer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      height: 90vh;
+      width: unset;
+      border-radius: 6px;
 
-    .content-panel {
-      padding: 0 1rem 1rem;
-      display: flex;
-      flex-direction: column;
+      .content-panel {
+        height: 100%;
 
-      .close-button {
-        position: absolute;
-        top: 8px;
-        right: 8px;
+        .close-button {
+          position: absolute;
+          top: 8px;
+          right: 8px;
 
-        .p-button {
-          padding: 0;
-          background-color: transparent;
-          width: unset;
-          color: #777;
-          border: none;
+          .p-button {
+            padding: 0;
+            background-color: transparent;
+            width: unset;
+            color: #777;
+            border: none;
 
-          &:hover {
-            color: #111;
+            &:hover {
+              color: #111;
+            }
           }
         }
       }
