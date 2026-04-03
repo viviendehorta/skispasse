@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} fr
 import {Router} from "@angular/router";
 import {Store} from "@ngrx/store";
 import {Button} from "primeng/button";
+import {FileSelectEvent, FileUpload} from "primeng/fileupload";
 import {InputText} from "primeng/inputtext";
 import {Select} from "primeng/select";
 import {mapActions, mapFeature, MapState} from "../../core/map-store";
@@ -16,6 +17,7 @@ import {mapActions, mapFeature, MapState} from "../../core/map-store";
         InputText,
         Button,
         Select,
+        FileUpload,
     ],
     providers: []
 })
@@ -116,5 +118,9 @@ export class EventCreationComponent implements OnInit {
             }));
             this.router.navigate([""]);
         }
+    }
+
+    protected onSelect(fileSelectEvent: FileSelectEvent) {
+        console.log(JSON.stringify(fileSelectEvent));
     }
 }

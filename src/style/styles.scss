@@ -4,38 +4,71 @@
 
 //layout styles
 html {
-    font-family: "Work Sans", "Liberation Sans", sans-serif;
-    height: 100vh;
+  font-family: "Work Sans", "Liberation Sans", sans-serif;
+  height: 100vh;
 
-    body {
-        height: 100vh;
-        margin: 0;
-        overflow: hidden;
-        font-size: 15px;
-        color: black;
-    }
+  body {
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    font-size: 15px;
+    color: black;
 
     p {
-        margin: 0;
-        padding: 0.1rem 0;
+      margin: 0;
+      padding: 0.1rem 0;
     }
 
     form {
-        .field {
-            label {
-                font-weight: 500;
-                color: #555;
-            }
-
-            input[type=text], .p-inputwrapper {
-                width: 100%;
-            }
+      .field {
+        label {
+          font-weight: 500;
+          color: #555;
         }
 
-        .toolbar {
-            display: flex;
-            justify-content: end;
-            align-items: center;
+        input[type=text] {
+          width: 100%;
         }
+      }
+
+      .toolbar {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+      }
     }
+  }
+
+  //prime ng style customization
+  $input-border-radius: 3px;
+  $input-padding-block: 8px;
+  $input-border-color-strong: #2563eb;
+
+  .p-inputtext {
+
+    padding-block: $input-padding-block;
+    border-radius: $input-border-radius;
+
+    &:enabled:active, &:enabled:hover, &:enabled:focus {
+      transition: none;
+      border: 1px solid $input-border-color-strong;
+      box-shadow: none;
+    }
+  }
+
+  .p-select {
+    border-radius: $input-border-radius;
+
+    .p-select-label {
+      padding-block: $input-padding-block;
+    }
+  }
+
+  .p-inputwrapper {
+    width: 100%;
+  }
+
+  .p-fileupload.p-fileupload-basic {
+    justify-content: start;
+  }
 }

@@ -19,29 +19,44 @@
             </div>
         </div>
 
+        <div class="category-latitude-longitude">
+            <!--category-->
+            <div class="category field">
+                <label [for]="categoryInput">Catégorie</label>
+                <p-select #categoryInput
+                          [formControl]="categoryControl"
+                          [options]="categoryValues"
+                          optionLabel="label"
+                          optionValue="value">
+                </p-select>
+            </div>
 
-        <!--category-->
-        <div class="field">
-            <label [for]="categoryInput">Catégorie</label>
-            <p-select #categoryInput
-                      [formControl]="categoryControl"
-                      [options]="categoryValues"
-                      optionLabel="label"
-                      optionValue="value">
-            </p-select>
-        </div>
-
-        <!--location-->
-        <div class="coordinates">
+            <!--latitude-->
             <div class="latitude field">
                 <label [for]="latitudeInput">Latitude</label>
                 <input #latitudeInput type="text" pInputText [formControl]="latitudeControl"/>
             </div>
+
+            <!--longitude-->
             <div class="longitude field">
                 <label [for]="longitudeInput">Longitude</label>
                 <input #longitudeInput type="text" pInputText [formControl]="longitudeControl"/>
             </div>
         </div>
+
+        <p-fileupload
+                class="file-upload"
+                mode="basic"
+                accept="image/jpeg"
+                maxFileSize="5000000"
+                (onSelect)="onSelect($event)">
+            <ng-template #chooseicon>
+                <i class="pi pi-address-book"></i>
+            </ng-template>
+            <ng-template #empty>
+                <div>Aucun fichier sélectionné.</div>
+            </ng-template>
+        </p-fileupload>
 
         <div class="toolbar">
             <p-button type="submit" label="Valider"></p-button>

@@ -18,16 +18,21 @@
     }
   }
 
-  .coordinates {
+  .category-latitude-longitude {
     display: flex;
 
-    .latitude {
+    .category {
       width: 50%;
       padding-right: $horizontal-field-margin;
     }
 
+    .latitude {
+      width: 25%;
+      padding-inline: $horizontal-field-margin;
+    }
+
     .longitude {
-      width: 50%;
+      width: 25%;
       padding-left: $horizontal-field-margin;
     }
   }
