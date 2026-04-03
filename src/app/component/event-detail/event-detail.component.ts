@@ -14,8 +14,7 @@ import {VideoPlayerComponent} from "./video-player/video-player.component";
     standalone: true,
     imports: [
         CommonModule,
-        VideoPlayerComponent,
-        NgOptimizedImage
+        VideoPlayerComponent
     ],
     providers: []
 })
