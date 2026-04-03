@@ -1,0 +1,146 @@
+[
+    {
+        "title": "Italie",
+        "location": {
+            "latitude": 43.767229828925736,
+            "longitude": 11.2525
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "/assets/pictures/duomo_firenze.jpg"
+        },
+        "categoryId": "DROITS_HUMAINS",
+        "created": "2026-04-03T19:49:34.722Z",
+        "address": "1 rue Rima Hassan",
+        "eventDate": "2026-04-03T19:49:34.722Z",
+        "city": "Florence",
+        "country": "Italie"
+    },
+    {
+        "title": "Royaume-Uni",
+        "location": {
+            "latitude": 51.38801431695356,
+            "longitude": -0.027829044244547785
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "/assets/pictures/eglise.jpg"
+        },
+        "categoryId": "EVENEMENTIEL",
+        "created": "2026-04-03T19:49:34.722Z",
+        "address": "",
+        "eventDate": "2026-04-03T19:49:34.722Z",
+        "city": "Londres",
+        "country": "Royaume-Uni"
+    },
+    {
+        "title": "Irlande",
+        "location": {
+            "latitude": 22.963162461744915,
+            "longitude": -82.346086657365
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "/assets/pictures/la_havane.jpg"
+        },
+        "categoryId": "CRISE_CLIMATIQUE",
+        "created": "2026-04-03T19:49:34.722Z",
+        "address": "2 rue du Soleil Levant, 93140 Bondy",
+        "eventDate": "2026-04-03T19:49:34.722Z",
+        "city": "Dublin",
+        "country": "Irlande"
+    },
+    {
+        "title": "Pérou",
+        "location": {
+            "latitude": -13.521675330395183,
+            "longitude": -72
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "/assets/pictures/montagne_nuages.jpg"
+        },
+        "categoryId": "CRISE_CLIMATIQUE",
+        "created": "2026-04-03T19:49:34.722Z",
+        "address": "",
+        "eventDate": "2026-04-03T19:49:34.722Z",
+        "city": "Cuzco",
+        "country": "Pérou"
+    },
+    {
+        "title": "Brésil",
+        "location": {
+            "latitude": -6.242759306124157,
+            "longitude": -35.47011111111111
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "/assets/pictures/parapente.jpg"
+        },
+        "categoryId": "DROITS_HUMAINS",
+        "created": "2026-04-03T19:49:34.722Z",
+        "address": "10 rua Lopes Silva, Pipa RN, Brasil",
+        "eventDate": "2026-04-03T19:49:34.722Z",
+        "city": "Pipa",
+        "country": "Brésil"
+    },
+    {
+        "title": "Irlande",
+        "location": {
+            "latitude": -22.843742989252775,
+            "longitude": -43.44155555555555
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "/assets/pictures/telepherique_fleuri.jpg"
+        },
+        "categoryId": "DROITS_HUMAINS",
+        "created": "2026-04-03T19:49:34.722Z",
+        "address": "",
+        "eventDate": "2026-04-03T19:49:34.722Z",
+        "city": "Dublin",
+        "country": "Irlande"
+    },
+    {
+        "title": "",
+        "location": {
+            "longitude": -45.52856125000001,
+            "latitude": -1.5662338085302565
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "no-url"
+        },
+        "categoryId": "CRISE_CLIMATIQUE",
+        "created": "2026-03-31T17:30:10.331Z",
+        "address": "",
+        "eventDate": "2026-03-31T17:30:10.331Z",
+        "city": "",
+        "country": ""
+    },
+    {
+        "title": "",
+        "location": {
+            "longitude": 97.90893874999999,
+            "latitude": 64.4036792554767
+        },
+        "media": {
+            "type": "IMAGE",
+            "contentType": "image/jpeg",
+            "url": "no-url"
+        },
+        "categoryId": "EVENEMENTIEL",
+        "created": "2026-03-31T17:30:41.007Z",
+        "address": "",
+        "eventDate": "2026-03-31T17:30:41.007Z",
+        "city": "",
+        "country": ""
+    }
+]

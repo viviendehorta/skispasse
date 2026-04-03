@@ -5,16 +5,20 @@
             <label [for]="titleInput">Titre</label>
             <input #titleInput type="text" pInputText [formControl]="titleControl"/>
         </div>
-        <!--city-->
-        <div class="field">
-            <label [for]="cityInput">Ville</label>
-            <input #cityInput type="text" pInputText [formControl]="cityControl"/>
+
+        <div class="city-country">
+            <!--city-->
+            <div class="city field">
+                <label [for]="cityInput">Ville</label>
+                <input #cityInput type="text" pInputText [formControl]="cityControl"/>
+            </div>
+            <!--country-->
+            <div class="country field">
+                <label [for]="countryInput">Pays</label>
+                <input #countryInput type="text" pInputText [formControl]="countryControl"/>
+            </div>
         </div>
-        <!--country-->
-        <div class="field">
-            <label [for]="countryInput">Pays</label>
-            <input #countryInput type="text" pInputText [formControl]="countryControl"/>
-        </div>
+
 
         <!--category-->
         <div class="field">
@@ -28,13 +32,15 @@
         </div>
 
         <!--location-->
-        <div class="field">
-            <label [for]="latitudeInput">Latitude</label>
-            <input #latitudeInput type="text" pInputText [formControl]="latitudeControl"/>
-        </div>
-        <div class="field">
-            <label [for]="longitudeInput">Longitude</label>
-            <input #longitudeInput type="text" pInputText [formControl]="longitudeControl"/>
+        <div class="coordinates">
+            <div class="latitude field">
+                <label [for]="latitudeInput">Latitude</label>
+                <input #latitudeInput type="text" pInputText [formControl]="latitudeControl"/>
+            </div>
+            <div class="longitude field">
+                <label [for]="longitudeInput">Longitude</label>
+                <input #longitudeInput type="text" pInputText [formControl]="longitudeControl"/>
+            </div>
         </div>
 
         <div class="toolbar">

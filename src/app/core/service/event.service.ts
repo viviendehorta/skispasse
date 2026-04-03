@@ -11,8 +11,8 @@ export class EventService {
             title: "Pâques à Florence",
             categoryId: "DROITS_HUMAINS",
             location: {
-                latitude: 52.373090992339826,
-                longitude: -9.133719679095094
+                latitude: 43.767229828925736,
+                longitude: 11.2525000000000
             },
             created: new Date(),
             eventDate: new Date(),
@@ -22,8 +22,8 @@ export class EventService {
                 contentType: "image/jpeg",
                 url: "/assets/pictures/duomo_firenze.jpg"
             },
-            city: "Dublin",
-            country: "Irlande"
+            city: "Florence",
+            country: "Italie"
         },
         {
             id: "2",
@@ -121,7 +121,7 @@ export class EventService {
             country: "Irlande"
         },
     ];
-    nextIdEvent: number = 2;
+    nextIdEvent: number = 7;
 
     constructor() {
     }
