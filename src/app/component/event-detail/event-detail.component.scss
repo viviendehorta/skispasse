@@ -2,6 +2,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  max-width: 80vw;
 
   .media-view {
     flex: 1;
@@ -24,11 +25,7 @@
     padding: 0.4rem;
 
     .info-group {
-      padding: 0.1rem 0;
-      margin: 0;
-
       .title {
-        color: black;
       }
 
       .city {

@@ -28,6 +28,10 @@ const initialState: MapState = {
     isInError: false,
     isLoadingEvents: false,
     locationForEventCreation: null,
+    // locationForEventCreation: {
+    //     longitude: -45.52856125000001,
+    //     latitude: -1.5662338085302565
+    // },
     selectedEventId: null,
     selectingLocation: false,
 };
@@ -35,7 +39,13 @@ const initialState: MapState = {
 export const mapActions = createActionGroup({
     source: 'Map',
     events: {
-        addEvent: props<{ title: string, category: string, longitude: number, latitude: number }>(),
+        addEvent: props<{
+            title: string,
+            city: string,
+            country: string,
+            category: string,
+            longitude: number,
+            latitude: number }>(),
         addEventSuccess: props<{ eventDetail: EventDetail }>(),
 
         importEvents: props<{ events: EventInfo[] }>(),
@@ -137,6 +147,8 @@ const addEventEffect = createEffect(
             ofType(mapActions.addEvent),
             switchMap((action) => eventService.addEvent(
                 action.title,
+                action.city,
+                action.country,
                 action.category,
                 action.longitude,
                 action.latitude,

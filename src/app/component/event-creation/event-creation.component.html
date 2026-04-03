@@ -1,10 +1,19 @@
 <div class="event-creation">
-    <h2>Création d'évènement</h2>
     <form [formGroup]="creationForm" (submit)="onSubmit()">
         <!--title-->
         <div class="field">
             <label [for]="titleInput">Titre</label>
             <input #titleInput type="text" pInputText [formControl]="titleControl"/>
+        </div>
+        <!--city-->
+        <div class="field">
+            <label [for]="cityInput">Ville</label>
+            <input #cityInput type="text" pInputText [formControl]="cityControl"/>
+        </div>
+        <!--country-->
+        <div class="field">
+            <label [for]="countryInput">Pays</label>
+            <input #countryInput type="text" pInputText [formControl]="countryControl"/>
         </div>
 
         <!--category-->

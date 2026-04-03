@@ -22,6 +22,8 @@ import {mapActions, mapFeature, MapState} from "../../core/map-store";
 export class EventCreationComponent implements OnInit {
     creationForm: FormGroup;
     titleControl: FormControl<string>;
+    cityControl: FormControl<string>;
+    countryControl: FormControl<string>;
     categoryControl: FormControl<string | null>;
     latitudeControl: FormControl<number | null>;
     longitudeControl: FormControl<number | null>;
@@ -81,6 +83,14 @@ export class EventCreationComponent implements OnInit {
                 nonNullable: true,
                 validators: Validators.required
             });
+            this.cityControl = new FormControl<string>("", {
+                nonNullable: true,
+                validators: Validators.required
+            });
+            this.countryControl = new FormControl<string>("", {
+                nonNullable: true,
+                validators: Validators.required
+            });
             this.categoryControl = new FormControl<string | null>(null, {
                 validators: Validators.required
             });
@@ -98,6 +108,8 @@ export class EventCreationComponent implements OnInit {
         if (this.creationForm.valid) {
             this.mapStore.dispatch(mapActions.addEvent({
                 title: this.titleControl.value,
+                city: this.cityControl.value,
+                country: this.countryControl.value,
                 category: this.categoryControl.value!!,
                 longitude: this.longitudeControl.value!!,
                 latitude: this.latitudeControl.value!!

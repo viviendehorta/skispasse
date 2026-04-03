@@ -20,23 +20,29 @@
       left: 50%;
       transform: translate(-50%, -50%);
       height: 90vh;
-      width: unset;
+      width: fit-content;
       border-radius: 6px;
 
       .content-panel {
         height: 100%;
 
         .close-button {
-          position: absolute;
-          top: 8px;
-          right: 8px;
+          $button-padding: 10px;
 
-          .p-button {
-            padding: 0;
+          position: absolute;
+          top: 0;
+          right: 0;
+
+          button {
+            padding: $button-padding;
             background-color: transparent;
             width: unset;
             color: #777;
             border: none;
+
+            .p-button-icon {
+              font-size: 18px;
+            }
 
             &:hover {
               color: #111;

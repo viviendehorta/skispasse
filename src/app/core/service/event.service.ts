@@ -60,14 +60,21 @@ export class EventService {
         return of(this.events);
     }
 
-    addEvent(title: string, category: string, longitude: number, latitude: number): Observable<EventDetail> {
+    addEvent(
+        title: string,
+        city: string,
+        country: string,
+        category: string,
+        longitude: number,
+        latitude: number): Observable<EventDetail> {
         // return throwError(() => new Error("Erreur back mockée."))
         let eventId = this.nextIdEvent.toString();
         this.nextIdEvent += 1;
         let newEvent: EventDetail = {
             id: eventId,
             title: title,
-            city: "",
+            city: city,
+            country: country,
             address: "",
             categoryId: category,
             location: {
@@ -80,7 +87,6 @@ export class EventService {
                 url: "no-url"
             },
             eventDate: new Date(),
-            country: "",
             created: new Date()
         };
         this.events = [...this.events, newEvent];
