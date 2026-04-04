@@ -1,3 +1,5 @@
+$default-background-color: #efefef;
+
 :host {
   height: 100vh;
   display: block;
@@ -24,10 +26,12 @@
       border-radius: 6px;
 
       .content-panel {
-        height: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
         display: flex;
         flex-direction: column;
         align-items: end;
+        background-color: $default-background-color;
 
         .close-button {
           $button-padding: 10px;

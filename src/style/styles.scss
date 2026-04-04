@@ -4,6 +4,7 @@
 
 //layout styles
 html {
+  $default-font-size: 14px;
   font-family: "Work Sans", "Liberation Sans", sans-serif;
   height: 100vh;
 
@@ -11,7 +12,7 @@ html {
     height: 100vh;
     margin: 0;
     overflow: hidden;
-    font-size: 15px;
+    font-size: $default-font-size;
     color: black;
 
     p {
@@ -31,7 +32,7 @@ html {
         }
       }
 
-      .toolbar {
+      .action-bar {
         display: flex;
         justify-content: end;
         align-items: center;
@@ -42,10 +43,16 @@ html {
   //prime ng style customization
   $input-border-radius: 3px;
   $input-padding-block: 8px;
-  $input-border-color-strong: #2563eb;
+  $input-border-color-strong: #999;
+
+  .p-button {
+    font-size: $default-font-size;
+    padding-block: 0.4rem;
+    border-radius: 4px;
+  }
 
   .p-inputtext {
-
+    font-size: 15px;
     padding-block: $input-padding-block;
     border-radius: $input-border-radius;
 
@@ -62,13 +69,26 @@ html {
     .p-select-label {
       padding-block: $input-padding-block;
     }
+
+    &:not(.p-disabled):hover, &:not(.p-disabled).p-focus {
+      transition: none;
+      border: 1px solid $input-border-color-strong;
+      box-shadow: none;
+    }
   }
 
   .p-inputwrapper {
     width: 100%;
   }
 
-  .p-fileupload.p-fileupload-basic {
-    justify-content: start;
+  .p-fileupload {
+    .p-fileupload-header {
+      padding: 0.8rem;
+    }
+
+    .p-fileupload-content {
+      padding: 0;
+      border: none;
+    }
   }
 }

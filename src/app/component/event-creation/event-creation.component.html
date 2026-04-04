@@ -46,19 +46,17 @@
 
         <p-fileupload
                 class="file-upload"
-                mode="basic"
                 accept="image/jpeg"
-                maxFileSize="5000000"
+                mode="advanced"
+                [multiple]="true"
+                [maxFileSize]="5000000"
+                [showCancelButton]="false"
+                [showUploadButton]="false"
+                chooseLabel="Ajouter des fichiers"
                 (onSelect)="onSelect($event)">
-            <ng-template #chooseicon>
-                <i class="pi pi-address-book"></i>
-            </ng-template>
-            <ng-template #empty>
-                <div>Aucun fichier sélectionné.</div>
-            </ng-template>
         </p-fileupload>
 
-        <div class="toolbar">
+        <div class="action-bar">
             <p-button type="submit" label="Valider"></p-button>
         </div>
     </form>
